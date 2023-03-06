@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="pt.isel.ls.ExampleTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2023-03-06T15:28:41" hostname="DESKTOP-QLNGN3K" time="0.093">
-  <properties/>
-  <testcase name="example" classname="pt.isel.ls.ExampleTest" time="0.092"/>
-  <testcase name="do_not_ignore_unexpected_exceptions_on_tests" classname="pt.isel.ls.ExampleTest" time="0.0"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
