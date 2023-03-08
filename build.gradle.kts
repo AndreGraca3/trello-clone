@@ -9,6 +9,10 @@ repositories {
 dependencies {
     implementation(group = "org.postgresql", name = "postgresql", version = "42.+")
     testImplementation(kotlin("test"))
+    testImplementation("org.testng:testng:7.1.0")
+    testImplementation("org.testng:testng:7.1.0")
+    testImplementation("org.testng:testng:7.1.0")
+    testImplementation("org.testng:testng:7.1.0")
 }
 
 tasks.register<Copy>("copyRuntimeDependencies") {
