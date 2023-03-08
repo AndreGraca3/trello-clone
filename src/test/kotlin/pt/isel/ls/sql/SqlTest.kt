@@ -21,7 +21,6 @@ class SqlTest {
             dataSource = PGSimpleDataSource()
             val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL")
             dataSource.setURL(jdbcDatabaseURL)
-            //dataSource.setURL("jdbc:postgresql://localhost:5432/?user=postgres&password=isel")
         }
 
     }
