@@ -26,19 +26,21 @@ class SqlTest {
     }
 
     /** runs before each test **/
-    @Before
-    fun initial_state(){
-        val cmdDelete =
-            "delete from dbo.students;" +
-            "delete from dbo.courses;"
-
-        dataSource.getConnection().use {
-            it.autoCommit = false
-            /** Delete students and courses **/
-            val stmDelete = it.prepareStatement(cmdDelete)
-            stmDelete.executeUpdate()
-        }
-    }
+//    @Before
+//    @Test
+//    fun initial_state(){
+//        val cmdDelete =
+//            "delete from dbo.students;" +
+//            "delete from dbo.courses;"
+//
+//
+//        dataSource.getConnection().use {
+//            it.autoCommit = false
+//            /** Delete students and courses **/
+//            val stmDelete = it.prepareStatement(cmdDelete)
+//            stmDelete.executeUpdate()
+//        }
+//    }
 
     /** runs before all tests but only once **/
     @BeforeTest
@@ -56,6 +58,12 @@ class SqlTest {
 
         dataSource.getConnection().use {
             it.autoCommit = false  //needed for test effects
+
+            val cmdDelete =
+                "delete from dbo.students;" +
+                        "delete from dbo.courses;"
+            val stmDelete = it.prepareStatement(cmdDelete)
+            stmDelete.executeUpdate()
 
             /** Update students and courses **/
             val stmInsert = it.prepareStatement(cmdInsert)
@@ -82,6 +90,7 @@ class SqlTest {
                 assertEquals(rsCourses.getString("name"), "LEIM")
             }
         }
+
     }
 
     @Test
@@ -96,6 +105,12 @@ class SqlTest {
 
         dataSource.getConnection().use{
             it.autoCommit = false
+
+            val cmdDelete =
+                "delete from dbo.students;" +
+                        "delete from dbo.courses;"
+            val stmDelete = it.prepareStatement(cmdDelete)
+            stmDelete.executeUpdate()
 
             val stmInsert = it.prepareStatement(cmdInsert)
             stmInsert.executeUpdate()
@@ -125,6 +140,12 @@ class SqlTest {
         dataSource.getConnection().use {
             it.autoCommit = false
 
+            val cmdDelete =
+                "delete from dbo.students;" +
+                        "delete from dbo.courses;"
+            val stmDelete = it.prepareStatement(cmdDelete)
+            stmDelete.executeUpdate()
+
             val stmInsert = it.prepareStatement(cmdInsert)
             stmInsert.executeUpdate()
 
@@ -142,8 +163,6 @@ class SqlTest {
         }
 
     }
-
-
     @AfterMethod
     fun rollback() {
         dataSource.getConnection().use{
