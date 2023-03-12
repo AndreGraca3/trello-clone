@@ -9,7 +9,7 @@ interface IData {
      *  User Functions
      *  ------------------------------**/
 
-    fun createUser(name: String, email: String): Pair<String,Int>
+    fun createUser(name: String, email: String): Pair<String, Int>
 
     fun getUserInfo(idUser: Int): User?
 
@@ -39,7 +39,7 @@ interface IData {
      *  Card Functions
      *  ------------------------------**/
 
-    fun createCard(name: String, description: String, endDate: Date): Int //check endDate
+    fun createCard(name: String, description: String, endDate: String): Int //check endDate
 
     fun createCard(name: String, description: String): Int
 

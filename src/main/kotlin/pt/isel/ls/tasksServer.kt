@@ -11,9 +11,13 @@ import org.http4k.server.asServer
 
 
 fun main(){
+    val data = DataMem()
+    val services = Services(data)
+    val webApi = WebApi(services)
+
     val userRoutes = routes(
-        "user" bind POST to ::postUser,
-        "user" bind GET to ::getUserDetails
+        "user" bind POST to webApi::postUser,
+        "user" bind GET to webApi::getUserDetails
     )
 
     val app = routes(
