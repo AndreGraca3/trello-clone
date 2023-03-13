@@ -5,13 +5,13 @@ import java.time.LocalDate
 import java.util.UUID
 
 @Serializable
-data class User(val idUser: Int = 0, val email: String, val name: String, val token: String = "")
+data class User(val idUser: Int, val email: String, val name: String, val token: String)
 
 @Serializable
-data class Board(val idUsers: MutableList<Int>, val idBoard: Int = 0, val description: String, val name: String)
+data class Board(val idBoard: Int = 0, val name: String, val description: String, val idUsers: MutableList<Int>)
 
 @Serializable
-data class BoardList(val idBoard: Int, val idList: Int = 0, val phase: String, val name: String)
+data class BoardList(val idList: Int = 0, val idBoard: Int, val name: String)
 
 @Serializable
 data class Card(
@@ -26,66 +26,65 @@ data class Card(
 
 val users = mutableListOf<User>()
 val boards = mutableListOf<Board>()
-val boardList = mutableListOf<BoardList>()
+val lists = mutableListOf<BoardList>()
 val cards = mutableListOf<Card>()
 
 class DataMem : IData {
-    override fun createUser(name: String, email: String): Pair<String, Int> {
+    override fun createUser(name: String, email: String): Pair<String, Int> { //check
         val token = UUID.randomUUID().toString()
         val newUser = User(getNextId(User::class.java), email, name, token)
         users.add(newUser)
-        //println(users)
         return Pair(token, newUser.idUser)
     }
 
-    override fun getUserInfo(idUser: Int): User? {
+    override fun getUserInfo(idUser: Int): User? { //check
         return users.find { it.idUser == idUser }
     }
 
-    override fun createBoard(idUser: Int, name: String, description: String): Int {
+    override fun createBoard(idUser: Int, name: String, description: String): Int { // check
         val list = mutableListOf<Int>()
-        list.add(idUser)
-        val newBoard = Board(list, getNextId(Board::class.java), description, name)
+        list.add(idUser) // adds user that created the board.
+        val newBoard = Board(getNextId(Board::class.java), name, description, list)
         boards.add(newBoard)
         return newBoard.idBoard
     }
 
-    override fun addUserToBoard(idUser: Int, idBoard: Int): Boolean {
-        return getBoardInfo(idBoard)!!.idUsers.add(idUser)
+    override fun addUserToBoard(idUser: Int, board : Board) { // check
+        board.idUsers.add(idUser)
     }
 
-    override fun getBoardsFromUser(idUser: Int): List<Board> {
+    override fun getBoardsFromUser(idUser: Int): List<Board> { // check
         val boardsFromUsers = mutableListOf<Board>()
         boards.forEach { it ->
             if (it.idUsers.find { it == idUser } != null) {
-                    boardsFromUsers.add(getBoardInfo(it.idBoard)!!)
+                    boardsFromUsers.add(it)
             }
         }
         return boardsFromUsers
     }
 
-    override fun getBoardInfo(idBoard: Int): Board? {
-        return boards.find { it.idBoard==idBoard }
+    override fun getBoardInfo(idBoard: Int): Board? { // check
+        return boards.find { it.idBoard == idBoard }
     }
 
-    override fun createNewListInBoard(idBoard: Int, name: String): Int {
-        val newBoardList = BoardList(idBoard, getNextId(BoardList::class.java), "TODO", name)
-        boardList.add(newBoardList)
+    override fun createNewListInBoard(idBoard: Int, name: String): Int { // check
+        val newBoardList = BoardList(getNextId(BoardList::class.java), idBoard, name)
+        lists.add(newBoardList)
         return newBoardList.idList
     }
 
-    override fun getListsOfBoard(idBoard: Int): List<BoardList> {
+    override fun getListsOfBoard(idBoard: Int): List<BoardList> { // check
         val listsFromBoard = mutableListOf<BoardList>()
-        boardList.forEach { it ->
-            if(it.idBoard==idBoard){
-                listsFromBoard.add(getListInfo(idBoard,it.idList)!!)
+        lists.forEach {
+            if(it.idBoard == idBoard){
+                listsFromBoard.add(it)
             }
         }
         return listsFromBoard
     }
 
-    override fun getListInfo(idBoard: Int, idList: Int): BoardList? {
-        return boardList.find { it.idBoard==idBoard && it.idList==idList }
+    override fun getListInfo(idList: Int): BoardList? {
+        return lists.find { it.idList == idList }
     }
 
     override fun createCard(idList: Int, name: String, description: String, endDate: String): Int {
@@ -116,12 +115,10 @@ class DataMem : IData {
 }
 
 fun getNextId(clazz: Class<*>): Int {
-    //println(clazz.simpleName)
-    //println(User::class.simpleName)
     val nextId = when (clazz.simpleName) {
         User::class.simpleName -> if (users.isNotEmpty()) users.last().idUser.inc() else 0
         Board::class.simpleName -> if (boards.isNotEmpty()) boards.last().idBoard.inc() else 0
-        BoardList::class.simpleName -> if (boardList.isNotEmpty()) boardList.last().idList.inc() else 0
+        BoardList::class.simpleName -> if (lists.isNotEmpty()) lists.last().idList.inc() else 0
         Card::class.simpleName -> if (cards.isNotEmpty()) cards.last().idCard.inc() else 0
         else -> error("Unknown object type: ${clazz.toString()::class.simpleName}")
     }

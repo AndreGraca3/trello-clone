@@ -17,7 +17,7 @@ interface IData {
 
     fun createBoard(idUser: Int, name: String, description: String): Int
 
-    fun addUserToBoard(idUser: Int, idBoard: Int): Boolean //Int? (idBoard) ou Board?
+    fun addUserToBoard(idUser: Int, board: Board)
 
     fun getBoardsFromUser(idUser: Int): List<Board>
 
@@ -31,7 +31,7 @@ interface IData {
 
     fun getListsOfBoard(idBoard: Int): List<BoardList>
 
-    fun getListInfo(idBoard: Int, idList: Int): BoardList?
+    fun getListInfo(idList: Int): BoardList?
 
     /** ----------------------------
      *  Card Functions
