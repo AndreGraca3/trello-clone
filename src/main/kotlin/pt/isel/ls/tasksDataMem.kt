@@ -42,7 +42,6 @@ class DataMem : IData {
         return users.find { it.idUser == idUser }
     }
 
-
     override fun createBoard(idUser: Int, name: String, description: String): Int {
         val list = mutableListOf<Int>()
         list.add(idUser)
