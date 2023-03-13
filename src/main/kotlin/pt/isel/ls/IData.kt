@@ -9,7 +9,6 @@ interface IData {
      *  ------------------------------**/
 
     fun createUser(name: String, email: String): Pair<String, Int>
-
     fun getUserInfo(idUser: Int): User?
 
     /** ----------------------------
