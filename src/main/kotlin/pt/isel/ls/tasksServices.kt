@@ -9,6 +9,10 @@ class Services(private val data: IData) {
         return User(newUser.second,email,name,newUser.first)
     }
 
+    fun getUserInfo(idUser: Int): User? {
+        return data.getUserInfo(idUser)
+    }
+
     fun createBoard(idUser: Int, name: String, description: String): Int {
         return data.createBoard(idUser, name, description)
     }
