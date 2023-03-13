@@ -6,9 +6,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.http4k.core.Request
 import org.http4k.core.Response
-import org.http4k.core.Status
 import org.http4k.core.Status.Companion.BAD_REQUEST
-import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.OK
 import org.http4k.routing.path
 import org.slf4j.LoggerFactory
@@ -17,6 +15,9 @@ val logger = LoggerFactory.getLogger("pt.isel.ls.http.HTTPServer")
 
 @Serializable
 data class UserIn(val name: String, val email: String)
+
+@Serializable
+data class BoardIn(val description: String, val name: String)
 
 class WebApi(private val services: Services) {
     fun postUser(request: Request): Response {
@@ -45,6 +46,21 @@ class WebApi(private val services: Services) {
             Response(OK)
                 .header("content-type","application/json")
                 .body(Json.encodeToString(services.getUserInfo(userId)))
+        }
+    }
+
+    fun createBoard(request: Request): Response {
+        logRequest(request)
+        val boardId = request.path("idBoard")?.toIntOrNull()
+        return if(boardId == null) {
+            Response(BAD_REQUEST)
+                .header("content-type","application/json")
+                .body(Json.encodeToString("Missing parameters!"))
+        } else {
+            val newBoard = Json.decodeFromString<BoardIn>(request.bodyString()) // deserializes
+            Response(OK)
+                .header("content-type","application/json")
+                .body(Json.encodeToString(services.createBoard(newBoard.description, newBoard.name)))
         }
     }
 }
