@@ -37,15 +37,14 @@ interface IData {
      *  Card Functions
      *  ------------------------------**/
 
-    fun createCard(idList: Int, name: String, description: String, endDate: String): Int //check endDate
+    fun createCard(idList: Int, name: String, description: String, endDate: String? = null): Int //check endDate
 
-    fun createCard(idList: Int, name: String, description: String): Int
+    //fun createCard(idList: Int, name: String, description: String): Int
 
-    fun getCardsFromList(idBoard: Int, idList: Int): List<Card>
+    fun getCardsFromList(idList: Int): List<Card>
 
-    fun getCardInfoFromList(idBoard: Int, idList: Int, idCard: Int): Card
+    fun getCardInfo(idCard: Int): Card?
 
-    fun moveCard(idList: Int): Boolean
-
+    fun moveCard(card : Card, idListDst: Int)
 
 }

@@ -8,19 +8,19 @@ import java.util.UUID
 data class User(val idUser: Int, val email: String, val name: String, val token: String)
 
 @Serializable
-data class Board(val idBoard: Int = 0, val name: String, val description: String, val idUsers: MutableList<Int>)
+data class Board(val idBoard: Int, val name: String, val description: String, val idUsers: MutableList<Int>)
 
 @Serializable
-data class BoardList(val idList: Int = 0, val idBoard: Int, val name: String)
+data class BoardList(val idList: Int, val idBoard: Int, val name: String)
 
 @Serializable
 data class Card(
-    val idList: Int,
-    val idCard: Int = 0,
+    val idCard: Int,
+    var idList: Int,
     val name: String,
     val description: String,
     val startDate: String,
-    val endDate: String,
+    val endDate: String?, // if we create a Card without a endDate how are we supposed to change it later?
     val archived: Boolean
 )
 
@@ -30,18 +30,18 @@ val lists = mutableListOf<BoardList>()
 val cards = mutableListOf<Card>()
 
 class DataMem : IData {
-    override fun createUser(name: String, email: String): Pair<String, Int> { //check
+    override fun createUser(name: String, email: String): Pair<String, Int> {
         val token = UUID.randomUUID().toString()
         val newUser = User(getNextId(User::class.java), email, name, token)
         users.add(newUser)
         return Pair(token, newUser.idUser)
     }
 
-    override fun getUserInfo(idUser: Int): User? { //check
+    override fun getUserInfo(idUser: Int): User? {
         return users.find { it.idUser == idUser }
     }
 
-    override fun createBoard(idUser: Int, name: String, description: String): Int { // check
+    override fun createBoard(idUser: Int, name: String, description: String): Int {
         val list = mutableListOf<Int>()
         list.add(idUser) // adds user that created the board.
         val newBoard = Board(getNextId(Board::class.java), name, description, list)
@@ -49,11 +49,11 @@ class DataMem : IData {
         return newBoard.idBoard
     }
 
-    override fun addUserToBoard(idUser: Int, board : Board) { // check
+    override fun addUserToBoard(idUser: Int, board : Board) {
         board.idUsers.add(idUser)
     }
 
-    override fun getBoardsFromUser(idUser: Int): List<Board> { // check
+    override fun getBoardsFromUser(idUser: Int): List<Board> {
         val boardsFromUsers = mutableListOf<Board>()
         boards.forEach { it ->
             if (it.idUsers.find { it == idUser } != null) {
@@ -63,17 +63,17 @@ class DataMem : IData {
         return boardsFromUsers
     }
 
-    override fun getBoardInfo(idBoard: Int): Board? { // check
+    override fun getBoardInfo(idBoard: Int): Board? {
         return boards.find { it.idBoard == idBoard }
     }
 
-    override fun createNewListInBoard(idBoard: Int, name: String): Int { // check
+    override fun createNewListInBoard(idBoard: Int, name: String): Int {
         val newBoardList = BoardList(getNextId(BoardList::class.java), idBoard, name)
         lists.add(newBoardList)
         return newBoardList.idList
     }
 
-    override fun getListsOfBoard(idBoard: Int): List<BoardList> { // check
+    override fun getListsOfBoard(idBoard: Int): List<BoardList> {
         val listsFromBoard = mutableListOf<BoardList>()
         lists.forEach {
             if(it.idBoard == idBoard){
@@ -87,29 +87,34 @@ class DataMem : IData {
         return lists.find { it.idList == idList }
     }
 
-    override fun createCard(idList: Int, name: String, description: String, endDate: String): Int {
-        val newCard = Card(idList, getNextId(Card::class.java), name, description, LocalDate.now().toString(),endDate, false)
+    override fun createCard(idList: Int, name: String, description: String, endDate: String?): Int {
+        val newCard = Card(getNextId(Card::class.java), idList, name, description, LocalDate.now().toString(),endDate, false)
         cards.add(newCard)
         return newCard.idCard
     }
 
-    override fun createCard(idList: Int, name: String, description: String): Int {
+    /*override fun createCard(idList: Int, name: String, description: String): Int {
         val newCard = Card(idList, getNextId(Card::class.java), name, description, LocalDate.now().toString(),"To be defined", false)
         cards.add(newCard)
         return newCard.idCard
-    }
+    }*/
 
-    override fun getCardsFromList(idBoard: Int, idList: Int): List<Card> {
+    override fun getCardsFromList(idList: Int): List<Card> {
         val cardList = mutableListOf<Card>()
-        cards.forEach {  }
+        cards.forEach {
+            if(it.idList == idList){
+                cardList.add(it)
+            }
+        }
+        return cardList
     }
 
-    override fun getCardInfoFromList(idBoard: Int, idList: Int, idCard: Int): Card {
-        TODO("Not yet implemented")
+    override fun getCardInfo(idCard: Int): Card? {
+        return cards.find { it.idCard == idCard }
     }
 
-    override fun moveCard(idList: Int): Boolean {
-        TODO("Not yet implemented")
+    override fun moveCard(card: Card,idListDst: Int){
+        card.idList = idListDst
     }
 
 }
