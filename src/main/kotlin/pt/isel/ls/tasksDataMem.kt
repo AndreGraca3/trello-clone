@@ -41,6 +41,10 @@ class DataMem : IData {
         return users.find { it.idUser == idUser }
     }
 
+    override fun getUserByEmail(email: String): Int? {
+        return users.find { it.email == email }?.idUser
+    }
+
     override fun createBoard(idUser: Int, name: String, description: String): Int {
         val list = mutableListOf<Int>()
         list.add(idUser) // adds user that created the board.
@@ -51,6 +55,10 @@ class DataMem : IData {
 
     override fun addUserToBoard(idUser: Int, board : Board) {
         board.idUsers.add(idUser)
+    }
+
+    override fun getBoardByName(name: String): Board? {
+        return boards.find { it.name == name }
     }
 
     override fun getBoardsFromUser(idUser: Int): List<Board> {

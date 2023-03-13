@@ -11,6 +11,8 @@ interface IData {
     fun createUser(name: String, email: String): Pair<String, Int>
     fun getUserInfo(idUser: Int): User?
 
+    fun getUserByEmail(email: String) : Int?
+
     /** ----------------------------
      *  Board Functions
      *  ------------------------------**/
@@ -18,6 +20,8 @@ interface IData {
     fun createBoard(idUser: Int, name: String, description: String): Int
 
     fun addUserToBoard(idUser: Int, board: Board)
+
+    fun getBoardByName(name : String) : Board?
 
     fun getBoardsFromUser(idUser: Int): List<Board>
 

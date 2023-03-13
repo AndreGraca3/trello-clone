@@ -3,11 +3,8 @@ package pt.isel.ls
 import java.time.LocalDate
 
 class Services(private val data: IData) {
-    fun getUserByEmail(email: String) : Int? { //check return type
-        TODO()
-    }
     fun createUser(name: String, email: String): Pair<String, Int> {
-        getUserByEmail(email) ?: throw ServiceException.UserCreationException(name, email)
+        if(data.getUserByEmail(email) != null) throw ServiceException.UserCreationException(email)
         return data.createUser(name, email)
     }
 
@@ -16,17 +13,20 @@ class Services(private val data: IData) {
     }
 
     fun createBoard(idUser: Int, name: String, description: String): Int {
-        data.getUserInfo(idUser) ?: throw ServiceException.BoardCreationException(idUser, name)
+        getUserInfo(idUser)
+        data.getBoardByName(name) ?: throw ServiceException.BoardDuplicateNameException(name)
         return data.createBoard(idUser, name, description)
     }
 
-    fun addUserToBoard(idUser: Int, idBoard: Int) { //check if return type is boolean or unit
+    fun addUserToBoard(idUser: Int, idBoard: Int) {
+        getUserInfo(idUser)
         val board = getBoardInfo(idBoard)
-        return data.addUserToBoard(idUser, board) ?: throw ServiceException.BoardNotFoundException(idBoard)
+        return data.addUserToBoard(idUser, board)
     }
 
     fun getBoardsFromUser(idUser: Int): List<Board> {
-        return data.getBoardsFromUser(idUser) ?: throw ServiceException.UserBoardsException(idUser)
+        getUserInfo(idUser)
+        return data.getBoardsFromUser(idUser)
     }
 
     fun getBoardInfo(idBoard: Int): Board {
@@ -34,11 +34,13 @@ class Services(private val data: IData) {
     }
 
     fun createNewListInBoard(idBoard: Int, name: String): Int {
-        return data.createNewListInBoard(idBoard, name) ?: throw ServiceException.ListCreationOnBoardException(idBoard, name)
+        getBoardInfo(idBoard)
+        return data.createNewListInBoard(idBoard, name)
     }
 
     fun getListsOfBoard(idBoard: Int): List<BoardList> {
-        return data.getListsOfBoard(idBoard) ?: throw ServiceException.BoardListsException(idBoard)
+        getBoardInfo(idBoard)
+        return data.getListsOfBoard(idBoard)
     }
 
     fun getListInfo(idList: Int): BoardList {
@@ -46,23 +48,33 @@ class Services(private val data: IData) {
     }
 
     fun createCard(idList: Int, name: String, description: String, endDate: String): Int {
-        return data.createCard(idList, name, description, endDate) ?: throw ServiceException.CardCreationDateException(idList, endDate)
+        getListInfo(idList)
+        checkEndDate(endDate)
+        return data.createCard(idList, name, description, endDate)
+    }
+
+    private fun checkEndDate(endDate: String) {
+        val endDateParsed = LocalDate.parse(endDate) // format =
+        println(endDateParsed)
+        if(endDateParsed < LocalDate.now()) throw ServiceException.CardCreationDateException(endDate)
     }
 
     fun createCard(idList: Int, name: String, description: String): Int {
-        return data.createCard(idList, name, description) ?: throw ServiceException.CardCreationException(idList, name)
+        getListInfo(idList)
+        return data.createCard(idList, name, description)
     }
 
-    fun getCardsFromList(idBoard: Int, idList: Int): List<Card> {
-        return data.getCardsFromList(idBoard, idList) ?: throw ServiceException.CardListException(idBoard, idList)
+    fun getCardsFromList(idList: Int): List<Card> {
+        getListInfo(idList)
+        return data.getCardsFromList(idList)
     }
 
-    fun getCardInfoFromList(idBoard: Int, idList: Int, idCard: Int): Card {
-        return data.getCardInfoFromList(idBoard, idList, idCard)
-            ?: throw ServiceException.CardNotFoundException(idBoard, idList, idCard)
+    fun getCardInfo(idCard: Int): Card {
+        return data.getCardInfo(idCard) ?: throw ServiceException.CardNotFoundException(idCard)
     }
 
-    fun moveCard(idList: Int): Boolean {
-        return data.moveCard(idList) ?: throw ServiceException.MoveCardException(idList)
+    fun moveCard(idCard:Int, idList: Int) {
+        val card = getCardInfo(idCard)
+        return data.moveCard(card,idList)
     }
 }
