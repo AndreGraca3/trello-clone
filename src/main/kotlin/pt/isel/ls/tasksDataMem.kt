@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Serializable
-data class User(val idUser: Int, val email: String, val name: String, val token: String)
+data class User(val idUser: Int=0, val email: String, val name: String, val token: String = "")
 
 @Serializable
 data class Board(val idUser: Int, val idBoard: Int, val description: String, val name: String)
@@ -31,7 +31,7 @@ val cards = mutableListOf<Card>()
 class DataMem : IData {
     override fun createUser(name: String, email: String): Pair<String, Int> {
         val token = UUID.randomUUID().toString()
-        val newUser = User(getNextId(User), email, name, token)
+        val newUser = User(getNextId(User::class.java), email, name, token)
         users.add(newUser)
         println(users)
         return Pair(token, newUser.idUser)
@@ -91,13 +91,15 @@ class DataMem : IData {
 
 }
 
-fun getNextId(obj: Any): Int {
-    val nextId = when (obj::class.simpleName) {
-        User.toString() -> if (users.isNotEmpty()) users.last().idUser + 1 else 0
-        Board.toString() -> if (boards.isNotEmpty()) boards.last().idBoard + 1 else 0
-        BoardList.toString() -> if (boardList.isNotEmpty()) boardList.last().idList else 0
-        Card.toString() -> if (cards.isNotEmpty()) cards.last().idCard else 0
-        else -> error("Unknown object type: ${obj::class.simpleName}")
+fun getNextId(clazz: Class<*>): Int {
+    //println(clazz.simpleName)
+    //println(User::class.simpleName)
+    val nextId = when (clazz.simpleName) {
+        User::class.simpleName -> if (users.isNotEmpty()) users.last().idUser.inc() else 0
+        Board::class.simpleName -> if (boards.isNotEmpty()) boards.last().idBoard.inc() else 0
+        BoardList::class.simpleName -> if (boardList.isNotEmpty()) boardList.last().idList.inc() else 0
+        Card::class.simpleName -> if (cards.isNotEmpty()) cards.last().idCard.inc() else 0
+        else -> error("Unknown object type: ${clazz.toString()::class.simpleName}")
     }
     return nextId
 }
