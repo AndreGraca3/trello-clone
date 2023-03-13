@@ -1,6 +1,6 @@
 package pt.isel.ls
 
-class Services(private val dataMem: DataMem) {
+class Services(private val dataMem: IData) {
 
     fun createUser(name : String, email : String) : User {
         val newUser = dataMem.createUser(name,email)

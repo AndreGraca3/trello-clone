@@ -17,7 +17,7 @@ fun main(){
 
     val userRoutes = routes(
         "user" bind POST to webApi::postUser,
-        "user" bind GET to webApi::getUserDetails
+        "user/{idUser}" bind GET to webApi::getUserDetails
     )
 
     val app = routes(
