@@ -49,5 +49,8 @@ sealed class ServiceException(message: String) : Exception(message) {
     class MoveCardException(idList: Int) :
         ServiceException("Error moving card in list with id $idList.")
 
+    class UserNotFoundWithTokenException(token: String) :
+        ServiceException("User not found with token=$token")
+
 }
 

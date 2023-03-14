@@ -17,6 +17,8 @@ interface IData {
 
     fun getUserByEmail(email: String) : Int?
 
+    fun getIdUserByToken(token: String): Int?
+
     /** ----------------------------
      *  Board Functions
      *  ------------------------------**/

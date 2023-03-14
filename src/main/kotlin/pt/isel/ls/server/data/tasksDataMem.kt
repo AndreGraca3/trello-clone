@@ -28,6 +28,10 @@ class DataMem : IData {
         return users.find { it.email == email }?.idUser
     }
 
+    override fun getIdUserByToken(token: String): Int?{
+        return users.find{ it.token == token }?.idUser
+    }
+
     override fun createBoard(idUser: Int, name: String, description: String): Int {
         val newBoard = Board(getNextId(Board::class.java), name, description, mutableListOf<Int>())
         addUserToBoard(idUser, newBoard)

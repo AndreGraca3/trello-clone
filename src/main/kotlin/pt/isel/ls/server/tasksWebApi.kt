@@ -13,10 +13,7 @@ import org.http4k.core.Status.Companion.OK
 import org.http4k.core.Status.Companion.UNAUTHORIZED
 import org.http4k.routing.path
 import org.slf4j.LoggerFactory
-import pt.isel.ls.Board
-import pt.isel.ls.BoardIn
-import pt.isel.ls.UserIn
-import pt.isel.ls.UserOut
+import pt.isel.ls.*
 
 val logger = LoggerFactory.getLogger("pt.isel.ls.http.HTTPServer")
 
@@ -45,17 +42,16 @@ class WebApi(private val services: Services) {
     }
 
     fun createBoard(request: Request): Response {
-        TODO()
-    /*    logRequest(request)
+        logRequest(request)
         return try {
             val token = request.header("token")
             if(token == null) createRsp(UNAUTHORIZED, "Invalid Token!")
             val newBoard = Json.decodeFromString<BoardIn>(request.bodyString())
-            val idUser = services.getUserByToken()
-            createRsp(CREATED, services.createBoard(idUser, newBoard.name, newBoard.description))
+            val idUser = services.getIdUserByToken(token!!)
+            createRsp(CREATED, BoardOut(services.createBoard(idUser, newBoard.name, newBoard.description)))
         } catch(e: Exception) {
             createRsp(NOT_FOUND, e.message)
-        }*/
+        }
     }
 }
 

@@ -19,6 +19,10 @@ class Services(private val data: IData) {
         return data.getUserInfo(idUser) ?: throw ServiceException.UserNotFoundException(idUser)
     }
 
+    fun getIdUserByToken(token: String): Int {
+        return data.getIdUserByToken(token) ?: throw ServiceException.UserNotFoundWithTokenException(token) //created new exception
+    }
+
     fun createBoard(idUser: Int, name: String, description: String): Int {
         getUserInfo(idUser)
         data.getBoardByName(name) ?: throw ServiceException.BoardDuplicateNameException(name)
