@@ -1,5 +1,9 @@
-package pt.isel.ls
+package pt.isel.ls.server.data
 
+import pt.isel.ls.Board
+import pt.isel.ls.BoardList
+import pt.isel.ls.Card
+import pt.isel.ls.User
 import kotlin.collections.*
 
 interface IData {
@@ -8,7 +12,7 @@ interface IData {
      *  User Functions
      *  ------------------------------**/
 
-    fun createUser(name: String, email: String): Pair<String, Int>
+    fun createUser(name: String, email: String): Pair<Int, String>
     fun getUserInfo(idUser: Int): User?
 
     fun getUserByEmail(email: String) : Int?

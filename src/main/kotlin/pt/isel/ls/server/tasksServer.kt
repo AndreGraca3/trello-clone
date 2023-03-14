@@ -1,13 +1,13 @@
-package pt.isel.ls
+package pt.isel.ls.server
 
-import kotlinx.datetime.Clock
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
 import org.http4k.routing.bind
-import org.http4k.routing.path
 import org.http4k.routing.routes
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
+import pt.isel.ls.server.data.DataMem
+import java.time.LocalDate
 
 
 fun main(){
@@ -17,8 +17,8 @@ fun main(){
 
     val userRoutes = routes(
         "user" bind POST to webApi::postUser,
-        "user/{idUser}" bind GET to webApi::getUserDetails
-        //"board" bind POST to webApi::createBoard
+        "user/{idUser}" bind GET to webApi::getUserDetails,
+        "board" bind POST to webApi::createBoard
     )
 
     val app = routes(

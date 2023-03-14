@@ -1,28 +1,11 @@
-package pt.isel.ls
+package pt.isel.ls.server.data
 
-import kotlinx.serialization.Serializable
+import pt.isel.ls.Board
+import pt.isel.ls.BoardList
+import pt.isel.ls.Card
+import pt.isel.ls.User
 import java.time.LocalDate
 import java.util.UUID
-
-@Serializable
-data class User(val idUser: Int, val email: String, val name: String, val token: String)
-
-@Serializable
-data class Board(val idBoard: Int, val name: String, val description: String, val idUsers: MutableList<Int>)
-
-@Serializable
-data class BoardList(val idList: Int, val idBoard: Int, val name: String)
-
-@Serializable
-data class Card(
-    val idCard: Int,
-    var idList: Int,
-    val name: String,
-    val description: String,
-    val startDate: String,
-    val endDate: String?, // if we create a Card without a endDate how are we supposed to change it later?
-    val archived: Boolean
-)
 
 val users = mutableListOf<User>()
 val boards = mutableListOf<Board>()
@@ -30,11 +13,11 @@ val lists = mutableListOf<BoardList>()
 val cards = mutableListOf<Card>()
 
 class DataMem : IData {
-    override fun createUser(name: String, email: String): Pair<String, Int> {
+    override fun createUser(name: String, email: String): Pair<Int, String> {
         val token = UUID.randomUUID().toString()
         val newUser = User(getNextId(User::class.java), email, name, token)
         users.add(newUser)
-        return Pair(token, newUser.idUser)
+        return Pair(newUser.idUser, token)
     }
 
     override fun getUserInfo(idUser: Int): User? {
@@ -46,14 +29,13 @@ class DataMem : IData {
     }
 
     override fun createBoard(idUser: Int, name: String, description: String): Int {
-        val list = mutableListOf<Int>()
-        list.add(idUser) // adds user that created the board.
-        val newBoard = Board(getNextId(Board::class.java), name, description, list)
+        val newBoard = Board(getNextId(Board::class.java), name, description, mutableListOf<Int>())
+        addUserToBoard(idUser, newBoard)
         boards.add(newBoard)
         return newBoard.idBoard
     }
 
-    override fun addUserToBoard(idUser: Int, board : Board) {
+    override fun addUserToBoard(idUser: Int, board: Board) {
         board.idUsers.add(idUser)
     }
 
@@ -62,13 +44,7 @@ class DataMem : IData {
     }
 
     override fun getBoardsFromUser(idUser: Int): List<Board> {
-        val boardsFromUsers = mutableListOf<Board>()
-        boards.forEach { it ->
-            if (it.idUsers.find { it == idUser } != null) {
-                    boardsFromUsers.add(it)
-            }
-        }
-        return boardsFromUsers
+        return boards.filter { it.idUsers.any { id -> id == idUser } }
     }
 
     override fun getBoardInfo(idBoard: Int): Board? {
@@ -82,13 +58,7 @@ class DataMem : IData {
     }
 
     override fun getListsOfBoard(idBoard: Int): List<BoardList> {
-        val listsFromBoard = mutableListOf<BoardList>()
-        lists.forEach {
-            if(it.idBoard == idBoard){
-                listsFromBoard.add(it)
-            }
-        }
-        return listsFromBoard
+        return lists.filter { it.idBoard == idBoard }
     }
 
     override fun getListInfo(idList: Int): BoardList? {
@@ -101,30 +71,17 @@ class DataMem : IData {
         return newCard.idCard
     }
 
-    /*override fun createCard(idList: Int, name: String, description: String): Int {
-        val newCard = Card(idList, getNextId(Card::class.java), name, description, LocalDate.now().toString(),"To be defined", false)
-        cards.add(newCard)
-        return newCard.idCard
-    }*/
-
     override fun getCardsFromList(idList: Int): List<Card> {
-        val cardList = mutableListOf<Card>()
-        cards.forEach {
-            if(it.idList == idList){
-                cardList.add(it)
-            }
-        }
-        return cardList
+        return cards.filter { it.idList == idList }
     }
 
     override fun getCardInfo(idCard: Int): Card? {
         return cards.find { it.idCard == idCard }
     }
 
-    override fun moveCard(card: Card,idListDst: Int){
+    override fun moveCard(card: Card, idListDst: Int) {
         card.idList = idListDst
     }
-
 }
 
 fun getNextId(clazz: Class<*>): Int {

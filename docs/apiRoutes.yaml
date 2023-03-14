@@ -16,21 +16,21 @@ paths:
     post:
       summary: user account creation
       operationId: signIn
-      description: 
+      description:
         creates a user and returns a user's identifier and a token.
       tags:
-      - User
+        - User
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: body
-        name: name and email
-        description: user's name and email.
-        required: true
-        schema:
-          $ref: '#/definitions/newUser'
+        - in: body
+          name: name and email
+          description: user's name and email.
+          required: true
+          schema:
+            $ref: '#/definitions/newUser'
       responses:
         201:
           description: user created.
@@ -43,15 +43,22 @@ paths:
         500:
           description: internal server error.
 
+  /User/{idUser}:
     get:
       summary: get details of a user
       operationId: getDetails
-      description: 
+      description:
         gets the details of a given user # que parametros devo receber para saber qual utilizador devo ir busca.
       tags:
-      - User
+        - User
       produces:
-      - application/json
+        - application/json
+      parameters:
+        - in: path
+          name: idUser
+          type: integer
+          description: ID of user to be fetched.
+          required: true
       responses:
         200:
           description: search results matching criteria
@@ -66,26 +73,26 @@ paths:
     post:
       summary: board creation
       operationId: board
-      description: 
+      description:
         creates a new board and returns a identifier for that board.
       tags:
-      - Board
+        - Board
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: header
-        name: token
-        type: string
-        description: token of the correspoding user.
-        required: true
-      - in: body
-        name: name and description
-        description: board's name and description.
-        required: true
-        schema:
-          $ref: '#/definitions/newBoard'
+        - in: header
+          name: token
+          type: string
+          description: token of the correspoding user.
+          required: true
+        - in: body
+          name: name and description
+          description: board's name and description.
+          required: true
+          schema:
+            $ref: '#/definitions/newBoard'
       responses:
         201:
           description: board created.
@@ -99,61 +106,61 @@ paths:
           description: board already exists.
         500:
           description: internal server error.
-  
+
     put:
       summary: add a user to a board.
       operationId: AddUserBoard
       description:
         add a user to an existing board.
       tags:
-      - Board
+        - Board
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: header
-        name: token
-        type: string
-        description: token of the correspoding user.
-        required: true
-      - in: query
-        name: boardId
-        type: integer
-      - in: query
-        name: userId
-        type: integer
+        - in: header
+          name: token
+          type: string
+          description: token of the correspoding user.
+          required: true
+        - in: query
+          name: boardId
+          type: integer
+        - in: query
+          name: userId
+          type: integer
       responses:
         201:
           description: user added.
         400:
           description: invalid user or board identifier.
         401:
-          description: invalid token.  
+          description: invalid token.
         404:
           description: board not found. # or user not found.
         500:
           description: internal server error.
-  
+
     get:
       summary: get details from a board.
       operationId: getDetailsBoard
-      description: 
+      description:
         Get the detailed information of a board.
       tags:
-      - Board
+        - Board
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: header
-        name: token
-        type: string
-        description: token of the correspoding user.
-        required: true
-      - in: query
-        name: boardId
-        type: integer
-        required: true
+        - in: header
+          name: token
+          type: string
+          description: token of the correspoding user.
+          required: true
+        - in: query
+          name: boardId
+          type: integer
+          required: true
       responses:
         200:
           description: search results matching criteria.
@@ -175,19 +182,19 @@ paths:
       description:
         Get the list with all user available boards.
       tags:
-      - Board
+        - Board
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: header
-        name: token
-        type: string
-        description: token of the correspoding user.
-        required: true
-      - in: query
-        name: userId
-        type: integer
-        required: true
+        - in: header
+          name: token
+          type: string
+          description: token of the correspoding user.
+          required: true
+        - in: query
+          name: userId
+          type: integer
+          required: true
       responses:
         200:
           description: search results matching criteria.
@@ -197,20 +204,20 @@ paths:
           description: invalid token.
         500:
           description: internal server error.
-          
+
   /Board/List:
-      put:
-        summary: create a list in a board.
-        operationId: createList
-        description:
-          Creates a new list on an existing board.
-        tags:
+    put:
+      summary: create a list in a board.
+      operationId: createList
+      description:
+        Creates a new list on an existing board.
+      tags:
         - List
-        consumes:
+      consumes:
         - application/json
-        produces:
+      produces:
         - application/json
-        parameters:
+      parameters:
         - in: header
           name: token
           type: string
@@ -224,30 +231,30 @@ paths:
           name: boardId
           type: integer
           required: true
-        responses:
-          201:
-            description: list created.
-            schema:
-              $ref: '#/definitions/listReturn'
-          400:
-            description: invalid board identifier or name.
-          401:
-            description: invalid token.
-          404:
-            description: board not found.
-          500:
-            description: internal server error.
-            
-      get:
-        summary: get details of a list.
-        operationId: getDetalisList
-        description:
-          Get detailed information of a list.
-        tags:
+      responses:
+        201:
+          description: list created.
+          schema:
+            $ref: '#/definitions/listReturn'
+        400:
+          description: invalid board identifier or name.
+        401:
+          description: invalid token.
+        404:
+          description: board not found.
+        500:
+          description: internal server error.
+
+    get:
+      summary: get details of a list.
+      operationId: getDetalisList
+      description:
+        Get detailed information of a list.
+      tags:
         - List
-        produces:
+      produces:
         - application/json
-        parameters:
+      parameters:
         - in: header
           name: token
           type: string
@@ -261,31 +268,31 @@ paths:
           name: name # name of list
           type: string
           required: true
-        responses:
-          200:
-            description: search results matching criteria.
-            schema:
-              $ref: '#/definitions/list'
-          400:
-            description: invalid board identifier or name.
-          401:
-            description: invalid token.
-          404:
-            description: list not found or board not found.
-          500:
-            description: internal server error.
-          
-  /Board/AllList:   
-      get:
-        summary: gets all list of a board.
-        operationId: getLists
-        description: 
-          Get the lists of a board.
-        tags:
+      responses:
+        200:
+          description: search results matching criteria.
+          schema:
+            $ref: '#/definitions/list'
+        400:
+          description: invalid board identifier or name.
+        401:
+          description: invalid token.
+        404:
+          description: list not found or board not found.
+        500:
+          description: internal server error.
+
+  /Board/AllList:
+    get:
+      summary: gets all list of a board.
+      operationId: getLists
+      description:
+        Get the lists of a board.
+      tags:
         - List
-        produces:
+      produces:
         - application/json
-        parameters:
+      parameters:
         - in: header
           name: token
           type: string
@@ -295,20 +302,20 @@ paths:
           name: boardId
           type: integer
           required: true
-        responses:
-          200:
-            description: lists of a board.
-            schema:
-              $ref: '#/definitions/lists'
-          400:
-            description: invalid board identifier.
-          401:
-            description: invalid token.
-          404:
-            description: board not found.
-          500:
-            description: internal server error.
-            
+      responses:
+        200:
+          description: lists of a board.
+          schema:
+            $ref: '#/definitions/lists'
+        400:
+          description: invalid board identifier.
+        401:
+          description: invalid token.
+        404:
+          description: board not found.
+        500:
+          description: internal server error.
+
   /Board/List/card:
     post:
       summary: create a card in a list.
@@ -316,30 +323,30 @@ paths:
       description:
         Creates a new card in a list.
       tags:
-      - Card
+        - Card
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: header
-        name: token
-        type: string
-        description: token of the correspoding user.
-        required: true
-      - in: query
-        name: boardId
-        type: integer
-        required: true
-      - in: query
-        name: listId
-        type: integer
-        required: true
-      - in: body
-        name: card
-        required: true
-        schema:
-          $ref: '#/definitions/card'
+        - in: header
+          name: token
+          type: string
+          description: token of the correspoding user.
+          required: true
+        - in: query
+          name: boardId
+          type: integer
+          required: true
+        - in: query
+          name: listId
+          type: integer
+          required: true
+        - in: body
+          name: card
+          required: true
+          schema:
+            $ref: '#/definitions/card'
       responses:
         201:
           description: card created.
@@ -353,57 +360,57 @@ paths:
           description: list or board not found.
         500:
           description: internal server error.
-          
+
     get:
       summary: get a card in a list.
       operationId: getCard
       description:
         Get the detailed information of a card.
       tags:
-      - Card
+        - Card
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: header
-        name: token
-        type: string
-        description: token of the correspoding user.
-        required: true
-      - in: query
-        name: boardId
-        type: integer
-        required: true
-      - in: query
-        name: listId
-        type: integer
-        required: true
-      - in: query
-        name: cardId
-        type: integer
-        required: true
+        - in: header
+          name: token
+          type: string
+          description: token of the correspoding user.
+          required: true
+        - in: query
+          name: boardId
+          type: integer
+          required: true
+        - in: query
+          name: listId
+          type: integer
+          required: true
+        - in: query
+          name: cardId
+          type: integer
+          required: true
       responses:
         200:
           description: search results matching criteria.
         400:
           description: invalid list or card identifier.
         401:
-          description: invalid token.  
+          description: invalid token.
         404:
           description: board, list or card not found.
         500:
           description: internal server error.
-          
+
     put:
       summary: update a card.
       operationId: updateCard
       description:
         Moves a card.
       tags:
-      - Card
+        - Card
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
+        - application/json
       parameters:
         - in: header
           name: token
@@ -429,7 +436,7 @@ paths:
           description: board, list or card not found.
         500:
           description: internal server error.
-            
+
   /Board/List/allCards:
     get:
       summary: get all cards in a list.
@@ -437,40 +444,40 @@ paths:
       description:
         Get the set of cards in a list.
       tags:
-      - Card
+        - Card
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: header
-        name: token
-        type: string
-        description: token of the correspoding user.
-        required: true
-      - in: query
-        name: listId
-        type: integer
-        required: true
-      - in: query
-        name: boardId
-        type: integer
-        required: true
+        - in: header
+          name: token
+          type: string
+          description: token of the correspoding user.
+          required: true
+        - in: query
+          name: listId
+          type: integer
+          required: true
+        - in: query
+          name: boardId
+          type: integer
+          required: true
       responses:
         200:
           description: search results matching criteria.
         400:
           description: invalid list or board identifier.
         401:
-          description: invalid token.  
+          description: invalid token.
         500:
           description: internal server error.
-    
-        
+
+
 definitions:
   newUser:
     type: object
     required:
-    - name
-    - email
+      - name
+      - email
     properties:
       name:
         type: string
@@ -478,12 +485,12 @@ definitions:
       email:
         type: string
         example : "users123@email.com"
-        
+
   userReturn:
     type: object
     required:
-    - identifier
-    - token
+      - identifier
+      - token
     properties:
       identifier:
         type: integer
@@ -491,12 +498,12 @@ definitions:
       token:
         type: string
         example: "36b8f84d-df4e-4d49-b662-bcde71a8764f"
-        
+
   newBoard:
     type: object
     required:
-    - name
-    - description
+      - name
+      - description
     properties:
       name:
         type: string
@@ -508,16 +515,16 @@ definitions:
   boardReturn:
     type: object
     required:
-    - board identifier
+      - board identifier
     properties:
       board identifier:
-       type: integer
-       example: 1
+        type: integer
+        example: 1
 
   listReturn:
     type: object
     required:
-    - list identifier
+      - list identifier
     properties:
       list identifier:
         type: integer
@@ -525,8 +532,8 @@ definitions:
   
   list:
     type: object
-    required: 
-    - list name
+    required:
+      - list name
     properties:
       list name:
         type: string
@@ -537,12 +544,12 @@ definitions:
     items:
       type: object
       example: ["name" : "to do","name" : "doing", "name" : "done"]
-      
+
   card:
     type: object
     required:
-    - name
-    - description
+      - name
+      - description
     properties:
       name:
         type: string
@@ -553,13 +560,12 @@ definitions:
       dueDate:
         type: string
         example: "11-03-2022"
-    
+
   cardReturn:
     type: object
     required:
-    - card identifier
+      - card identifier
     properties:
       card identifier:
         type: integer
         example: 1
-      

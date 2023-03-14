@@ -1,9 +1,16 @@
-package pt.isel.ls
+package pt.isel.ls.server
 
+import pt.isel.ls.Board
+import pt.isel.ls.BoardList
+import pt.isel.ls.Card
+import pt.isel.ls.User
+import pt.isel.ls.server.data.*
+import pt.isel.ls.server.exceptions.ServiceException
 import java.time.LocalDate
 
 class Services(private val data: IData) {
-    fun createUser(name: String, email: String): Pair<String, Int> {
+    fun createUser(name: String, email: String): Pair<Int, String> {
+        if(!Regex("@").containsMatchIn(email)) throw ServiceException.InvalidEmailException(email)
         if(data.getUserByEmail(email) != null) throw ServiceException.UserCreationException(email)
         return data.createUser(name, email)
     }
@@ -21,7 +28,7 @@ class Services(private val data: IData) {
     fun addUserToBoard(idUser: Int, idBoard: Int) {
         getUserInfo(idUser)
         val board = getBoardInfo(idBoard)
-        return data.addUserToBoard(idUser, board)
+        data.addUserToBoard(idUser, board)
     }
 
     fun getBoardsFromUser(idUser: Int): List<Board> {
@@ -54,8 +61,7 @@ class Services(private val data: IData) {
     }
 
     private fun checkEndDate(endDate: String) {
-        val endDateParsed = LocalDate.parse(endDate) // format =
-        println(endDateParsed)
+        val endDateParsed = LocalDate.parse(endDate) // 2023-03-14
         if(endDateParsed < LocalDate.now()) throw ServiceException.CardCreationDateException(endDate)
     }
 
