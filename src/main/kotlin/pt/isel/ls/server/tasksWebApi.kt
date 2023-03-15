@@ -8,12 +8,12 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.core.Status.Companion.CREATED
-import org.http4k.core.Status.Companion.NOT_FOUND
 import org.http4k.core.Status.Companion.OK
 import org.http4k.core.Status.Companion.UNAUTHORIZED
 import org.http4k.routing.path
 import org.slf4j.LoggerFactory
 import pt.isel.ls.*
+import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.exceptions.WebApiException
 
 val logger = LoggerFactory.getLogger("pt.isel.ls.http.HTTPServer")
@@ -21,38 +21,36 @@ val logger = LoggerFactory.getLogger("pt.isel.ls.http.HTTPServer")
 class WebApi(private val services: Services) {
 
     fun postUser(request: Request): Response {
-        logRequest(request)
-        return try {
-            val newUser = Json.decodeFromString<UserIn>(request.bodyString()) // deserializes
-            val createdUser = services.createUser(newUser.name, newUser.email)
-            createRsp(OK, UserOut(createdUser.first, createdUser.second))
-        } catch (e: Exception) {
-            createRsp(BAD_REQUEST, e.message)
-        }
+        return handleRequest(request, ::postUserInternal)
     }
 
     fun getUserDetails(request: Request): Response {
-        logRequest(request)
-        return try {
-            val userId = request.path("idUser")?.toIntOrNull()
-            if (userId != null) createRsp(OK, services.getUserInfo(userId))
-            else createRsp(BAD_REQUEST, "Invalid parameters!")
-        } catch (e: Exception) {
-            createRsp(NOT_FOUND, e.message)
-        }
+        return handleRequest(request, ::getUserDetailsInternal)
     }
 
     fun createBoard(request: Request): Response {
-        logRequest(request)
-        return try {
+        return handleRequest(request, ::createBoardInternal)
+    }
+
+
+    private fun postUserInternal(request: Request): Response {
+        val newUser = Json.decodeFromString<UserIn>(request.bodyString()) // deserializes
+        val createdUser = services.createUser(newUser.name, newUser.email)
+        return createRsp(OK, UserOut(createdUser.first, createdUser.second))
+    }
+
+    private fun getUserDetailsInternal(request: Request): Response {
+        val userId = request.path("idUser")?.toIntOrNull()
+        return if (userId != null) createRsp(OK, services.getUserInfo(userId))
+        else createRsp(BAD_REQUEST, "Invalid parameters!")
+    }
+
+    private fun createBoardInternal(request: Request): Response {
             val authHeader = request.header("Authorization") ?: return createRsp(UNAUTHORIZED, "Invalid Token!")
             val token = authHeader.removePrefix("Bearer ")
             val newBoard = Json.decodeFromString<BoardIn>(request.bodyString())
             val idUser = services.getIdUserByToken(token)
-            createRsp(CREATED, BoardOut(services.createBoard(idUser, newBoard.name, newBoard.description)))
-        } catch (e: Exception) {
-            createRsp(NOT_FOUND, e.message)
-        }
+            return createRsp(CREATED, BoardOut(services.createBoard(idUser, newBoard.name, newBoard.description)))
     }
 
     fun getBoardInfo(request: Request): Response {
@@ -93,10 +91,19 @@ class WebApi(private val services: Services) {
             createRsp(NOT_FOUND, e.message)
         }
     }
-
 }
 
 //Aux Functions
+
+private fun handleRequest(request: Request, handler: (Request) -> Response):Response {
+    logRequest(request)
+    return try {
+        handler(request)
+    } catch (e: TrelloException) {
+        createRsp(e.status, e.message)
+    }
+}
+
 private inline fun <reified T> createRsp(status: Status, body: T): Response {
     return Response(status)
         .header("content-type", "application/json")
