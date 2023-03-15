@@ -43,7 +43,7 @@ interface IData {
 
     fun getListsOfBoard(idBoard: Int): List<BoardList>
 
-    fun getListInfo(idList: Int): BoardList?
+    fun getListInfo(idBoard: Int, idList: Int): BoardList?
 
     /** ----------------------------
      *  Card Functions

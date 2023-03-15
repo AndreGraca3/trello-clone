@@ -19,11 +19,11 @@ data class BoardOut(val idBoard: Int)
 @Serializable
 data class BoardList(val idList: Int, val idBoard: Int, val name: String)
 
-//@Serializable
-//data class BoardListIn()
+@Serializable
+data class BoardListIn(val name : String, val idBoard : Int) // não é necessário se os parametros vierem na path.
 
-//@Serializable
-//data class BoardListOut()
+@Serializable
+data class BoardListOut(val idList : Int)
 
 @Serializable
 data class Card(
@@ -35,3 +35,9 @@ data class Card(
     val endDate: String?, // if we create a Card without a endDate how are we supposed to change it later?
     var archived: Boolean
 )
+
+@Serializable
+data class CardInt(val idCard : Int) // TODO()
+
+@Serializable
+data class CardOut(val name : String) // TODO()

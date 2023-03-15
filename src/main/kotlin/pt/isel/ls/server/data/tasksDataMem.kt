@@ -68,8 +68,8 @@ class DataMem : IData {
         return lists.filter { it.idBoard == idBoard }
     }
 
-    override fun getListInfo(idList: Int): BoardList? {
-        return lists.find { it.idList == idList }
+    override fun getListInfo(idBoard: Int, idList: Int): BoardList? {
+        return lists.find { it.idBoard == idBoard && it.idList == idList }
     }
 
     override fun createCard(idList: Int, name: String, description: String, endDate: String?): Int {

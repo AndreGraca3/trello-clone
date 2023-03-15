@@ -64,14 +64,8 @@ class Services(private val data: IData) {
         return data.getListsOfBoard(idBoard)
     }
 
-    fun getListInfo(idList: Int): BoardList {
-        return data.getListInfo(idList) ?: throw TrelloException.NotFoundException(BoardList::class.java.simpleName,idList)
-    }
-
-    fun createCard(idList: Int, name: String, description: String, endDate: String): Int {
-        getListInfo(idList)
-        checkEndDate(endDate)
-        return data.createCard(idList, name, description, endDate)
+    fun getListInfo(idBoard: Int, idList: Int): BoardList {
+        return data.getListInfo(idBoard,idList) ?: throw TrelloException.NotFoundException(BoardList::class.java.simpleName,idList)
     }
 
     private fun checkEndDate(endDate: String) {
@@ -79,13 +73,17 @@ class Services(private val data: IData) {
         if(endDateParsed < LocalDate.now()) throw TrelloException.IllegalArgumentException(endDate)
     }
 
-    fun createCard(idList: Int, name: String, description: String): Int {
-        getListInfo(idList)
-        return data.createCard(idList, name, description)
+    fun createCard(idBoard: Int,idList: Int, name: String, description: String, endDate : String): Int {
+        val list = data.getListInfo(idBoard,idList)
+        if(list != null){
+            checkEndDate(endDate)
+            return data.createCard(idList, name, description, endDate)
+        }
+            throw TrelloException.NotFoundException("List",idList)
     }
 
-    fun getCardsFromList(idList: Int): List<Card> {
-        getListInfo(idList)
+    fun getCardsFromList(idBoard: Int,idList: Int): List<Card> {
+        data.getListInfo(idBoard,idList)
         return data.getCardsFromList(idList)
     }
 

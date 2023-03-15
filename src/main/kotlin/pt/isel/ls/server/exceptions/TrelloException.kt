@@ -9,14 +9,14 @@ import org.http4k.core.Status.Companion.UNAUTHORIZED
 sealed class TrelloException(message: String, val status: Status) : Exception(message) {
 
 
-    class NotAuthorized() :
+    class NotAuthorized :
         TrelloException("You must be logged in to access this page.", UNAUTHORIZED)
 
     //check this idea later via clazz
     class NotFoundException(typeObj: String ,idObj : Int) :
         TrelloException("$typeObj $idObj not found.", NOT_FOUND)
 
-    class IllegalArgumentException(obj: String):
+    class IllegalArgumentException(obj: String): // pode ser mais do que um parametro
         TrelloException("Invalid parameters: $obj", BAD_REQUEST)
 
 //
