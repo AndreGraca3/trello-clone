@@ -1,7 +1,6 @@
 package pt.isel.ls.server
 
-import org.http4k.core.Method.GET
-import org.http4k.core.Method.POST
+import org.http4k.core.Method.*
 import org.http4k.routing.bind
 import org.http4k.routing.routes
 import org.http4k.server.Jetty
@@ -18,7 +17,10 @@ fun main(){
     val userRoutes = routes(
         "user" bind POST to webApi::postUser,
         "user/{idUser}" bind GET to webApi::getUserDetails,
-        "board" bind POST to webApi::createBoard
+        "user/boards/{idUser}" bind GET to webApi::getBoardsFromUser,
+        "board" bind POST to webApi::createBoard,
+        "board/{idBoard}" bind GET to webApi::getBoardInfo,
+        "board/{idBoard}/{idUser}" bind PUT to webApi::addUserToBoard
     )
 
     val app = routes(

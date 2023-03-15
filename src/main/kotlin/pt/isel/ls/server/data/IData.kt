@@ -17,7 +17,7 @@ interface IData {
 
     fun getUserByEmail(email: String) : Int?
 
-    fun getIdUserByToken(token: String): Int?
+    fun getIdUserByToken(token: String?): Int?
 
     /** ----------------------------
      *  Board Functions
@@ -27,7 +27,9 @@ interface IData {
 
     fun addUserToBoard(idUser: Int, board: Board)
 
+    fun checkIfUserExistsInBoard(idUser: Int,idBoard: Int) : Boolean
     fun getBoardByName(name : String) : Board?
+
 
     fun getBoardsFromUser(idUser: Int): List<Board>
 

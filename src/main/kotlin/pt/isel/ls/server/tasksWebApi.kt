@@ -14,6 +14,7 @@ import org.http4k.core.Status.Companion.UNAUTHORIZED
 import org.http4k.routing.path
 import org.slf4j.LoggerFactory
 import pt.isel.ls.*
+import pt.isel.ls.server.exceptions.WebApiException
 
 val logger = LoggerFactory.getLogger("pt.isel.ls.http.HTTPServer")
 
@@ -25,7 +26,7 @@ class WebApi(private val services: Services) {
             val newUser = Json.decodeFromString<UserIn>(request.bodyString()) // deserializes
             val createdUser = services.createUser(newUser.name, newUser.email)
             createRsp(OK, UserOut(createdUser.first, createdUser.second))
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             createRsp(BAD_REQUEST, e.message)
         }
     }
@@ -36,7 +37,7 @@ class WebApi(private val services: Services) {
             val userId = request.path("idUser")?.toIntOrNull()
             if (userId != null) createRsp(OK, services.getUserInfo(userId))
             else createRsp(BAD_REQUEST, "Invalid parameters!")
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             createRsp(NOT_FOUND, e.message)
         }
     }
@@ -44,15 +45,55 @@ class WebApi(private val services: Services) {
     fun createBoard(request: Request): Response {
         logRequest(request)
         return try {
-            val token = request.header("token")
-            if(token == null) createRsp(UNAUTHORIZED, "Invalid Token!")
+            val authHeader = request.header("Authorization") ?: return createRsp(UNAUTHORIZED, "Invalid Token!")
+            val token = authHeader.removePrefix("Bearer ")
             val newBoard = Json.decodeFromString<BoardIn>(request.bodyString())
-            val idUser = services.getIdUserByToken(token!!)
+            val idUser = services.getIdUserByToken(token)
             createRsp(CREATED, BoardOut(services.createBoard(idUser, newBoard.name, newBoard.description)))
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             createRsp(NOT_FOUND, e.message)
         }
     }
+
+    fun getBoardInfo(request: Request): Response {
+        logRequest(request)
+        return try {
+            val idBoard = request.path("idBoard")?.toIntOrNull()
+            if (idBoard != null) createRsp(OK, services.getBoardInfo(idBoard))
+            else createRsp(BAD_REQUEST, "Invalid parameters!")
+        } catch (e: Exception) {
+            createRsp(NOT_FOUND, e.message)
+        }
+    }
+
+    fun addUserToBoard(request: Request): Response {
+        logRequest(request)
+        return try {
+            val idBoard = request.path("idBoard")?.toIntOrNull()
+            val idUser = request.path("idUser")?.toIntOrNull()
+            if (idBoard != null && idUser != null) {
+                services.addUserToBoard(idUser, idBoard)
+                createRsp(OK, "Success!")
+            } else createRsp(BAD_REQUEST, "Invalid parameters!")
+        } catch (e: Exception) {
+            createRsp(NOT_FOUND, e.message)
+        }
+    }
+
+    fun getBoardsFromUser(request: Request) : Response {
+        logRequest(request)
+        return try {
+            val idUser = request.path("idUser")?.toIntOrNull()
+            if (idUser != null) {
+                val list = services.getBoardsFromUser(idUser)
+                if(list.isEmpty()) createRsp(OK, "Empty")
+                createRsp(OK, list)
+            } else createRsp(BAD_REQUEST, "Invalid parameters")
+        } catch (e: Exception) {
+            createRsp(NOT_FOUND, e.message)
+        }
+    }
+
 }
 
 //Aux Functions

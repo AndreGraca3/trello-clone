@@ -28,7 +28,7 @@ class DataMem : IData {
         return users.find { it.email == email }?.idUser
     }
 
-    override fun getIdUserByToken(token: String): Int?{
+    override fun getIdUserByToken(token: String?): Int?{
         return users.find{ it.token == token }?.idUser
     }
 
@@ -43,6 +43,9 @@ class DataMem : IData {
         board.idUsers.add(idUser)
     }
 
+    override fun checkIfUserExistsInBoard(idUser: Int,idBoard: Int) : Boolean {
+        return boards.any { it.idUsers.contains(idUser) && it.idBoard==idBoard }
+    }
     override fun getBoardByName(name: String): Board? {
         return boards.find { it.name == name }
     }

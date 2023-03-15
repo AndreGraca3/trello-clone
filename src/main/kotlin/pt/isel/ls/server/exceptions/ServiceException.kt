@@ -20,7 +20,7 @@ sealed class ServiceException(message: String) : Exception(message) {
         ServiceException("Error creating board with id $idUser.")
 
     class BoardDuplicateNameException(name : String) :
-        ServiceException("Error creating board with name $name.")
+        ServiceException("Error creating board with name $name. (duplicate)")
 
     class UserBoardsException(idUser: Int) :
         ServiceException("Boards not found with idUser $idUser.")
@@ -51,6 +51,9 @@ sealed class ServiceException(message: String) : Exception(message) {
 
     class UserNotFoundWithTokenException(token: String) :
         ServiceException("User not found with token=$token")
+
+    class BoardDuplicateUserException(idUser: Int,idBoard: Int) :
+        ServiceException("Error creating board with idUser=$idUser and idBoard=$idBoard (duplicate)")
 
 }
 

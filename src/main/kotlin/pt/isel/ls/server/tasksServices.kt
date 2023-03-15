@@ -25,15 +25,25 @@ class Services(private val data: IData) {
 
     fun createBoard(idUser: Int, name: String, description: String): Int {
         getUserInfo(idUser)
-        data.getBoardByName(name) ?: throw ServiceException.BoardDuplicateNameException(name)
+        if(data.getBoardByName(name) != null) throw ServiceException.BoardDuplicateNameException(name)
         return data.createBoard(idUser, name, description)
     }
 
     fun addUserToBoard(idUser: Int, idBoard: Int) {
         getUserInfo(idUser)
+        checkIfUserExistsInBoard(idUser,idBoard) //check if return board
         val board = getBoardInfo(idBoard)
         data.addUserToBoard(idUser, board)
     }
+
+    private fun checkIfUserExistsInBoard(idUser: Int, idBoard: Int): Boolean {
+        return if (!data.checkIfUserExistsInBoard(idUser, idBoard)) {
+            true
+        } else {
+            throw ServiceException.BoardDuplicateUserException(idUser, idBoard)
+        }
+    }
+
 
     fun getBoardsFromUser(idUser: Int): List<Board> {
         getUserInfo(idUser)
