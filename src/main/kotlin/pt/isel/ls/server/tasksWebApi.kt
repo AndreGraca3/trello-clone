@@ -14,7 +14,6 @@ import org.http4k.routing.path
 import org.slf4j.LoggerFactory
 import pt.isel.ls.*
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.exceptions.WebApiException
 
 val logger = LoggerFactory.getLogger("pt.isel.ls.http.HTTPServer")
 
@@ -32,6 +31,13 @@ class WebApi(private val services: Services) {
         return handleRequest(request, ::createBoardInternal)
     }
 
+    fun getUserInfo(request: Request) : Response {
+        return handleRequest(request, ::getBoardInfoInternal)
+    }
+
+    fun addUsertoBoard(request: Request) : Response {
+        return handleRequest(request, ::addUserToBoardInternal)
+    }
 
     private fun postUserInternal(request: Request): Response {
         val newUser = Json.decodeFromString<UserIn>(request.bodyString()) // deserializes
@@ -53,43 +59,28 @@ class WebApi(private val services: Services) {
             return createRsp(CREATED, BoardOut(services.createBoard(idUser, newBoard.name, newBoard.description)))
     }
 
-    fun getBoardInfo(request: Request): Response {
-        logRequest(request)
-        return try {
-            val idBoard = request.path("idBoard")?.toIntOrNull()
-            if (idBoard != null) createRsp(OK, services.getBoardInfo(idBoard))
-            else createRsp(BAD_REQUEST, "Invalid parameters!")
-        } catch (e: Exception) {
-            createRsp(NOT_FOUND, e.message)
-        }
+    private fun getBoardInfoInternal(request: Request): Response {
+        val idBoard = request.path("idBoard")?.toIntOrNull()
+        return if (idBoard != null) createRsp(OK, services.getBoardInfo(idBoard))
+        else createRsp(BAD_REQUEST, "Invalid parameters!")
     }
 
-    fun addUserToBoard(request: Request): Response {
-        logRequest(request)
-        return try {
-            val idBoard = request.path("idBoard")?.toIntOrNull()
-            val idUser = request.path("idUser")?.toIntOrNull()
-            if (idBoard != null && idUser != null) {
-                services.addUserToBoard(idUser, idBoard)
-                createRsp(OK, "Success!")
-            } else createRsp(BAD_REQUEST, "Invalid parameters!")
-        } catch (e: Exception) {
-            createRsp(NOT_FOUND, e.message)
-        }
+    private fun addUserToBoardInternal(request: Request): Response {
+        val idBoard = request.path("idBoard")?.toIntOrNull()
+        val idUser = request.path("idUser")?.toIntOrNull()
+        return if (idBoard != null && idUser != null) {
+            services.addUserToBoard(idUser, idBoard)
+            createRsp(OK, "Success!")
+        } else createRsp(BAD_REQUEST, "Invalid parameters!")
     }
 
     fun getBoardsFromUser(request: Request) : Response {
-        logRequest(request)
-        return try {
-            val idUser = request.path("idUser")?.toIntOrNull()
-            if (idUser != null) {
-                val list = services.getBoardsFromUser(idUser)
-                if(list.isEmpty()) createRsp(OK, "Empty")
+        val idUser = request.path("idUser")?.toIntOrNull()
+        return if (idUser != null) {
+            val list = services.getBoardsFromUser(idUser)
+            if(list.isEmpty()) createRsp(OK, "Empty")
                 createRsp(OK, list)
-            } else createRsp(BAD_REQUEST, "Invalid parameters")
-        } catch (e: Exception) {
-            createRsp(NOT_FOUND, e.message)
-        }
+        } else createRsp(BAD_REQUEST, "Invalid parameters")
     }
 }
 
@@ -99,8 +90,10 @@ private fun handleRequest(request: Request, handler: (Request) -> Response):Resp
     logRequest(request)
     return try {
         handler(request)
-    } catch (e: TrelloException) {
-        createRsp(e.status, e.message)
+    } catch (e: Exception) { // perguntar ao martin
+        if(e is TrelloException)
+            createRsp(e.status, e.message)
+        else createRsp(BAD_REQUEST, e.message)
     }
 }
 

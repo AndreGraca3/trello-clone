@@ -5,27 +5,27 @@ import pt.isel.ls.BoardList
 import pt.isel.ls.Card
 import pt.isel.ls.User
 import pt.isel.ls.server.data.*
-import pt.isel.ls.server.exceptions.ServiceException
+import pt.isel.ls.server.exceptions.TrelloException
 import java.time.LocalDate
 
 class Services(private val data: IData) {
     fun createUser(name: String, email: String): Pair<Int, String> {
-        if(!Regex("@").containsMatchIn(email)) throw ServiceException.InvalidEmailException(email)
-        if(data.getUserByEmail(email) != null) throw ServiceException.UserCreationException(email)
+        if(!Regex("@").containsMatchIn(email)) throw TrelloException.InvalidEmailException(email)
+        if(data.getUserByEmail(email) != null) throw TrelloException.UserCreationException(email)
         return data.createUser(name, email)
     }
 
     fun getUserInfo(idUser: Int): User {
-        return data.getUserInfo(idUser) ?: throw ServiceException.UserNotFoundException(idUser)
+        return data.getUserInfo(idUser) ?: throw TrelloException.UserNotFoundException(idUser)
     }
 
     fun getIdUserByToken(token: String): Int {
-        return data.getIdUserByToken(token) ?: throw ServiceException.UserNotFoundWithTokenException(token) //created new exception
+        return data.getIdUserByToken(token) ?: throw TrelloException.UserNotFoundWithTokenException(token) //created new exception
     }
 
     fun createBoard(idUser: Int, name: String, description: String): Int {
         getUserInfo(idUser)
-        if(data.getBoardByName(name) != null) throw ServiceException.BoardDuplicateNameException(name)
+        if(data.getBoardByName(name) != null) throw TrelloException.BoardDuplicateNameException(name)
         return data.createBoard(idUser, name, description)
     }
 
@@ -40,7 +40,7 @@ class Services(private val data: IData) {
         return if (!data.checkIfUserExistsInBoard(idUser, idBoard)) {
             true
         } else {
-            throw ServiceException.BoardDuplicateUserException(idUser, idBoard)
+            throw TrelloException.BoardDuplicateUserException(idUser, idBoard)
         }
     }
 
@@ -51,7 +51,7 @@ class Services(private val data: IData) {
     }
 
     fun getBoardInfo(idBoard: Int): Board {
-        return data.getBoardInfo(idBoard) ?: throw ServiceException.BoardNotFoundException(idBoard)
+        return data.getBoardInfo(idBoard) ?: throw TrelloException.BoardNotFoundException(idBoard)
     }
 
     fun createNewListInBoard(idBoard: Int, name: String): Int {
@@ -65,7 +65,7 @@ class Services(private val data: IData) {
     }
 
     fun getListInfo(idList: Int): BoardList {
-        return data.getListInfo(idList) ?: throw ServiceException.ListNotFoundException(idList)
+        return data.getListInfo(idList) ?: throw TrelloException.ListNotFoundException(idList)
     }
 
     fun createCard(idList: Int, name: String, description: String, endDate: String): Int {
@@ -76,7 +76,7 @@ class Services(private val data: IData) {
 
     private fun checkEndDate(endDate: String) {
         val endDateParsed = LocalDate.parse(endDate) // 2023-03-14
-        if(endDateParsed < LocalDate.now()) throw ServiceException.CardCreationDateException(endDate)
+        if(endDateParsed < LocalDate.now()) throw TrelloException.CardCreationDateException(endDate)
     }
 
     fun createCard(idList: Int, name: String, description: String): Int {
@@ -90,7 +90,7 @@ class Services(private val data: IData) {
     }
 
     fun getCardInfo(idCard: Int): Card {
-        return data.getCardInfo(idCard) ?: throw ServiceException.CardNotFoundException(idCard)
+        return data.getCardInfo(idCard) ?: throw TrelloException.CardNotFoundException(idCard)
     }
 
     fun moveCard(idCard:Int, idList: Int) {
