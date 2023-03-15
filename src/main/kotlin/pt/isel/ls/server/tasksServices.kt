@@ -16,7 +16,7 @@ class Services(private val data: IData) {
     }
 
     fun getUserInfo(idUser: Int): User {
-        return data.getUserInfo(idUser) ?: throw TrelloException.NotFoundException(idUser)
+        return data.getUserInfo(idUser) ?: throw TrelloException.NotFoundException(User::class.java.simpleName,idUser)
     }
 
     fun getIdUserByToken(token: String): Int {
@@ -40,7 +40,7 @@ class Services(private val data: IData) {
         return if (!data.checkIfUserExistsInBoard(idUser, idBoard)) {
             true
         } else {
-            throw TrelloException.IllegalArgumentException(idUser.toString(), idBoard.toString())
+            throw TrelloException.IllegalArgumentException(idUser.toString())
         }
     }
 
@@ -50,7 +50,7 @@ class Services(private val data: IData) {
     }
 
     fun getBoardInfo(idBoard: Int): Board {
-        return data.getBoardInfo(idBoard) ?: throw TrelloException.NotFoundException(idBoard)
+        return data.getBoardInfo(idBoard) ?: throw TrelloException.NotFoundException(Board::class.java.simpleName,idBoard)
     }
 
     fun createNewListInBoard(idBoard: Int, name: String): Int {
@@ -64,7 +64,7 @@ class Services(private val data: IData) {
     }
 
     fun getListInfo(idList: Int): BoardList {
-        return data.getListInfo(idList) ?: throw TrelloException.NotFoundException(idList)
+        return data.getListInfo(idList) ?: throw TrelloException.NotFoundException(BoardList::class.java.simpleName,idList)
     }
 
     fun createCard(idList: Int, name: String, description: String, endDate: String): Int {
@@ -89,7 +89,7 @@ class Services(private val data: IData) {
     }
 
     fun getCardInfo(idCard: Int): Card {
-        return data.getCardInfo(idCard) ?: throw TrelloException.NotFoundException(idCard)
+        return data.getCardInfo(idCard) ?: throw TrelloException.NotFoundException(Card::class.java.simpleName,idCard)
     }
 
     fun moveCard(idCard:Int, idList: Int) {

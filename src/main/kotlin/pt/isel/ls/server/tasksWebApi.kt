@@ -32,12 +32,20 @@ class WebApi(private val services: Services) {
         return handleRequest(request, ::createBoardInternal)
     }
 
-    fun getBoardInfo(request: Request) : Response {
+    fun getBoardInfo(request: Request): Response {
         return handleRequest(request, ::getBoardInfoInternal)
     }
 
-    fun addUserToBoard(request: Request) : Response {
+    fun addUserToBoard(request: Request): Response {
         return handleRequest(request, ::addUserToBoardInternal)
+    }
+
+    fun getBoardsFromUser(request: Request): Response {
+        return handleRequest(request, ::getBoardsFromUserInternal) //check if this return boards or idBoard's
+    }
+
+    fun createNewListInBoard(request: Request): Response {
+        return handleRequest(request, ::createNewListInBoardInternal)
     }
 
     private fun postUserInternal(request: Request): Response {
@@ -53,11 +61,11 @@ class WebApi(private val services: Services) {
     }
 
     private fun createBoardInternal(request: Request): Response {
-            val authHeader = request.header("Authorization") ?: return createRsp(UNAUTHORIZED, "Invalid Token!")
-            val token = authHeader.removePrefix("Bearer ")
-            val newBoard = Json.decodeFromString<BoardIn>(request.bodyString())
-            val idUser = services.getIdUserByToken(token)
-            return createRsp(CREATED, BoardOut(services.createBoard(idUser, newBoard.name, newBoard.description)))
+        val authHeader = request.header("Authorization") ?: return createRsp(UNAUTHORIZED, "Invalid Token!")
+        val token = authHeader.removePrefix("Bearer ")
+        val newBoard = Json.decodeFromString<BoardIn>(request.bodyString())
+        val idUser = services.getIdUserByToken(token)
+        return createRsp(CREATED, BoardOut(services.createBoard(idUser, newBoard.name, newBoard.description)))
     }
 
     private fun getBoardInfoInternal(request: Request): Response {
@@ -75,24 +83,32 @@ class WebApi(private val services: Services) {
         } else createRsp(BAD_REQUEST, "Invalid parameters!")
     }
 
-    fun getBoardsFromUser(request: Request) : Response {
+    private fun getBoardsFromUserInternal(request: Request): Response {
         val idUser = request.path("idUser")?.toIntOrNull()
         return if (idUser != null) {
             val list = services.getBoardsFromUser(idUser)
-            if(list.isEmpty()) createRsp(OK, "Empty")
-                createRsp(OK, list)
+            if (list.isEmpty()) createRsp(OK, "Empty")
+            createRsp(OK, list)
         } else createRsp(BAD_REQUEST, "Invalid parameters")
+    }
+
+    private fun createNewListInBoardInternal(request: Request): Response {
+        val idBoard = request.path("idBoard")?.toIntOrNull()
+//        val newList = Json.decodeFromString<BoardListIn>(request.bodyString())
+        TODO()
     }
 }
 
+
+
 //Aux Functions
 
-private fun handleRequest(request: Request, handler: (Request) -> Response):Response {
+private fun handleRequest(request: Request, handler: (Request) -> Response): Response {
     logRequest(request)
     return try {
         handler(request)
     } catch (e: Exception) { // perguntar ao martin
-        if(e is TrelloException)
+        if (e is TrelloException)
             createRsp(e.status, e.message)
         else createRsp(BAD_REQUEST, e.message)
     }

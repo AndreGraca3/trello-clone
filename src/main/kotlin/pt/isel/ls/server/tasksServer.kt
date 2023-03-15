@@ -20,7 +20,8 @@ fun main(){
         "user/boards/{idUser}" bind GET to webApi::getBoardsFromUser,
         "board" bind POST to webApi::createBoard,
         "board/{idBoard}" bind GET to webApi::getBoardInfo,
-        "board/{idBoard}/{idUser}" bind PUT to webApi::addUserToBoard
+        "board/{idBoard}/{idUser}" bind PUT to webApi::addUserToBoard,
+        "list/{idBoard}" bind POST to webApi::createNewListInBoard
     )
 
     val app = routes(
