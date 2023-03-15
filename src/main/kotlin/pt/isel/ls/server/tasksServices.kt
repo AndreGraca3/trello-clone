@@ -36,7 +36,7 @@ class Services(private val data: IData) {
         data.addUserToBoard(idUser, board)
     }
 
-    private fun checkIfUserExistsInBoard(idUser: Int, idBoard: Int): Boolean {
+    private fun checkIfUserExistsInBoard(idUser: Int, idBoard: Int): Boolean { //TODO
         return if (!data.checkIfUserExistsInBoard(idUser, idBoard)) {
             true
         } else {
@@ -50,6 +50,7 @@ class Services(private val data: IData) {
     }
 
     fun getBoardInfo(idBoard: Int): Board {
+        //TODO
         return data.getBoardInfo(idBoard) ?: throw TrelloException.NotFoundException(Board::class.java.simpleName,idBoard)
     }
 

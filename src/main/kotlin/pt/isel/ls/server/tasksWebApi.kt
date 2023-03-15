@@ -70,9 +70,14 @@ class WebApi(private val services: Services) {
         } else createRsp(UNAUTHORIZED,"Invalid Token!")
     }
 
-    private fun getBoardInfoInternal(request: Request): Response {
+    private fun getBoardInfoInternal(request: Request): Response { // auth needed //TODO
+        val token = checkIfAuthorized(request) // from user logged
         val idBoard = request.path("idBoard")?.toIntOrNull()
-        return if (idBoard != null) createRsp(OK, services.getBoardInfo(idBoard))
+        return if (idBoard != null && token != null){
+            val idUser = services.getIdUserByToken(token)
+
+            createRsp(OK, services.getBoardInfo(idBoard))
+        }
         else createRsp(BAD_REQUEST, "Invalid parameters!")
     }
 
