@@ -6,6 +6,7 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
+import org.http4k.core.Status.Companion.ACCEPTED
 import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.NOT_FOUND
@@ -60,12 +61,13 @@ class WebApi(private val services: Services) {
         else createRsp(BAD_REQUEST, "Invalid parameters!")
     }
 
-    private fun createBoardInternal(request: Request): Response {
-        val authHeader = request.header("Authorization") ?: return createRsp(UNAUTHORIZED, "Invalid Token!")
-        val token = authHeader.removePrefix("Bearer ")
-        val newBoard = Json.decodeFromString<BoardIn>(request.bodyString())
-        val idUser = services.getIdUserByToken(token)
-        return createRsp(CREATED, BoardOut(services.createBoard(idUser, newBoard.name, newBoard.description)))
+    private fun createBoardInternal(request: Request): Response { //auth needed
+        val token = checkIfAuthorized(request)
+        val newBoard = Json.decodeFromString<BoardIn>(request.bodyString()) // deserializes
+        return if(token != null) {
+            val idUser = services.getIdUserByToken(token)
+            createRsp(CREATED, BoardOut(services.createBoard(idUser, newBoard.name, newBoard.description)))
+        } else createRsp(UNAUTHORIZED,"Invalid Token!")
     }
 
     private fun getBoardInfoInternal(request: Request): Response {
@@ -74,12 +76,14 @@ class WebApi(private val services: Services) {
         else createRsp(BAD_REQUEST, "Invalid parameters!")
     }
 
-    private fun addUserToBoardInternal(request: Request): Response {
+    private fun addUserToBoardInternal(request: Request): Response { //auth needed
+        val token = checkIfAuthorized(request) // from user logged
         val idBoard = request.path("idBoard")?.toIntOrNull()
         val idUser = request.path("idUser")?.toIntOrNull()
-        return if (idBoard != null && idUser != null) {
+        return if (idBoard != null && idUser != null && token != null) {
+            if(idUser != services.getIdUserByToken(token)) createRsp(UNAUTHORIZED, "Invalid Token")
             services.addUserToBoard(idUser, idBoard)
-            createRsp(OK, "Success!")
+            createRsp(ACCEPTED, "Success!")
         } else createRsp(BAD_REQUEST, "Invalid parameters!")
     }
 
@@ -92,7 +96,7 @@ class WebApi(private val services: Services) {
         } else createRsp(BAD_REQUEST, "Invalid parameters")
     }
 
-    private fun createNewListInBoardInternal(request: Request): Response {
+    private fun createNewListInBoardInternal(request: Request): Response { //auth needed
         val idBoard = request.path("idBoard")?.toIntOrNull()
 //        val newList = Json.decodeFromString<BoardListIn>(request.bodyString())
         TODO()
@@ -102,6 +106,11 @@ class WebApi(private val services: Services) {
 
 
 //Aux Functions
+
+private fun checkIfAuthorized(request: Request) : String? {
+    val authHeader = request.header("Authorization")
+    return authHeader?.removePrefix("Bearer ")
+}
 
 private fun handleRequest(request: Request, handler: (Request) -> Response): Response {
     logRequest(request)
