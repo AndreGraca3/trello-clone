@@ -8,6 +8,7 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.core.Status.Companion.CREATED
+import org.http4k.core.Status.Companion.NOT_FOUND
 import org.http4k.core.Status.Companion.OK
 import org.http4k.core.Status.Companion.UNAUTHORIZED
 import org.http4k.routing.path
@@ -23,7 +24,7 @@ class WebApi(private val services: Services) {
         return handleRequest(request, ::postUserInternal)
     }
 
-    fun getUserDetails(request: Request): Response {
+    fun getUserInfo(request: Request): Response {
         return handleRequest(request, ::getUserDetailsInternal)
     }
 
@@ -31,11 +32,11 @@ class WebApi(private val services: Services) {
         return handleRequest(request, ::createBoardInternal)
     }
 
-    fun getUserInfo(request: Request) : Response {
+    fun getBoardInfo(request: Request) : Response {
         return handleRequest(request, ::getBoardInfoInternal)
     }
 
-    fun addUsertoBoard(request: Request) : Response {
+    fun addUserToBoard(request: Request) : Response {
         return handleRequest(request, ::addUserToBoardInternal)
     }
 
