@@ -29,7 +29,7 @@ fun main(){
     )
 
     val listRoutes = routes(
-        "board/list/{idBoard}/{name}" bind PUT to webApi::createNewListInBoard, /** Deveria ser um post? **/
+        "board/list/?idBoard&name" bind PUT to webApi::createNewListInBoard, /** Deveria ser um post? **/
         "board/list/{idBoard}/{idList}" bind GET to webApi::getListInfo, /** opinião em relação ao path **/
         "board/allList/{idBoard}" bind GET to webApi::getListFromBoard
     )

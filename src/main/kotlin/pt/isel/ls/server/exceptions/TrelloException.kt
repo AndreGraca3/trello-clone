@@ -13,10 +13,13 @@ sealed class TrelloException(message: String, val status: Status) : Exception(me
         TrelloException("You must be logged in to access this page.", UNAUTHORIZED)
 
     //check this idea later via clazz
-    class NotFoundException(typeObj: String ,idObj : Int) :
-        TrelloException("$typeObj $idObj not found.", NOT_FOUND)
+    /*class NotFoundException(typeObj: String ,idObj : Int) :
+        TrelloException("$typeObj $idObj not found.", NOT_FOUND)*/
 
-    class IllegalArgumentException(obj: String): // pode ser mais do que um parametro
+    class NotFoundException(typeObj: String) :
+        TrelloException("$typeObj not found.", NOT_FOUND)
+
+    class IllegalArgumentException(obj: String):
         TrelloException("Invalid parameters: $obj", BAD_REQUEST)
 
 //

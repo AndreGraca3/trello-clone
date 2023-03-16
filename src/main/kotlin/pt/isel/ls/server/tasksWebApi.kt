@@ -75,8 +75,7 @@ class WebApi(private val services: Services) {
         val token = checkIfAuthorized(request)
         val newBoard = Json.decodeFromString<BoardIn>(request.bodyString()) // deserializes
         return if(token != null) {
-            val idUser = services.getIdUserByToken(token)
-            createRsp(CREATED, BoardOut(services.createBoard(idUser, newBoard.name, newBoard.description)))
+            createRsp(CREATED, BoardOut(services.createBoard(token, newBoard.name, newBoard.description)))
         } else createRsp(UNAUTHORIZED,"Invalid Token!")
     }
 
@@ -86,7 +85,7 @@ class WebApi(private val services: Services) {
         return if (idBoard != null && token != null){
             val idUser = services.getIdUserByToken(token)
 
-            createRsp(OK, services.getBoardInfo(idBoard))
+            createRsp(OK, services.getBoardInfo(idBoard, idUser))
         }
         else createRsp(BAD_REQUEST, "Invalid parameters!")
     }
@@ -97,7 +96,7 @@ class WebApi(private val services: Services) {
         val idUser = request.path("idUser")?.toIntOrNull()
         return if (idBoard != null && idUser != null && token != null) {
             if(idUser != services.getIdUserByToken(token)) createRsp(UNAUTHORIZED, "Invalid Token")
-            services.addUserToBoard(idUser, idBoard)
+            services.addUserToBoard(token,idUser, idBoard)
             createRsp(ACCEPTED, "Success!")
         } else createRsp(BAD_REQUEST, "Invalid parameters!")
     }
@@ -147,14 +146,12 @@ class WebApi(private val services: Services) {
         }
     }
 
-
 }
-
 
 
 //Aux Functions
 
-private fun checkIfAuthorized(request: Request) : String? { // devia retornar uma response, para não verificar repetidamente.
+private fun checkIfAuthorized(request: Request) : String? { /** devia retornar uma response, para não verificar repetidamente. **/
     val authHeader = request.header("Authorization")
     return authHeader?.removePrefix("Bearer ")
 }
