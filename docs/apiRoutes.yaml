@@ -191,10 +191,6 @@ paths:
           type: string
           description: token of the correspoding user.
           required: true
-        - in: query
-          name: userId
-          type: integer
-          required: true
       responses:
         200:
           description: search results matching criteria.
@@ -244,7 +240,7 @@ paths:
           description: board not found.
         500:
           description: internal server error.
-
+  /Board/List/{listId}:
     get:
       summary: get details of a list.
       operationId: getDetalisList
@@ -260,8 +256,8 @@ paths:
           type: string
           description: token of the correspoding user.
           required: true
-        - in: query
-          name: boardId
+        - in: path
+          name: listId
           type: integer
           required: true
         - in: query
@@ -511,7 +507,7 @@ definitions:
       description:
         type: string
         example: "This project consists of doing..."
-  
+
   boardReturn:
     type: object
     required:
@@ -529,7 +525,7 @@ definitions:
       list identifier:
         type: integer
         example: 1
-  
+
   list:
     type: object
     required:

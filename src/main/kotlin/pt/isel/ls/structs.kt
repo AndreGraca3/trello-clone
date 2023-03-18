@@ -32,12 +32,18 @@ data class Card(
     val name: String,
     val description: String,
     val startDate: String,
-    val endDate: String?, // if we create a Card without a endDate how are we supposed to change it later?
+    var endDate: String?,
     var archived: Boolean
 )
 
 @Serializable
-data class CardInt(val idCard : Int) // TODO()
+data class CardIn(
+    val idList: Int,
+    val name: String,
+    val startDate: String,
+    val description: String,
+    val endDate: String?
+) // name and description should be vars
 
 @Serializable
 data class CardOut(val name : String) // TODO()

@@ -13,11 +13,12 @@ interface IData {
      *  ------------------------------**/
 
     fun createUser(name: String, email: String): Pair<Int, String>
-    fun getUserInfo(idUser: Int): User?
 
-    fun getUserByEmail(email: String) : Int?
+    fun getUser(idUser: Int): User?
 
-    fun getUserByToken(token: String?): User?
+    fun checkEmail(email: String): Boolean
+
+    fun getUser(token: String?): User?
 
     /** ----------------------------
      *  Board Functions
@@ -27,23 +28,23 @@ interface IData {
 
     fun addUserToBoard(idUser: Int, board: Board)
 
-    fun checkIfUserExistsInBoard(idUser: Int,idBoard: Int) : Boolean
-    fun getBoardByName(name : String) : Board?
-
+    fun getBoardByName(name: String): Board?
 
     fun getBoardsFromUser(idUser: Int): List<Board>
 
-    fun getBoardInfo(idBoard: Int): Board?
+    fun getBoard(idBoard: Int): Board?
+
+    fun checkUserInBoard(idUser: Int, idBoard: Int): Boolean
 
     /** ----------------------------
      *  List Functions
      *  ------------------------------**/
 
-    fun createNewListInBoard(idBoard: Int, name: String): Int
+    fun createList(idBoard: Int, name: String): Int
+
+    fun getList(idList: Int): BoardList?
 
     fun getListsOfBoard(idBoard: Int): List<BoardList>
-
-    fun getListInfo(idBoard: Int, idList: Int): BoardList?
 
     /** ----------------------------
      *  Card Functions
@@ -51,12 +52,10 @@ interface IData {
 
     fun createCard(idList: Int, name: String, description: String, endDate: String? = null): Int //check endDate
 
-    //fun createCard(idList: Int, name: String, description: String): Int
-
     fun getCardsFromList(idList: Int): List<Card>
 
-    fun getCardInfo(idCard: Int): Card?
+    fun getCard(idCard: Int): Card?
 
-    fun moveCard(card : Card, idListDst: Int)
+    fun moveCard(card: Card, idListDst: Int)
 
 }

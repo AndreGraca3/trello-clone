@@ -6,10 +6,9 @@ import org.http4k.routing.routes
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import pt.isel.ls.server.data.DataMem
-import java.time.LocalDate
 
 
-fun main(){
+fun main() {
     /** alterar a documentação para ficar de acordo com o que implementá-mos **/
 
     val data = DataMem()
@@ -17,32 +16,36 @@ fun main(){
     val webApi = WebApi(services)
 
     val userRoutes = routes(
-        "user" bind POST to webApi::postUser,
-        "user/{idUser}" bind GET to webApi::getUserInfo
+        "user" bind POST to webApi::createUser,
+        "user/{idUser}" bind GET to webApi::getUser
     )
 
     val boardRoutes = routes(
         "board" bind POST to webApi::createBoard,
-        "board/{idBoard}/{idUser}" bind PUT to webApi::addUserToBoard, /** como é que defino parametros na query string? **/
-        "board/{idBoard}" bind GET to webApi::getBoardInfo,
+        "board/{idBoard}/{idUser}" bind PUT to webApi::addUserToBoard,
+        /** como é que defino parametros na query string? **/
+        "board/{idBoard}" bind GET to webApi::getBoard,
         "allBoard" bind GET to webApi::getBoardsFromUser
     )
 
     val listRoutes = routes(
-        "board/list/?idBoard&name" bind PUT to webApi::createNewListInBoard, /** Deveria ser um post? **/
-        "board/list/{idBoard}/{idList}" bind GET to webApi::getListInfo, /** opinião em relação ao path **/
-        "board/allList/{idBoard}" bind GET to webApi::getListFromBoard
+        "board/list/?idBoard&name" bind PUT to webApi::createList,
+        /** Deveria ser um post? **/
+        "board/list/{idBoard}/{idList}" bind GET to webApi::getList,
+        /** opinião em relação ao path **/
+        "board/allList/{idBoard}" bind GET to webApi::getListsFromBoard
     )
 
-    /*val cardRoutes = routes(
-        "cards" bind GET to webApi::noWhere
-    )*/
+    val cardRoutes = routes(
+        "cards" bind POST to webApi::createCard,
+        "cards" bind GET to webApi::getCard
+    )
 
     val app = routes(
         userRoutes,
         boardRoutes,
         listRoutes,
-        //cardRoutes
+        cardRoutes
     )
 
     val jettyServer = app.asServer(Jetty(8080)).start()
