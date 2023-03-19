@@ -22,23 +22,22 @@ fun main() {
 
     val boardRoutes = routes(
         "board" bind POST to webApi::createBoard,
-        "board/{idBoard}/{idUser}" bind PUT to webApi::addUserToBoard,
-        /** como é que defino parametros na query string? **/
-        "board/{idBoard}" bind GET to webApi::getBoard,
-        "allBoard" bind GET to webApi::getBoardsFromUser
-    )
+        "board" bind GET to webApi::getBoardsFromUser, // visto que é apenas do nosso usuário,é apenas necessário ir buscar o token.
+        "board/{idBoard}/{idUser}" bind PUT to webApi::addUserToBoard,/** verificar este path com o martin ( path ou body)**/
+        "board/{idBoard}" bind GET to webApi::getBoard
+        )
 
     val listRoutes = routes(
-        "board/list/?idBoard&name" bind PUT to webApi::createList,
-        /** Deveria ser um post? **/
-        "board/list/{idBoard}/{idList}" bind GET to webApi::getList,
-        /** opinião em relação ao path **/
-        "board/allList/{idBoard}" bind GET to webApi::getListsFromBoard
-    )
+        "board/{idBoard}/list" bind POST to webApi::createList,
+        "board/{idBoard}/list" bind GET to webApi::getListsFromBoard,
+        "board/{idBoard}/list/{idList}" bind GET to webApi::getList
+        )
 
     val cardRoutes = routes(
-        "cards" bind POST to webApi::createCard,
-        "cards" bind GET to webApi::getCard
+        "board/{idBoard}/list/{idList}/card" bind POST to webApi::createCard,
+        "board/{idBoard}/list/{idList}/card" bind GET to webApi::getCardsFromList, // TODO()
+        "board/{idBoard}/list/{idList/card/{idCard}" bind GET to webApi::getCard,
+        "board/{idBoard}/list/{idList}/card/{idCard}" bind PUT to webApi::moveCard // TODO()
     )
 
     val app = routes(

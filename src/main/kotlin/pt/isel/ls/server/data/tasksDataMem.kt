@@ -120,3 +120,9 @@ fun getNextId(clazz: Class<*>): Int {
         else -> error("Unknown object type: ${clazz.toString()::class.simpleName}")
     }
 }
+fun initialState() { // for test purposes
+    users.clear()
+    boards.clear()
+    lists.clear()
+    cards.clear()
+}

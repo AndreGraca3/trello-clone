@@ -12,7 +12,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 
 paths:
-  /User:
+  /user:
     post:
       summary: user account creation
       operationId: signIn
@@ -43,7 +43,7 @@ paths:
         500:
           description: internal server error.
 
-  /User/{idUser}:
+  /user/{idUser}:
     get:
       summary: get details of a user
       operationId: getDetails
@@ -69,7 +69,7 @@ paths:
         500:
           description: internal server error.
 
-  /Board:
+  /board:
     post:
       summary: board creation
       operationId: board
@@ -107,6 +107,38 @@ paths:
         500:
           description: internal server error.
 
+    get:
+      summary: get all boards from a user.
+      operationId: getBoards
+      description:
+        Get the list with all user available boards.
+      tags:
+        - Board
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: token
+          type: string
+          description: token of the correspoding user.
+          required: true
+        - in: body
+          name: idUser
+          required: true
+          schema:
+            $ref: '#/definitions/idUser'
+      responses:
+        200:
+          description: search results matching criteria.
+        400:
+          description: invalid user.
+        401:
+          description: invalid token.
+        500:
+          description: internal server error.
+
+
+  /board/{idBoard}/{idUser}:
     put:
       summary: add a user to a board.
       operationId: AddUserBoard
@@ -124,12 +156,14 @@ paths:
           type: string
           description: token of the correspoding user.
           required: true
-        - in: query
-          name: boardId
+        - in: path
+          name: idBoard
           type: integer
-        - in: query
-          name: userId
+          required: true
+        - in: path
+          name: idUser
           type: integer
+          required: true
       responses:
         201:
           description: user added.
@@ -142,6 +176,7 @@ paths:
         500:
           description: internal server error.
 
+  /board/{idBoard}:
     get:
       summary: get details from a board.
       operationId: getDetailsBoard
@@ -157,8 +192,8 @@ paths:
           type: string
           description: token of the correspoding user.
           required: true
-        - in: query
-          name: boardId
+        - in: path
+          name: idBoard
           type: integer
           required: true
       responses:
@@ -175,34 +210,8 @@ paths:
         500:
           description: internal server error.
 
-  /AllBoard:
-    get:
-      summary: get all boards from a user.
-      operationId: getBoards
-      description:
-        Get the list with all user available boards.
-      tags:
-        - Board
-      produces:
-        - application/json
-      parameters:
-        - in: header
-          name: token
-          type: string
-          description: token of the correspoding user.
-          required: true
-      responses:
-        200:
-          description: search results matching criteria.
-        400:
-          description: invalid user.
-        401:
-          description: invalid token.
-        500:
-          description: internal server error.
-
-  /Board/List:
-    put:
+  /board/{idBoard}/list:
+    post:
       summary: create a list in a board.
       operationId: createList
       description:
@@ -219,12 +228,13 @@ paths:
           type: string
           description: token of the correspoding user.
           required: true
-        - in: query
+        - in: body
           name: name # name of list
-          type: string
           required: true
-        - in: query
-          name: boardId
+          schema:
+            $ref : '#/definitions/list'
+        - in: path
+          name: idBoard
           type: integer
           required: true
       responses:
@@ -240,45 +250,7 @@ paths:
           description: board not found.
         500:
           description: internal server error.
-  /Board/List/{listId}:
-    get:
-      summary: get details of a list.
-      operationId: getDetalisList
-      description:
-        Get detailed information of a list.
-      tags:
-        - List
-      produces:
-        - application/json
-      parameters:
-        - in: header
-          name: token
-          type: string
-          description: token of the correspoding user.
-          required: true
-        - in: path
-          name: listId
-          type: integer
-          required: true
-        - in: query
-          name: name # name of list
-          type: string
-          required: true
-      responses:
-        200:
-          description: search results matching criteria.
-          schema:
-            $ref: '#/definitions/list'
-        400:
-          description: invalid board identifier or name.
-        401:
-          description: invalid token.
-        404:
-          description: list not found or board not found.
-        500:
-          description: internal server error.
 
-  /Board/AllList:
     get:
       summary: gets all list of a board.
       operationId: getLists
@@ -294,8 +266,8 @@ paths:
           type: string
           description: token of the correspoding user.
           required: true
-        - in: query
-          name: boardId
+        - in: path
+          name: idBoard
           type: integer
           required: true
       responses:
@@ -312,7 +284,46 @@ paths:
         500:
           description: internal server error.
 
-  /Board/List/card:
+
+  /board/{idBoard}/list/{idList}:
+    get:
+      summary: get details of a list.
+      operationId: getDetalisList
+      description:
+        Get detailed information of a list.
+      tags:
+        - List
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: token
+          type: string
+          description: token of the correspoding user.
+          required: true
+        - in: path
+          name: idBoard
+          type: integer
+          required: true
+        - in: path
+          name: idList # name of list
+          type: integer
+          required: true
+      responses:
+        200:
+          description: search results matching criteria.
+          schema:
+            $ref: '#/definitions/list'
+        400:
+          description: invalid board identifier or name.
+        401:
+          description: invalid token.
+        404:
+          description: list not found or board not found.
+        500:
+          description: internal server error.
+
+  /board/{idBoard}/list/{idList}/card:
     post:
       summary: create a card in a list.
       operationId: createCard
@@ -330,12 +341,12 @@ paths:
           type: string
           description: token of the correspoding user.
           required: true
-        - in: query
-          name: boardId
+        - in: path
+          name: idBoard
           type: integer
           required: true
-        - in: query
-          name: listId
+        - in: path
+          name: idList
           type: integer
           required: true
         - in: body
@@ -358,6 +369,41 @@ paths:
           description: internal server error.
 
     get:
+      summary: get all cards in a list.
+      operationId: getAllCards
+      description:
+        Get the set of cards in a list.
+      tags:
+        - Card
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: token
+          type: string
+          description: token of the correspoding user.
+          required: true
+        - in: path
+          name: idList
+          type: integer
+          required: true
+        - in: path
+          name: idBoard
+          type: integer
+          required: true
+      responses:
+        200:
+          description: search results matching criteria.
+        400:
+          description: invalid list or board identifier.
+        401:
+          description: invalid token.
+        500:
+          description: internal server error.
+
+
+  /board/{idBoard}/list/{idList}/card/{idCard}:
+    get:
       summary: get a card in a list.
       operationId: getCard
       description:
@@ -372,16 +418,16 @@ paths:
           type: string
           description: token of the correspoding user.
           required: true
-        - in: query
-          name: boardId
+        - in: path
+          name: idBoard
           type: integer
           required: true
-        - in: query
-          name: listId
+        - in: path
+          name: idList
           type: integer
           required: true
-        - in: query
-          name: cardId
+        - in: path
+          name: idCard
           type: integer
           required: true
       responses:
@@ -397,7 +443,7 @@ paths:
           description: internal server error.
 
     put:
-      summary: update a card.
+      summary: move a card.
       operationId: updateCard
       description:
         Moves a card.
@@ -413,13 +459,22 @@ paths:
           type: string
           description: token of the corresponding user
           required: true
-        - in: query
-          name: srcListId
-          type: string
+        - in: path
+          name: idBoard
+          type: integer
           required: true
-        - in: query
-          name: dstListId
-          type: string
+        - in: path
+          name: idList
+          type: integer
+          required: true
+        - in: body
+          name: lid
+          required: true
+          schema:
+            $ref: '#/definitions/lid'
+        - in: path
+          name: idCard
+          type: integer
           required: true
       responses:
         200:
@@ -432,41 +487,6 @@ paths:
           description: board, list or card not found.
         500:
           description: internal server error.
-
-  /Board/List/allCards:
-    get:
-      summary: get all cards in a list.
-      operationId: getAllCards
-      description:
-        Get the set of cards in a list.
-      tags:
-        - Card
-      produces:
-        - application/json
-      parameters:
-        - in: header
-          name: token
-          type: string
-          description: token of the correspoding user.
-          required: true
-        - in: query
-          name: listId
-          type: integer
-          required: true
-        - in: query
-          name: boardId
-          type: integer
-          required: true
-      responses:
-        200:
-          description: search results matching criteria.
-        400:
-          description: invalid list or board identifier.
-        401:
-          description: invalid token.
-        500:
-          description: internal server error.
-
 
 definitions:
   newUser:
@@ -511,9 +531,9 @@ definitions:
   boardReturn:
     type: object
     required:
-      - board identifier
+      - idBoard
     properties:
-      board identifier:
+      idBoard:
         type: integer
         example: 1
 
@@ -560,8 +580,26 @@ definitions:
   cardReturn:
     type: object
     required:
-      - card identifier
+      - idCard
     properties:
-      card identifier:
+      idCard:
+        type: integer
+        example: 1
+
+  lid:
+    type: object
+    required:
+      - lid
+    properties:
+      lid:
+        type: integer
+        example: 1
+
+  idUser:
+    type: object
+    required:
+      - idUser
+    properties:
+      idUser:
         type: integer
         example: 1

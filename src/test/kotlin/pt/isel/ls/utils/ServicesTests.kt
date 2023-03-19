@@ -2,6 +2,7 @@ package pt.isel.ls.utils
 
 import pt.isel.ls.server.Services
 import pt.isel.ls.server.data.DataMem
+import pt.isel.ls.server.data.initialState
 import pt.isel.ls.server.exceptions.TrelloException
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -17,9 +18,12 @@ class ServicesTests {
     private val data = DataMem()
     private val services = Services(data)
 
+    /**
+     * We delete all data from DataMem in order to have a known initial state of data.
+     */
     @BeforeTest
     fun setup() {
-        TODO("should we delete data before tests?")
+        initialState()
     }
 
     @Test
