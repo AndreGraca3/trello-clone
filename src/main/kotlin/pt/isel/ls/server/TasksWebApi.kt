@@ -1,8 +1,5 @@
 package pt.isel.ls.server
 
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
@@ -13,12 +10,15 @@ import org.http4k.routing.path
 import org.slf4j.LoggerFactory
 import pt.isel.ls.*
 import pt.isel.ls.server.exceptions.TrelloException
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 val logger = LoggerFactory.getLogger("pt.isel.ls.http.HTTPServer")
 
 class WebApi(private val services: Services) {
 
-    //@NotAuthorization
+    // @NotAuthorization
     fun createUser(request: Request): Response {
         return handleRequest(request, false, ::createUserInternal)
     }
@@ -40,7 +40,7 @@ class WebApi(private val services: Services) {
     }
 
     fun getBoardsFromUser(request: Request): Response {
-        return handleRequest(request, true, ::getBoardsFromUserInternal) //check if this return boards or idBoard's
+        return handleRequest(request, true, ::getBoardsFromUserInternal) // check if this return boards or idBoard's
     }
 
     fun createList(request: Request): Response {
@@ -109,7 +109,7 @@ class WebApi(private val services: Services) {
     }
 
     private fun getBoardsFromUserInternal(request: Request, token: String): Response {
-        return createRsp(OK, services.getBoardsFromUser(token)) //should return empty message?
+        return createRsp(OK, services.getBoardsFromUser(token)) // should return empty message?
     }
 
     /** ----------------------------
@@ -122,12 +122,12 @@ class WebApi(private val services: Services) {
         return createRsp(CREATED, services.createList(token, idBoard, name))
     }
 
-    private fun getListInternal(request: Request, token: String): Response {   //No auth? Only for getBoard?
+    private fun getListInternal(request: Request, token: String): Response { // No auth? Only for getBoard?
         val idList = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
         return createRsp(OK, services.getList(token, idList))
     }
 
-    private fun getListsFromBoardInternal(request: Request, token: String): Response { //No auth? Only for getBoard?
+    private fun getListsFromBoardInternal(request: Request, token: String): Response { // No auth? Only for getBoard?
         val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
         return createRsp(OK, services.getListsOfBoard(token, idBoard))
     }
@@ -135,7 +135,7 @@ class WebApi(private val services: Services) {
     private fun createCardInternal(
         request: Request,
         token: String
-    ): Response {   //Why is this POST and not PUT like createList?
+    ): Response { // Why is this POST and not PUT like createList?
         val idList = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
         val newCard = Json.decodeFromString<CardIn>(request.bodyString())
         return createRsp(
@@ -162,8 +162,7 @@ class WebApi(private val services: Services) {
     }
 }
 
-
-//Aux Functions
+// Aux Functions
 private fun getToken(request: Request): String {
     val authHeader = request.header("Authorization")
     return authHeader?.removePrefix("Bearer ") ?: throw TrelloException.NotAuthorized()
@@ -173,12 +172,17 @@ private fun handleRequest(request: Request, auth: Boolean, handler: (Request, St
     /** Is it possible to have a function to receive and check N arguments else throw Exception?*/
     logRequest(request)
     return try {
-        if (auth) handler(request, getToken(request))
-        else handler(request, "null")
+        if (auth) {
+            handler(request, getToken(request))
+        } else {
+            handler(request, "null")
+        }
     } catch (e: Exception) {
-        if (e is TrelloException)
+        if (e is TrelloException) {
             createRsp(e.status, e.message)
-        else createRsp(BAD_REQUEST, e.message)
+        } else {
+            createRsp(BAD_REQUEST, e.message)
+        }
     }
 }
 

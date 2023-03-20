@@ -1,18 +1,26 @@
 package pt.isel.ls.server
 
-import org.http4k.core.Method.*
+import org.http4k.core.Method.GET
+import org.http4k.core.Method.POST
+import org.http4k.core.Method.PUT
 import org.http4k.routing.bind
 import org.http4k.routing.routes
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
-import pt.isel.ls.server.data.DataMem
-
+import pt.isel.ls.server.data.boardData.DataBoard
+import pt.isel.ls.server.data.cardData.DataCard
+import pt.isel.ls.server.data.listData.DataList
+import pt.isel.ls.server.data.userData.DataUser
 
 fun main() {
     /** alterar a documentação para ficar de acordo com o que implementá-mos **/
 
-    val data = DataMem()
-    val services = Services(data)
+    val dataUser = DataUser()
+    val dataBoard = DataBoard()
+    val dataList = DataList()
+    val dataCard = DataCard()
+
+    val services = Services(dataUser, dataBoard, dataList, dataCard)
     val webApi = WebApi(services)
 
     val userRoutes = routes(
@@ -23,7 +31,7 @@ fun main() {
     val boardRoutes = routes(
         "board" bind POST to webApi::createBoard,
         "board" bind GET to webApi::getBoardsFromUser,
-        "board/{idBoard}/{idUser}" bind PUT to webApi::addUserToBoard,/** verificar este path com o martin ( path ou body)**/
+        "board/{idBoard}/{idUser}" bind PUT to webApi::addUserToBoard, /** verificar este path com o martin ( path ou body)**/
         "board/{idBoard}" bind GET to webApi::getBoard
     )
 

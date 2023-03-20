@@ -1,15 +1,18 @@
 package pt.isel.ls.utils
 
-import org.testng.annotations.BeforeTest
+import pt.isel.ls.server.Services
+import pt.isel.ls.server.data.boardData.DataBoard
+import pt.isel.ls.server.data.cardData.DataCard
+import pt.isel.ls.server.data.initialState
+import pt.isel.ls.server.data.listData.DataList
+import pt.isel.ls.server.data.userData.DataUser
+import pt.isel.ls.server.exceptions.TrelloException
 import java.time.format.DateTimeParseException
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
-import pt.isel.ls.server.Services
-import pt.isel.ls.server.data.DataMem
-import pt.isel.ls.server.data.initialState
-import pt.isel.ls.server.exceptions.TrelloException
 
 class ServicesTests {
 
@@ -35,8 +38,11 @@ class ServicesTests {
     private val dummyCardDescription = "This is Card1"
 
     // Creation of data and services objects
-    private val data = DataMem()
-    private val services = Services(data)
+    private val dataUser = DataUser()
+    private val dataBoard = DataBoard()
+    private val dataList = DataList()
+    private val dataCard = DataCard()
+    private val services = Services(dataUser, dataBoard, dataList, dataCard)
 
     /**
      * We delete all data from DataMem in order to have a known initial state of data.

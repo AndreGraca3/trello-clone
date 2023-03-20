@@ -5,10 +5,19 @@ import pt.isel.ls.BoardList
 import pt.isel.ls.Card
 import pt.isel.ls.User
 import pt.isel.ls.server.data.*
+import pt.isel.ls.server.data.boardData.DataBoard
+import pt.isel.ls.server.data.cardData.DataCard
+import pt.isel.ls.server.data.listData.DataList
+import pt.isel.ls.server.data.userData.DataUser
 import pt.isel.ls.server.exceptions.TrelloException
 import java.time.LocalDate
 
-class Services(private val data: IData) {
+class Services(
+    private val userData : DataUser,
+    private val boardData : DataBoard,
+    private val listData : DataList,
+    private val cardData : DataCard
+) {
 
     /** ----------------------------
      *  User Management
@@ -18,16 +27,16 @@ class Services(private val data: IData) {
         isValidString(name)
         isValidString(email)
         if (!Regex("@").containsMatchIn(email)) throw TrelloException.IllegalArgument(email)
-        if (!data.checkEmail(email)) throw TrelloException.AlreadyExists(email)
-        return data.createUser(name, email)
+        if (!userData.checkEmail(email)) throw TrelloException.AlreadyExists(email)
+        return userData.createUser(name, email)
     }
 
     fun getUser(token: String): User {
-        return data.getUser(token) ?: throw TrelloException.NotFound("User")    //not sure
+        return userData.getUser(token) ?: throw TrelloException.NotFound("User")    //not sure
     }
 
     fun getUser(id: Int): User {
-        return data.getUser(id) ?: throw TrelloException.NotFound("User")
+        return userData.getUser(id) ?: throw TrelloException.NotFound("User")
     }
 
     /** ----------------------------
@@ -37,30 +46,30 @@ class Services(private val data: IData) {
     fun createBoard(token: String, name: String, description: String): Int {
         isValidString(name)
         isValidString(description)
-        if (data.getBoardByName(name) != null) throw TrelloException.AlreadyExists(name)
+        if (boardData.getBoardByName(name) != null) throw TrelloException.AlreadyExists(name)
         val user = getUser(token)
-        return data.createBoard(user.idUser, name, description)
+        return boardData.createBoard(user.idUser, name, description)
     }
 
     fun getBoard(token: String, idBoard: Int): Board {  //already verifies if Board belongs to User and if he exists
         val idUser = getUser(token).idUser
         if (!checkUserInBoard(idUser, idBoard)) throw TrelloException.NotFound("Board")
-        return data.getBoard(idBoard) ?: throw TrelloException.NotFound("Board")
+        return boardData.getBoard(idBoard) ?: throw TrelloException.NotFound("Board")
     }
 
     fun getBoardsFromUser(token: String): List<Board> {
         val user = getUser(token)
-        return data.getBoardsFromUser(user.idUser)
+        return boardData.getBoardsFromUser(user.idUser)
     }
 
     fun addUserToBoard(token: String, idUser: Int, idBoard: Int) {
         val newUser = getUser(idUser)   //user to add
         if (checkUserInBoard(newUser.idUser, idBoard)) return    //Idempotent Operation
-        data.addUserToBoard(idUser, getBoard(token, idBoard))
+        boardData.addUserToBoard(idUser, getBoard(token, idBoard))
     }
 
     private fun checkUserInBoard(idUser: Int, idBoard: Int): Boolean {
-        return data.checkUserInBoard(idUser, idBoard)
+        return boardData.checkUserInBoard(idUser, idBoard)
     }
 
     /** ----------------------------
@@ -70,18 +79,18 @@ class Services(private val data: IData) {
     fun createList(token: String, idBoard: Int, name: String): Int {
         isValidString(name)
         getBoard(token, idBoard)
-        return data.createList(idBoard, name)
+        return listData.createList(idBoard, name)
     }
 
     fun getList(token: String, idList: Int): BoardList {
-        val list = data.getList(idList) ?: throw TrelloException.NotFound("BoardList")
+        val list = listData.getList(idList) ?: throw TrelloException.NotFound("BoardList")
         getBoard(token, list.idBoard)
         return list
     }
 
     fun getListsOfBoard(token: String, idBoard: Int): List<BoardList> {
         getBoard(token, idBoard)
-        return data.getListsOfBoard(idBoard)
+        return listData.getListsOfBoard(idBoard)
     }
 
     /** ----------------------------
@@ -93,24 +102,24 @@ class Services(private val data: IData) {
         isValidString(description)
         if (endDate != null) checkEndDate(endDate)
         getList(token, idList)
-        return data.createCard(idList, name, description, endDate)
+        return cardData.createCard(idList, name, description, endDate)
     }
 
     fun getCard(token: String, idCard: Int): Card {
-        val card = data.getCard(idCard) ?: throw TrelloException.NotFound("Card")
+        val card = cardData.getCard(idCard) ?: throw TrelloException.NotFound("Card")
         getList(token, card.idList)
         return card
     }
 
     fun getCardsFromList(token: String, idList: Int): List<Card> {
         getList(token, idList)
-        return data.getCardsFromList(idList)
+        return cardData.getCardsFromList(idList)
     }
 
     fun moveCard(token: String, idCard: Int, idList: Int) {
         val card = getCard(token, idCard) // verifies that card "belongs" to the user.
         getList(token, idList) // verifies that listDst "belongs" to the user.
-        return data.moveCard(card, idList)
+        return cardData.moveCard(card, idList)
     }
 }
 
