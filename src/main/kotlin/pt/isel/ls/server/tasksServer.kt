@@ -35,9 +35,9 @@ fun main() {
 
     val cardRoutes = routes(
         "board/{idBoard}/list/{idList}/card" bind POST to webApi::createCard,
-        "board/{idBoard}/list/{idList}/card" bind GET to webApi::getCardsFromList, // TODO()
-        "board/{idBoard}/list/{idList/card/{idCard}" bind GET to webApi::getCard,
-        "board/{idBoard}/list/{idList}/card/{idCard}" bind PUT to webApi::moveCard // TODO()
+        "board/{idBoard}/list/{idList}/card" bind GET to webApi::getCardsFromList,
+        "board/{idBoard}/list/{idList}/card/{idCard}" bind GET to webApi::getCard,
+        "board/{idBoard}/list/{idList}/card/{idCard}" bind PUT to webApi::moveCard
     )
 
     val app = routes(

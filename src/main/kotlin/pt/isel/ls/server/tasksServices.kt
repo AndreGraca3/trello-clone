@@ -96,10 +96,11 @@ class Services(private val data: IData) {
         return data.createCard(idList, name, description, endDate)
     }
 
-    fun getCard(token: String, idCard: Int): Card {
+    fun getCard(token: String, idBoard: Int, idList: Int, idCard: Int): Card {
         val card = data.getCard(idCard) ?: throw TrelloException.NotFound("Card")
         getList(token, card.idList)
         return card
+        //TODO
     }
 
     fun getCardsFromList(token: String, idList: Int): List<Card> {
@@ -108,8 +109,9 @@ class Services(private val data: IData) {
     }
 
     fun moveCard(token: String, idCard: Int, idList: Int) {
-        val card = getCard(token, idCard)
-        return data.moveCard(card, idList)   //not sure if this works
+        val card = getCard(token, idCard, idList, idCard)
+        getList(token, idList)
+        return data.moveCard(card, idList)
     }
 }
 

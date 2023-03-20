@@ -55,11 +55,19 @@ class WebApi(private val services: Services) {
     }
 
     fun createCard(request: Request): Response {
-        return handleRequest(request, true, ::createCard)
+        return handleRequest(request, true, ::createCardInternal)
     }
 
     fun getCard(request: Request): Response {
-        return handleRequest(request, true, ::getCard)
+        return handleRequest(request, true, ::getCardInternal)
+    }
+
+    fun getCardsFromList(request: Request): Response {
+        return handleRequest(request, true, ::getCardsFromListInternal)
+    }
+
+    fun moveCard(request: Request): Response {
+        return handleRequest(request, true, ::moveCardInternal)
     }
 
     /** internal functions , logic behind the scenes **/
@@ -124,7 +132,7 @@ class WebApi(private val services: Services) {
         return createRsp(OK, services.getListsOfBoard(token, idBoard))
     }
 
-    private fun createCard(
+    private fun createCardInternal(
         request: Request,
         token: String
     ): Response {   //Why is this POST and not PUT like createList?
@@ -136,8 +144,26 @@ class WebApi(private val services: Services) {
         )
     }
 
-    private fun getCard(request: Request, token: String): Response {
-        TODO()
+    private fun getCardInternal(request: Request, token: String): Response {
+        val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
+        val idList = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
+        val idCard = request.path("idCard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idCard")
+        return createRsp(OK, services.getCard(token, idBoard, idList, idCard))
+    }
+
+    private fun getCardsFromListInternal(request: Request, token: String): Response {
+        //val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
+        val idList = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
+        return createRsp(OK, services.getCardsFromList(token, idList))
+        //TODO check idBoard need
+    }
+
+    private fun moveCardInternal(request: Request, token: String): Response {
+        //val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
+        val idList = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
+        val idCard = request.path("idCard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idCard")
+        return createRsp(OK, services.moveCard(token, idCard, idList))
+        //TODO check idBoard need
     }
 }
 
