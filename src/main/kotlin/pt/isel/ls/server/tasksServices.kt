@@ -96,11 +96,10 @@ class Services(private val data: IData) {
         return data.createCard(idList, name, description, endDate)
     }
 
-    fun getCard(token: String, idBoard: Int, idList: Int, idCard: Int): Card {
+    fun getCard(token: String, idCard: Int): Card {
         val card = data.getCard(idCard) ?: throw TrelloException.NotFound("Card")
         getList(token, card.idList)
         return card
-        //TODO
     }
 
     fun getCardsFromList(token: String, idList: Int): List<Card> {
@@ -109,8 +108,8 @@ class Services(private val data: IData) {
     }
 
     fun moveCard(token: String, idCard: Int, idList: Int) {
-        val card = getCard(token, idCard, idList, idCard)
-        getList(token, idList)
+        val card = getCard(token, idCard) // verifies that card "belongs" to the user.
+        getList(token, idList) // verifies that listDst "belongs" to the user.
         return data.moveCard(card, idList)
     }
 }

@@ -4,7 +4,6 @@ import pt.isel.ls.Board
 import pt.isel.ls.BoardList
 import pt.isel.ls.Card
 import pt.isel.ls.User
-import kotlin.collections.*
 
 interface IData {
 
@@ -50,12 +49,11 @@ interface IData {
      *  Card Functions
      *  ------------------------------**/
 
-    fun createCard(idList: Int, name: String, description: String, endDate: String? = null): Int //check endDate
+    fun createCard(idList: Int, name: String, description: String, endDate: String? = null): Int // check endDate
 
     fun getCardsFromList(idList: Int): List<Card>
 
     fun getCard(idCard: Int): Card?
 
     fun moveCard(card: Card, idListDst: Int)
-
 }

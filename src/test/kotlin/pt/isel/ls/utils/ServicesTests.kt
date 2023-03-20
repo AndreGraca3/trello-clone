@@ -1,11 +1,15 @@
 package pt.isel.ls.utils
 
+import org.testng.annotations.BeforeTest
+import java.time.format.DateTimeParseException
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 import pt.isel.ls.server.Services
 import pt.isel.ls.server.data.DataMem
 import pt.isel.ls.server.data.initialState
 import pt.isel.ls.server.exceptions.TrelloException
-import java.time.format.DateTimeParseException
-import kotlin.test.*
 
 class ServicesTests {
 
@@ -83,7 +87,7 @@ class ServicesTests {
     @Test
     fun `Create board with invalid token`() {
         val err = assertFailsWith<TrelloException.NotFound> {
-            services.createBoard("INVALID_TOKEN", dummyBoardName, dummyBoardDescription)
+            services.createBoard(invalidToken, dummyBoardName, dummyBoardDescription)
         }
         assertEquals(404, err.status.code)
         assertEquals("User not found.", err.message)
@@ -117,8 +121,8 @@ class ServicesTests {
         val err = assertFailsWith<TrelloException.NotFound> {
             val user1 = services.createUser(dummyName, dummyEmail)
             val user2 = services.createUser("user2", "user2@gmail.com")
-            val newBoardId = services.createBoard(invalidToken, dummyBoardName, dummyBoardDescription)
-            services.addUserToBoard(user1.second, user2.first, newBoardId)
+            val newBoardId = services.createBoard(user1.second, dummyBoardName, dummyBoardDescription)
+            services.addUserToBoard(invalidToken, user2.first, newBoardId)
         }
         assertEquals(404, err.status.code)
         assertEquals("User not found.", err.message)
@@ -217,7 +221,6 @@ class ServicesTests {
         assertEquals("User not found.", err.message)
     }
 
-
     /** ----------------------------
      *  Card Test
      *  ------------------------------**/
@@ -237,8 +240,11 @@ class ServicesTests {
         val newBoardId = services.createBoard(user.second, dummyBoardName, dummyBoardDescription)
         val newBoardListId = services.createList(user.second, newBoardId, dummyBoardListName)
         val newCardId = services.createCard(
-            user.second, newBoardListId, dummyCardName,
-            dummyCardDescription, validEndDate
+            user.second,
+            newBoardListId,
+            dummyCardName,
+            dummyCardDescription,
+            validEndDate
         )
         assertEquals(0, newCardId)
     }
@@ -272,7 +278,7 @@ class ServicesTests {
         val newBoardId = services.createBoard(user.second, dummyBoardName, dummyBoardDescription)
         val newBoardListId = services.createList(user.second, newBoardId, dummyBoardListName)
         val cardId = services.createCard(user.second, newBoardListId, dummyCardName, dummyCardDescription, validEndDate)
-        val card = services.getCard(user.second, newBoardId, newBoardListId, cardId)
+        val card = services.getCard(user.second, cardId)
         assertEquals(cardId, card.idCard)
     }
 
@@ -284,7 +290,7 @@ class ServicesTests {
             val newBoardListId = services.createList(user.second, newBoardId, dummyBoardListName)
             val cardId =
                 services.createCard(user.second, newBoardListId, dummyCardName, dummyCardDescription, validEndDate)
-            services.getCard(invalidToken, newBoardId, newBoardListId, cardId)
+            services.getCard(invalidToken, cardId)
         }
         assertEquals(404, err.status.code)
         assertEquals("User not found.", err.message)
@@ -364,12 +370,9 @@ class ServicesTests {
                 services.createCard(user.second, newBoardListId1, dummyCardName, dummyCardDescription, validEndDate)
 
             val newBoardListId2 = services.createList(user.second, newBoardId, dummyBoardListName)
-            services.moveCard(invalidToken, cardId,newBoardListId2)
+            services.moveCard(invalidToken, cardId, newBoardListId2)
         }
         assertEquals(404, err.status.code)
         assertEquals("User not found.", err.message)
     }
-
-
-
 }
