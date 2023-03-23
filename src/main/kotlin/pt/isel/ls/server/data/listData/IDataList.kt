@@ -8,5 +8,4 @@ interface IDataList {
     fun getList(idList: Int): BoardList?
 
     fun getListsOfBoard(idBoard: Int): List<BoardList>
-
 }

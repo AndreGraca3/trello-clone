@@ -33,5 +33,4 @@ class BoardDataMem : IDataBoard {
     override fun checkUserInBoard(idUser: Int, idBoard: Int): Boolean {
         return boards.any { it.idUsers.contains(idUser) && it.idBoard == idBoard }
     }
-
 }

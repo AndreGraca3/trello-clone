@@ -25,5 +25,4 @@ class UserDataMem : IUserData {
     override fun checkEmail(email: String): Boolean {
         return users.none { it.email == email }
     }
-
 }
