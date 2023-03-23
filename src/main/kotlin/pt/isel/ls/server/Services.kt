@@ -4,7 +4,6 @@ import pt.isel.ls.Board
 import pt.isel.ls.BoardList
 import pt.isel.ls.Card
 import pt.isel.ls.User
-import pt.isel.ls.server.data.*
 import pt.isel.ls.server.data.boardData.DataBoard
 import pt.isel.ls.server.data.cardData.DataCard
 import pt.isel.ls.server.data.listData.DataList
@@ -13,10 +12,10 @@ import pt.isel.ls.server.exceptions.TrelloException
 import java.time.LocalDate
 
 class Services(
-    private val userData : DataUser,
-    private val boardData : DataBoard,
-    private val listData : DataList,
-    private val cardData : DataCard
+    private val userData: DataUser,
+    private val boardData: DataBoard,
+    private val listData: DataList,
+    private val cardData: DataCard
 ) {
 
     /** ----------------------------
@@ -32,7 +31,7 @@ class Services(
     }
 
     fun getUser(token: String): User {
-        return userData.getUser(token) ?: throw TrelloException.NotFound("User")    //not sure
+        return userData.getUser(token) ?: throw TrelloException.NotFound("User") // not sure
     }
 
     fun getUser(id: Int): User {
@@ -51,7 +50,7 @@ class Services(
         return boardData.createBoard(user.idUser, name, description)
     }
 
-    fun getBoard(token: String, idBoard: Int): Board {  //already verifies if Board belongs to User and if he exists
+    fun getBoard(token: String, idBoard: Int): Board { // already verifies if Board belongs to User and if he exists
         val idUser = getUser(token).idUser
         if (!checkUserInBoard(idUser, idBoard)) throw TrelloException.NotFound("Board")
         return boardData.getBoard(idBoard) ?: throw TrelloException.NotFound("Board")
@@ -63,8 +62,8 @@ class Services(
     }
 
     fun addUserToBoard(token: String, idUser: Int, idBoard: Int) {
-        val newUser = getUser(idUser)   //user to add
-        if (checkUserInBoard(newUser.idUser, idBoard)) return    //Idempotent Operation
+        val newUser = getUser(idUser) // user to add
+        if (checkUserInBoard(newUser.idUser, idBoard)) return // Idempotent Operation
         boardData.addUserToBoard(idUser, getBoard(token, idBoard))
     }
 
@@ -123,7 +122,7 @@ class Services(
     }
 }
 
-//Aux Functions
+// Aux Functions
 private fun checkEndDate(endDate: String) {
     val endDateParsed = LocalDate.parse(endDate) // 2023-03-14
     if (endDateParsed < LocalDate.now()) throw TrelloException.IllegalArgument(endDate)

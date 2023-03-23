@@ -8,8 +8,14 @@ import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.OK
 import org.http4k.routing.path
 import org.slf4j.LoggerFactory
-import pt.isel.ls.*
+import pt.isel.ls.BoardIn
+import pt.isel.ls.BoardOut
+import pt.isel.ls.CardIn
+import pt.isel.ls.CardOut
+import pt.isel.ls.UserIn
+import pt.isel.ls.UserOut
 import pt.isel.ls.server.exceptions.TrelloException
+
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

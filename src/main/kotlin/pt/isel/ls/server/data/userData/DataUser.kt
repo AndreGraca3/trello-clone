@@ -24,5 +24,4 @@ class DataUser : IDataUser {
     override fun checkEmail(email: String): Boolean {
         return users.none { it.email == email }
     }
-
 }

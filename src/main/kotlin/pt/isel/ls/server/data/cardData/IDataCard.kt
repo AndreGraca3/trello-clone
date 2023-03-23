@@ -10,5 +10,4 @@ interface IDataCard {
     fun getCard(idCard: Int): Card?
 
     fun moveCard(card: Card, idListDst: Int)
-
 }

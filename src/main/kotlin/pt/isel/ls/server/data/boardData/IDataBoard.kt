@@ -14,5 +14,4 @@ interface IDataBoard {
     fun getBoard(idBoard: Int): Board?
 
     fun checkUserInBoard(idUser: Int, idBoard: Int): Boolean
-
 }
