@@ -1,14 +1,15 @@
 package pt.isel.ls.server.data.userData
 
 import pt.isel.ls.User
-import pt.isel.ls.server.data.getNextId
-import pt.isel.ls.server.data.users
+import pt.isel.ls.server.getNextId
+import pt.isel.ls.users
 import java.util.*
 
-class DataUser : IDataUser {
+class UserDataMem : IUserData {
+
     override fun createUser(name: String, email: String): Pair<Int, String> {
         val token = UUID.randomUUID().toString()
-        val newUser = User(getNextId(User::class.java), email, name, token)
+        val newUser = User(getNextId(users), email, name, token)
         users.add(newUser)
         return Pair(newUser.idUser, token)
     }

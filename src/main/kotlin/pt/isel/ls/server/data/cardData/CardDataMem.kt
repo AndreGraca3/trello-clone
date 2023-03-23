@@ -1,14 +1,16 @@
 package pt.isel.ls.server.data.cardData
 
+import pt.isel.ls.Board
 import pt.isel.ls.Card
-import pt.isel.ls.server.data.cards
-import pt.isel.ls.server.data.getNextId
+import pt.isel.ls.server.getNextId
 import java.time.LocalDate
 
-class DataCard : IDataCard {
+class CardDataMem : IDataCard {
+    private val cards = mutableListOf<Card>()
+
     override fun createCard(idList: Int, name: String, description: String, endDate: String?): Int {
         val newCard =
-            Card(getNextId(Card::class.java), idList, name, description, LocalDate.now().toString(), endDate, false)
+            Card(getNextId(cards), idList, name, description, LocalDate.now().toString(), endDate, false)
         cards.add(newCard)
         return newCard.idCard
     }

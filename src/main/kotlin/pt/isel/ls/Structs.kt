@@ -51,3 +51,5 @@ data class CardOut(
     val endDate: String?,
     var archived: Boolean
 )
+
+val users = mutableListOf<User>()

@@ -1,12 +1,15 @@
 package pt.isel.ls.server.data.listData
 
+import pt.isel.ls.Board
 import pt.isel.ls.BoardList
-import pt.isel.ls.server.data.getNextId
-import pt.isel.ls.server.data.lists
+import pt.isel.ls.server.getNextId
 
-class DataList : IDataList {
+class ListDataMem : IDataList {
+    private val lists = mutableListOf<BoardList>()
+
+
     override fun createList(idBoard: Int, name: String): Int {
-        val newBoardList = BoardList(getNextId(BoardList::class.java), idBoard, name)
+        val newBoardList = BoardList(getNextId(lists), idBoard, name)
         lists.add(newBoardList)
         return newBoardList.idList
     }
