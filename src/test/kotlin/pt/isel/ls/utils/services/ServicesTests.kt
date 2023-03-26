@@ -1,4 +1,4 @@
-package pt.isel.ls.utils
+package pt.isel.ls.utils.services
 
 import pt.isel.ls.server.services.Services
 import pt.isel.ls.server.data.boardData.BoardDataMem
