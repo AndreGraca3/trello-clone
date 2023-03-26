@@ -1,14 +1,12 @@
 package pt.isel.ls.server.data.boardData
 
 import pt.isel.ls.Board
-import pt.isel.ls.User
-import pt.isel.ls.server.getNextId
+import pt.isel.ls.server.data.boards
+import pt.isel.ls.server.data.getNextId
 
-class BoardDataMem : IDataBoard {
-    private val boards = mutableListOf<Board>()
-
+class DataBoard : IDataBoard {
     override fun createBoard(idUser: Int, name: String, description: String): Int {
-        val newBoard = Board(getNextId(boards), name, description, mutableListOf())
+        val newBoard = Board(getNextId(Board::class.java), name, description, mutableListOf())
         addUserToBoard(idUser, newBoard)
         boards.add(newBoard)
         return newBoard.idBoard
