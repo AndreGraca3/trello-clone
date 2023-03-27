@@ -31,7 +31,7 @@ fun main() {
     val boardRoutes = routes(
         "board" bind POST to webApi::createBoard,
         "board" bind GET to webApi::getBoardsFromUser,
-        "board/{idBoard}/{idUser}" bind PUT to webApi::addUserToBoard, /** verificar este path com o martin ( path ou body)**/
+        "board/{idBoard}" bind PUT to webApi::addUserToBoard,
         "board/{idBoard}" bind GET to webApi::getBoard
     )
 

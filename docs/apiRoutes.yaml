@@ -43,7 +43,6 @@ paths:
         500:
           description: internal server error.
 
-  /user/{idUser}:
     get:
       summary: get details of a user
       operationId: getDetails
@@ -54,10 +53,10 @@ paths:
       produces:
         - application/json
       parameters:
-        - in: path
-          name: idUser
-          type: integer
-          description: ID of user to be fetched.
+        - in: header
+          name: token
+          type: string
+          description: authorization token.
           required: true
       responses:
         200:
@@ -138,7 +137,7 @@ paths:
           description: internal server error.
 
 
-  /board/{idBoard}/{idUser}:
+  /board/{idBoard}:
     put:
       summary: add a user to a board.
       operationId: AddUserBoard
@@ -160,10 +159,11 @@ paths:
           name: idBoard
           type: integer
           required: true
-        - in: path
+        - in: body
           name: idUser
-          type: integer
           required: true
+          schema:
+            $ref: '#/definitions/idUser'
       responses:
         201:
           description: user added.
@@ -176,7 +176,6 @@ paths:
         500:
           description: internal server error.
 
-  /board/{idBoard}:
     get:
       summary: get details from a board.
       operationId: getDetailsBoard

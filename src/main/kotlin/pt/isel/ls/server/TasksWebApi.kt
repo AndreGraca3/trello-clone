@@ -110,7 +110,7 @@ class WebApi(private val services: Services) {
 
     private fun addUserToBoardInternal(request: Request, token: String): Response {
         val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
-        val idUser = request.path("idUser")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idUser")
+        val idUser = Json.decodeFromString<Int>(request.bodyString())
         return createRsp(OK, services.addUserToBoard(token, idUser, idBoard))
     }
 
