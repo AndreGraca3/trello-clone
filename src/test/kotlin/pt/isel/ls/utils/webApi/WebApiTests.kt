@@ -19,8 +19,7 @@ import pt.isel.ls.server.data.cardData.DataCard
 import pt.isel.ls.server.data.initialState
 import pt.isel.ls.server.data.listData.DataList
 import pt.isel.ls.server.data.userData.DataUser
-import pt.isel.ls.utils.dummyEmail
-import pt.isel.ls.utils.dummyName
+import pt.isel.ls.utils.*
 
 class WebApiTest {
 
@@ -31,22 +30,26 @@ class WebApiTest {
     private val validToken = "b2751dfa-1386-440a-bb9b-0927f6ad6163"
 
     private val dataUser = DataUser()
-
     private val dataBoard = DataBoard()
-
     private val dataList = DataList()
-
     private val dataCard = DataCard()
-
     private val webApi = WebApi(Services(dataUser, dataBoard, dataList, dataCard))
 
 
+    private fun createComponents() {
+        val user = dataUser.createUser(dummyName, dummyEmail)
+        repeat(3) {
+            val board = dataBoard.createBoard(user.first, dummyBoardName + it, dummyBoardDescription + it)
+            val list = dataList.createList(board, dummyBoardListName)
+            dataCard.createCard(list, dummyCardName, dummyCardDescription)
+        }
+    }
 
-    //private lateinit var jettyServer : Http4kServer
-
+    /** Every Test Starts with **/
     @BeforeTest
     fun dataSetup() {
         initialState()
+        createComponents()
     }
 
     /*@BeforeClass
@@ -104,7 +107,12 @@ class WebApiTest {
         assertEquals(dummyEmail,userOut.email)
         assertEquals(userIn.second,userOut.token)
     }
-    
+
+    @Test
+    fun `create list`() {
+
+    }
+
     /*@AfterClass
     fun serverStop(){
         jettyServer.stop()
