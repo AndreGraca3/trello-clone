@@ -36,9 +36,7 @@ data class Card(
 
 @Serializable
 data class CardIn(
-    val idList: Int,
     val name: String,
-    val startDate: String,
     val description: String,
     val endDate: String?
 ) // name and description should be vars

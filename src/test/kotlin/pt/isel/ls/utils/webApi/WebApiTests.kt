@@ -49,7 +49,7 @@ class WebApiTest {
     @BeforeTest
     fun dataSetup() {
         initialState()
-        createComponents()
+        //createComponents()
     }
 
     /*@BeforeClass
@@ -117,4 +117,64 @@ class WebApiTest {
     fun serverStop(){
         jettyServer.stop()
     }*/
+    //TO DELETE BENEATH THIS LINE INCLUDING THIS COMMENT
+
+    @Test
+    fun `create card without endDate`(){
+        val userIn = dataUser.createUser(dummyName, dummyEmail)
+        val idBoard = dataBoard.createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
+        val idList = dataList.createList(idBoard, dummyBoardListName)
+        val cardIn = pt.isel.ls.CardIn(dummyCardName, dummyCardDescription, null)
+
+        val requestBody = Json.encodeToString(cardIn)
+
+        val response = app(Request(Method.POST, "$baseUrl/board/${idBoard}/list/${idList}/card")
+            .header("Authorization", "Bearer ${userIn.second}")
+            .body(requestBody))
+
+        assertEquals(Status.CREATED, response.status)
+        assertEquals(response.header("content-type"), "application/json")
+
+        val bodyString = response.bodyString()
+
+        val cardOut = Json.decodeFromString<Int>(bodyString)
+        assertEquals(0, cardOut)
+    }
+
+    @Test
+    fun `get card`(){
+        val userIn = dataUser.createUser(dummyName, dummyEmail)
+        val idBoard = dataBoard.createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
+        val idList = dataList.createList(idBoard, dummyBoardListName)
+        val idCard = dataCard.createCard(idList, dummyCardName, dummyCardDescription, null)
+
+        val response = app(Request(Method.GET, "$baseUrl/board/${idBoard}/list/${idList}/card/${idCard}")
+            .header("Authorization", "Bearer ${userIn.second}"))
+
+        assertEquals(Status.OK, response.status)
+        assertEquals(response.header("content-type"), "application/json")
+
+        val cardOut = Json.decodeFromString<pt.isel.ls.CardOut>(response.bodyString())
+        assertEquals(dummyCardName, cardOut.name)
+        assertEquals(dummyCardDescription, cardOut.description)
+    }
+
+    @Test
+    fun `move card`(){
+        val userIn = dataUser.createUser(dummyName, dummyEmail)
+        val idBoard = dataBoard.createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
+        val idList = dataList.createList(idBoard, dummyBoardListName)
+        val idCard = dataCard.createCard(idList, dummyCardName, dummyCardDescription, null)
+        val idListDst = dataList.createList(idBoard, dummyBoardListName)
+
+        val requestBody = Json.encodeToString(idListDst)
+
+        val response = app(Request(Method.PUT, "$baseUrl/board/${idBoard}/list/${idList}/card/${idCard}")
+            .header("Authorization", "Bearer ${userIn.second}")
+            .body(requestBody))
+
+        assertEquals(Status.OK, response.status)
+        assertEquals(response.header("content-type"), "application/json")
+
+    }
 }
