@@ -61,8 +61,18 @@ class WebApiTest {
 
     private val app = routes(
         "user" bind Method.POST to webApi::createUser,
-        "user/{idUser}" bind Method.GET to webApi::getUser
-        /** add all routes.**/
+        "user/{idUser}" bind Method.GET to webApi::getUser,
+        "board" bind Method.POST to webApi::createBoard,
+        "board" bind Method.GET to webApi::getBoardsFromUser,
+        "board/{idBoard}/{idUser}" bind Method.PUT to webApi::addUserToBoard, /** verificar este path com o martin ( path ou body)**/
+        "board/{idBoard}" bind Method.GET to webApi::getBoard,
+        "board/{idBoard}/list" bind Method.POST to webApi::createList,
+        "board/{idBoard}/list" bind Method.GET to webApi::getListsFromBoard,
+        "board/{idBoard}/list/{idList}" bind Method.GET to webApi::getList, /** requer idBody? **/
+        "board/{idBoard}/list/{idList}/card" bind Method.POST to webApi::createCard,
+        "board/{idBoard}/list/{idList}/card" bind Method.GET to webApi::getCardsFromList,
+        "board/{idBoard}/list/{idList}/card/{idCard}" bind Method.GET to webApi::getCard,
+        "board/{idBoard}/list/{idList}/card/{idCard}" bind Method.PUT to webApi::moveCard /** idList destination comes in body.**/
     )
 
     @Test
@@ -94,7 +104,7 @@ class WebApiTest {
         assertEquals(dummyEmail,userOut.email)
         assertEquals(userIn.second,userOut.token)
     }
-
+    
     /*@AfterClass
     fun serverStop(){
         jettyServer.stop()
