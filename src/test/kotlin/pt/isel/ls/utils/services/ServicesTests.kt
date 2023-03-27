@@ -1,12 +1,13 @@
 package pt.isel.ls.utils.services
 
-import pt.isel.ls.server.services.Services
-import pt.isel.ls.server.data.boardData.BoardDataMem
-import pt.isel.ls.server.data.cardData.CardDataMem
+import pt.isel.ls.server.Services
+import pt.isel.ls.server.data.boardData.DataBoard
+import pt.isel.ls.server.data.cardData.DataCard
 import pt.isel.ls.server.data.initialState
-import pt.isel.ls.server.data.listData.ListDataMem
-import pt.isel.ls.server.data.userData.UserDataMem
+import pt.isel.ls.server.data.listData.DataList
+import pt.isel.ls.server.data.userData.DataUser
 import pt.isel.ls.server.exceptions.TrelloException
+import pt.isel.ls.utils.*
 import java.time.format.DateTimeParseException
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -16,32 +17,11 @@ import kotlin.test.assertTrue
 
 class ServicesTests {
 
-    // Generic Properties
-    private val invalidToken = "INVALID_TOKEN"
-    private val invalidEndDate = "INVALID_END_DATE"
-
-    // User Dummies
-    private val dummyName = "Alberto"
-    private val dummyEmail = "alberto.tremocos@gmail.com"
-    private val dummyBadEmail = dummyEmail.replace("@", "")
-
-    // Board Dummies
-    private val dummyBoardName = "Board1"
-    private val dummyBoardDescription = "This is Board1"
-
-    // BoardList Dummies
-    private val dummyBoardListName = "List1"
-
-    // Card Dummies
-    private val dummyCardName = "Card1"
-    private val validEndDate = "2023-12-12"
-    private val dummyCardDescription = "This is Card1"
-
     // Creation of data and services objects
-    private val userDataMem = UserDataMem()
-    private val boardDataMem = BoardDataMem()
-    private val listDataMem = ListDataMem()
-    private val cardDataMem = CardDataMem()
+    private val userDataMem = DataUser()
+    private val boardDataMem = DataBoard()
+    private val listDataMem = DataList()
+    private val cardDataMem = DataCard()
     private val services = Services(userDataMem, boardDataMem, listDataMem, cardDataMem)
 
     /**

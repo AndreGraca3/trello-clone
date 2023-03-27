@@ -86,7 +86,7 @@ class WebApi(private val services: Services) {
     private fun createUserInternal(request: Request, token: String): Response {
         val newUser = Json.decodeFromString<UserIn>(request.bodyString())
         val createdUser = services.createUser(newUser.name, newUser.email)
-        return createRsp(OK, UserOut(createdUser.first, createdUser.second))
+        return createRsp(CREATED, UserOut(createdUser.first, createdUser.second))
     }
 
     private fun getUserInternal(request: Request, token: String): Response {
