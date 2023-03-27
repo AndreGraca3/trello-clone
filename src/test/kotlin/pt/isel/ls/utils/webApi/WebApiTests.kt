@@ -7,11 +7,9 @@ import kotlin.test.*
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
-import pt.isel.ls.UserIn
-import pt.isel.ls.UserOut
-import pt.isel.ls.User
 import org.http4k.routing.bind
 import org.http4k.routing.routes
+import pt.isel.ls.*
 import pt.isel.ls.server.Services
 import pt.isel.ls.server.WebApi
 import pt.isel.ls.server.data.boardData.DataBoard
@@ -36,20 +34,10 @@ class WebApiTest {
     private val webApi = WebApi(Services(dataUser, dataBoard, dataList, dataCard))
 
 
-    private fun createComponents() {
-        val user = dataUser.createUser(dummyName, dummyEmail)
-        repeat(3) {
-            val board = dataBoard.createBoard(user.first, dummyBoardName + it, dummyBoardDescription + it)
-            val list = dataList.createList(board, dummyBoardListName)
-            dataCard.createCard(list, dummyCardName, dummyCardDescription)
-        }
-    }
-
     /** Every Test Starts with **/
     @BeforeTest
     fun dataSetup() {
         initialState()
-        createComponents()
     }
 
     /*@BeforeClass
@@ -110,11 +98,55 @@ class WebApiTest {
 
     @Test
     fun `create list`() {
+        val user = dataUser.createUser(dummyName, dummyEmail)
+        val idBoard = dataBoard.createBoard(user.first, dummyBoardName, dummyBoardDescription)
 
+        val list = BoardListIn(dummyBoardListName)
+
+        val response = app(Request(Method.POST, "$baseUrl/board/$idBoard/list")
+            .body(Json.encodeToString(list))
+            .header("Authorization", "Bearer ${user.second}")
+        )
+
+        val listOut = Json.decodeFromString<Int>(response.bodyString())
+
+        assertEquals(0, listOut)
     }
 
-    /*@AfterClass
-    fun serverStop(){
-        jettyServer.stop()
-    }*/
+    @Test
+    fun `create and get list`() {
+        val user = dataUser.createUser(dummyName, dummyEmail)
+        val idBoard = dataBoard.createBoard(user.first, dummyBoardName, dummyBoardDescription)
+        val idList = dataList.createList(idBoard, dummyBoardListName)
+
+        val response = app(Request(Method.GET, "$baseUrl/board/$idBoard/list/$idList")
+            .header("Authorization", "Bearer ${user.second}")
+        )
+
+        val listOut = Json.decodeFromString<BoardList>(response.bodyString())
+
+        assertEquals(0, listOut.idList)
+        assertEquals(dummyBoardListName, listOut.name)
+        assertEquals(idBoard, listOut.idBoard)
+    }
+
+    @Test
+    fun `get all lists from board`() {
+        val user = dataUser.createUser(dummyName, dummyEmail)
+        val idBoard = dataBoard.createBoard(user.first, dummyBoardName, dummyBoardDescription)
+        repeat(3) {dataList.createList(idBoard, dummyBoardListName)}
+
+        val response = app(Request(Method.GET, "$baseUrl/board/$idBoard/list")
+            .header("Authorization", "Bearer ${user.second}")
+        )
+
+        val listsOut = Json.decodeFromString<List<BoardList>>(response.bodyString())
+
+        val it = listsOut.iterator()
+
+        while (it.hasNext()) {
+            val elem = it.next()
+            assertEquals(idBoard, elem.idBoard)
+        }
+    }
 }

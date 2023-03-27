@@ -8,17 +8,12 @@ import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.OK
 import org.http4k.routing.path
 import org.slf4j.LoggerFactory
-import pt.isel.ls.BoardIn
-import pt.isel.ls.BoardOut
-import pt.isel.ls.CardIn
-import pt.isel.ls.CardOut
-import pt.isel.ls.UserIn
-import pt.isel.ls.UserOut
 import pt.isel.ls.server.exceptions.TrelloException
 
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import pt.isel.ls.*
 
 val logger = LoggerFactory.getLogger("pt.isel.ls.http.HTTPServer")
 
@@ -124,8 +119,8 @@ class WebApi(private val services: Services) {
 
     private fun createListInternal(request: Request, token: String): Response {
         val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
-        val name = request.path("name").toString()
-        return createRsp(CREATED, services.createList(token, idBoard, name))
+        val newList = Json.decodeFromString<BoardListIn>(request.bodyString())
+        return createRsp(CREATED, services.createList(token, idBoard, newList.name))
     }
 
     private fun getListInternal(request: Request, token: String): Response { // No auth? Only for getBoard?
@@ -137,6 +132,10 @@ class WebApi(private val services: Services) {
         val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
         return createRsp(OK, services.getListsOfBoard(token, idBoard))
     }
+
+    /** ----------------------------
+     *  Card Management
+     *  ------------------------------**/
 
     private fun createCardInternal(
         request: Request,
@@ -167,6 +166,7 @@ class WebApi(private val services: Services) {
         return createRsp(OK, services.moveCard(token, idCard, idListDst))
     }
 }
+
 
 // Aux Functions
 private fun getToken(request: Request): String {

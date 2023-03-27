@@ -24,6 +24,9 @@ data class BoardOut(val idBoard: Int)
 data class BoardList(val idList: Int, val idBoard: Int, val name: String)
 
 @Serializable
+data class BoardListIn(val name: String)
+
+@Serializable
 data class Card(
     val idCard: Int,
     var idList: Int,
