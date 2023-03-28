@@ -31,7 +31,7 @@ class Services(
     }
 
     fun getUser(token: String): User {
-        return userData.getUser(token) ?: throw TrelloException.NotFound("User") // not sure
+        return userData.getUser(token) ?: throw TrelloException.NotAuthorized() // not sure
     }
 
     fun getUser(id: Int): User {
