@@ -37,7 +37,7 @@ paths:
           schema:
             $ref: '#/definitions/userReturn'
         400:
-          description: invalid name.
+          description: invalid email or missing parameters.
         409:
           description: user already exists. # emails has been taken.
         500:
