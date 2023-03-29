@@ -1,6 +1,6 @@
 package pt.isel.ls.server.data.listData
 
-import pt.isel.ls.BoardList
+import pt.isel.ls.server.utils.BoardList
 
 interface IDataList {
     fun createList(idBoard: Int, name: String): Int

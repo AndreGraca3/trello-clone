@@ -1,16 +1,16 @@
 package pt.isel.ls.server.data
 
-import pt.isel.ls.Board
-import pt.isel.ls.BoardList
-import pt.isel.ls.Card
-import pt.isel.ls.User
+import pt.isel.ls.server.utils.Board
+import pt.isel.ls.server.utils.BoardList
+import pt.isel.ls.server.utils.Card
+import pt.isel.ls.server.utils.User
 
 val users = mutableListOf<User>()
 val boards = mutableListOf<Board>()
 val lists = mutableListOf<BoardList>()
 val cards = mutableListOf<Card>()
 
-// Aux functions
+// Data Aux functions
 fun getNextId(clazz: Class<*>): Int {
     return when (clazz.simpleName) {
         User::class.simpleName -> if (users.isNotEmpty()) users.last().idUser.inc() else 0

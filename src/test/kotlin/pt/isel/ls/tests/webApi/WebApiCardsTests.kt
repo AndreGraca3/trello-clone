@@ -1,4 +1,4 @@
-package pt.isel.ls.utils.webApi
+package pt.isel.ls.tests.webApi
 
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -7,17 +7,17 @@ import kotlin.test.*
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
-import pt.isel.ls.*
-import pt.isel.ls.server.data.initialState
-import pt.isel.ls.utils.*
+import pt.isel.ls.server.utils.CardIn
+import pt.isel.ls.server.utils.CardOut
+import pt.isel.ls.tests.utils.*
 
 class WebApiCardsTests {
 
-    /** Every Test Starts with **/
     @BeforeTest
-    fun dataSetup() {
-        initialState()
+    fun setup() {
+        TODO("use Aux functions and consts")
     }
+
 
     @Test
     fun `test create card without endDate`(){

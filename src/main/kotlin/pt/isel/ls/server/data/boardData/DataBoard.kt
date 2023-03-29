@@ -1,6 +1,6 @@
 package pt.isel.ls.server.data.boardData
 
-import pt.isel.ls.Board
+import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.data.boards
 import pt.isel.ls.server.data.getNextId
 

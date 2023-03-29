@@ -1,4 +1,4 @@
-package pt.isel.ls.utils.services
+package pt.isel.ls.tests.services
 
 import pt.isel.ls.server.Services
 import pt.isel.ls.server.data.boardData.DataBoard
@@ -7,7 +7,17 @@ import pt.isel.ls.server.data.initialState
 import pt.isel.ls.server.data.listData.DataList
 import pt.isel.ls.server.data.userData.DataUser
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.utils.*
+import pt.isel.ls.tests.utils.dummyBadEmail
+import pt.isel.ls.tests.utils.dummyBoardDescription
+import pt.isel.ls.tests.utils.dummyBoardListName
+import pt.isel.ls.tests.utils.dummyBoardName
+import pt.isel.ls.tests.utils.dummyCardDescription
+import pt.isel.ls.tests.utils.dummyCardName
+import pt.isel.ls.tests.utils.dummyEmail
+import pt.isel.ls.tests.utils.dummyName
+import pt.isel.ls.tests.utils.invalidEndDate
+import pt.isel.ls.tests.utils.invalidToken
+import pt.isel.ls.tests.utils.validEndDate
 import java.time.format.DateTimeParseException
 import kotlin.test.BeforeTest
 import kotlin.test.Test

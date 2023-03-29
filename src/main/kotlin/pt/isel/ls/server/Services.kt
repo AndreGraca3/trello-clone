@@ -1,15 +1,16 @@
 package pt.isel.ls.server
 
-import pt.isel.ls.Board
-import pt.isel.ls.BoardList
-import pt.isel.ls.Card
-import pt.isel.ls.User
 import pt.isel.ls.server.data.boardData.DataBoard
 import pt.isel.ls.server.data.cardData.DataCard
 import pt.isel.ls.server.data.listData.DataList
 import pt.isel.ls.server.data.userData.DataUser
 import pt.isel.ls.server.exceptions.TrelloException
-import java.time.LocalDate
+import pt.isel.ls.server.utils.Board
+import pt.isel.ls.server.utils.BoardList
+import pt.isel.ls.server.utils.Card
+import pt.isel.ls.server.utils.User
+import pt.isel.ls.server.utils.checkEndDate
+import pt.isel.ls.server.utils.isValidString
 
 class Services(
     private val userData: DataUser,
@@ -120,16 +121,4 @@ class Services(
         getList(token, idList) // verifies that listDst "belongs" to the user.
         return cardData.moveCard(card, idList)
     }
-}
-
-// Aux Functions
-private fun checkEndDate(endDate: String) {
-    val endDateParsed = LocalDate.parse(endDate) // 2023-03-14
-    if (endDateParsed < LocalDate.now()) throw TrelloException.IllegalArgument(endDate)
-}
-
-private fun isValidString(value: String): Boolean {
-    val trim = value.trim()
-    if (trim != "" && trim != "null") return true
-    throw TrelloException.IllegalArgument(value)
 }

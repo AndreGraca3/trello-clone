@@ -1,6 +1,6 @@
 package pt.isel.ls.server.data.userData
 
-import pt.isel.ls.User
+import pt.isel.ls.server.utils.User
 
 interface IDataUser {
     fun createUser(name: String, email: String): Pair<Int, String>

@@ -1,4 +1,4 @@
-package pt.isel.ls
+package pt.isel.ls.server.utils
 
 import kotlinx.serialization.Serializable
 

@@ -8,24 +8,28 @@ import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.OK
 import org.http4k.routing.path
 import org.slf4j.LoggerFactory
+import pt.isel.ls.server.utils.BoardIn
+import pt.isel.ls.server.utils.BoardListIn
+import pt.isel.ls.server.utils.BoardOut
+import pt.isel.ls.server.utils.CardIn
+import pt.isel.ls.server.utils.CardOut
+import pt.isel.ls.server.utils.UserIn
+import pt.isel.ls.server.utils.UserOut
 import pt.isel.ls.server.exceptions.TrelloException
-
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import pt.isel.ls.*
 
 val logger = LoggerFactory.getLogger("pt.isel.ls.http.HTTPServer")
 
 class WebApi(private val services: Services) {
 
-    // @NotAuthorization
     fun createUser(request: Request): Response {
         return handleRequest(request, false, ::createUserInternal)
     }
 
     fun getUser(request: Request): Response {
-        return handleRequest(request, true, ::getUserInternal) /** tinhamos optado por necessitar login.**/
+        return handleRequest(request, true, ::getUserInternal)
     }
 
     fun createBoard(request: Request): Response {
@@ -123,12 +127,12 @@ class WebApi(private val services: Services) {
         return createRsp(CREATED, services.createList(token, idBoard, newList.name))
     }
 
-    private fun getListInternal(request: Request, token: String): Response { // No auth? Only for getBoard?
+    private fun getListInternal(request: Request, token: String): Response {
         val idList = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
         return createRsp(OK, services.getList(token, idList))
     }
 
-    private fun getListsFromBoardInternal(request: Request, token: String): Response { // No auth? Only for getBoard?
+    private fun getListsFromBoardInternal(request: Request, token: String): Response {
         val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
         return createRsp(OK, services.getListsOfBoard(token, idBoard))
     }
@@ -167,15 +171,14 @@ class WebApi(private val services: Services) {
     }
 }
 
-
-// Aux Functions
+// API Aux Functions
 private fun getToken(request: Request): String {
     val authHeader = request.header("Authorization")
     return authHeader?.removePrefix("Bearer ") ?: throw TrelloException.NotAuthorized()
 }
 
 private fun handleRequest(request: Request, auth: Boolean, handler: (Request, String) -> Response): Response {
-    /** Is it possible to have a function to receive and check N arguments else throw Exception?*/
+    /** We HAVE to get rid of auth param, annotation doesn't work tho*/
     logRequest(request)
     return try {
         if (auth) {

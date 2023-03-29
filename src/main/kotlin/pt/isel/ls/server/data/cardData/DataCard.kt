@@ -1,6 +1,6 @@
 package pt.isel.ls.server.data.cardData
 
-import pt.isel.ls.Card
+import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.data.cards
 import pt.isel.ls.server.data.getNextId
 import java.time.LocalDate

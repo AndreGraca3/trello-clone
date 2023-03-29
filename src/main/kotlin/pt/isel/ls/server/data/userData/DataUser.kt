@@ -1,6 +1,6 @@
 package pt.isel.ls.server.data.userData
 
-import pt.isel.ls.User
+import pt.isel.ls.server.utils.User
 import pt.isel.ls.server.data.getNextId
 import pt.isel.ls.server.data.users
 import java.util.*
