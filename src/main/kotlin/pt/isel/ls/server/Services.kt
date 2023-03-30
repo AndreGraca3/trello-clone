@@ -105,9 +105,9 @@ class Services(
         return cardData.createCard(idList, name, description, endDate)
     }
 
-    fun getCard(token: String, idBoard: Int, idCard: Int): Card {
+    fun getCard(token: String, idBoard: Int, idList: Int, idCard: Int): Card {
         val card = cardData.getCard(idCard) ?: throw TrelloException.NotFound("Card")
-        getList(token,idBoard, card.idList)
+        getList(token, idBoard, idList)
         return card
     }
 
@@ -116,9 +116,9 @@ class Services(
         return cardData.getCardsFromList(idList)
     }
 
-    fun moveCard(token: String, idBoard: Int, idList: Int, idCard: Int) {
-        val card = getCard(token, idBoard, idCard) // verifies that card "belongs" to the user.
-        getList(token, idBoard, idList) // verifies that listDst "belongs" to the user.
-        return cardData.moveCard(card, idList)
+    fun moveCard(token: String, idBoard: Int, idListNow: Int, idListDst: Int, idCard: Int) {
+        val card = getCard(token, idBoard, idListNow, idCard) // verifies that card "belongs" to the user.
+        getList(token, idBoard, idListDst) // verifies that listDst "belongs" to the user.
+        return cardData.moveCard(card, idListDst)
     }
 }

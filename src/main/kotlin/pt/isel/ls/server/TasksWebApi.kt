@@ -19,61 +19,65 @@ import pt.isel.ls.server.exceptions.TrelloException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import pt.isel.ls.server.annotations.Auth
+import kotlin.reflect.KFunction
+import kotlin.reflect.full.hasAnnotation
+import kotlin.reflect.jvm.isAccessible
 
 val logger = LoggerFactory.getLogger("pt.isel.ls.http.HTTPServer")
 
 class WebApi(private val services: Services) {
 
     fun createUser(request: Request): Response {
-        return handleRequest(request, false, ::createUserInternal)
+        return handleRequest(request, ::createUserInternal)
     }
 
     fun getUser(request: Request): Response {
-        return handleRequest(request, true, ::getUserInternal)
+        return handleRequest(request, ::getUserInternal)
     }
 
     fun createBoard(request: Request): Response {
-        return handleRequest(request, true, ::createBoardInternal)
+        return handleRequest(request, ::createBoardInternal)
     }
 
     fun addUserToBoard(request: Request): Response {
-        return handleRequest(request, true, ::addUserToBoardInternal)
+        return handleRequest(request, ::addUserToBoardInternal)
     }
 
     fun getBoard(request: Request): Response {
-        return handleRequest(request, true, ::getBoardInternal)
+        return handleRequest(request, ::getBoardInternal)
     }
 
     fun getBoardsFromUser(request: Request): Response {
-        return handleRequest(request, true, ::getBoardsFromUserInternal) // check if this return boards or idBoard's
+        return handleRequest(request, ::getBoardsFromUserInternal) // check if this return boards or idBoard's
     }
 
     fun createList(request: Request): Response {
-        return handleRequest(request, true, ::createListInternal)
+        return handleRequest(request, ::createListInternal)
     }
 
     fun getList(request: Request): Response {
-        return handleRequest(request, true, ::getListInternal)
+        return handleRequest(request, ::getListInternal)
     }
 
     fun getListsFromBoard(request: Request): Response {
-        return handleRequest(request, true, ::getListsFromBoardInternal)
+        return handleRequest(request, ::getListsFromBoardInternal)
     }
 
     fun createCard(request: Request): Response {
-        return handleRequest(request, true, ::createCardInternal)
+        return handleRequest(request, ::createCardInternal)
     }
 
     fun getCard(request: Request): Response {
-        return handleRequest(request, true, ::getCardInternal)
+        return handleRequest(request, ::getCardInternal)
     }
 
     fun getCardsFromList(request: Request): Response {
-        return handleRequest(request, true, ::getCardsFromListInternal)
+        return handleRequest(request, ::getCardsFromListInternal)
     }
 
     fun moveCard(request: Request): Response {
-        return handleRequest(request, true, ::moveCardInternal)
+        return handleRequest(request, ::moveCardInternal)
     }
 
     /** internal functions , logic behind the scenes **/
@@ -82,13 +86,14 @@ class WebApi(private val services: Services) {
      *  User Management
      *  ------------------------------**/
 
-    private fun createUserInternal(request: Request, token: String): Response {
+     private fun createUserInternal(request: Request, token: String): Response {
         val newUser = Json.decodeFromString<UserIn>(request.bodyString())
         val createdUser = services.createUser(newUser.name, newUser.email)
         return createRsp(CREATED, UserOut(createdUser.first, createdUser.second))
     }
 
-    private fun getUserInternal(request: Request, token: String): Response {
+    @Auth
+     private fun getUserInternal(request: Request, token: String): Response {
         val user = services.getUser(token)
         return createRsp(OK, user)
     }
@@ -97,22 +102,26 @@ class WebApi(private val services: Services) {
      *  Board Management
      *  ------------------------------**/
 
+    @Auth
     private fun createBoardInternal(request: Request, token: String): Response {
         val newBoard = Json.decodeFromString<BoardIn>(request.bodyString())
         return createRsp(CREATED, BoardOut(services.createBoard(token, newBoard.name, newBoard.description)))
     }
 
+    @Auth
     private fun getBoardInternal(request: Request, token: String): Response {
         val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
         return createRsp(OK, services.getBoard(token, idBoard))
     }
 
+    @Auth
     private fun addUserToBoardInternal(request: Request, token: String): Response {
         val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
         val idUser = Json.decodeFromString<Int>(request.bodyString())
         return createRsp(OK, services.addUserToBoard(token, idUser, idBoard))
     }
 
+    @Auth
     private fun getBoardsFromUserInternal(request: Request, token: String): Response {
         return createRsp(OK, services.getBoardsFromUser(token)) // should return empty message?
     }
@@ -121,17 +130,21 @@ class WebApi(private val services: Services) {
      *  List Management
      *  ------------------------------**/
 
+    @Auth
     private fun createListInternal(request: Request, token: String): Response {
         val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
         val newList = Json.decodeFromString<BoardListIn>(request.bodyString())
         return createRsp(CREATED, services.createList(token, idBoard, newList.name))
     }
 
+    @Auth
     private fun getListInternal(request: Request, token: String): Response {
+        val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
         val idList = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
-        return createRsp(OK, services.getList(token, idList))
+        return createRsp(OK, services.getList(token, idBoard, idList))
     }
 
+    @Auth
     private fun getListsFromBoardInternal(request: Request, token: String): Response {
         val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
         return createRsp(OK, services.getListsOfBoard(token, idBoard))
@@ -141,33 +154,43 @@ class WebApi(private val services: Services) {
      *  Card Management
      *  ------------------------------**/
 
+    @Auth
     private fun createCardInternal(
         request: Request,
         token: String
     ): Response { // Why is this POST and not PUT like createList?
+        val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
         val idList = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
         val newCard = Json.decodeFromString<CardIn>(request.bodyString())
         return createRsp(
             CREATED,
-            services.createCard(token, idList, newCard.name, newCard.description, newCard.endDate)
+            services.createCard(token, idList, idBoard, newCard.name, newCard.description, newCard.endDate)
         )
     }
 
+    @Auth
     private fun getCardInternal(request: Request, token: String): Response {
+        val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
+        val idList = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
         val idCard = request.path("idCard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idCard")
-        val card = services.getCard(token, idCard)
+        val card = services.getCard(token, idBoard, idList, idCard)
         return createRsp(OK, CardOut(card.name, card.description, card.startDate, card.endDate, card.archived))
     }
 
+    @Auth
     private fun getCardsFromListInternal(request: Request, token: String): Response {
+        val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
         val idList = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
-        return createRsp(OK, services.getCardsFromList(token, idList))
+        return createRsp(OK, services.getCardsFromList(token, idBoard, idList))
     }
 
+    @Auth
     private fun moveCardInternal(request: Request, token: String): Response {
+        val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
+        val idListNow = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
         val idListDst = Json.decodeFromString<Int>(request.bodyString())
         val idCard = request.path("idCard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idCard")
-        return createRsp(OK, services.moveCard(token, idCard, idListDst))
+        return createRsp(OK, services.moveCard(token, idCard, idBoard, idListNow, idListDst))
     }
 }
 
@@ -177,14 +200,16 @@ private fun getToken(request: Request): String {
     return authHeader?.removePrefix("Bearer ") ?: throw TrelloException.NotAuthorized()
 }
 
-private fun handleRequest(request: Request, auth: Boolean, handler: (Request, String) -> Response): Response {
+
+private fun handleRequest(request: Request, handler: KFunction<Response>): Response {
     /** We HAVE to get rid of auth param, annotation doesn't work tho*/
     logRequest(request)
+    handler.isAccessible = true
     return try {
-        if (auth) {
-            handler(request, getToken(request))
+        if (isAuthRequired(handler)) {
+            handler.call(request, getToken(request))
         } else {
-            handler(request, "null")
+            handler.call(request, "null")
         }
     } catch (e: Exception) {
         if (e is TrelloException) {
@@ -193,6 +218,10 @@ private fun handleRequest(request: Request, auth: Boolean, handler: (Request, St
             createRsp(BAD_REQUEST, e.message)
         }
     }
+}
+
+private fun isAuthRequired(function: KFunction<*>): Boolean {
+    return function.hasAnnotation<Auth>()
 }
 
 private inline fun <reified T> createRsp(status: Status, body: T): Response {
