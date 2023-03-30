@@ -19,9 +19,9 @@ class Services(
     private val cardData: DataCard
 ) {
 
-    /** ----------------------------
-     *  User Management
-     *  ------------------------------**/
+    /** ------------------------------ *
+     *         User Management         *
+     *  ---------------------------- **/
 
     fun createUser(name: String, email: String): Pair<Int, String> {
         isValidString(name)
@@ -39,9 +39,9 @@ class Services(
         return userData.getUser(id) ?: throw TrelloException.NotFound("User")
     }
 
-    /** ----------------------------
-     *  Board Management
-     *  ------------------------------**/
+    /** ------------------------------- *
+     *         Board Management         *
+     *  ------------------------------ **/
 
     fun createBoard(token: String, name: String, description: String): Int {
         isValidString(name)
@@ -72,9 +72,9 @@ class Services(
         return boardData.checkUserInBoard(idUser, idBoard)
     }
 
-    /** ----------------------------
-     *  List Management
-     *  ------------------------------**/
+    /** ------------------------------ *
+     *         List Management         *
+     *  ----------------------------- **/
 
     fun createList(token: String, idBoard: Int, name: String): Int {
         isValidString(name)
@@ -82,9 +82,9 @@ class Services(
         return listData.createList(idBoard, name)
     }
 
-    fun getList(token: String, idList: Int): BoardList {
+    fun getList(token: String, idBoard: Int, idList: Int): BoardList {
         val list = listData.getList(idList) ?: throw TrelloException.NotFound("BoardList")
-        getBoard(token, list.idBoard)
+        if(getBoard(token, idBoard) != getBoard(token, list.idBoard)) throw TrelloException.NotFound("BoardList")
         return list
     }
 
@@ -93,32 +93,32 @@ class Services(
         return listData.getListsOfBoard(idBoard)
     }
 
-    /** ----------------------------
-     *  Card Management
-     *  ------------------------------**/
+    /** -----------------------------  *
+     *         Card Management         *
+     *  ----------------------------- **/
 
-    fun createCard(token: String, idList: Int, name: String, description: String, endDate: String?): Int {
+    fun createCard(token: String, idBoard: Int, idList: Int, name: String, description: String, endDate: String?): Int {
         isValidString(name)
         isValidString(description)
         if (endDate != null) checkEndDate(endDate)
-        getList(token, idList)
+        getList(token, idBoard,idList)
         return cardData.createCard(idList, name, description, endDate)
     }
 
-    fun getCard(token: String, idCard: Int): Card {
+    fun getCard(token: String, idBoard: Int, idCard: Int): Card {
         val card = cardData.getCard(idCard) ?: throw TrelloException.NotFound("Card")
-        getList(token, card.idList)
+        getList(token,idBoard, card.idList)
         return card
     }
 
-    fun getCardsFromList(token: String, idList: Int): List<Card> {
-        getList(token, idList)
+    fun getCardsFromList(token: String, idBoard: Int, idList: Int): List<Card> {
+        getList(token,idBoard, idList)
         return cardData.getCardsFromList(idList)
     }
 
-    fun moveCard(token: String, idCard: Int, idList: Int) {
-        val card = getCard(token, idCard) // verifies that card "belongs" to the user.
-        getList(token, idList) // verifies that listDst "belongs" to the user.
+    fun moveCard(token: String, idBoard: Int, idList: Int, idCard: Int) {
+        val card = getCard(token, idBoard, idCard) // verifies that card "belongs" to the user.
+        getList(token, idBoard, idList) // verifies that listDst "belongs" to the user.
         return cardData.moveCard(card, idList)
     }
 }
