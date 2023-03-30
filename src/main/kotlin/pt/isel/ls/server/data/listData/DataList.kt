@@ -11,8 +11,8 @@ class DataList : IDataList {
         return newBoardList.idList
     }
 
-    override fun getList(idList: Int): BoardList? {
-        return lists.find { it.idList == idList }
+    override fun getList(idList: Int, idBoard: Int): BoardList? {
+        return lists.find { it.idList == idList && it.idBoard == idBoard}
     }
 
     override fun getListsOfBoard(idBoard: Int): List<BoardList> {

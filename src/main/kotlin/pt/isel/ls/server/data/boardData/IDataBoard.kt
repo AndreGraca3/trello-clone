@@ -5,7 +5,7 @@ import pt.isel.ls.server.utils.Board
 interface IDataBoard {
     fun createBoard(idUser: Int, name: String, description: String): Int
 
-    fun addUserToBoard(idUser: Int, board: Board)
+    fun addUserToBoard(idUser: Int, idBoard: Int)
 
     fun getBoardByName(name: String): Board?
 
@@ -13,5 +13,5 @@ interface IDataBoard {
 
     fun getBoard(idBoard: Int): Board?
 
-    fun checkUserInBoard(idUser: Int, idBoard: Int): Boolean
+    //fun checkUserInBoard(idUser: Int, idBoard: Int): Boolean
 }

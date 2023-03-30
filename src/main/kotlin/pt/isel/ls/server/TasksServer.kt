@@ -12,6 +12,10 @@ import pt.isel.ls.server.routes.BoardRoutes
 import pt.isel.ls.server.routes.CardRoutes
 import pt.isel.ls.server.routes.ListRoutes
 import pt.isel.ls.server.routes.UserRoutes
+import pt.isel.ls.server.services.BoardServices
+import pt.isel.ls.server.services.CardServices
+import pt.isel.ls.server.services.ListServices
+import pt.isel.ls.server.services.UserServices
 
 fun main() {
     val dataUser = DataUser()
@@ -19,13 +23,15 @@ fun main() {
     val dataList = DataList()
     val dataCard = DataCard()
 
-    val services = Services(dataUser, dataBoard, dataList, dataCard)
-    val userApi = UserWebApi(services)
-    val boardApi = BoardWebApi(services)
-    val listApi = ListWebApi(services)
-    val cardApi = CardWebApi(services)
+    val servicesUser = UserServices(dataUser)
+    val servicesBoard = BoardServices(dataBoard)
+    val servicesList = ListServices(dataList)
+    val servicesCard = CardServices(dataCard)
 
-    //val webApi = (services)
+    val userApi = UserWebApi(servicesUser)
+    val boardApi = BoardWebApi(servicesBoard)
+    val listApi = ListWebApi(servicesList)
+    val cardApi = CardWebApi(servicesCard)
 
     val app = routes(
         UserRoutes(userApi)(),

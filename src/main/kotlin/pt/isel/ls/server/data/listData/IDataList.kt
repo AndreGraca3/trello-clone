@@ -5,7 +5,7 @@ import pt.isel.ls.server.utils.BoardList
 interface IDataList {
     fun createList(idBoard: Int, name: String): Int
 
-    fun getList(idList: Int): BoardList?
+    fun getList(idList: Int, idBoard: Int): BoardList?
 
     fun getListsOfBoard(idBoard: Int): List<BoardList>
 }

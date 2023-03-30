@@ -11,8 +11,10 @@ data class UserIn(val name: String, val email: String)
 @Serializable
 data class UserOut(val idUser: Int, val token: String)
 
+data class UserBoard(val idUser: Int, val idBoard: Int) // this doesn't need to be @Serializable since it's just an auxiliary "table representation"
+
 @Serializable
-data class Board(val idBoard: Int, val name: String, val description: String, val idUsers: MutableList<Int>)
+data class Board(val idBoard: Int, val name: String, val description: String)
 
 @Serializable
 data class BoardIn(val name: String, val description: String)
@@ -30,6 +32,7 @@ data class BoardListIn(val name: String)
 data class Card(
     val idCard: Int,
     var idList: Int,
+    val idBoard: Int,
     val name: String,
     val description: String,
     val startDate: String,
