@@ -2,7 +2,10 @@ package pt.isel.ls.tests.utils
 
 import org.http4k.routing.routes
 import pt.isel.ls.server.Services
-import pt.isel.ls.server.WebApi
+import pt.isel.ls.server.api.BoardWebApi
+import pt.isel.ls.server.api.CardWebApi
+import pt.isel.ls.server.api.ListWebApi
+import pt.isel.ls.server.api.UserWebApi
 import pt.isel.ls.server.data.boardData.DataBoard
 import pt.isel.ls.server.data.cardData.DataCard
 import pt.isel.ls.server.data.listData.DataList
@@ -41,7 +44,12 @@ val dataUser = DataUser()
 val dataBoard = DataBoard()
 val dataList = DataList()
 val dataCard = DataCard()
-val webApi = WebApi(Services(dataUser, dataBoard, dataList, dataCard))
+
+val services = Services(dataUser, dataBoard, dataList, dataCard)
+val userApi = UserWebApi(services)
+val boardApi = BoardWebApi(services)
+val listApi = ListWebApi(services)
+val cardApi = CardWebApi(services)
 
 /** tests initial components **/
 var user = User(0, dummyEmail, dummyName, "token")
@@ -50,8 +58,8 @@ var listId = 0
 
 /** routes **/
 val app = routes(
-    UserRoutes(webApi)(),
-    BoardRoutes(webApi)(),
-    ListRoutes(webApi)(),
-    CardRoutes(webApi)(),
+    UserRoutes(userApi)(),
+    BoardRoutes(boardApi)(),
+    ListRoutes(listApi)(),
+    CardRoutes(cardApi)()
 )

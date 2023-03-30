@@ -4,9 +4,9 @@ import org.http4k.core.Method
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import org.http4k.routing.routes
-import pt.isel.ls.server.WebApi
+import pt.isel.ls.server.api.ListWebApi
 
-class ListRoutes(private val webApi: WebApi) {
+class ListRoutes(private val webApi: ListWebApi) {
     operator fun invoke(): RoutingHttpHandler {
         return routes(
             "board/{idBoard}/list" bind Method.POST to webApi::createList,
