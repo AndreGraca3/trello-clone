@@ -6,13 +6,13 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.routing.path
-import pt.isel.ls.server.Services
 import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.exceptions.TrelloException
+import pt.isel.ls.server.services.CardServices
 import pt.isel.ls.server.utils.CardIn
 import pt.isel.ls.server.utils.CardOut
 
-class CardWebApi(private val services: Services) {
+class CardWebApi(private val services: CardServices) {
 
     fun createCard(request: Request): Response {
         return handleRequest(request, ::createCardInternal)

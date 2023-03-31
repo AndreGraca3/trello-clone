@@ -8,7 +8,6 @@ import org.http4k.core.Status
 import org.slf4j.LoggerFactory
 import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.exceptions.TrelloException
-import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.jvm.isAccessible
@@ -23,21 +22,18 @@ fun getToken(request: Request): String {
 
 
 fun handleRequest(request: Request, handler: KFunction<Response>): Response {
-    /** We HAVE to get rid of auth param, annotation doesn't work tho*/
     logRequest(request)
     handler.isAccessible = true
     return try {
         if (isAuthRequired(handler)) {
             handler.call(request, getToken(request))
         } else {
-            handler.call(request, "null")
+            handler.call(request)
         }
     } catch (e: Exception) {
-        val cause = if (e is InvocationTargetException) e.targetException else e
-        if (cause is TrelloException) {
-            createRsp(cause.status, cause.message)
-        } else {
-            createRsp(Status.BAD_REQUEST, cause.message)
+        when(val cause = e.cause) {
+            is TrelloException -> createRsp(cause.status, cause.message)
+            else -> createRsp(Status.BAD_REQUEST, cause!!.message)
         }
     }
 }

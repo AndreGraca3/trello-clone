@@ -2,21 +2,18 @@ package pt.isel.ls.server.api
 
 import org.http4k.core.Request
 import org.http4k.core.Response
-import org.http4k.core.Status
-import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.OK
 import org.http4k.routing.path
-import org.slf4j.LoggerFactory
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.BoardIn
 import pt.isel.ls.server.utils.BoardOut
 import pt.isel.ls.server.annotations.Auth
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import pt.isel.ls.server.Services
+import pt.isel.ls.server.services.BoardServices
 
-class BoardWebApi(private val services: Services) {
+class BoardWebApi(private val services: BoardServices) {
 
     fun createBoard(request: Request): Response {
         return handleRequest(request, ::createBoardInternal)

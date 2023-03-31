@@ -2,22 +2,17 @@ package pt.isel.ls.server.api
 
 import org.http4k.core.Request
 import org.http4k.core.Response
-import org.http4k.core.Status
 import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.OK
-import org.slf4j.LoggerFactory
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.http4k.routing.path
-import pt.isel.ls.server.Services
 import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.utils.UserIn
-import pt.isel.ls.server.utils.UserOut
+import pt.isel.ls.server.services.ListServices
 import pt.isel.ls.server.utils.BoardListIn
 
-class ListWebApi(private val services: Services) {
+class ListWebApi(private val services: ListServices) {
 
     fun createList(request: Request): Response {
         return handleRequest(request, ::createListInternal)

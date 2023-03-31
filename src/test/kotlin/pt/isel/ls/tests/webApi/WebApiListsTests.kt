@@ -175,7 +175,7 @@ class WebApiListsTests {
                 "$baseUrl/board/$boardId/list/$listId"
             ).header(
                 "Authorization",
-                "Bearer ${user.idUser}"
+                "Bearer ${user.token}"
             )
         )
 

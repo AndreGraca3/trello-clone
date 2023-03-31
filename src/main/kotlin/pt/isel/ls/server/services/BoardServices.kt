@@ -1,40 +1,43 @@
 package pt.isel.ls.server.services
 
-import pt.isel.ls.server.data.boardData.DataBoard
+import pt.isel.ls.server.data.dataInterfaces.BoardData
 import pt.isel.ls.server.data.checkUserInBoard
 import pt.isel.ls.server.data.getUser
-import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.isValidString
 
-class BoardServices(private val boardData: DataBoard) {
+class BoardServices(private val boardData: BoardData) {
 
     /** ------------------------------- *
      *         Board Management         *
      *  ------------------------------ **/
 
-    fun createBoard(token: String, name: String, description: String): Int { /** check **/
+    fun createBoard(token: String, name: String, description: String): Int {
         isValidString(name)
         isValidString(description)
-        if (boardData.getBoardByName(name) != null) throw TrelloException.AlreadyExists(name)
-        val idUser = getUser(token).idUser /**if I don't do it like this, we will have boardData with its own getUser -_-**/
+        boardData.getBoardByName(name)
+        val idUser = getUser(token).idUser
         return boardData.createBoard(idUser, name, description)
     }
 
-    fun getBoard(token: String, idBoard: Int): Board { /** check **/
+    fun getBoard(token: String, idBoard: Int): Board {
         val idUser = getUser(token).idUser
-        if (!checkUserInBoard(idUser, idBoard)) throw TrelloException.NotFound("Board")
-        return boardData.getBoard(idBoard) ?: throw TrelloException.NotFound("Board")
+        checkUserInBoard(idUser, idBoard)
+        return boardData.getBoard(idBoard)
     }
 
-    fun getBoardsFromUser(token: String): List<Board> { /** check **/
+    fun getBoardsFromUser(token: String): List<Board> {
         val idUser = getUser(token).idUser
         return boardData.getBoardsFromUser(idUser)
     }
 
-    fun addUserToBoard(token: String, idUser: Int, idBoard: Int) { /** check **/
-        val newIdUser = getUser(idUser).idUser // user to add
-        if (checkUserInBoard(newIdUser, idBoard)) return // Idempotent Operation => "PUT"
-        boardData.addUserToBoard(idUser,idBoard)
+    fun addUserToBoard(token: String, idNewUser: Int, idBoard: Int) {
+        val idUser = getUser(token).idUser
+        checkUserInBoard(idUser, idBoard)
+        getUser(idNewUser) // check if user to add exists
+        kotlin.runCatching {
+            checkUserInBoard(idNewUser, idBoard)    // this throws exception
+            boardData.addUserToBoard(idNewUser, idBoard)
+        }
     }
 }

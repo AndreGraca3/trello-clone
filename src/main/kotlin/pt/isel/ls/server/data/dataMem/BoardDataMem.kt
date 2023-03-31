@@ -1,12 +1,14 @@
-package pt.isel.ls.server.data.boardData
+package pt.isel.ls.server.data.dataMem
 
+import pt.isel.ls.server.data.dataInterfaces.BoardData
 import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.data.boards
 import pt.isel.ls.server.data.getNextId
 import pt.isel.ls.server.data.usersBoards
+import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.UserBoard
 
-class DataBoard : IDataBoard {
+class BoardDataMem : BoardData {
     override fun createBoard(idUser: Int, name: String, description: String): Int {
         val newBoard = Board(getNextId(Board::class.java), name, description)
         addUserToBoard(idUser, newBoard.idBoard)
@@ -14,12 +16,12 @@ class DataBoard : IDataBoard {
         return newBoard.idBoard
     }
 
-    override fun getBoard(idBoard: Int): Board? {
-        return boards.find { it.idBoard == idBoard }
+    override fun getBoard(idBoard: Int): Board {
+        return boards.find { it.idBoard == idBoard } ?: throw TrelloException.NotFound("Board")
     }
 
-    override fun getBoardByName(name: String): Board? { /** this could return boolean since we only use it for verifications**/
-        return boards.find { it.name == name }
+    override fun getBoardByName(name: String): Board {
+        return boards.find { it.name == name } ?: throw TrelloException.AlreadyExists(name)
     }
 
     override fun addUserToBoard(idUser: Int, idBoard: Int) {
@@ -30,8 +32,4 @@ class DataBoard : IDataBoard {
         val idsBoard = usersBoards.filter { it.idUser == idUser }.map { it.idBoard }
         return boards.filter { idsBoard.contains(it.idBoard) }
     }
-
-    /*override fun checkUserInBoard(idUser: Int, idBoard: Int): Boolean {
-        return usersBoards.any { it.idUser == idUser && it.idBoard == idBoard }
-    }*/
 }

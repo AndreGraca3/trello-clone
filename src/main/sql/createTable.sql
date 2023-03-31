@@ -1,14 +1,17 @@
-drop table if exists users;
+drop table if exists card;
+drop table if exists list;
 drop table if exists user_board;
-drop table if exists boards;
-drop table if exists lists;
-drop table if exists cards;
+drop table if exists board;
+drop table if exists "user";
 
-create table user (
+
+SELECT * FROM "user";
+
+create table "user" (
     idUser serial primary key,
     email varchar(320) unique,
     name varchar(20),
-    token varchar(36)
+    token varchar(36) unique
 );
 
 create table user_board (

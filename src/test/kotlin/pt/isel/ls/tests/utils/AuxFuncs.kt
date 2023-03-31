@@ -13,7 +13,7 @@ fun createBoard(idUser: Int) = dataBoard.createBoard(idUser, dummyBoardName, dum
 
 fun createList(idBoard: Int) = dataList.createList(idBoard, dummyBoardListName)
 
-fun createCard(idList: Int) = dataCard.createCard(idList, dummyCardName ,dummyCardDescription)
+//fun createCard(idList: Int) = dataCard.createCard(idList, dummyCardName ,dummyCardDescription)
 
 
 /** Every Test empties data

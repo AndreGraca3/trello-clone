@@ -4,10 +4,11 @@ import org.http4k.routing.routes
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import pt.isel.ls.server.api.*
-import pt.isel.ls.server.data.boardData.DataBoard
-import pt.isel.ls.server.data.cardData.DataCard
-import pt.isel.ls.server.data.listData.DataList
-import pt.isel.ls.server.data.userData.DataUser
+import pt.isel.ls.server.data.dataMem.BoardDataMem
+import pt.isel.ls.server.data.dataMem.CardDataMem
+import pt.isel.ls.server.data.dataMem.ListDataMem
+import pt.isel.ls.server.data.dataMem.UserDataMem
+import pt.isel.ls.server.data.dataPostGres.dataSQL.UserDataSQL
 import pt.isel.ls.server.routes.BoardRoutes
 import pt.isel.ls.server.routes.CardRoutes
 import pt.isel.ls.server.routes.ListRoutes
@@ -18,10 +19,11 @@ import pt.isel.ls.server.services.ListServices
 import pt.isel.ls.server.services.UserServices
 
 fun main() {
-    val dataUser = DataUser()
-    val dataBoard = DataBoard()
-    val dataList = DataList()
-    val dataCard = DataCard()
+    //val dataUser = UserDataMem()
+    val dataUser = UserDataSQL()
+    val dataBoard = BoardDataMem()
+    val dataList = ListDataMem()
+    val dataCard = CardDataMem()
 
     val servicesUser = UserServices(dataUser)
     val servicesBoard = BoardServices(dataBoard)

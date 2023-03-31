@@ -21,6 +21,7 @@ class WebApiCardsTests {
 
     @Test
     fun `test create card without endDate`(){
+        TODO()
         val userIn = dataUser.createUser(dummyName, dummyEmail)
         val idBoard = dataBoard.createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
         val idList = dataList.createList(idBoard, dummyBoardListName)
@@ -52,10 +53,11 @@ class WebApiCardsTests {
 
     @Test
     fun `test get card`(){
+        TODO()
         val userIn = dataUser.createUser(dummyName, dummyEmail)
         val idBoard = dataBoard.createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
         val idList = dataList.createList(idBoard, dummyBoardListName)
-        val idCard = dataCard.createCard(idList, dummyCardName, dummyCardDescription, null)
+        val idCard = dataCard.createCard(idList,idBoard, dummyCardName, dummyCardDescription, null)
 
         val response = app(
             Request(
@@ -77,10 +79,11 @@ class WebApiCardsTests {
 
     @Test
     fun `test move card`(){
+        TODO()
         val userIn = dataUser.createUser(dummyName, dummyEmail)
         val idBoard = dataBoard.createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
         val idList = dataList.createList(idBoard, dummyBoardListName)
-        val idCard = dataCard.createCard(idList, dummyCardName, dummyCardDescription, null)
+        val idCard = dataCard.createCard(idList, idBoard,dummyCardName, dummyCardDescription, null)
         val idListDst = dataList.createList(idBoard, dummyBoardListName)
 
         val requestBody = Json.encodeToString(idListDst)

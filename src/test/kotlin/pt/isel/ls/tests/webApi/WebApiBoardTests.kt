@@ -1,21 +1,18 @@
 package pt.isel.ls.tests.webApi
 
-import org.http4k.core.Method
-import org.http4k.core.Request
-import org.http4k.core.Status
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import pt.isel.ls.server.utils.Board
-import pt.isel.ls.server.utils.BoardIn
-import pt.isel.ls.server.utils.BoardOut
-import pt.isel.ls.server.data.boards
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.http4k.core.Method
+import org.http4k.core.Request
+import org.http4k.core.Status
+import pt.isel.ls.server.data.boards
+import pt.isel.ls.server.data.usersBoards
+import pt.isel.ls.server.utils.Board
+import pt.isel.ls.server.utils.BoardIn
+import pt.isel.ls.server.utils.BoardOut
 import pt.isel.ls.tests.utils.*
+import kotlin.test.*
 
 class WebApiBoardTests {
 
@@ -95,7 +92,7 @@ class WebApiBoardTests {
 
         assertEquals(boardsAmount, fetchedBoards.size)
         fetchedBoards.forEachIndexed { i, it ->
-            assertTrue(it.idUsers.contains(user.idUser))
+            assertTrue(usersBoards.any{ it.idUser == user.idUser })
             assertEquals(i, it.idBoard)
             assertEquals(dummyBoardName + i, it.name)
         }
@@ -146,7 +143,7 @@ class WebApiBoardTests {
         val board = Json.decodeFromString<Board>(response.bodyString())
 
         assertEquals(boardId, board.idBoard)
-        assertTrue(board.idUsers.contains(user.idUser))
+        assertTrue(usersBoards.any { it.idUser == user.idUser })
         assertEquals(Status.OK, response.status)
     }
 
@@ -198,7 +195,7 @@ class WebApiBoardTests {
             ).body(userId2)
         )
 
-        assertTrue(boards.first().idUsers.contains(user2.first))
+        assertEquals(usersBoards.last().idUser, user2.first)
         assertEquals(Status.OK, response.status)
     }
 
@@ -219,7 +216,7 @@ class WebApiBoardTests {
 
         val msg = Json.decodeFromString<String>(response.bodyString())
 
-        assertFalse(boards.first().idUsers.contains(user2.first))
+        assertNotEquals(usersBoards.last().idUser, user2.first)
         assertEquals(Status.UNAUTHORIZED, response.status)
         assertEquals("Unauthorized Operation.", msg)
     }

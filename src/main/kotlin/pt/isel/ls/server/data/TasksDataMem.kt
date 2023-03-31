@@ -19,6 +19,7 @@ fun getNextId(clazz: Class<*>): Int {
         else -> error("Unknown object type: ${clazz.toString()::class.simpleName}")
     }
 }
+
 fun initialState() { // for test purposes
     users.clear()
     usersBoards.clear()
@@ -28,17 +29,17 @@ fun initialState() { // for test purposes
 }
 
 fun getUser(token : String) : User {
-    return users.find { it.token == token } ?: throw TrelloException.NotAuthorized() // not sure
+    return users.find { it.token == token } ?: throw TrelloException.NotAuthorized()
 }
 
 fun getUser(idUser : Int) : User {
     return users.find { it.idUser == idUser } ?: throw TrelloException.NotFound("User")
 }
 
-fun checkUserInBoard(idUser: Int, idBoard: Int): Boolean {
-    return usersBoards.any { it.idUser == idUser && it.idBoard == idBoard }
+fun checkUserInBoard(idUser: Int, idBoard: Int): UserBoard {
+    return usersBoards.find { it.idUser == idUser && it.idBoard == idBoard } ?: throw TrelloException.NotFound("Board")
 }
 
-fun checkListInBoard(idList: Int, idBoard: Int) : Boolean { // podia já retornar a lista.
-    return lists.any { it.idBoard == idBoard && it.idList == idList }
+fun checkListInBoard(idList: Int, idBoard: Int) : BoardList {
+    return lists.find { it.idBoard == idBoard && it.idList == idList } ?: throw TrelloException.NotFound("Board")
 }

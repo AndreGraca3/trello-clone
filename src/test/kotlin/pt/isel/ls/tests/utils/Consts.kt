@@ -1,19 +1,22 @@
 package pt.isel.ls.tests.utils
 
 import org.http4k.routing.routes
-import pt.isel.ls.server.Services
 import pt.isel.ls.server.api.BoardWebApi
 import pt.isel.ls.server.api.CardWebApi
 import pt.isel.ls.server.api.ListWebApi
 import pt.isel.ls.server.api.UserWebApi
-import pt.isel.ls.server.data.boardData.DataBoard
-import pt.isel.ls.server.data.cardData.DataCard
-import pt.isel.ls.server.data.listData.DataList
-import pt.isel.ls.server.data.userData.DataUser
+import pt.isel.ls.server.data.dataMem.BoardDataMem
+import pt.isel.ls.server.data.dataMem.CardDataMem
+import pt.isel.ls.server.data.dataMem.ListDataMem
+import pt.isel.ls.server.data.dataMem.UserDataMem
 import pt.isel.ls.server.routes.BoardRoutes
 import pt.isel.ls.server.routes.CardRoutes
 import pt.isel.ls.server.routes.ListRoutes
 import pt.isel.ls.server.routes.UserRoutes
+import pt.isel.ls.server.services.BoardServices
+import pt.isel.ls.server.services.CardServices
+import pt.isel.ls.server.services.ListServices
+import pt.isel.ls.server.services.UserServices
 import pt.isel.ls.server.utils.User
 
 const val invalidToken = "INVALID_TOKEN"
@@ -40,16 +43,20 @@ const val dummyCardDescription = "This is Card1"
 const val baseUrl = "http://localhost:8080"
 
 /** modules **/
-val dataUser = DataUser()
-val dataBoard = DataBoard()
-val dataList = DataList()
-val dataCard = DataCard()
+val dataUser = UserDataMem()
+val dataBoard = BoardDataMem()
+val dataList = ListDataMem()
+val dataCard = CardDataMem()
 
-val services = Services(dataUser, dataBoard, dataList, dataCard)
-val userApi = UserWebApi(services)
-val boardApi = BoardWebApi(services)
-val listApi = ListWebApi(services)
-val cardApi = CardWebApi(services)
+val userServices = UserServices(dataUser)
+val boardServices = BoardServices(dataBoard)
+val listServices = ListServices(dataList)
+val cardServices = CardServices(dataCard)
+
+val userApi = UserWebApi(userServices)
+val boardApi = BoardWebApi(boardServices)
+val listApi = ListWebApi(listServices)
+val cardApi = CardWebApi(cardServices)
 
 /** tests initial components **/
 var user = User(0, dummyEmail, dummyName, "token")

@@ -1,14 +1,12 @@
 package pt.isel.ls.server.services
 
-import pt.isel.ls.server.data.checkListInBoard
 import pt.isel.ls.server.data.checkUserInBoard
 import pt.isel.ls.server.data.getUser
-import pt.isel.ls.server.data.listData.DataList
-import pt.isel.ls.server.exceptions.TrelloException
+import pt.isel.ls.server.data.dataInterfaces.ListData
 import pt.isel.ls.server.utils.BoardList
 import pt.isel.ls.server.utils.isValidString
 
-class ListServices(private val listData: DataList) {
+class ListServices(private val listData: ListData) {
 
     /** ------------------------------ *
      *         List Management         *
@@ -17,19 +15,19 @@ class ListServices(private val listData: DataList) {
     fun createList(token: String, idBoard: Int, name: String): Int { /** check **/
         isValidString(name)
         val idUser = getUser(token).idUser
-        if(!checkUserInBoard(idUser,idBoard)) throw TrelloException.NotAuthorized() // Not sure
+        checkUserInBoard(idUser,idBoard)
         return listData.createList(idBoard, name)
     }
 
-    fun getList(token: String, idBoard: Int, idList: Int): BoardList { /** check **/
+    fun getList(token: String, idBoard: Int, idList: Int): BoardList {
         val idUser = getUser(token).idUser
-        if(!checkUserInBoard(idUser,idBoard)) throw TrelloException.NotAuthorized()
-        return listData.getList(idList, idBoard) ?: throw TrelloException.NotFound("BoardList")
+        checkUserInBoard(idUser,idBoard)
+        return listData.getList(idList, idBoard)
     }
 
-    fun getListsOfBoard(token: String, idBoard: Int): List<BoardList> { /** check **/
+    fun getListsOfBoard(token: String, idBoard: Int): List<BoardList> {
         val idUser = getUser(token).idUser
-        if(!checkUserInBoard(idUser,idBoard)) throw TrelloException.NotAuthorized()
+        checkUserInBoard(idUser,idBoard)
         return listData.getListsOfBoard(idBoard)
     }
 }
