@@ -5,7 +5,7 @@ drop table if exists board;
 drop table if exists "user";
 
 
-SELECT * FROM "user";
+select * from "user";
 
 create table "user" (
     idUser serial primary key,

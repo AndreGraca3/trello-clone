@@ -7,7 +7,7 @@ import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.User
 import java.util.*
 
-class UserDataSQL: UserData {
+class UserDataSQL : UserData {
 
     private fun setup(): PGSimpleDataSource {
         val dataSource = PGSimpleDataSource()
@@ -21,25 +21,42 @@ class UserDataSQL: UserData {
         val token = UUID.randomUUID().toString()
         val insertStmt = UserStatements.createUserCMD(email, name, token)
         val selectStmt = UserStatements.getUserCMD(token)
-        var userId = -1
+        var userId: Int
         dataSource.connection.use {
             it.autoCommit = false
-            val stmt1 = it.prepareStatement(insertStmt)
-            stmt1.executeUpdate()
+            it.prepareStatement(insertStmt).executeUpdate()
 
-            val stmt2 = it.prepareStatement(selectStmt)
-            val res = stmt2.executeQuery()
+            val res = it.prepareStatement(selectStmt).executeQuery()
+            res.next()
 
-            while (res.next()) {
-                userId = res.getInt("idUser")
-            }
+            userId = res.getInt("idUser")
+
             it.autoCommit = true
         }
         return Pair(userId, token)
     }
 
     override fun getUser(token: String): User {
-        TODO("Not yet implemented")
+        val dataSource = setup()
+        val selectStmt = UserStatements.getUserCMD(token)
+        var idUser: Int
+        lateinit var email: String
+        lateinit var name: String
+
+        dataSource.connection.use {
+            it.autoCommit = false
+            val res = it.prepareStatement(selectStmt).executeQuery()
+            res.next()
+
+            if (res.row == 0) throw TrelloException.NotFound("User")
+
+            idUser = res.getInt("idUser")
+            email = res.getString("email")
+            name = res.getString("name")
+
+            it.autoCommit = true
+        }
+        return User(idUser, email, name, token)
     }
 
     override fun checkEmail(email: String) {
@@ -48,10 +65,10 @@ class UserDataSQL: UserData {
         dataSource.connection.use {
             it.autoCommit = false
             val res = it.prepareStatement(selectStmt).executeQuery()
+            res.next()
 
-            while (res.next()) {
-                if(res.getString("email") != null) throw TrelloException.AlreadyExists(email)
-            }
+            if (res.row != 0) throw TrelloException.AlreadyExists(email)
+
             it.autoCommit = true
         }
     }
