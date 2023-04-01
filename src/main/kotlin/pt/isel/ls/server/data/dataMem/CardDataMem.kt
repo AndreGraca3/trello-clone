@@ -2,16 +2,17 @@ package pt.isel.ls.server.data.dataMem
 
 import pt.isel.ls.server.data.dataInterfaces.CardData
 import pt.isel.ls.server.utils.Card
-import pt.isel.ls.server.data.cards
-import pt.isel.ls.server.data.getNextId
 import pt.isel.ls.server.exceptions.TrelloException
 import java.time.LocalDate
 
 class CardDataMem : CardData {
+
+    val cards = mutableListOf<Card>()
+
     override fun createCard(idList: Int, idBoard: Int, name: String, description: String, endDate: String?): Int {
         val newCard =
             Card(
-                getNextId(Card::class.java),
+                getNextId(),
                 idList,
                 idBoard,
                 name,
@@ -36,5 +37,9 @@ class CardDataMem : CardData {
     override fun moveCard(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int) {
         val card = getCard(idCard, idListNow, idBoard)
         card.idList = idListDst
+    }
+
+    private fun getNextId() : Int {
+        return cards.last().idCard + 1
     }
 }

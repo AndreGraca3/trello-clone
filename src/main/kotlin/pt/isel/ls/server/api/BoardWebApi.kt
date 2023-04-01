@@ -12,6 +12,7 @@ import pt.isel.ls.server.annotations.Auth
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import pt.isel.ls.server.services.BoardServices
+import pt.isel.ls.server.utils.IDUser
 
 class BoardWebApi(private val services: BoardServices) {
 
@@ -46,8 +47,8 @@ class BoardWebApi(private val services: BoardServices) {
     @Auth
     private fun addUserToBoardInternal(request: Request, token: String): Response {
         val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
-        val idUser = Json.decodeFromString<Int>(request.bodyString())
-        return createRsp(OK, services.addUserToBoard(token, idUser, idBoard))
+        val idUser = Json.decodeFromString<IDUser>(request.bodyString())
+        return createRsp(OK, services.addUserToBoard(token, idUser.idUser, idBoard))
     }
 
     @Auth

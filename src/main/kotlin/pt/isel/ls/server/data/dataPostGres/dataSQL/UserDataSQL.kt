@@ -59,6 +59,29 @@ class UserDataSQL : UserData {
         return User(idUser, email, name, token)
     }
 
+    override fun getUser(idUser: Int): User {
+        val dataSource = setup()
+        val selectStmt = UserStatements.getUserCMD(idUser)
+        lateinit var email: String
+        lateinit var name: String
+        lateinit var token: String
+
+        dataSource.connection.use {
+            it.autoCommit = false
+            val res = it.prepareStatement(selectStmt).executeQuery()
+            res.next()
+
+            if (res.row == 0) throw TrelloException.NotFound("User")
+
+            email = res.getString("email")
+            name = res.getString("name")
+            token = res.getString("token")
+
+            it.autoCommit = true
+        }
+        return User(idUser, email, name, token)
+    }
+
     override fun checkEmail(email: String) {
         val dataSource = setup()
         val selectStmt = UserStatements.getUserByEmailCMD(email)

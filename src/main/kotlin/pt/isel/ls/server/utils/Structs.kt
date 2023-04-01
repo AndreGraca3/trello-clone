@@ -3,6 +3,9 @@ package pt.isel.ls.server.utils
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class IDUser(val idUser: Int)
+
+@Serializable
 data class User(val idUser: Int, val email: String, val name: String, val token: String)
 
 @Serializable

@@ -1,5 +1,6 @@
 package pt.isel.ls.server.data.dataInterfaces
 
+import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.BoardList
 
 interface ListData {
@@ -8,4 +9,6 @@ interface ListData {
     fun getList(idList: Int, idBoard: Int): BoardList
 
     fun getListsOfBoard(idBoard: Int): List<BoardList>
+
+    fun checkListInBoard(idList: Int, idBoard: Int) : BoardList
 }

@@ -1,17 +1,15 @@
 package pt.isel.ls.server.data.dataMem
 
 import pt.isel.ls.server.data.dataInterfaces.BoardData
-import pt.isel.ls.server.utils.Board
-import pt.isel.ls.server.data.boards
-import pt.isel.ls.server.data.getNextId
-import pt.isel.ls.server.data.usersBoards
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.utils.UserBoard
+import pt.isel.ls.server.utils.*
 
 class BoardDataMem : BoardData {
+
+    val boards = mutableListOf<Board>()
+
     override fun createBoard(idUser: Int, name: String, description: String): Int {
-        val newBoard = Board(getNextId(Board::class.java), name, description)
-        addUserToBoard(idUser, newBoard.idBoard)
+        val newBoard = Board(getNextId(), name, description)
         boards.add(newBoard)
         return newBoard.idBoard
     }
@@ -20,16 +18,15 @@ class BoardDataMem : BoardData {
         return boards.find { it.idBoard == idBoard } ?: throw TrelloException.NotFound("Board")
     }
 
-    override fun getBoardByName(name: String): Board {
-        return boards.find { it.name == name } ?: throw TrelloException.AlreadyExists(name)
+    override fun checkBoardName(name: String) {
+        if(boards.any { it.name == name }) throw TrelloException.AlreadyExists("Board")
     }
 
-    override fun addUserToBoard(idUser: Int, idBoard: Int) {
-        usersBoards.add(UserBoard(idUser, idBoard))
+    override fun getBoardsFromUser(idBoards: List<Int>): List<Board> {
+        return boards.filter { idBoards.contains(it.idBoard) }
     }
 
-    override fun getBoardsFromUser(idUser: Int): List<Board> { /** does this make sence being here instead of services**/
-        val idsBoard = usersBoards.filter { it.idUser == idUser }.map { it.idBoard }
-        return boards.filter { idsBoard.contains(it.idBoard) }
+    private fun getNextId(): Int {
+        return boards.last().idBoard + 1
     }
 }

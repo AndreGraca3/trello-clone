@@ -7,9 +7,7 @@ interface BoardData {
 
     fun getBoard(idBoard: Int): Board
 
-    fun getBoardByName(name: String): Board
+    fun checkBoardName(name: String)
 
-    fun getBoardsFromUser(idUser: Int): List<Board>
-
-    fun addUserToBoard(idUser: Int, idBoard: Int)
+    fun getBoardsFromUser(idBoards : List<Int>): List<Board>
 }

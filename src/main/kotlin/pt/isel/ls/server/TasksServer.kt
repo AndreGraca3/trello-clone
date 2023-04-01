@@ -8,6 +8,7 @@ import pt.isel.ls.server.data.dataMem.BoardDataMem
 import pt.isel.ls.server.data.dataMem.CardDataMem
 import pt.isel.ls.server.data.dataMem.ListDataMem
 import pt.isel.ls.server.data.dataMem.UserDataMem
+import pt.isel.ls.server.data.dataPostGres.dataSQL.BoardDataSQL
 import pt.isel.ls.server.data.dataPostGres.dataSQL.UserDataSQL
 import pt.isel.ls.server.routes.BoardRoutes
 import pt.isel.ls.server.routes.CardRoutes
@@ -20,8 +21,9 @@ import pt.isel.ls.server.services.UserServices
 
 fun main() {
     //val dataUser = UserDataMem()
+    //val dataBoard = BoardDataMem()
     val dataUser = UserDataSQL()
-    val dataBoard = BoardDataMem()
+    val dataBoard = BoardDataSQL()
     val dataList = ListDataMem()
     val dataCard = CardDataMem()
 

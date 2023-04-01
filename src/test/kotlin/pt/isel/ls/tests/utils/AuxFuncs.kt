@@ -1,6 +1,5 @@
 package pt.isel.ls.tests.utils
 
-import pt.isel.ls.server.data.initialState
 import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.BoardList
 import pt.isel.ls.server.utils.Card
@@ -33,4 +32,12 @@ fun dataSetup(clazz: Class<*>) {
     if (clazz.simpleName == Card::class.simpleName) return
 
     throw IllegalArgumentException("Class not supported")
+}
+
+fun initialState() { // for test purposes
+    dataUser.users.clear()
+    dataUserBoard.usersBoards.clear()
+    dataBoard.boards.clear()
+    dataList.lists.clear()
+    dataCard.cards.clear()
 }

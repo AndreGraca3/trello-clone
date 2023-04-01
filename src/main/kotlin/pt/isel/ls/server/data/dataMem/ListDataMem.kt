@@ -1,14 +1,15 @@
 package pt.isel.ls.server.data.dataMem
 
 import pt.isel.ls.server.utils.BoardList
-import pt.isel.ls.server.data.getNextId
 import pt.isel.ls.server.data.dataInterfaces.ListData
-import pt.isel.ls.server.data.lists
 import pt.isel.ls.server.exceptions.TrelloException
 
 class ListDataMem : ListData {
+
+    val lists = mutableListOf<BoardList>()
+
     override fun createList(idBoard: Int, name: String): Int {
-        val newBoardList = BoardList(getNextId(BoardList::class.java), idBoard, name)
+        val newBoardList = BoardList(getNextId(), idBoard, name)
         lists.add(newBoardList)
         return newBoardList.idList
     }
@@ -19,5 +20,13 @@ class ListDataMem : ListData {
 
     override fun getListsOfBoard(idBoard: Int): List<BoardList> {
         return lists.filter { it.idBoard == idBoard }
+    }
+
+    override fun checkListInBoard(idList: Int, idBoard: Int) : BoardList {
+        return lists.find { it.idBoard == idBoard && it.idList == idList } ?: throw TrelloException.NotFound("Board")
+    }
+
+    private fun getNextId() : Int {
+        return lists.last().idList + 1
     }
 }
