@@ -1,20 +1,13 @@
 package pt.isel.ls.server.data.dataPostGres.dataSQL
 
-import org.postgresql.ds.PGSimpleDataSource
 import pt.isel.ls.server.data.dataInterfaces.UserData
 import pt.isel.ls.server.data.dataPostGres.statements.UserStatements
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.User
+import pt.isel.ls.server.utils.setup
 import java.util.*
 
 class UserDataSQL : UserData {
-
-    private fun setup(): PGSimpleDataSource {
-        val dataSource = PGSimpleDataSource()
-        val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL")
-        dataSource.setURL(jdbcDatabaseURL)
-        return dataSource
-    }
 
     override fun createUser(name: String, email: String): Pair<Int, String> {
         val dataSource = setup()

@@ -14,7 +14,7 @@ import kotlinx.serialization.json.Json
 import pt.isel.ls.server.services.BoardServices
 import pt.isel.ls.server.utils.IDUser
 
-class BoardWebApi(private val services: BoardServices) {
+class BoardAPI(private val services: BoardServices) {
 
     fun createBoard(request: Request): Response {
         return handleRequest(request, ::createBoardInternal)

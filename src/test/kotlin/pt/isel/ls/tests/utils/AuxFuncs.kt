@@ -6,16 +6,27 @@ import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.User
 
 //Functions to create dummy components for tests
-fun createUser() = dataUser.createUser(dummyName, dummyEmail)
+fun createUser(name: String = dummyName, email: String = dummyEmail) = dataMem.userData.createUser(name, email)
 
-fun createBoard(idUser: Int) = dataBoard.createBoard(idUser, dummyBoardName, dummyBoardDescription)
+fun createBoard(idUser: Int, boardName: String = dummyBoardName, boardDescription: String = dummyBoardDescription): Int {
+    val idBoard = dataMem.boardData.createBoard(idUser, boardName, boardDescription)
+    dataMem.userBoardData.addUserToBoard(idUser, idBoard)
+    return idBoard
+}
 
-fun createList(idBoard: Int) = dataList.createList(idBoard, dummyBoardListName)
+fun createList(idBoard: Int, listName: String = dummyBoardListName) = dataMem.listData.createList(idBoard, listName)
 
-//fun createCard(idList: Int) = dataCard.createCard(idList, dummyCardName ,dummyCardDescription)
+fun createCard(
+    idList: Int,
+    idBoard: Int,
+    cardName: String = dummyCardName,
+    cardDescription: String = dummyCardDescription,
+    endDate: String? = null
+) =
+    dataMem.cardData.createCard(idList, idBoard, cardName, cardDescription, endDate)
 
 
-/** Every Test empties data
+/** Empties data for every Test
  * and creates only necessary components **/
 fun dataSetup(clazz: Class<*>) {
     initialState()
@@ -34,10 +45,10 @@ fun dataSetup(clazz: Class<*>) {
     throw IllegalArgumentException("Class not supported")
 }
 
-fun initialState() { // for test purposes
-    dataUser.users.clear()
-    dataUserBoard.usersBoards.clear()
-    dataBoard.boards.clear()
-    dataList.lists.clear()
-    dataCard.cards.clear()
+fun initialState() {
+    dataMem.userData.users.clear()
+    dataMem.userBoardData.usersBoards.clear()
+    dataMem.boardData.boards.clear()
+    dataMem.listData.lists.clear()
+    dataMem.cardData.cards.clear()
 }

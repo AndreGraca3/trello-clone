@@ -4,9 +4,9 @@ import org.http4k.core.Method
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import org.http4k.routing.routes
-import pt.isel.ls.server.api.UserWebApi
+import pt.isel.ls.server.api.UserAPI
 
-class UserRoutes(private val webApi: UserWebApi) {
+class UserRoutes(private val webApi: UserAPI) {
     operator fun invoke(): RoutingHttpHandler {
         return routes(
             "user" bind Method.POST to webApi::createUser,

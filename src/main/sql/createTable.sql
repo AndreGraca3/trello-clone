@@ -5,12 +5,6 @@ drop table if exists board;
 drop table if exists "user";
 
 
-select * from "user";
-select * from board;
-insert into board (name, description)
-values ('Board1','this');
-select * from user_board;
-
 create table "user" (
     idUser serial primary key,
     email varchar(320) unique,

@@ -11,7 +11,7 @@ import pt.isel.ls.server.utils.UserOut
 import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.services.UserServices
 
-class UserWebApi(private val services: UserServices) {
+class UserAPI(private val services: UserServices) {
 
     fun createUser(request: Request): Response {
         return handleRequest(request, ::createUserInternal)

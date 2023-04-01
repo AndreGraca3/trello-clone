@@ -12,7 +12,7 @@ import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.services.ListServices
 import pt.isel.ls.server.utils.BoardListIn
 
-class ListWebApi(private val services: ListServices) {
+class ListAPI(private val services: ListServices) {
 
     fun createList(request: Request): Response {
         return handleRequest(request, ::createListInternal)

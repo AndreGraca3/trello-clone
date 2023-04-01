@@ -12,7 +12,7 @@ import pt.isel.ls.server.utils.UserIn
 import pt.isel.ls.server.utils.UserOut
 import pt.isel.ls.tests.utils.*
 
-class WebApiUserTests {
+class UserAPITests {
 
     @BeforeTest
     fun setup() {
@@ -89,8 +89,7 @@ class WebApiUserTests {
         createUser()
 
         val response = app(
-            Request(Method.GET,"$baseUrl/user")
-            .header("Authorization","Bearer $invalidToken"))
+            Request(Method.GET,"$baseUrl/user"))
 
         val msg = Json.decodeFromString<String>(response.bodyString())
 

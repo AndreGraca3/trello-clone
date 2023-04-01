@@ -40,6 +40,6 @@ class CardDataMem : CardData {
     }
 
     private fun getNextId() : Int {
-        return cards.last().idCard + 1
+        return if(cards.isEmpty()) 0 else cards.last().idBoard + 1
     }
 }

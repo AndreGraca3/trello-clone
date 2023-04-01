@@ -4,44 +4,26 @@ import org.http4k.routing.routes
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import pt.isel.ls.server.api.*
-import pt.isel.ls.server.data.dataMem.BoardDataMem
-import pt.isel.ls.server.data.dataMem.CardDataMem
-import pt.isel.ls.server.data.dataMem.ListDataMem
-import pt.isel.ls.server.data.dataMem.UserDataMem
-import pt.isel.ls.server.data.dataPostGres.dataSQL.BoardDataSQL
-import pt.isel.ls.server.data.dataPostGres.dataSQL.UserDataSQL
+import pt.isel.ls.server.data.dataMem.DataMem
 import pt.isel.ls.server.routes.BoardRoutes
 import pt.isel.ls.server.routes.CardRoutes
 import pt.isel.ls.server.routes.ListRoutes
 import pt.isel.ls.server.routes.UserRoutes
-import pt.isel.ls.server.services.BoardServices
-import pt.isel.ls.server.services.CardServices
-import pt.isel.ls.server.services.ListServices
-import pt.isel.ls.server.services.UserServices
+import pt.isel.ls.server.services.Services
+import pt.isel.ls.server.utils.logger
+
 
 fun main() {
-    //val dataUser = UserDataMem()
-    //val dataBoard = BoardDataMem()
-    val dataUser = UserDataSQL()
-    val dataBoard = BoardDataSQL()
-    val dataList = ListDataMem()
-    val dataCard = CardDataMem()
-
-    val servicesUser = UserServices(dataUser)
-    val servicesBoard = BoardServices(dataBoard)
-    val servicesList = ListServices(dataList)
-    val servicesCard = CardServices(dataCard)
-
-    val userApi = UserWebApi(servicesUser)
-    val boardApi = BoardWebApi(servicesBoard)
-    val listApi = ListWebApi(servicesList)
-    val cardApi = CardWebApi(servicesCard)
+    val data = DataMem()
+    // val data = DataSQL()
+    val services = Services(data)
+    val webAPI = WebAPI(services)
 
     val app = routes(
-        UserRoutes(userApi)(),
-        BoardRoutes(boardApi)(),
-        ListRoutes(listApi)(),
-        CardRoutes(cardApi)()
+        UserRoutes(webAPI.userAPI)(),
+        BoardRoutes(webAPI.boardAPI)(),
+        ListRoutes(webAPI.listAPI)(),
+        CardRoutes(webAPI.cardAPI)()
     )
 
     val jettyServer = app.asServer(Jetty(8080)).start()

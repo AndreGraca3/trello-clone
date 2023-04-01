@@ -19,14 +19,14 @@ class BoardDataMem : BoardData {
     }
 
     override fun checkBoardName(name: String) {
-        if(boards.any { it.name == name }) throw TrelloException.AlreadyExists("Board")
+        if(boards.any { it.name == name }) throw TrelloException.AlreadyExists("Board $name")
     }
 
     override fun getBoardsFromUser(idBoards: List<Int>): List<Board> {
         return boards.filter { idBoards.contains(it.idBoard) }
     }
 
-    private fun getNextId(): Int {
-        return boards.last().idBoard + 1
+    private fun getNextId() : Int {
+        return if(boards.isEmpty()) 0 else boards.last().idBoard + 1
     }
 }

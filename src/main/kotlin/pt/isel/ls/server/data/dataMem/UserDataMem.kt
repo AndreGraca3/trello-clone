@@ -29,6 +29,6 @@ class UserDataMem : UserData {
     }
 
     private fun getNextId() : Int {
-        return users.last().idUser + 1
+        return if(users.isEmpty()) 0 else users.last().idUser + 1
     }
 }

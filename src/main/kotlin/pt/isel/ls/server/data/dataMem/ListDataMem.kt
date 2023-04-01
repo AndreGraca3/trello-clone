@@ -27,6 +27,6 @@ class ListDataMem : ListData {
     }
 
     private fun getNextId() : Int {
-        return lists.last().idList + 1
+        return if(lists.isEmpty()) 0 else lists.last().idBoard + 1
     }
 }

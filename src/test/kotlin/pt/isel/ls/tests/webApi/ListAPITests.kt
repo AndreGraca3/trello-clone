@@ -9,13 +9,12 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
-import pt.isel.ls.server.data.lists
 import pt.isel.ls.server.utils.BoardList
 import pt.isel.ls.server.utils.BoardListIn
 import pt.isel.ls.tests.utils.*
 import kotlin.test.assertTrue
 
-class WebApiListsTests {
+class ListAPITests {
 
     @BeforeTest
     fun setup() {
@@ -61,7 +60,7 @@ class WebApiListsTests {
 
         val msg = Json.decodeFromString<String>(response.bodyString())
 
-        assertTrue(lists.isEmpty())
+        assertTrue(dataMem.listData.lists.isEmpty())
         assertEquals(response.status, Status.UNAUTHORIZED)
         assertEquals("Unauthorized Operation.", msg)
     }
@@ -79,7 +78,7 @@ class WebApiListsTests {
             )
         )
 
-        assertTrue(lists.isEmpty())
+        assertTrue(dataMem.listData.lists.isEmpty())
         assertEquals(Status.BAD_REQUEST, response.status)
     }
 

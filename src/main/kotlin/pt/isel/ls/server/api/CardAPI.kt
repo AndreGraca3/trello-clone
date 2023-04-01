@@ -12,7 +12,7 @@ import pt.isel.ls.server.services.CardServices
 import pt.isel.ls.server.utils.CardIn
 import pt.isel.ls.server.utils.CardOut
 
-class CardWebApi(private val services: CardServices) {
+class CardAPI(private val services: CardServices) {
 
     fun createCard(request: Request): Response {
         return handleRequest(request, ::createCardInternal)

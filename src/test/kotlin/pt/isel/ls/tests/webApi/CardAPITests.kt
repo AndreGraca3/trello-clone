@@ -11,7 +11,7 @@ import pt.isel.ls.server.utils.CardIn
 import pt.isel.ls.server.utils.CardOut
 import pt.isel.ls.tests.utils.*
 
-class WebApiCardsTests {
+class CardAPITests {
 
     @BeforeTest
     fun setup() {
@@ -22,9 +22,9 @@ class WebApiCardsTests {
     @Test
     fun `test create card without endDate`(){
         TODO()
-        val userIn = dataUser.createUser(dummyName, dummyEmail)
-        val idBoard = dataBoard.createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
-        val idList = dataList.createList(idBoard, dummyBoardListName)
+        val userIn = createUser(dummyName, dummyEmail)
+        val idBoard = createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
+        val idList = createList(idBoard, dummyBoardListName)
         val cardIn = CardIn(dummyCardName, dummyCardDescription, null)
 
         val requestBody = Json.encodeToString(cardIn)
@@ -54,10 +54,10 @@ class WebApiCardsTests {
     @Test
     fun `test get card`(){
         TODO()
-        val userIn = dataUser.createUser(dummyName, dummyEmail)
-        val idBoard = dataBoard.createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
-        val idList = dataList.createList(idBoard, dummyBoardListName)
-        val idCard = dataCard.createCard(idList,idBoard, dummyCardName, dummyCardDescription, null)
+        val userIn = createUser(dummyName, dummyEmail)
+        val idBoard = createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
+        val idList = createList(idBoard, dummyBoardListName)
+        val idCard = createCard(idList,idBoard, dummyCardName, dummyCardDescription)
 
         val response = app(
             Request(
@@ -80,11 +80,11 @@ class WebApiCardsTests {
     @Test
     fun `test move card`(){
         TODO()
-        val userIn = dataUser.createUser(dummyName, dummyEmail)
-        val idBoard = dataBoard.createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
-        val idList = dataList.createList(idBoard, dummyBoardListName)
-        val idCard = dataCard.createCard(idList, idBoard,dummyCardName, dummyCardDescription, null)
-        val idListDst = dataList.createList(idBoard, dummyBoardListName)
+        val userIn = createUser(dummyName, dummyEmail)
+        val idBoard = createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
+        val idList = createList(idBoard, dummyBoardListName)
+        val idCard = createCard(idList, idBoard,dummyCardName, dummyCardDescription, null)
+        val idListDst = createList(idBoard, dummyBoardListName)
 
         val requestBody = Json.encodeToString(idListDst)
 

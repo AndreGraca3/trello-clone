@@ -5,21 +5,19 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.slf4j.LoggerFactory
 import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.exceptions.TrelloException
+import pt.isel.ls.server.utils.logger
+import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.jvm.isAccessible
 
 
-val logger = LoggerFactory.getLogger("pt.isel.ls.http.HTTPServer")
-
 fun getToken(request: Request): String {
-    val authHeader = request.header("Authorization")
-    return authHeader?.removePrefix("Bearer ") ?: throw TrelloException.NotAuthorized()
+    val authHeader = request.header("Authorization") ?: throw TrelloException.NotAuthorized()
+    return authHeader.removePrefix("Bearer ")
 }
-
 
 fun handleRequest(request: Request, handler: KFunction<Response>): Response {
     logRequest(request)
@@ -31,9 +29,9 @@ fun handleRequest(request: Request, handler: KFunction<Response>): Response {
             handler.call(request)
         }
     } catch (e: Exception) {
-        when(val cause = e.cause) {
+        when(val cause = if (e is InvocationTargetException) e.targetException else e) {
             is TrelloException -> createRsp(cause.status, cause.message)
-            else -> createRsp(Status.BAD_REQUEST, cause!!.message)
+            else -> createRsp(Status.BAD_REQUEST, cause.message)
         }
     }
 }
@@ -57,4 +55,3 @@ fun logRequest(request: Request) {
         request.header("accept")
     )
 }
-

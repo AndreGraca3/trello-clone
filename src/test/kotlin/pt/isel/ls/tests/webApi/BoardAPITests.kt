@@ -6,15 +6,14 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
-import pt.isel.ls.server.data.boards
-import pt.isel.ls.server.data.usersBoards
 import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.BoardIn
 import pt.isel.ls.server.utils.BoardOut
+import pt.isel.ls.server.utils.IDUser
 import pt.isel.ls.tests.utils.*
 import kotlin.test.*
 
-class WebApiBoardTests {
+class BoardAPITests {
 
     @BeforeTest
     fun setup() {
@@ -48,13 +47,12 @@ class WebApiBoardTests {
 
         val response = app(
             Request(Method.POST, "$baseUrl/board")
-                .header("Authorization", "Bearer $invalidToken")
                 .body(boardIn)
         )
 
         val msg = Json.decodeFromString<String>(response.bodyString())
 
-        assertTrue(boards.isEmpty())
+        assertTrue(dataMem.boardData.boards.isEmpty())
         assertEquals(Status.UNAUTHORIZED, response.status)
         assertEquals("Unauthorized Operation.", msg)
     }
@@ -67,7 +65,7 @@ class WebApiBoardTests {
                 .header("Authorization", "Bearer ${user.token}")
         )
 
-        assertTrue(boards.isEmpty())
+        assertTrue(dataMem.boardData.boards.isEmpty())
         assertEquals(Status.BAD_REQUEST, response.status)
     }
 
@@ -75,7 +73,7 @@ class WebApiBoardTests {
     fun `test get all boards while logged in`() {
         val boardsAmount = 3
         repeat(boardsAmount) {
-            dataBoard.createBoard(user.idUser, dummyBoardName + it, dummyBoardDescription)
+            dataMem.boardData.createBoard(user.idUser, dummyBoardName + it, dummyBoardDescription)
         }
 
         val response = app(
@@ -92,7 +90,7 @@ class WebApiBoardTests {
 
         assertEquals(boardsAmount, fetchedBoards.size)
         fetchedBoards.forEachIndexed { i, it ->
-            assertTrue(usersBoards.any{ it.idUser == user.idUser })
+            assertTrue(dataMem.userBoardData.usersBoards.any{ it.idUser == user.idUser })
             assertEquals(i, it.idBoard)
             assertEquals(dummyBoardName + i, it.name)
         }
@@ -102,7 +100,7 @@ class WebApiBoardTests {
     @Test
     fun `test get all boards without being logged in`() {
         repeat (3) {
-            dataBoard.createBoard(user.idUser, dummyBoardName + it, dummyBoardDescription)
+            dataMem.boardData.createBoard(user.idUser, dummyBoardName + it, dummyBoardDescription)
         }
 
         val response = app(
@@ -143,7 +141,7 @@ class WebApiBoardTests {
         val board = Json.decodeFromString<Board>(response.bodyString())
 
         assertEquals(boardId, board.idBoard)
-        assertTrue(usersBoards.any { it.idUser == user.idUser })
+        assertTrue(dataMem.userBoardData.usersBoards.any { it.idUser == user.idUser })
         assertEquals(Status.OK, response.status)
     }
 
@@ -182,8 +180,8 @@ class WebApiBoardTests {
 
         val dummyName2 = "Diogo"
         val dummyEmail2 = "Diogo@gmail.com"
-        val user2 = dataUser.createUser(dummyName2, dummyEmail2)
-        val userId2 = Json.encodeToString(user2.first)
+        val user2 = createUser(dummyName2, dummyEmail2)
+        val userId2 = Json.encodeToString(IDUser(user2.first))
 
         val response = app(
             Request(
@@ -195,7 +193,7 @@ class WebApiBoardTests {
             ).body(userId2)
         )
 
-        assertEquals(usersBoards.last().idUser, user2.first)
+        assertEquals(dataMem.userBoardData.usersBoards.last().idUser, user2.first)
         assertEquals(Status.OK, response.status)
     }
 
@@ -205,7 +203,7 @@ class WebApiBoardTests {
 
         val dummyName2 = "Diogo"
         val dummyEmail2 = "Diogo@gmail.com"
-        val user2 = dataUser.createUser(dummyName2, dummyEmail2)
+        val user2 = createUser(dummyName2, dummyEmail2)
         val userId2 = Json.encodeToString(user2.first)
 
         val response = app(
@@ -216,7 +214,7 @@ class WebApiBoardTests {
 
         val msg = Json.decodeFromString<String>(response.bodyString())
 
-        assertNotEquals(usersBoards.last().idUser, user2.first)
+        assertNotEquals(dataMem.userBoardData.usersBoards.last().idUser, user2.first)
         assertEquals(Status.UNAUTHORIZED, response.status)
         assertEquals("Unauthorized Operation.", msg)
     }

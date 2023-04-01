@@ -1,19 +1,12 @@
 package pt.isel.ls.server.data.dataPostGres.dataSQL
 
-import org.postgresql.ds.PGSimpleDataSource
 import pt.isel.ls.server.data.dataInterfaces.BoardData
 import pt.isel.ls.server.data.dataPostGres.statements.BoardStatements
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Board
+import pt.isel.ls.server.utils.setup
 
 class BoardDataSQL : BoardData {
-
-    private fun setup(): PGSimpleDataSource {
-        val dataSource = PGSimpleDataSource()
-        val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL")
-        dataSource.setURL(jdbcDatabaseURL)
-        return dataSource
-    }
 
     override fun createBoard(idUser: Int, name: String, description: String): Int {/** Not sure if I like this! **/
         val dataSource = setup()
@@ -76,7 +69,7 @@ class BoardDataSQL : BoardData {
 
     override fun getBoardsFromUser(idBoards: List<Int>): List<Board> {
         val dataSource = setup()
-        val selectStmt = BoardStatements.getBoardsFromUser(idUser)
+        val selectStmt = BoardStatements.getBoardsFromUser(3)
         val boards = mutableListOf<Board>()
 
         dataSource.connection.use {
