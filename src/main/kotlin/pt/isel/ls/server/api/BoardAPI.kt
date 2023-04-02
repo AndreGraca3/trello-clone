@@ -52,7 +52,7 @@ class BoardAPI(private val services: BoardServices) {
     }
 
     @Auth
-    private fun getBoardsFromUserInternal(request: Request, token: String): Response {
+    private fun getBoardsFromUserInternal(token: String): Response {
         return createRsp(OK, services.getBoardsFromUser(token)) // should return empty message?
     }
 }
