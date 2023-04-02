@@ -1,10 +1,17 @@
 package pt.isel.ls.tests.services
 
-import kotlin.test.BeforeTest
-import kotlin.test.Test
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.BoardList
-import pt.isel.ls.tests.utils.*
+import pt.isel.ls.tests.utils.boardId
+import pt.isel.ls.tests.utils.createList
+import pt.isel.ls.tests.utils.dataSetup
+import pt.isel.ls.tests.utils.dummyBoardListName
+import pt.isel.ls.tests.utils.invalidId
+import pt.isel.ls.tests.utils.invalidToken
+import pt.isel.ls.tests.utils.services
+import pt.isel.ls.tests.utils.user
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
@@ -14,7 +21,6 @@ class ServicesListTests {
     fun setup() {
         dataSetup(BoardList::class.java)
     }
-
 
     @Test
     fun `Create a List in board`() {
@@ -52,7 +58,7 @@ class ServicesListTests {
     fun `Get non-existing List from Board`() {
         createList(boardId)
         val err = assertFailsWith<TrelloException.NotFound> {
-            services.listServices.getList(user.token, boardId,invalidId)
+            services.listServices.getList(user.token, boardId, invalidId)
         }
         assertEquals(404, err.status.code)
         assertEquals("BoardList not found.", err.message)
@@ -64,7 +70,7 @@ class ServicesListTests {
         repeat(listsAmount) { createList(boardId, dummyBoardListName + it) }
         val lists = services.listServices.getListsOfBoard(user.token, boardId)
         repeat(listsAmount) {
-        assertEquals(lists[it], services.listServices.getList(user.token, boardId, it))
+            assertEquals(lists[it], services.listServices.getList(user.token, boardId, it))
         }
     }
 

@@ -15,5 +15,4 @@ class UserBoardDataSQL : UserBoardData {
     override fun checkUserInBoard(idUser: Int, idBoard: Int) {
         TODO("Not yet implemented")
     }
-
 }

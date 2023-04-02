@@ -1,8 +1,5 @@
 package pt.isel.ls.tests.webApi
 
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -11,7 +8,19 @@ import org.http4k.core.Request
 import org.http4k.core.Status
 import pt.isel.ls.server.utils.BoardList
 import pt.isel.ls.server.utils.BoardListIn
-import pt.isel.ls.tests.utils.*
+import pt.isel.ls.tests.utils.app
+import pt.isel.ls.tests.utils.baseUrl
+import pt.isel.ls.tests.utils.boardId
+import pt.isel.ls.tests.utils.createList
+import pt.isel.ls.tests.utils.dataMem
+import pt.isel.ls.tests.utils.dataSetup
+import pt.isel.ls.tests.utils.dummyBoardListName
+import pt.isel.ls.tests.utils.invalidToken
+import pt.isel.ls.tests.utils.listId
+import pt.isel.ls.tests.utils.user
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class ListAPITests {
@@ -20,7 +29,6 @@ class ListAPITests {
     fun setup() {
         dataSetup(BoardList::class.java)
     }
-
 
     @Test
     fun `test create list`() {
@@ -45,7 +53,6 @@ class ListAPITests {
 
     @Test
     fun `test create list without being logged`() {
-
         val response = app(
             Request(
                 Method.POST,
@@ -67,7 +74,6 @@ class ListAPITests {
 
     @Test
     fun `test create list without a body`() {
-
         val response = app(
             Request(
                 Method.POST,
@@ -131,7 +137,6 @@ class ListAPITests {
 
     @Test
     fun `test get lists from empty board`() {
-
         val response = app(
             Request(
                 Method.GET,
@@ -167,7 +172,6 @@ class ListAPITests {
 
     @Test
     fun `test get non-existing list`() {
-
         val response = app(
             Request(
                 Method.GET,

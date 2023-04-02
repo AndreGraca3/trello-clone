@@ -8,7 +8,8 @@ import pt.isel.ls.server.utils.setup
 
 class BoardDataSQL : BoardData {
 
-    override fun createBoard(idUser: Int, name: String, description: String): Int {/** Not sure if I like this! **/
+    override fun createBoard(idUser: Int, name: String, description: String): Int {
+        /** Not sure if I like this! **/
         val dataSource = setup()
         val insertStmtBoard = BoardStatements.createBoardCMD(name, description)
         var idBoard: Int

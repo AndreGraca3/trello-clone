@@ -1,10 +1,16 @@
 package pt.isel.ls.tests.services
 
-import kotlin.test.BeforeTest
-import kotlin.test.Test
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.User
-import pt.isel.ls.tests.utils.*
+import pt.isel.ls.tests.utils.createUser
+import pt.isel.ls.tests.utils.dataSetup
+import pt.isel.ls.tests.utils.dummyBadEmail
+import pt.isel.ls.tests.utils.dummyEmail
+import pt.isel.ls.tests.utils.dummyName
+import pt.isel.ls.tests.utils.invalidToken
+import pt.isel.ls.tests.utils.services
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
@@ -14,7 +20,6 @@ class ServicesUserTests {
     fun setup() {
         dataSetup(User::class.java)
     }
-
 
     @Test
     fun `Create a valid user`() {

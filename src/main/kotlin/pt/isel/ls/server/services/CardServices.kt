@@ -1,6 +1,9 @@
 package pt.isel.ls.server.services
 
-import pt.isel.ls.server.data.dataInterfaces.*
+import pt.isel.ls.server.data.dataInterfaces.CardData
+import pt.isel.ls.server.data.dataInterfaces.ListData
+import pt.isel.ls.server.data.dataInterfaces.UserBoardData
+import pt.isel.ls.server.data.dataInterfaces.UserData
 import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.checkEndDate
 import pt.isel.ls.server.utils.isValidString

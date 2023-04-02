@@ -3,7 +3,13 @@ package pt.isel.ls.server.data.dataInterfaces
 import pt.isel.ls.server.utils.Card
 
 interface CardData {
-    fun createCard(idList: Int, idBoard: Int, name: String, description: String, endDate: String? = null): Int // check endDate
+    fun createCard(
+        idList: Int,
+        idBoard: Int,
+        name: String,
+        description: String,
+        endDate: String? = null
+    ): Int // check endDate
 
     fun getCardsFromList(idList: Int, idBoard: Int): List<Card>
 

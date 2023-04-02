@@ -29,7 +29,7 @@ fun handleRequest(request: Request, handler: KFunction<Response>): Response {
             handler.call(request)
         }
     } catch (e: Exception) {
-        when(val cause = if (e is InvocationTargetException) e.targetException else e) {
+        when (val cause = if (e is InvocationTargetException) e.targetException else e) {
             is TrelloException -> createRsp(cause.status, cause.message)
             else -> createRsp(Status.BAD_REQUEST, cause.message)
         }

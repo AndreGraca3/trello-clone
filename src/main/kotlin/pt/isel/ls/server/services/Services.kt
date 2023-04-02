@@ -1,6 +1,6 @@
 package pt.isel.ls.server.services
 
-import pt.isel.ls.server.data.dataInterfaces.*
+import pt.isel.ls.server.data.dataInterfaces.Data
 
 class Services(data: Data) {
     val userServices = UserServices(data.userData)

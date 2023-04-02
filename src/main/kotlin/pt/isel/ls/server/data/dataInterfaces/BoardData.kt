@@ -9,5 +9,5 @@ interface BoardData {
 
     fun checkBoardName(name: String)
 
-    fun getBoardsFromUser(idBoards : List<Int>): List<Board>
+    fun getBoardsFromUser(idBoards: List<Int>): List<Board>
 }

@@ -88,5 +88,4 @@ class UserDataSQL : UserData {
             it.autoCommit = true
         }
     }
-
 }

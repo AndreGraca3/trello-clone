@@ -1,10 +1,21 @@
 package pt.isel.ls.tests.services
 
-import kotlin.test.BeforeTest
-import kotlin.test.Test
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Board
-import pt.isel.ls.tests.utils.*
+import pt.isel.ls.tests.utils.createBoard
+import pt.isel.ls.tests.utils.createUser
+import pt.isel.ls.tests.utils.dataMem
+import pt.isel.ls.tests.utils.dataSetup
+import pt.isel.ls.tests.utils.dummyBoardDescription
+import pt.isel.ls.tests.utils.dummyBoardName
+import pt.isel.ls.tests.utils.dummyEmail
+import pt.isel.ls.tests.utils.dummyName
+import pt.isel.ls.tests.utils.invalidId
+import pt.isel.ls.tests.utils.invalidToken
+import pt.isel.ls.tests.utils.services
+import pt.isel.ls.tests.utils.user
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
@@ -14,7 +25,6 @@ class ServicesBoardTests {
     fun setup() {
         dataSetup(Board::class.java)
     }
-
 
     @Test
     fun `Create a valid board`() {
@@ -43,7 +53,7 @@ class ServicesBoardTests {
 
     @Test
     fun `Add User to a Board`() {
-        val user2 = createUser(dummyName+2, dummyEmail+2)
+        val user2 = createUser(dummyName + 2, dummyEmail + 2)
         val newBoardId = createBoard(user.idUser)
         services.boardServices.addUserToBoard(user.token, user2.first, newBoardId)
         val board = services.boardServices.getBoard(user.token, newBoardId)
@@ -58,7 +68,7 @@ class ServicesBoardTests {
     @Test
     fun `Add User to a Board with Invalid Token`() {
         val err = assertFailsWith<TrelloException.NotAuthorized> {
-            val user2 = createUser(dummyName+2, dummyEmail+2)
+            val user2 = createUser(dummyName + 2, dummyEmail + 2)
             val newBoardId = createBoard(user.idUser)
             services.boardServices.addUserToBoard(invalidToken, user2.first, newBoardId)
         }

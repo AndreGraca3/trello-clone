@@ -22,7 +22,7 @@ class BoardServices(
         boardData.checkBoardName(name)
         val idUser = userData.getUser(token).idUser
         val idBoard = boardData.createBoard(idUser, name, description)
-        userBoardData.addUserToBoard(idUser,idBoard)
+        userBoardData.addUserToBoard(idUser, idBoard)
         return idBoard
     }
 
@@ -43,7 +43,7 @@ class BoardServices(
         userBoardData.checkUserInBoard(idUser, idBoard)
         userData.getUser(idNewUser) // check if user to add exists
         try {
-            userBoardData.checkUserInBoard(idNewUser, idBoard)    // this throws exception
+            userBoardData.checkUserInBoard(idNewUser, idBoard) // this throws exception
         } catch (e: Exception) {
             userBoardData.addUserToBoard(idNewUser, idBoard)
         }

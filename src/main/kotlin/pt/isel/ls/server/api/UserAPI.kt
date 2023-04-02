@@ -1,15 +1,15 @@
 package pt.isel.ls.server.api
 
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.OK
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import pt.isel.ls.server.utils.UserIn
-import pt.isel.ls.server.utils.UserOut
 import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.services.UserServices
+import pt.isel.ls.server.utils.UserIn
+import pt.isel.ls.server.utils.UserOut
 
 class UserAPI(private val services: UserServices) {
 

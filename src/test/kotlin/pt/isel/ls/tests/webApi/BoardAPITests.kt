@@ -10,8 +10,21 @@ import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.BoardIn
 import pt.isel.ls.server.utils.BoardOut
 import pt.isel.ls.server.utils.IDUser
-import pt.isel.ls.tests.utils.*
-import kotlin.test.*
+import pt.isel.ls.tests.utils.app
+import pt.isel.ls.tests.utils.baseUrl
+import pt.isel.ls.tests.utils.createBoard
+import pt.isel.ls.tests.utils.createUser
+import pt.isel.ls.tests.utils.dataMem
+import pt.isel.ls.tests.utils.dataSetup
+import pt.isel.ls.tests.utils.dummyBoardDescription
+import pt.isel.ls.tests.utils.dummyBoardName
+import pt.isel.ls.tests.utils.invalidToken
+import pt.isel.ls.tests.utils.user
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 class BoardAPITests {
 
@@ -19,7 +32,6 @@ class BoardAPITests {
     fun setup() {
         dataSetup(Board::class.java)
     }
-
 
     @Test
     fun `test create board while logged in`() {
@@ -59,7 +71,6 @@ class BoardAPITests {
 
     @Test
     fun `test create board without a body`() {
-
         val response = app(
             Request(Method.POST, "$baseUrl/board")
                 .header("Authorization", "Bearer ${user.token}")
@@ -73,7 +84,8 @@ class BoardAPITests {
     fun `test get all boards while logged in`() {
         val boardsAmount = 3
         repeat(boardsAmount) {
-            dataMem.boardData.createBoard(user.idUser, dummyBoardName + it, dummyBoardDescription)
+            val idBoard = dataMem.boardData.createBoard(user.idUser, dummyBoardName + it, dummyBoardDescription)
+            dataMem.userBoardData.addUserToBoard(user.idUser, idBoard)
         }
 
         val response = app(
@@ -90,7 +102,7 @@ class BoardAPITests {
 
         assertEquals(boardsAmount, fetchedBoards.size)
         fetchedBoards.forEachIndexed { i, it ->
-            assertTrue(dataMem.userBoardData.usersBoards.any{ it.idUser == user.idUser })
+            assertTrue(dataMem.userBoardData.usersBoards.any { it.idUser == user.idUser })
             assertEquals(i, it.idBoard)
             assertEquals(dummyBoardName + i, it.name)
         }
@@ -99,7 +111,7 @@ class BoardAPITests {
 
     @Test
     fun `test get all boards without being logged in`() {
-        repeat (3) {
+        repeat(3) {
             dataMem.boardData.createBoard(user.idUser, dummyBoardName + it, dummyBoardDescription)
         }
 
@@ -162,7 +174,6 @@ class BoardAPITests {
 
     @Test
     fun `test get details of a non-existing board`() {
-
         val response = app(
             Request(Method.GET, "$baseUrl/board/0")
                 .header("Authorization", user.token)
@@ -204,7 +215,7 @@ class BoardAPITests {
         val dummyName2 = "Diogo"
         val dummyEmail2 = "Diogo@gmail.com"
         val user2 = createUser(dummyName2, dummyEmail2)
-        val userId2 = Json.encodeToString(user2.first)
+        val userId2 = Json.encodeToString(IDUser(user2.first))
 
         val response = app(
             Request(Method.PUT, "$baseUrl/board/$boardId")

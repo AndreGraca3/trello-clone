@@ -9,11 +9,11 @@ class UserBoardDataMem : UserBoardData {
     val usersBoards = mutableListOf<UserBoard>()
 
     override fun addUserToBoard(idUser: Int, idBoard: Int) {
-        usersBoards.add(UserBoard(idUser,idBoard))
+        usersBoards.add(UserBoard(idUser, idBoard))
     }
 
     override fun searchUserBoards(idUser: Int): List<Int> {
-        return usersBoards.filter { it.idUser == idUser}.map{ it.idBoard }
+        return usersBoards.filter { it.idUser == idUser }.map { it.idBoard }
     }
 
     override fun checkUserInBoard(idUser: Int, idBoard: Int) {

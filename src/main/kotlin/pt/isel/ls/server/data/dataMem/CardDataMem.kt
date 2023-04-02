@@ -1,8 +1,8 @@
 package pt.isel.ls.server.data.dataMem
 
 import pt.isel.ls.server.data.dataInterfaces.CardData
-import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.exceptions.TrelloException
+import pt.isel.ls.server.utils.Card
 import java.time.LocalDate
 
 class CardDataMem : CardData {
@@ -39,7 +39,7 @@ class CardDataMem : CardData {
         card.idList = idListDst
     }
 
-    private fun getNextId() : Int {
-        return if(cards.isEmpty()) 0 else cards.last().idBoard + 1
+    private fun getNextId(): Int {
+        return if (cards.isEmpty()) 0 else cards.last().idBoard + 1
     }
 }

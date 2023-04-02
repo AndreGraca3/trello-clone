@@ -68,6 +68,4 @@ class CardAPI(private val services: CardServices) {
         val idCard = request.path("idCard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idCard")
         return createRsp(Status.OK, services.moveCard(token, idCard, idBoard, idListNow, idListDst))
     }
-
-
 }

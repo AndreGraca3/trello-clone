@@ -2,7 +2,7 @@ package pt.isel.ls.server.data.dataPostGres.statements
 
 object UserStatements {
 
-    fun createUserCMD(email: String, name:String, token: String): String {
+    fun createUserCMD(email: String, name: String, token: String): String {
         return "INSERT INTO dbo.user (email, name, token) VALUES ('$email', '$name', '$token');"
     }
 

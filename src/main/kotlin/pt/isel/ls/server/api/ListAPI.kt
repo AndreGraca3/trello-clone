@@ -1,11 +1,11 @@
 package pt.isel.ls.server.api
 
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.OK
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import org.http4k.routing.path
 import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.exceptions.TrelloException
@@ -45,5 +45,4 @@ class ListAPI(private val services: ListServices) {
         val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
         return createRsp(OK, services.getListsOfBoard(token, idBoard))
     }
-
 }

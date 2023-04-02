@@ -2,8 +2,8 @@ package pt.isel.ls.server.utils
 
 import org.postgresql.ds.PGSimpleDataSource
 import org.slf4j.LoggerFactory
-import java.time.LocalDate
 import pt.isel.ls.server.exceptions.TrelloException
+import java.time.LocalDate
 
 val logger = LoggerFactory.getLogger("pt.isel.ls.http.HTTPServer")
 

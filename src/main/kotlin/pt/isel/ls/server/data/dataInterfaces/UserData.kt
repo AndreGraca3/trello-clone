@@ -7,7 +7,7 @@ interface UserData {
 
     fun getUser(token: String): User
 
-    fun getUser(idUser: Int) : User
+    fun getUser(idUser: Int): User
 
     fun checkEmail(email: String)
 }

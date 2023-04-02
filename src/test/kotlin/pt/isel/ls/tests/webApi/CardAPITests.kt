@@ -3,13 +3,27 @@ package pt.isel.ls.tests.webApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlin.test.*
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
 import pt.isel.ls.server.utils.CardIn
 import pt.isel.ls.server.utils.CardOut
-import pt.isel.ls.tests.utils.*
+import pt.isel.ls.tests.utils.app
+import pt.isel.ls.tests.utils.baseUrl
+import pt.isel.ls.tests.utils.createBoard
+import pt.isel.ls.tests.utils.createCard
+import pt.isel.ls.tests.utils.createList
+import pt.isel.ls.tests.utils.createUser
+import pt.isel.ls.tests.utils.dummyBoardDescription
+import pt.isel.ls.tests.utils.dummyBoardListName
+import pt.isel.ls.tests.utils.dummyBoardName
+import pt.isel.ls.tests.utils.dummyCardDescription
+import pt.isel.ls.tests.utils.dummyCardName
+import pt.isel.ls.tests.utils.dummyEmail
+import pt.isel.ls.tests.utils.dummyName
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class CardAPITests {
 
@@ -18,9 +32,8 @@ class CardAPITests {
         TODO("use Aux functions and consts")
     }
 
-
     @Test
-    fun `test create card without endDate`(){
+    fun `test create card without endDate`() {
         TODO()
         val userIn = createUser(dummyName, dummyEmail)
         val idBoard = createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
@@ -48,16 +61,15 @@ class CardAPITests {
 
         val cardOut = Json.decodeFromString<Int>(bodyString)
         assertEquals(0, cardOut)
-
     }
 
     @Test
-    fun `test get card`(){
+    fun `test get card`() {
         TODO()
         val userIn = createUser(dummyName, dummyEmail)
         val idBoard = createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
         val idList = createList(idBoard, dummyBoardListName)
-        val idCard = createCard(idList,idBoard, dummyCardName, dummyCardDescription)
+        val idCard = createCard(idList, idBoard, dummyCardName, dummyCardDescription)
 
         val response = app(
             Request(
@@ -78,12 +90,12 @@ class CardAPITests {
     }
 
     @Test
-    fun `test move card`(){
+    fun `test move card`() {
         TODO()
         val userIn = createUser(dummyName, dummyEmail)
         val idBoard = createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
         val idList = createList(idBoard, dummyBoardListName)
-        val idCard = createCard(idList, idBoard,dummyCardName, dummyCardDescription, null)
+        val idCard = createCard(idList, idBoard, dummyCardName, dummyCardDescription, null)
         val idListDst = createList(idBoard, dummyBoardListName)
 
         val requestBody = Json.encodeToString(idListDst)

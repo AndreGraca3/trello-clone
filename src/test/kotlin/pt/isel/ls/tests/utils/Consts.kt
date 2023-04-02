@@ -1,13 +1,13 @@
 package pt.isel.ls.tests.utils
 
 import org.http4k.routing.routes
-import pt.isel.ls.server.api.*
-import pt.isel.ls.server.data.dataMem.*
+import pt.isel.ls.server.api.WebAPI
+import pt.isel.ls.server.data.dataMem.DataMem
 import pt.isel.ls.server.routes.BoardRoutes
 import pt.isel.ls.server.routes.CardRoutes
 import pt.isel.ls.server.routes.ListRoutes
 import pt.isel.ls.server.routes.UserRoutes
-import pt.isel.ls.server.services.*
+import pt.isel.ls.server.services.Services
 import pt.isel.ls.server.utils.User
 
 const val invalidToken = "INVALID_TOKEN"

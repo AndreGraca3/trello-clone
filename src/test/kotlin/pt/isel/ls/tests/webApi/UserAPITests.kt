@@ -3,14 +3,22 @@ package pt.isel.ls.tests.webApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlin.test.*
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
 import pt.isel.ls.server.utils.User
 import pt.isel.ls.server.utils.UserIn
 import pt.isel.ls.server.utils.UserOut
-import pt.isel.ls.tests.utils.*
+import pt.isel.ls.tests.utils.app
+import pt.isel.ls.tests.utils.baseUrl
+import pt.isel.ls.tests.utils.createUser
+import pt.isel.ls.tests.utils.dataSetup
+import pt.isel.ls.tests.utils.dummyBadEmail
+import pt.isel.ls.tests.utils.dummyEmail
+import pt.isel.ls.tests.utils.dummyName
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class UserAPITests {
 
@@ -18,7 +26,6 @@ class UserAPITests {
     fun setup() {
         dataSetup(User::class.java)
     }
-
 
     @Test
     fun `test createUser`() {
@@ -42,7 +49,7 @@ class UserAPITests {
         val msg = Json.decodeFromString<String>(response.bodyString())
 
         assertEquals(Status.BAD_REQUEST, response.status)
-        assertEquals("Invalid parameters: $dummyBadEmail",msg)
+        assertEquals("Invalid parameters: $dummyBadEmail", msg)
     }
 
     @Test
@@ -51,37 +58,37 @@ class UserAPITests {
         val userIn2 = UserIn(dummyName, dummyEmail)
 
         val requestBody = Json.encodeToString(userIn2)
-        val response = app(Request(Method.POST,"$baseUrl/user").body(requestBody))
+        val response = app(Request(Method.POST, "$baseUrl/user").body(requestBody))
         val msg = Json.decodeFromString<String>(response.bodyString())
 
         assertEquals(Status.CONFLICT, response.status)
-        assertEquals("$dummyEmail already exists.",msg)
+        assertEquals("$dummyEmail already exists.", msg)
     }
 
     @Test
     fun `test create user without body`() {
-        val response = app(Request(Method.POST,"$baseUrl/user"))
+        val response = app(Request(Method.POST, "$baseUrl/user"))
 
-        assertEquals(Status.BAD_REQUEST,response.status)
+        assertEquals(Status.BAD_REQUEST, response.status)
     }
 
     @Test
     fun `test get user user while being logged`() {
-            val user = createUser()
+        val user = createUser()
 
-            val response = app(
-                Request(
-                    Method.GET,
-                    "$baseUrl/user"
-                ).header("Authorization", "Bearer ${user.second}")
-            )
-            val userOut = Json.decodeFromString<User>(response.bodyString())
+        val response = app(
+            Request(
+                Method.GET,
+                "$baseUrl/user"
+            ).header("Authorization", "Bearer ${user.second}")
+        )
+        val userOut = Json.decodeFromString<User>(response.bodyString())
 
-            assertEquals(Status.OK, response.status)
-            assertEquals(user.first, userOut.idUser)
-            assertEquals(dummyName, userOut.name)
-            assertEquals(dummyEmail, userOut.email)
-            assertEquals(user.second, userOut.token)
+        assertEquals(Status.OK, response.status)
+        assertEquals(user.first, userOut.idUser)
+        assertEquals(dummyName, userOut.name)
+        assertEquals(dummyEmail, userOut.email)
+        assertEquals(user.second, userOut.token)
     }
 
     @Test
@@ -89,11 +96,12 @@ class UserAPITests {
         createUser()
 
         val response = app(
-            Request(Method.GET,"$baseUrl/user"))
+            Request(Method.GET, "$baseUrl/user")
+        )
 
         val msg = Json.decodeFromString<String>(response.bodyString())
 
-        assertEquals(Status.UNAUTHORIZED,response.status)
-        assertEquals("Unauthorized Operation.",msg)
+        assertEquals(Status.UNAUTHORIZED, response.status)
+        assertEquals("Unauthorized Operation.", msg)
     }
 }

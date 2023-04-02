@@ -5,7 +5,6 @@ import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.core.Status.Companion.CONFLICT
 import org.http4k.core.Status.Companion.NOT_FOUND
 import org.http4k.core.Status.Companion.UNAUTHORIZED
-import java.lang.Exception
 
 sealed class TrelloException(message: String, val status: Status) : Exception(message) {
     class NotAuthorized : TrelloException("Unauthorized Operation.", UNAUTHORIZED)

@@ -14,7 +14,10 @@ data class UserIn(val name: String, val email: String)
 @Serializable
 data class UserOut(val idUser: Int, val token: String)
 
-data class UserBoard(val idUser: Int, val idBoard: Int) // this doesn't need to be @Serializable since it's just an auxiliary "table representation"
+data class UserBoard(
+    val idUser: Int,
+    val idBoard: Int
+) // this doesn't need to be @Serializable since it's just an auxiliary "table representation"
 
 @Serializable
 data class Board(val idBoard: Int, val name: String, val description: String)
