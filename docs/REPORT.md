@@ -65,27 +65,25 @@ The service method performs the required data access and returns the response.
 The endpoint handler returns the response to the client.
 The relevant classes/functions used internally in a request are:
 
-HttpServer: the HTTP server implementation.
-Router: the routing middleware implementation.
-Endpoint handler functions: the functions that handle the requests for each endpoint.
-Service classes: the classes that perform the data access and business logic for each endpoint.
+[TasksServer.kt](../src/main/kotlin/pt/isel/ls/server/TasksServer.kt) : the HTTP server implementation.
+[HandleRequest](../src/main/kotlin/pt/isel/ls/server/api/AuxWebApi.kt) : the routing middleware implementation.
+[API Module](../src/main/kotlin/pt/isel/ls/server/api): the functions that handle the requests for each endpoint.
+[Service Module](../src/main/kotlin/pt/isel/ls/server/services): the classes that perform the data access and business logic for each endpoint.
 The request parameters are validated in the endpoint handler functions, using the HTTP4K library's validation functions.
 
 ### Connection Management
-Connections to the database are created, used, and disposed of by the Database class. <br>
-The Database class uses the HikariCP connection pool to manage the connections.
+Connections to the database are created, used, and disposed of by the PGSimpleDataSource class. <br>
 
 The connection management is integrated with transaction scopes. <br>
-Each service method executes in a transaction, which is created and committed or rolled back by the Database class.
+Each data method executes in a SQL script, which is created and committed or rolled back by the DataSQL class.
 
 ### Data Access
-The Database class is responsible for data access. It provides helper functions for executing SQL statements and mapping the results to domain objects.
+The dataSQL class is responsible for data access. It provides helper functions for executing SQL statements and mapping the results to domain objects.
 
-Non-trivial SQL statements are used for querying the data related to a board, list, or card.
+SQL statements that are used for querying the data related to a board, list, or card are stored in [Statements](../src/main/kotlin/pt/isel/ls/server/data/dataPostGres/statements) in their respective object..
 
 ### Error Handling/Processing
-Errors are handled and processed by the ErrorHandler middleware. When an error occurs in any of the middleware or endpoint handler functions, it is caught by the ErrorHandler. The ErrorHandler maps the error to the appropriate HTTP status code and returns an error response to the client.
-
+Errors are handled and processed by the HandleRequest function in [API](../src/main/kotlin/pt/isel/ls/server/api/AuxWebApi.kt). When a required parameter is missing in the request, the handleRequest function catch the error, and returns an error message with the 400 status code, to symbolize that a parameter is missing.
 The TrelloException class is used to define custom exceptions for specific error situations, such as unauthorized operations or invalid parameters.
 
 ## Critical Evaluation
@@ -98,4 +96,5 @@ None identified.
 Improvements to be made in the next phase:
 
 Improve the error handling and processing by adding more detailed error messages.
-Add support for pagination in the endpoints that return a list of items.
+Add support for pagination in the endpoints that return a list of items. 
+Make tests more optimized : avoid repeating same actions in test like creating a list.
