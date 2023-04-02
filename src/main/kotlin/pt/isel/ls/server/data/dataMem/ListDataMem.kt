@@ -24,7 +24,7 @@ class ListDataMem : ListData {
     }
 
     override fun checkListInBoard(idList: Int, idBoard: Int): BoardList {
-        return lists.find { it.idBoard == idBoard && it.idList == idList } ?: throw TrelloException.NotFound("Board")
+        return lists.find { it.idBoard == idBoard && it.idList == idList } ?: throw TrelloException.NotFound("List")
     }
 
     private fun getNextId(): Int {

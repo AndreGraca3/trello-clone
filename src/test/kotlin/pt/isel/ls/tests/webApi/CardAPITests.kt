@@ -6,38 +6,25 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
+import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.CardIn
 import pt.isel.ls.server.utils.CardOut
-import pt.isel.ls.tests.utils.app
-import pt.isel.ls.tests.utils.baseUrl
-import pt.isel.ls.tests.utils.createBoard
-import pt.isel.ls.tests.utils.createCard
-import pt.isel.ls.tests.utils.createList
-import pt.isel.ls.tests.utils.createUser
-import pt.isel.ls.tests.utils.dummyBoardDescription
-import pt.isel.ls.tests.utils.dummyBoardListName
-import pt.isel.ls.tests.utils.dummyBoardName
-import pt.isel.ls.tests.utils.dummyCardDescription
-import pt.isel.ls.tests.utils.dummyCardName
-import pt.isel.ls.tests.utils.dummyEmail
-import pt.isel.ls.tests.utils.dummyName
+import pt.isel.ls.server.utils.IDList
+import pt.isel.ls.tests.utils.*
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class CardAPITests {
 
     @BeforeTest
     fun setup() {
-        TODO("use Aux functions and consts")
+        dataSetup(Card::class.java)
     }
 
     @Test
     fun `test create card without endDate`() {
-        TODO()
-        val userIn = createUser(dummyName, dummyEmail)
-        val idBoard = createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
-        val idList = createList(idBoard, dummyBoardListName)
         val cardIn = CardIn(dummyCardName, dummyCardDescription, null)
 
         val requestBody = Json.encodeToString(cardIn)
@@ -45,10 +32,10 @@ class CardAPITests {
         val response = app(
             Request(
                 Method.POST,
-                "$baseUrl/board/$idBoard/list/$idList/card"
+                "$baseUrl/board/$boardId/list/$listId/card"
             ).header(
                 "Authorization",
-                "Bearer ${userIn.second}"
+                "Bearer ${user.token}"
             ).body(
                 requestBody
             )
@@ -64,20 +51,52 @@ class CardAPITests {
     }
 
     @Test
+    fun `create card without being logged`(){
+        val cardIn = CardIn(dummyCardName, dummyCardDescription, null)
+
+        val requestBody = Json.encodeToString(cardIn)
+
+        val response = app(
+            Request(
+                Method.POST,
+                "$baseUrl/board/$boardId/list/$listId/card"
+            ).body(
+                requestBody
+            )
+        )
+
+        assertEquals(Status.UNAUTHORIZED, response.status)
+    }
+
+    @Test
+    fun `test create card without a body`(){
+        val response = app(
+            Request(
+                Method.POST,
+                "$baseUrl/board/$boardId/list"
+            ).header(
+                "Authorization",
+                "Bearer ${user.token}"
+            )
+        )
+
+        assertTrue(dataMem.cardData.cards.isEmpty())
+        assertEquals(Status.BAD_REQUEST, response.status)
+    }
+
+
+
+    @Test
     fun `test get card`() {
-        TODO()
-        val userIn = createUser(dummyName, dummyEmail)
-        val idBoard = createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
-        val idList = createList(idBoard, dummyBoardListName)
-        val idCard = createCard(idList, idBoard, dummyCardName, dummyCardDescription)
+        val idCard = createCard(listId, boardId, dummyCardName, dummyCardDescription)
 
         val response = app(
             Request(
                 Method.GET,
-                "$baseUrl/board/$idBoard/list/$idList/card/$idCard"
+                "$baseUrl/board/$boardId/list/$listId/card/$idCard"
             ).header(
                 "Authorization",
-                "Bearer ${userIn.second}"
+                "Bearer ${user.token}"
             )
         )
 
@@ -90,27 +109,72 @@ class CardAPITests {
     }
 
     @Test
-    fun `test move card`() {
-        TODO()
-        val userIn = createUser(dummyName, dummyEmail)
-        val idBoard = createBoard(userIn.first, dummyBoardName, dummyBoardDescription)
-        val idList = createList(idBoard, dummyBoardListName)
-        val idCard = createCard(idList, idBoard, dummyCardName, dummyCardDescription, null)
-        val idListDst = createList(idBoard, dummyBoardListName)
+    fun `test get card without being logged`() {
+        val idCard = createCard(listId, boardId, dummyCardName, dummyCardDescription)
 
-        val requestBody = Json.encodeToString(idListDst)
+        val response = app(
+            Request(
+                Method.GET,
+                "$baseUrl/board/$boardId/list/$listId/card/$idCard"
+            )
+        )
+
+        assertEquals(Status.UNAUTHORIZED, response.status)
+    }
+
+    @Test
+    fun `test get non-existent card`(){
+        val response = app(
+            Request(
+                Method.GET,
+                "$baseUrl/board/$boardId/list/$listId/card/$cardId"
+            ).header(
+                "Authorization",
+                "Bearer ${user.token}"
+            )
+        )
+
+        val msg = Json.decodeFromString<String>(response.bodyString())
+
+        assertEquals(Status.NOT_FOUND, response.status)
+        assertEquals("Card not found.", msg)
+    }
+
+    @Test
+    fun `test move card`() {
+        val idCard = createCard(listId, boardId, dummyCardName, dummyCardDescription)
+        val idListDst = createList(boardId, dummyBoardListName+"2")
+
+        val requestBody = Json.encodeToString(IDList(idListDst))
 
         val response = app(
             Request(
                 Method.PUT,
-                "$baseUrl/board/$idBoard/list/$idList/card/$idCard"
+                "$baseUrl/board/$boardId/list/$listId/card/$idCard"
             ).header(
                 "Authorization",
-                "Bearer ${userIn.second}"
+                "Bearer ${user.token}"
             ).body(requestBody)
         )
 
         assertEquals(Status.OK, response.status)
         assertEquals("application/json", response.header("content-type"))
+    }
+
+    @Test
+    fun `test move card without being logged`() {
+        val idCard = createCard(listId, boardId, dummyCardName, dummyCardDescription)
+        val idListDst = createList(boardId, dummyBoardListName+"2")
+
+        val requestBody = Json.encodeToString(IDList(idListDst))
+
+        val response = app(
+            Request(
+                Method.PUT,
+                "$baseUrl/board/$boardId/list/$listId/card/$idCard"
+            ).body(requestBody)
+        )
+
+        assertEquals(Status.UNAUTHORIZED, response.status)
     }
 }

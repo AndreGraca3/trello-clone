@@ -28,7 +28,8 @@ class UserAPI(private val services: UserServices) {
     }
 
     @Auth
-    private fun getUserInternal(token: String): Response {
+    @Suppress("unused")
+    private fun getUserInternal(request: Request, token: String): Response {
         val user = services.getUser(token)
         return createRsp(OK, user)
     }

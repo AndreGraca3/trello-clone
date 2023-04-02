@@ -1,3 +1,7 @@
+CREATE DATABASE OurTrello;
+
+USE OurTrello;
+
 drop table if exists card;
 drop table if exists list;
 drop table if exists user_board;

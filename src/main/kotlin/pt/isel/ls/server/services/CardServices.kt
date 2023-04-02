@@ -47,6 +47,7 @@ class CardServices(
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
         listData.checkListInBoard(idListNow, idBoard)
+        listData.checkListInBoard(idListDst, idBoard)
         return cardData.moveCard(idCard, idListNow, idBoard, idListDst)
     }
 }

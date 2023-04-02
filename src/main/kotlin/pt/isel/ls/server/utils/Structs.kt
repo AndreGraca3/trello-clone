@@ -6,6 +6,9 @@ import kotlinx.serialization.Serializable
 data class IDUser(val idUser: Int)
 
 @Serializable
+data class IDList(val idList: Int)
+
+@Serializable
 data class User(val idUser: Int, val email: String, val name: String, val token: String)
 
 @Serializable

@@ -11,6 +11,7 @@ import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.services.CardServices
 import pt.isel.ls.server.utils.CardIn
 import pt.isel.ls.server.utils.CardOut
+import pt.isel.ls.server.utils.IDList
 
 class CardAPI(private val services: CardServices) {
 
@@ -64,8 +65,8 @@ class CardAPI(private val services: CardServices) {
     private fun moveCardInternal(request: Request, token: String): Response {
         val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
         val idListNow = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
-        val idListDst = Json.decodeFromString<Int>(request.bodyString())
+        val objIdListDst = Json.decodeFromString<IDList>(request.bodyString())
         val idCard = request.path("idCard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idCard")
-        return createRsp(Status.OK, services.moveCard(token, idCard, idBoard, idListNow, idListDst))
+        return createRsp(Status.OK, services.moveCard(token, idBoard, idListNow, objIdListDst.idList, idCard))
     }
 }
