@@ -13,7 +13,6 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.jvm.isAccessible
 
-
 fun getToken(request: Request): String {
     val authHeader = request.header("Authorization") ?: throw TrelloException.NotAuthorized()
     return authHeader.removePrefix("Bearer ")
