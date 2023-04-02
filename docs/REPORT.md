@@ -82,9 +82,30 @@ The dataSQL class is responsible for data access. It provides helper functions f
 
 SQL statements that are used for querying the data related to a board, list, or card are stored in [Statements](../src/main/kotlin/pt/isel/ls/server/data/dataPostGres/statements) in their respective object..
 
-### Error Handling/Processing
-Errors are handled and processed by the HandleRequest function in [API](../src/main/kotlin/pt/isel/ls/server/api/AuxWebApi.kt). When a required parameter is missing in the request, the handleRequest function catch the error, and returns an error message with the 400 status code, to symbolize that a parameter is missing.
-The TrelloException class is used to define custom exceptions for specific error situations, such as unauthorized operations or invalid parameters.
+### Request and Error Handling
+Every API method utilizes the HandleRequest function in [API](../src/main/kotlin/pt/isel/ls/server/api/AuxWebApi.kt) to handle requests and produce possible errors in an efficient and effective manner. When a required parameter is missing from a request, the HandleRequest function detects the error and returns an error message with the appropriate 400 status code, indicating that a parameter is missing.
+
+<img src="../images/Request_Diagram.jpg" alt="Request Diagram" style="width:440px;height:200px;">
+
+
+This function checks if the handler method received as a parameter has the `Auth` annotation which symbolizes that the operation requires the user to be authenticated to be completed. If this isn't the case it simply calls the handler function to process the request.
+Otherwise, it calls the `getToken` method to extract the request's token and pass it to the handler function.
+
+<img src="../images/HandlerFunction_Diagram.jpg" alt="Handler Function Diagram" style="width:290px;height:350px;">
+
+
+To handle specific error situations, the API uses the TrelloException class, which defines custom exceptions with associated HTTP status codes and error messages. This class is a sealed class that extends the base Exception class and includes four sub-classes: NotAuthorized, NotFound, IllegalArgument, and AlreadyExists.
+
+Each of these sub-classes is designed to handle a specific error scenario. For example, the NotAuthorized sub-class handles unauthorized operations (eg.: missing token) and returns an error message indicating that the requested operation is not authorized. Similarly, the NotFound sub-class returns an error message indicating that the requested object is not found, while the IllegalArgument sub-class returns an error message indicating that the parameters supplied are invalid. The AlreadyExists sub-class, on the other hand, returns an error message indicating that the requested object already exists.
+
+By utilizing the TrelloException class, the API can effectively handle a wide range of error situations while providing clear and concise error messages to users. This approach helps to improve the user experience by providing helpful feedback and reducing confusion when errors occur.
+
+### Interfaces and Dependency Injection
+To enable flexibility in our project and accommodate for possible changes in the future, we have opted to use multiple interfaces for different modules. This approach allows us, or future developers, to inject different dependencies with different implementations as needed. For instance, in the Services module, we can receive data through the Data interface, which can be implemented in various ways - data can be stored in memory or in a database, depending on the implementation of this module. 
+This way, we can easily swap out dependencies without having to modify the codebase.
+
+<img src="../images/Interfaces_Diagram.jpg" alt="Interfaces Diagram" style="width:750px;height:550px;">
+
 
 ## Critical Evaluation
 Functionality that is not yet concluded:
