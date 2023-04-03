@@ -101,6 +101,7 @@ class BoardDataSQL : BoardData {
     }
 }
 
+/** Reunir quando der sobre isto !**/
 /*     override fun getBoardsFromUser(idUser: Int): List<Board> {
         val dataSource = setup()
         val selectStmt = BoardStatements.getBoardsFromUser(idUser)

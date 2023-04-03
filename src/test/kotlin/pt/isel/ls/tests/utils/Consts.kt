@@ -8,7 +8,6 @@ import pt.isel.ls.server.routes.CardRoutes
 import pt.isel.ls.server.routes.ListRoutes
 import pt.isel.ls.server.routes.UserRoutes
 import pt.isel.ls.server.services.Services
-import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.User
 
 const val invalidToken = "INVALID_TOKEN"

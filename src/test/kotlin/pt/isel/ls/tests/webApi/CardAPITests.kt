@@ -10,7 +10,19 @@ import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.CardIn
 import pt.isel.ls.server.utils.CardOut
 import pt.isel.ls.server.utils.IDList
-import pt.isel.ls.tests.utils.*
+import pt.isel.ls.tests.utils.app
+import pt.isel.ls.tests.utils.baseUrl
+import pt.isel.ls.tests.utils.boardId
+import pt.isel.ls.tests.utils.cardId
+import pt.isel.ls.tests.utils.createCard
+import pt.isel.ls.tests.utils.createList
+import pt.isel.ls.tests.utils.dataMem
+import pt.isel.ls.tests.utils.dataSetup
+import pt.isel.ls.tests.utils.dummyBoardListName
+import pt.isel.ls.tests.utils.dummyCardDescription
+import pt.isel.ls.tests.utils.dummyCardName
+import pt.isel.ls.tests.utils.listId
+import pt.isel.ls.tests.utils.user
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -51,7 +63,7 @@ class CardAPITests {
     }
 
     @Test
-    fun `create card without being logged`(){
+    fun `create card without being logged`() {
         val cardIn = CardIn(dummyCardName, dummyCardDescription, null)
 
         val requestBody = Json.encodeToString(cardIn)
@@ -69,7 +81,7 @@ class CardAPITests {
     }
 
     @Test
-    fun `test create card without a body`(){
+    fun `test create card without a body`() {
         val response = app(
             Request(
                 Method.POST,
@@ -83,8 +95,6 @@ class CardAPITests {
         assertTrue(dataMem.cardData.cards.isEmpty())
         assertEquals(Status.BAD_REQUEST, response.status)
     }
-
-
 
     @Test
     fun `test get card`() {
@@ -123,7 +133,7 @@ class CardAPITests {
     }
 
     @Test
-    fun `test get non-existent card`(){
+    fun `test get non-existent card`() {
         val response = app(
             Request(
                 Method.GET,
@@ -143,7 +153,7 @@ class CardAPITests {
     @Test
     fun `test move card`() {
         val idCard = createCard(listId, boardId, dummyCardName, dummyCardDescription)
-        val idListDst = createList(boardId, dummyBoardListName+"2")
+        val idListDst = createList(boardId, dummyBoardListName + "2")
 
         val requestBody = Json.encodeToString(IDList(idListDst))
 
@@ -164,7 +174,7 @@ class CardAPITests {
     @Test
     fun `test move card without being logged`() {
         val idCard = createCard(listId, boardId, dummyCardName, dummyCardDescription)
-        val idListDst = createList(boardId, dummyBoardListName+"2")
+        val idListDst = createList(boardId, dummyBoardListName + "2")
 
         val requestBody = Json.encodeToString(IDList(idListDst))
 
