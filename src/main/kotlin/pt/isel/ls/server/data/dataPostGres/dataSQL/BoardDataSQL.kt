@@ -76,18 +76,9 @@ class BoardDataSQL : BoardData {
         dataSource.connection.use {
             it.autoCommit = false
             val res = it.prepareStatement(selectStmt).executeQuery()
-            res.next()
-
-            if (res.row == 0) return emptyList()
-            boards.add(
-                Board(
-                    res.getInt("idBoard"),
-                    res.getString("name"),
-                    res.getString("description")
-                )
-            )
 
             while (res.next()) {
+                if (res.row == 0) return emptyList()
                 boards.add(
                     Board(
                         res.getInt("idBoard"),
