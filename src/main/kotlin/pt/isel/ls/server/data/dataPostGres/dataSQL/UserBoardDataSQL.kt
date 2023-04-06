@@ -15,4 +15,8 @@ class UserBoardDataSQL : UserBoardData {
     override fun checkUserInBoard(idUser: Int, idBoard: Int) {
         TODO("Not yet implemented")
     }
+
+    override fun getIdUsersFromBoard(idBoard: Int): List<Int> {
+        TODO("Not yet implemented")
+    }
 }

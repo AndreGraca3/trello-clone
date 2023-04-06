@@ -28,6 +28,11 @@ class UserDataMem : UserData {
         if (users.any { it.email == email }) throw TrelloException.AlreadyExists(email)
     }
 
+    override fun getUsersFromBoard(idUsers: List<Int>): List<User> {
+        return users.filter { idUsers.contains(it.idUser) }
+        /** should we check if this comes empty? **/
+    }
+
     private fun getNextId(): Int {
         return if (users.isEmpty()) 0 else users.last().idUser + 1
     }

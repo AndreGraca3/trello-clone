@@ -12,7 +12,9 @@ class BoardRoutes(private val webApi: BoardAPI) {
             "board" bind Method.POST to webApi::createBoard,
             "board/{idBoard}" bind Method.GET to webApi::getBoard,
             "board" bind Method.GET to webApi::getBoardsFromUser,
-            "board/{idBoard}" bind Method.PUT to webApi::addUserToBoard
+            "board/{idBoard}" bind Method.PUT to webApi::addUserToBoard,
+            "board/{idBoard}/allUsers" bind Method.GET to webApi::getUsersFromBoard
+            /** eu não faço a menor ideia do nome a dar a este path.**/
         )
     }
 }

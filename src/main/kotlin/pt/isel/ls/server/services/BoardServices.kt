@@ -4,6 +4,7 @@ import pt.isel.ls.server.data.dataInterfaces.BoardData
 import pt.isel.ls.server.data.dataInterfaces.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.UserData
 import pt.isel.ls.server.utils.Board
+import pt.isel.ls.server.utils.User
 import pt.isel.ls.server.utils.isValidString
 
 class BoardServices(
@@ -47,5 +48,12 @@ class BoardServices(
         } catch (e: Exception) {
             userBoardData.addUserToBoard(idNewUser, idBoard)
         }
+    }
+
+    fun getUsersFromBoard(token: String, idBoard: Int) : List<User> {
+        val idUser = userData.getUser(token).idUser
+        userBoardData.checkUserInBoard(idUser, idBoard)
+        val userIds = userBoardData.getIdUsersFromBoard(idBoard)
+        return userData.getUsersFromBoard(userIds)
     }
 }

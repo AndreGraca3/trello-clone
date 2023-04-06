@@ -26,6 +26,10 @@ class ListAPI(private val services: ListServices) {
         return handleRequest(request, ::getListsFromBoardInternal)
     }
 
+    fun deleteList(request: Request) : Response {
+        return handleRequest(request, ::deleteListInternal)
+    }
+
     @Auth
     private fun createListInternal(request: Request, token: String): Response {
         val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
@@ -44,5 +48,12 @@ class ListAPI(private val services: ListServices) {
     private fun getListsFromBoardInternal(request: Request, token: String): Response {
         val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
         return createRsp(OK, services.getListsOfBoard(token, idBoard))
+    }
+
+    @Auth
+    private fun deleteListInternal(request: Request, token: String): Response {
+        val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
+        val idList = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
+        return createRsp(OK, services.deleteList(token, idBoard, idList)) /** It can be 200 or 204 **/
     }
 }

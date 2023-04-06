@@ -20,4 +20,8 @@ class ListDataSQL : ListData {
     override fun checkListInBoard(idList: Int, idBoard: Int): BoardList {
         TODO("Not yet implemented")
     }
+
+    override fun deleteList(idList: Int, idBoard: Int) {
+        TODO("Not yet implemented")
+    }
 }

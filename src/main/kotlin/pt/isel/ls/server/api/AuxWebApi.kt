@@ -23,7 +23,7 @@ fun handleRequest(request: Request, handler: KFunction<Response>): Response {
     handler.isAccessible = true
     return try {
         if (isAuthRequired(handler)) {
-            handler.call(request,"token123") //getToken(request)
+            handler.call(request, getToken(request)) //"token123"
         } else {
             handler.call(request)
         }

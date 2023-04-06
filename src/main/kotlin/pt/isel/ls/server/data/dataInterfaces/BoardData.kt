@@ -1,6 +1,7 @@
 package pt.isel.ls.server.data.dataInterfaces
 
 import pt.isel.ls.server.utils.Board
+import pt.isel.ls.server.utils.User
 
 interface BoardData {
     fun createBoard(idUser: Int, name: String, description: String): Int

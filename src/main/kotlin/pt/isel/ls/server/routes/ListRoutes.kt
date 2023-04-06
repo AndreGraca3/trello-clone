@@ -11,7 +11,8 @@ class ListRoutes(private val webApi: ListAPI) {
         return routes(
             "board/{idBoard}/list" bind Method.POST to webApi::createList,
             "board/{idBoard}/list/{idList}" bind Method.GET to webApi::getList,
-            "board/{idBoard}/list" bind Method.GET to webApi::getListsFromBoard
+            "board/{idBoard}/list" bind Method.GET to webApi::getListsFromBoard,
+            "board/{idBoard}/list/{idList}" bind Method.DELETE to webApi::deleteList
         )
     }
 }

@@ -209,6 +209,40 @@ paths:
         500:
           description: internal server error.
 
+  /board/{idBoard}/allUsers:
+    get:
+      summary: get all users from a board.
+      operationId: getUsersFromBoard
+      description:
+        get all users from a board by the board identifier.
+      tags:
+        - Board
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: token
+          type: string
+          description: token of the correspoding user.
+          required: true
+        - in: path
+          name: idBoard
+          type: integer
+          required: true
+      responses:
+        200:
+          description: search result matching criteria.
+          schema:
+            $ref: '#/definitions/listUser'
+        400:
+          description: invalid board identifier.
+        401:
+          description: invalid token.
+        404:
+          description: board not found.
+        500:
+          description: internal server error.
+
   /board/{idBoard}/list:
     post:
       summary: create a list in a board.
@@ -305,7 +339,7 @@ paths:
           type: integer
           required: true
         - in: path
-          name: idList # name of list
+          name: idList
           type: integer
           required: true
       responses:
@@ -314,11 +348,46 @@ paths:
           schema:
             $ref: '#/definitions/list'
         400:
-          description: invalid board identifier or name.
+          description: invalid board or list identifier.
         401:
           description: invalid token.
         404:
           description: list not found or board not found.
+        500:
+          description: internal server error.
+
+    delete:
+      summary: deletes a list.
+      operationId: deleteList
+      description:
+        deletes a list by its id.
+      tags:
+        - List
+      parameters:
+        - in: header
+          name: token
+          type: string
+          description: token of the correspoding user.
+          required: true
+        - in: path
+          name: idBoard
+          type: integer
+          required: true
+        - in: path
+          name: idList
+          type: integer
+          required: true
+      responses:
+        200:
+          description: list deleted sucessfully.
+        204:
+          description: list doesn't exist.
+        400:
+          description: invalid board or list identifier.
+        401:
+          description: invalid token.
+        404:
+          description: board not found.
         500:
           description: internal server error.
 
@@ -602,3 +671,17 @@ definitions:
       idUser:
         type: integer
         example: 1
+
+  listUser:
+    type: array
+    items:
+      type: object
+      example: [{ "name" : "Diogo",
+                  "email" : "Diogo@gmail.com",
+                  "idUser" : 1,
+                  "token" : "diogotoken"
+      },
+        { "name" : "André",
+          "email" : "graça@gmail.com",
+          "idUser" : 2,
+          "token" : "andretoken"}]

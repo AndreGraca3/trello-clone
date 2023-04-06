@@ -10,4 +10,6 @@ interface ListData {
     fun getListsOfBoard(idBoard: Int): List<BoardList>
 
     fun checkListInBoard(idList: Int, idBoard: Int): BoardList
+
+    fun deleteList(idList: Int, idBoard: Int)
 }

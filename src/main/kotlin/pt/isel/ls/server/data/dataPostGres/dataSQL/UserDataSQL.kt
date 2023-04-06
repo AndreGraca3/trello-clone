@@ -88,4 +88,8 @@ class UserDataSQL : UserData {
             it.autoCommit = true
         }
     }
+
+    override fun getUsersFromBoard(idUsers: List<Int>): List<User> {
+        TODO("Not yet implemented")
+    }
 }

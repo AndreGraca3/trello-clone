@@ -32,6 +32,10 @@ class BoardAPI(private val services: BoardServices) {
         return handleRequest(request, ::getBoardsFromUserInternal) // check if this return boards or idBoard's
     }
 
+    fun getUsersFromBoard(request: Request) : Response {
+        return handleRequest(request, ::getUsersFromBoardInternal)
+    }
+
     @Auth
     private fun createBoardInternal(request: Request, token: String): Response {
         val newBoard = Json.decodeFromString<BoardIn>(request.bodyString())
@@ -55,5 +59,11 @@ class BoardAPI(private val services: BoardServices) {
     @Suppress("unused")
     private fun getBoardsFromUserInternal(request: Request, token: String): Response {
         return createRsp(OK, services.getBoardsFromUser(token)) // should return empty message?
+    }
+
+    @Auth
+    private fun getUsersFromBoardInternal(request: Request, token: String) : Response{
+        val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
+        return createRsp(OK, services.getUsersFromBoard(token, idBoard))
     }
 }

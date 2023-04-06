@@ -27,6 +27,10 @@ class ListDataMem : ListData {
         return lists.find { it.idBoard == idBoard && it.idList == idList } ?: throw TrelloException.NotFound("List")
     }
 
+    override fun deleteList(idList: Int, idBoard: Int) {
+        if(!lists.removeIf { it.idList == idList && it.idBoard == idBoard }) throw TrelloException.NoContent("List")
+    }
+
     private fun getNextId(): Int {
         return if (lists.isEmpty()) 0 else lists.last().idList + 1
     }
