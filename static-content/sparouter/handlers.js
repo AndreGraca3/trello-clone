@@ -3,9 +3,9 @@ const BASE_URL = "http://localhost:8080/"
 
 function getHome(mainContent) {
     const h1 = document.createElement("h1")
-    const text = document.createTextNode("home")
-    h1.replaceChild(text)
-    mainContent.replaceChild(h1)
+    const text = document.createTextNode("home Page")
+    h1.replaceChildren(text)
+    mainContent.replaceChildren(h1)
 }
 
 function getUser(mainContent) {

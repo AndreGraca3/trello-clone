@@ -1,6 +1,6 @@
 CREATE DATABASE OurTrello;
 
-USE OurTrello;
+--USE OurTrello;
 
 drop table if exists card;
 drop table if exists list;
