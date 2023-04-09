@@ -5,13 +5,11 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.routing.path
 import pt.isel.ls.server.annotations.Auth
-import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.services.CardServices
 import pt.isel.ls.server.utils.CardIn
 import pt.isel.ls.server.utils.CardOut
-import pt.isel.ls.server.utils.IDList
+import pt.isel.ls.server.utils.NewList
 
 class CardAPI(private val services: CardServices) {
 
@@ -31,42 +29,51 @@ class CardAPI(private val services: CardServices) {
         return handleRequest(request, ::moveCardInternal)
     }
 
+    fun deleteCard(request: Request): Response {
+        return handleRequest(request, ::deleteCardInternal)
+    }
+
     @Auth
-    private fun createCardInternal(
-        request: Request,
-        token: String
-    ): Response { // Why is this POST and not PUT like createList?
-        val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
-        val idList = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
+    private fun createCardInternal(request: Request, token: String): Response {
+        val idBoard = getPathParam(request, "idBoard")
+        val idList = getPathParam(request, "idList")
         val newCard = Json.decodeFromString<CardIn>(request.bodyString())
         return createRsp(
             Status.CREATED,
-            services.createCard(token, idList, idBoard, newCard.name, newCard.description, newCard.endDate)
+            services.createCard(token, idBoard, idList, newCard.name, newCard.description, newCard.endDate)
         )
     }
 
     @Auth
     private fun getCardInternal(request: Request, token: String): Response {
-        val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
-        val idList = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
-        val idCard = request.path("idCard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idCard")
+        val idBoard = getPathParam(request, "idBoard")
+        val idList = getPathParam(request, "idList")
+        val idCard = getPathParam(request, "idCard")
         val card = services.getCard(token, idBoard, idList, idCard)
         return createRsp(Status.OK, CardOut(card.name, card.description, card.startDate, card.endDate, card.archived))
     }
 
     @Auth
     private fun getCardsFromListInternal(request: Request, token: String): Response {
-        val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
-        val idList = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
+        val idBoard = getPathParam(request, "idBoard")
+        val idList = getPathParam(request, "idList")
         return createRsp(Status.OK, services.getCardsFromList(token, idBoard, idList))
     }
 
     @Auth
     private fun moveCardInternal(request: Request, token: String): Response {
-        val idBoard = request.path("idBoard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idBoard")
-        val idListNow = request.path("idList")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idList")
-        val objIdListDst = Json.decodeFromString<IDList>(request.bodyString())
-        val idCard = request.path("idCard")?.toIntOrNull() ?: throw TrelloException.IllegalArgument("idCard")
-        return createRsp(Status.OK, services.moveCard(token, idBoard, idListNow, objIdListDst.idList, idCard))
+        val idBoard = getPathParam(request, "idBoard")
+        val idListNow = getPathParam(request, "idList")
+        val objIdListDst = Json.decodeFromString<NewList>(request.bodyString())
+        val idCard = getPathParam(request, "idCard")
+        return createRsp(Status.OK, services.moveCard(token, idBoard, idListNow, objIdListDst.idList, idCard, objIdListDst.cix))
+    }
+
+    @Auth
+    private fun deleteCardInternal(request: Request, token: String): Response {
+        val idBoard = getPathParam(request, "idBoard")
+        val idList = getPathParam(request, "idList")
+        val idCard = getPathParam(request, "idCard")
+        return createRsp(Status.NO_CONTENT, services.deleteCard(token, idBoard, idList, idCard))
     }
 }

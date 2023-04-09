@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class IDUser(val idUser: Int)
 
 @Serializable
-data class IDList(val idList: Int)
+data class NewList(val idList: Int, val cix: Int)
 
 @Serializable
 data class User(val idUser: Int, val email: String, val name: String, val token: String)
@@ -46,7 +46,8 @@ data class Card(
     val description: String,
     val startDate: String,
     val endDate: String?,
-    var archived: Boolean
+    var archived: Boolean,
+    var idx: Int
 )
 
 @Serializable

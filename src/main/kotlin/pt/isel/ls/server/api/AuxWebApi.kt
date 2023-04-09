@@ -5,6 +5,7 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
+import org.http4k.routing.path
 import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.logger
@@ -16,6 +17,10 @@ import kotlin.reflect.jvm.isAccessible
 fun getToken(request: Request): String {
     val authHeader = request.header("Authorization") ?: throw TrelloException.NotAuthorized()
     return authHeader.removePrefix("Bearer ")
+}
+
+fun getPathParam(request: Request, name: String): Int {
+    return request.path(name)?.toIntOrNull() ?: throw TrelloException.IllegalArgument(name)
 }
 
 fun handleRequest(request: Request, handler: KFunction<Response>): Response {

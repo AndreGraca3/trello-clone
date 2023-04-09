@@ -12,9 +12,8 @@ class CardRoutes(private val webApi: CardAPI) {
             "board/{idBoard}/list/{idList}/card" bind Method.POST to webApi::createCard,
             "board/{idBoard}/list/{idList}/card" bind Method.GET to webApi::getCardsFromList,
             "board/{idBoard}/list/{idList}/card/{idCard}" bind Method.GET to webApi::getCard,
-            "board/{idBoard}/list/{idList}/card/{idCard}" bind Method.PUT to webApi::moveCard
-            /** idList destination comes in body.**/
-            /** patch **/
+            "board/{idBoard}/list/{idList}/card/{idCard}" bind Method.PUT to webApi::moveCard,
+            "board/{idBoard}/list/{idList}/card/{idCard}" bind Method.DELETE to webApi::deleteCard
         )
     }
 }

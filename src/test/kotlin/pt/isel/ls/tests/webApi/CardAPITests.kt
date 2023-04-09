@@ -9,7 +9,7 @@ import org.http4k.core.Status
 import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.CardIn
 import pt.isel.ls.server.utils.CardOut
-import pt.isel.ls.server.utils.IDList
+import pt.isel.ls.server.utils.NewList
 import pt.isel.ls.tests.utils.app
 import pt.isel.ls.tests.utils.baseUrl
 import pt.isel.ls.tests.utils.boardId
@@ -155,7 +155,7 @@ class CardAPITests {
         val idCard = createCard(listId, boardId, dummyCardName, dummyCardDescription)
         val idListDst = createList(boardId, dummyBoardListName + "2")
 
-        val requestBody = Json.encodeToString(IDList(idListDst))
+        val requestBody = Json.encodeToString(NewList(idListDst, 0))
 
         val response = app(
             Request(
@@ -176,7 +176,7 @@ class CardAPITests {
         val idCard = createCard(listId, boardId, dummyCardName, dummyCardDescription)
         val idListDst = createList(boardId, dummyBoardListName + "2")
 
-        val requestBody = Json.encodeToString(IDList(idListDst))
+        val requestBody = Json.encodeToString(NewList(idListDst, 0))
 
         val response = app(
             Request(

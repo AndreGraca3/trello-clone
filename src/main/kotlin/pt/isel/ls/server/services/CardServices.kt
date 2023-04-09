@@ -43,11 +43,18 @@ class CardServices(
         return cardData.getCardsFromList(idList, idBoard)
     }
 
-    fun moveCard(token: String, idBoard: Int, idListNow: Int, idListDst: Int, idCard: Int) {
+    fun moveCard(token: String, idBoard: Int, idListNow: Int, idListDst: Int, idCard: Int, idxDst: Int) {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
         listData.checkListInBoard(idListNow, idBoard)
         listData.checkListInBoard(idListDst, idBoard)
-        return cardData.moveCard(idCard, idListNow, idBoard, idListDst)
+        cardData.moveCard(idCard, idListNow, idBoard, idListDst, idxDst)
+    }
+
+    fun deleteCard(token: String, idBoard: Int, idList: Int, idCard: Int) {
+        val idUser = userData.getUser(token).idUser
+        userBoardData.checkUserInBoard(idUser, idBoard)
+        listData.checkListInBoard(idList, idBoard)
+        return cardData.deleteCard(idCard, idList, idBoard)
     }
 }

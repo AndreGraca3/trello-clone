@@ -46,7 +46,8 @@ class CardDataSQL : CardData {
                         res.getString("description"),
                         res.getString("startDate"),
                         res.getString("endDate"),
-                        res.getBoolean("archived")
+                        res.getBoolean("archived"),
+                        res.getInt("idx")
                     )
                 )
             }
@@ -62,6 +63,7 @@ class CardDataSQL : CardData {
         lateinit var startDate: String
         lateinit var endDate: String
         var archived: Boolean
+        var idx: Int
 
         dataSource.connection.use {
             it.autoCommit = false
@@ -75,13 +77,13 @@ class CardDataSQL : CardData {
             startDate = res.getString("startDate")
             endDate = res.getString("endDate")
             archived = res.getBoolean("archived")
-
+            idx = res.getInt("idx")
             it.autoCommit = true
         }
-        return Card(idCard, idList, idBoard, name, description, startDate, endDate, archived)
+        return Card(idCard, idList, idBoard, name, description, startDate, endDate, archived, idx)
     }
 
-    override fun moveCard(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int) {
+    override fun moveCard(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int, idxDst: Int) {
         val dataSource = setup()
         val selectStmt = CardStatements.getCardCMD(idCard, idListNow, idBoard)
         val updateStmtCard = CardStatements.moveCardCMD(idCard, idListNow, idBoard, idListDst)
@@ -97,5 +99,13 @@ class CardDataSQL : CardData {
 
             it.autoCommit = true
         }
+    }
+
+    override fun deleteCard(idCard: Int, idList: Int, idBoard: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getNextIdx(idList: Int): Int {
+        TODO("Not yet implemented")
     }
 }

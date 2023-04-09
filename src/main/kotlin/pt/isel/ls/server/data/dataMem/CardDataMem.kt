@@ -19,7 +19,8 @@ class CardDataMem : CardData {
                 description,
                 LocalDate.now().toString(),
                 endDate,
-                false
+                false,
+                getNextIdx(idList)
             )
         cards.add(newCard)
         return newCard.idCard
@@ -34,12 +35,28 @@ class CardDataMem : CardData {
             ?: throw TrelloException.NotFound("Card")
     }
 
-    override fun moveCard(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int) {
+    override fun moveCard(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int, idxDst: Int) {
         val card = getCard(idCard, idListNow, idBoard)
+        cards.forEach {
+            if (it.idList == idListNow && it.idx >= idxDst) it.idx--
+            if (it.idList == idListDst && it.idx >= idxDst) it.idx++
+        }
         card.idList = idListDst
+        card.idx = idxDst
     }
 
+    override fun deleteCard(idCard: Int, idList: Int, idBoard: Int) {
+        val card = getCard(idCard, idList, idBoard)
+        cards.remove(card)
+    }
+
+    override fun getNextIdx(idList: Int): Int {
+        val filtered = cards.filter { it.idList == idList }
+        return if (filtered.isEmpty()) 0 else filtered.last().idx + 1
+    }
+
+
     private fun getNextId(): Int {
-        return if (cards.isEmpty()) 0 else cards.last().idBoard + 1
+        return if (cards.isEmpty()) 0 else cards.last().idCard + 1
     }
 }

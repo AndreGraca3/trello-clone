@@ -7,7 +7,7 @@ import java.util.*
 
 class UserDataMem : UserData {
 
-    val users = mutableListOf<User>()
+    val users = mutableListOf<User>(User(1,"alberto.tremocos@gmail.com", "Jose", "token123"))
 
     override fun createUser(name: String, email: String): Pair<Int, String> {
         val token = UUID.randomUUID().toString()

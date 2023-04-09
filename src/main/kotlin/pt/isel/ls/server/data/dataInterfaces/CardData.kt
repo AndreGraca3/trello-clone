@@ -15,5 +15,9 @@ interface CardData {
 
     fun getCard(idCard: Int, idList: Int, idBoard: Int): Card
 
-    fun moveCard(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int)
+    fun moveCard(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int, idxDst: Int)
+
+    fun deleteCard(idCard: Int, idList: Int, idBoard: Int)
+
+    fun getNextIdx(idList: Int): Int
 }
