@@ -6,20 +6,8 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
-import pt.isel.ls.server.utils.Board
-import pt.isel.ls.server.utils.BoardIn
-import pt.isel.ls.server.utils.BoardOut
-import pt.isel.ls.server.utils.IDUser
-import pt.isel.ls.tests.utils.app
-import pt.isel.ls.tests.utils.baseUrl
-import pt.isel.ls.tests.utils.createBoard
-import pt.isel.ls.tests.utils.createUser
-import pt.isel.ls.tests.utils.dataMem
-import pt.isel.ls.tests.utils.dataSetup
-import pt.isel.ls.tests.utils.dummyBoardDescription
-import pt.isel.ls.tests.utils.dummyBoardName
-import pt.isel.ls.tests.utils.invalidToken
-import pt.isel.ls.tests.utils.user
+import pt.isel.ls.server.utils.*
+import pt.isel.ls.tests.utils.*
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -228,5 +216,53 @@ class BoardAPITests {
         assertNotEquals(dataMem.userBoardData.usersBoards.last().idUser, user2.first)
         assertEquals(Status.UNAUTHORIZED, response.status)
         assertEquals("Unauthorized Operation.", msg)
+    }
+    @Test
+    fun `get users from board`(){
+        val user1 = createUser("Boris", "boris@gmail.com")
+        val user2 = createUser("Johson", "Johson@gmail.com")
+        val user3 = createUser("Pelegrini", "Pelegrini@gmail.com")
+
+        val boardId = createBoard(user.idUser)
+        dataMem.userBoardData.addUserToBoard(user1.first, boardId)
+        dataMem.userBoardData.addUserToBoard(user2.first, boardId)
+        dataMem.userBoardData.addUserToBoard(user3.first, boardId)
+
+        val response = app(
+            Request(Method.GET, "$baseUrl/board/$boardId/allUsers")
+                .header("Authorization", user.token)
+        )
+
+        val fetchedLists = Json.decodeFromString<List<User>>(response.bodyString())
+
+        assertEquals(4, fetchedLists.size)
+        assertEquals(response.status, Status.OK)
+    }
+
+    @Test
+    fun `get users from board without being logged in`() {
+
+        val response = app(
+            Request(Method.GET, "$baseUrl/board/$boardId/allUsers")
+                .header("Authorization", invalidToken)
+        )
+
+        val msg = Json.decodeFromString<String>(response.bodyString())
+
+        assertEquals(Status.UNAUTHORIZED, response.status)
+        assertEquals("Unauthorized Operation.", msg)
+    }
+
+    @Test
+    fun `get users from invalid board`() {
+        val response = app(
+            Request(Method.GET, "$baseUrl/board/0/allUsers")
+                .header("Authorization", user.token)
+        )
+
+        val msg = Json.decodeFromString<String>(response.bodyString())
+
+        assertEquals(Status.NOT_FOUND, response.status)
+        assertEquals("Board not found.", msg)
     }
 }
