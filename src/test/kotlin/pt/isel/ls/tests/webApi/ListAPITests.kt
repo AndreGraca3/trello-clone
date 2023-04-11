@@ -8,16 +8,8 @@ import org.http4k.core.Request
 import org.http4k.core.Status
 import pt.isel.ls.server.utils.BoardList
 import pt.isel.ls.server.utils.BoardListIn
-import pt.isel.ls.tests.utils.app
-import pt.isel.ls.tests.utils.baseUrl
-import pt.isel.ls.tests.utils.boardId
-import pt.isel.ls.tests.utils.createList
-import pt.isel.ls.tests.utils.dataMem
-import pt.isel.ls.tests.utils.dataSetup
-import pt.isel.ls.tests.utils.dummyBoardListName
-import pt.isel.ls.tests.utils.invalidToken
-import pt.isel.ls.tests.utils.listId
-import pt.isel.ls.tests.utils.user
+import pt.isel.ls.server.utils.DeleteListIn
+import pt.isel.ls.tests.utils.*
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -200,4 +192,95 @@ class ListAPITests {
         assertTrue(lists.isEmpty())
         assertEquals(Status.OK, response.status)
     }
+
+    @Test
+    fun `test get all lists from non-existing board`() {
+        val response = app(
+            Request(Method.GET, "$baseUrl/board/999/list")
+                .header("Authorization", user.token)
+        )
+
+        val msg = Json.decodeFromString<String>(response.bodyString())
+
+        assertEquals(Status.NOT_FOUND, response.status)
+        assertEquals("Board not found.", msg)
+    }
+
+    @Test
+    fun `delete list from board`(){
+
+        val response = app(
+            Request(
+                Method.DELETE,
+                "$baseUrl/board/$boardId/list/$listId"
+            ).body(
+                Json.encodeToString(DeleteListIn(boardId, listId))
+            ).header(
+                "Authorization",
+                "Bearer ${user.token}"
+            )
+        )
+
+        val msg = Json.decodeFromString<String>(response.bodyString())
+
+        assertEquals(response.status, Status.NO_CONTENT)
+        //assertEquals("list deleted successfully", msg)
+    }
+
+    @Test
+    fun `delete list from invalid board`(){
+        val response = app(
+            Request(
+                Method.DELETE,
+                "$baseUrl/board/$invalidId/list/$listId"
+            ).body(
+                Json.encodeToString(DeleteListIn(invalidId, listId))
+            ).header(
+                "Authorization",
+                "Bearer ${user.token}"
+            )
+        )
+        val msg = Json.decodeFromString<String>(response.bodyString())
+
+        assertEquals(Status.NOT_FOUND, response.status)
+        assertEquals("Board not found.", msg)
+    }
+
+    @Test
+    fun `delete list from board invalid token`(){
+
+        val response = app(
+            Request(
+                Method.DELETE,
+                "$baseUrl/board/$boardId/list/$listId"
+            ).body(
+                Json.encodeToString(DeleteListIn(boardId, listId))
+            ).header(
+                "Authorization",
+                "Bearer $invalidToken"
+            )
+        )
+        assertEquals(Status.UNAUTHORIZED, response.status)
+    }
+
+    @Test
+    fun `delete non-existing list from board`(){
+        val response = app(
+            Request(
+                Method.DELETE,
+                "$baseUrl/board/$boardId/list/$invalidId"
+            ).body(
+                Json.encodeToString(DeleteListIn(boardId, invalidId))
+            ).header(
+                "Authorization",
+                "Bearer ${user.token}"
+            )
+        )
+        val msg = Json.decodeFromString<String>(response.bodyString())
+
+        assertEquals(Status.NO_CONTENT, response.status)
+        assertEquals("List didn't exist.", msg)
+    }
+
+
 }

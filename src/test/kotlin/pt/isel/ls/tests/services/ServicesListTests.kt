@@ -84,4 +84,54 @@ class ServicesListTests {
         assertEquals(401, err.status.code)
         assertEquals("Unauthorized Operation.", err.message)
     }
+
+    @Test
+    fun `Delete List from Board`() {
+        val listId = createList(boardId)
+        services.listServices.deleteList(user.token, boardId, listId)
+        assertFailsWith<TrelloException.NotFound> {
+            services.listServices.getList(user.token, boardId, listId)
+        }
+    }
+
+    @Test
+    fun `Delete List from Board invalid token`() {
+        val listId = createList(boardId)
+        val err = assertFailsWith<TrelloException.NotAuthorized> {
+            services.listServices.deleteList(invalidToken, boardId, listId)
+        }
+        assertEquals(401, err.status.code)
+        assertEquals("Unauthorized Operation.", err.message)
+    }
+
+    @Test
+    fun `Delete non-existing List from Board`() {
+        val err = assertFailsWith<TrelloException.NoContent> {
+            services.listServices.deleteList(user.token, boardId, invalidId)
+        }
+        assertEquals(204, err.status.code)
+        assertEquals("List didn't exist.", err.message)
+    }
+
+    //IDEA: Update List
+//    @Test
+//    fun `Update List from Board`() {
+//        val listId = createList(boardId)
+//        val newName = "NewName"
+//        services.listServices.updateList(user.token, boardId, listId, newName)
+//        val list = services.listServices.getList(user.token, boardId, listId)
+//        assertEquals(newName, list.name)
+//    }
+//
+//    @Test
+//    fun `Update List from Board invalid token`() {
+//        val listId = createList(boardId)
+//        val newName = "NewName"
+//        val err = assertFailsWith<TrelloException.NotAuthorized> {
+//            services.listServices.updateList(invalidToken, boardId, listId, newName)
+//        }
+//        assertEquals(401, err.status.code)
+//        assertEquals("Unauthorized Operation.", err.message)
+//    }
+
 }

@@ -153,7 +153,7 @@ class ServicesCardTests {
         assertEquals(listId, newCard.idList)
 
         val listId2 = services.listServices.createList(user.token, boardId, dummyBoardListName)
-        services.cardServices.moveCard(user.token, boardId, listId, listId2, newCardId)
+        services.cardServices.moveCard(user.token, boardId, listId, listId2, newCardId, 0)
         val movedCard = services.cardServices.getCard(user.token, boardId, listId2, newCardId)
         assertEquals(newCardId, movedCard.idCard)
         assertEquals(listId2, movedCard.idList)
@@ -168,7 +168,7 @@ class ServicesCardTests {
         assertEquals(listId, newCard.idList)
 
         val err = assertFailsWith<TrelloException.NotFound> {
-            services.cardServices.moveCard(user.token, boardId, listId, invalidId, newCardId)
+            services.cardServices.moveCard(user.token, boardId, listId, invalidId, newCardId, 0)
         }
         assertEquals(404, err.status.code)
         assertEquals("List not found.", err.message)
@@ -184,7 +184,7 @@ class ServicesCardTests {
 
         val listId2 = services.listServices.createList(user.token, boardId, dummyBoardListName)
         val err = assertFailsWith<TrelloException.NotAuthorized> {
-            services.cardServices.moveCard(invalidToken, boardId, listId, listId2, newCardId)
+            services.cardServices.moveCard(invalidToken, boardId, listId, listId2, newCardId, 0)
         }
         assertEquals(401, err.status.code)
         assertEquals("Unauthorized Operation.", err.message)
@@ -194,7 +194,7 @@ class ServicesCardTests {
     fun `Move card from list to another list with invalid card`() {
         val listId2 = services.listServices.createList(user.token, boardId, dummyBoardListName)
         val err = assertFailsWith<TrelloException.NotFound> {
-            services.cardServices.moveCard(user.token, boardId, listId, listId2, invalidId)
+            services.cardServices.moveCard(user.token, boardId, listId, listId2, invalidId, 0)
         }
         assertEquals(404, err.status.code)
         assertEquals("Card not found.", err.message)

@@ -38,6 +38,9 @@ data class BoardList(val idList: Int, val idBoard: Int, val name: String)
 data class BoardListIn(val name: String)
 
 @Serializable
+data class DeleteListIn(val boardId: Int, val listId: Int)
+
+@Serializable
 data class Card(
     val idCard: Int,
     var idList: Int,
