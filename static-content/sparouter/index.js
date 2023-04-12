@@ -20,9 +20,11 @@ function hashChangeHandler() {
     const handler = router.getRouteHandler(path)
 
     if (path === "user") {
-        const token = localStorage.getItem('token')
+        //const token = localStorage.getItem('token')
+        const token = "token123" /* TEMPORARY */
         if (token) {
             handler(mainContent, token)
+            console.log("token is",token)
         } else {
             window.location.hash = "login"
         }

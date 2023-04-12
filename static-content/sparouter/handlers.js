@@ -8,12 +8,14 @@ function getHome(mainContent) {
     mainContent.replaceChildren(h3)
 }
 function getUser(mainContent, token) {
+
     const headers = new Headers({
-        'Authorization': 'Bearer ' + token,
+        'Authorization': 'Bearer ' + token,  /* TEMPORARY */
         'Content-Type': 'application/json'
     });
 
     fetch(BASE_URL + "user", {
+        method: "GET",
         headers: headers
     })
         .then(res => res.json())
