@@ -1,32 +1,61 @@
-
-const BASE_URL = "http://localhost:8080/"
+import {BASE_URL, boardFunc, createHeader, createHTMLCard, createRows, RECENT_BOARDS} from "./utils.js"
 
 function getHome(mainContent) {
-    const h3 = document.createElement("h3")
-    const text = document.createTextNode("This is OurTrello App")
-    h3.replaceChildren(text)
-    mainContent.replaceChildren(h3)
+    document.title = "OurTrello | Home"
+
+    const h1 = createHeader("Welcome to OurTrello!")
+    h1.classList.add("rainbow-text")
+    const h2 = createHeader("🕒 Recent Boards")
+    h2.style.color = "#D3D3D3"
+    h2.style.fontSize = "20px"
+    h2.style.paddingLeft = "10rem"
+    h2.style.paddingTop = "5rem"
+
+    const cards = RECENT_BOARDS.map(board =>
+        createHTMLCard(board.name, "", () => boardFunc(board), 5)
+    )
+
+    const recent = createRows(cards, 3)
+    recent.style.float = "left"
+    recent.style.paddingLeft = "10rem"
+
+    mainContent.replaceChildren(h1, h2, recent)
 }
-function getUser(mainContent, token) {
 
-    const headers = new Headers({
-        'Authorization': 'Bearer ' + token,  /* TEMPORARY */
-        'Content-Type': 'application/json'
-    });
+async function getUser(mainContent, token) {
+    document.title = "OurTrello | User"
 
-    fetch(BASE_URL + "user", {
+    const user = await (await fetch(BASE_URL + "user", {
         method: "GET",
-        headers: headers
-    })
-        .then(res => res.json())
-        .then(user => {
-            console.log(user)
-            const text = document.createTextNode(JSON.stringify(user));
-            mainContent.replaceChildren(text)
-        })
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    })).json()
+
+    const div = document.createElement("div")
+    div.classList.add("text-center")
+
+    const img = document.createElement("img")
+    img.src = "https://i.imgur.com/JGtwTBw.png"
+    img.style.paddingTop = "2rem"
+    img.style.width = "10rem"
+
+    const pName = document.createElement("p")
+    pName.innerText = `${user.name}`
+
+    const pEmail = document.createElement("p")
+    pEmail.innerText = `${user.email}`
+
+    div.replaceChildren(img,pName, pEmail)
+
+    mainContent.replaceChildren(div)
+
+
 }
 
-function getSignup(mainContent) {
+function getSignup(mainContent) {   // Whats this compared to below function?
+
     const signupBox = document.createElement("div");
     signupBox.classList.add("signup-box");
     signupBox.innerHTML = `
@@ -58,15 +87,15 @@ function getSignup(mainContent) {
 }
 
 function createUser(name, email, password) {
-    const data = { name, email };
+    const data = {name, email};
     fetch(BASE_URL + "user", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data),
     })
         .then((res) => res.json())
         .then((response) => {
-            const { id, token } = response;
+            const {id, token} = response;
             console.log(`New user created with ID ${id} and token ${token}`);
 
             // redirect to the user's page after successful sign-up
@@ -80,6 +109,8 @@ function createUser(name, email, password) {
 
 
 function getLogin(mainContent) {
+    document.title = "OurTrello | Login"
+
     const loginBox = document.createElement("div");
     loginBox.classList.add("login-box");
     loginBox.innerHTML = `
@@ -110,7 +141,7 @@ function getLogin(mainContent) {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({email, password}),
         });
 
         if (response.ok) {
@@ -125,13 +156,35 @@ function getLogin(mainContent) {
     });
 }
 
+async function getBoards(mainContent) {
+    document.title = "OurTrello | Boards"
+
+    const h1 = document.createElement("h1")
+    const text = document.createTextNode("My Boards")
+    h1.replaceChildren(text)
+    mainContent.replaceChildren(h1)
+
+    const boards = await (await fetch(BASE_URL + "board", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer token123"
+        }
+    })).json()
+
+    const cards = boards.map(board => createHTMLCard(board.name, board.description, () => boardFunc(board)))
+
+    const boardsContainer = createRows(cards, 2)
+    mainContent.appendChild(boardsContainer)
+}
 
 
 export const handlers = {
     getHome,
     getUser,
     getLogin,
-    getSignup
+    getSignup,
+    getBoards
 }
 
 export default handlers

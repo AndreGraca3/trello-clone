@@ -7,7 +7,8 @@ import pt.isel.ls.server.utils.User
 
 class BoardDataMem : BoardData {
 
-    val boards = mutableListOf<Board>()
+    val boards =
+        mutableListOf<Board>(Board(0, "Board1", "this is description1"), Board(1, "Board2", "this is description2"))
 
     override fun createBoard(idUser: Int, name: String, description: String): Int {
         val newBoard = Board(getNextId(), name, description)

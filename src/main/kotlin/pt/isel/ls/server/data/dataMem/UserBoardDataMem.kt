@@ -7,7 +7,7 @@ import pt.isel.ls.server.utils.UserBoard
 
 class UserBoardDataMem : UserBoardData {
 
-    val usersBoards = mutableListOf<UserBoard>()
+    val usersBoards = mutableListOf<UserBoard>(UserBoard(1,0), UserBoard(1,1))
 
     override fun addUserToBoard(idUser: Int, idBoard: Int) {
         usersBoards.add(UserBoard(idUser, idBoard))

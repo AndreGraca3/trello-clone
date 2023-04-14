@@ -12,8 +12,8 @@ class UserServices(private val userData: UserData) {
      *  ---------------------------- **/
 
     fun createUser(name: String, email: String): Pair<Int, String> {
-        isValidString(name)
-        isValidString(email)
+        isValidString(name, "name")
+        isValidString(email, "email")
         if (!Regex("@").containsMatchIn(email)) throw TrelloException.IllegalArgument(email)
         userData.checkEmail(email)
         return userData.createUser(name, email)

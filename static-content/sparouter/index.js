@@ -9,6 +9,7 @@ function loadHandler() {
     router.addRouteHandler("user",handlers.getUser)
     router.addRouteHandler("login",handlers.getLogin)
     router.addRouteHandler("signup",handlers.getSignup)
+    router.addRouteHandler("boards",handlers.getBoards)
 
     hashChangeHandler()
 }

@@ -11,5 +11,5 @@ interface UserData {
 
     fun checkEmail(email: String)
 
-    fun getUsersFromBoard(idUsers : List<Int>) : List<User>
+    fun getUsers(idUsers : List<Int>) : List<User>
 }

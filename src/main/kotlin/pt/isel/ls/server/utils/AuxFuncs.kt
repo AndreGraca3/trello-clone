@@ -12,10 +12,10 @@ fun checkEndDate(endDate: String) {
     if (endDateParsed < LocalDate.now()) throw TrelloException.IllegalArgument(endDate)
 }
 
-fun isValidString(value: String): Boolean {
+fun isValidString(value: String, property: String): Boolean {
     val trim = value.trim()
     if (trim != "" && trim != "null") return true
-    throw TrelloException.IllegalArgument(value)
+    throw TrelloException.IllegalArgument(property)
 }
 
 fun setup(): PGSimpleDataSource {

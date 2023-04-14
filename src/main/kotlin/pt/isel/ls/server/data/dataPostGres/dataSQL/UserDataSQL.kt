@@ -5,6 +5,7 @@ import pt.isel.ls.server.data.dataPostGres.statements.UserStatements
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.User
 import pt.isel.ls.server.utils.setup
+import java.sql.Statement
 import java.util.*
 
 class UserDataSQL : UserData {
@@ -13,16 +14,14 @@ class UserDataSQL : UserData {
         val dataSource = setup()
         val token = UUID.randomUUID().toString()
         val insertStmt = UserStatements.createUserCMD(email, name, token)
-        val selectStmt = UserStatements.getUserCMD(token)
-        var userId: Int
+        var userId = -1
+
         dataSource.connection.use {
             it.autoCommit = false
-            it.prepareStatement(insertStmt).executeUpdate()
+            val ps = it.prepareStatement(insertStmt, Statement.RETURN_GENERATED_KEYS)
+            ps.executeUpdate()
 
-            val res = it.prepareStatement(selectStmt).executeQuery()
-            res.next()
-
-            userId = res.getInt("idUser")
+            if (ps.generatedKeys.next()) userId = ps.generatedKeys.getInt(1)
 
             it.autoCommit = true
         }
@@ -89,7 +88,7 @@ class UserDataSQL : UserData {
         }
     }
 
-    override fun getUsersFromBoard(idUsers: List<Int>): List<User> {
-        TODO("Not yet implemented")
+    override fun getUsers(idUsers: List<Int>): List<User> {
+        TODO("Not yet implemented") // should we retrieve all users and make a filter on that?
     }
 }

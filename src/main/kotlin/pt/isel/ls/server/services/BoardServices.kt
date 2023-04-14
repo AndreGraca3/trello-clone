@@ -18,8 +18,8 @@ class BoardServices(
      *  ------------------------------ **/
 
     fun createBoard(token: String, name: String, description: String): Int {
-        isValidString(name)
-        isValidString(description)
+        isValidString(name, "name")
+        isValidString(description, "description")
         boardData.checkBoardName(name)
         val idUser = userData.getUser(token).idUser
         val idBoard = boardData.createBoard(idUser, name, description)
@@ -54,6 +54,6 @@ class BoardServices(
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
         val userIds = userBoardData.getIdUsersFromBoard(idBoard)
-        return userData.getUsersFromBoard(userIds)
+        return userData.getUsers(userIds)
     }
 }

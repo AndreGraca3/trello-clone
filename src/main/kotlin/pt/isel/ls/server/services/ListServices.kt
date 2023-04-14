@@ -18,7 +18,7 @@ class ListServices(
 
     fun createList(token: String, idBoard: Int, name: String): Int {
         /** check **/
-        isValidString(name)
+        isValidString(name, "name")
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
         return listData.createList(idBoard, name)
