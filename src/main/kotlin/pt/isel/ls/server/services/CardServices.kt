@@ -7,6 +7,7 @@ import pt.isel.ls.server.data.dataInterfaces.UserData
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.checkEndDate
+import pt.isel.ls.server.utils.checkPaging
 import pt.isel.ls.server.utils.isValidString
 
 class CardServices(
@@ -41,7 +42,9 @@ class CardServices(
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
         listData.checkListInBoard(idList, idBoard)
-        return cardData.getCardsFromList(idList, idBoard, limit, skip)
+        val count = cardData.getCardCount(idBoard,idList)
+        val pairPaging = checkPaging(count, limit, skip)
+        return cardData.getCardsFromList(idList, idBoard, pairPaging.second, pairPaging.first)
     }
 
     fun moveCard(token: String, idBoard: Int, idListNow: Int, idListDst: Int, idCard: Int, idxDst: Int) {

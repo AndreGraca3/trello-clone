@@ -23,9 +23,8 @@ class ListDataMem : ListData {
             ?: throw TrelloException.NotFound("BoardList")
     }
 
-    override fun getListsOfBoard(idBoard: Int, limit: Int?, skip: Int?): List<BoardList> {
-        val res = lists.filter { it.idBoard == idBoard }
-        return checkPaging(res, limit, skip)
+    override fun getListsOfBoard(idBoard: Int, limit: Int, skip: Int): List<BoardList> {
+        return lists.filter { it.idBoard == idBoard }.subList(skip, skip + limit)
     }
 
     override fun checkListInBoard(idList: Int, idBoard: Int): BoardList {

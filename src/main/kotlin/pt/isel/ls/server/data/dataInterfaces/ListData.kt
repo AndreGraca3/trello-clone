@@ -9,7 +9,7 @@ interface ListData {
 
     fun getList(idList: Int, idBoard: Int): BoardList
 
-    fun getListsOfBoard(idBoard: Int, limit: Int?, skip: Int?): List<BoardList>
+    fun getListsOfBoard(idBoard: Int, limit: Int, skip: Int): List<BoardList>
 
     fun checkListInBoard(idList: Int, idBoard: Int): BoardList
 

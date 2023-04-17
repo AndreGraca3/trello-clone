@@ -13,7 +13,7 @@ interface CardData {
         endDate: String? = null
     ): Int // check endDate
 
-    fun getCardsFromList(idList: Int, idBoard: Int, limit: Int?, skip: Int?): List<Card>
+    fun getCardsFromList(idList: Int, idBoard: Int, limit: Int, skip: Int): List<Card>
 
     fun getCard(idCard: Int, idList: Int, idBoard: Int): Card
 

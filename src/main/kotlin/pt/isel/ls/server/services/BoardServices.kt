@@ -7,6 +7,8 @@ import pt.isel.ls.server.data.dataInterfaces.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.UserData
 import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.BoardHTML
+import pt.isel.ls.server.utils.CardHTML
+import pt.isel.ls.server.utils.ListHTML
 import pt.isel.ls.server.utils.User
 import pt.isel.ls.server.utils.checkPaging
 import pt.isel.ls.server.utils.isValidString
@@ -38,7 +40,14 @@ class BoardServices(
         userBoardData.checkUserInBoard(idUser, idBoard)
         val board = boardData.getBoard(idBoard)
         val lists = listData.getListsOfBoard(idBoard, null, null)
-        return TODO()
+        val cards = lists.map { cardData.getCardsFromList(it.idList,it.idBoard,null, null)}
+        val listsHTML = mutableListOf<ListHTML>()
+        for(i in lists.indices) {
+            val currCards = cards[i].map { CardHTML(it.idCard, it.idList, it.idBoard, it.name)}
+            val currList = lists[i]
+            listsHTML.add(ListHTML(currList.idList,currList.idBoard,currList.name,currCards))
+        }
+        return BoardHTML(board.idBoard,board.name,board.description,listsHTML)
     }
 
     fun getBoardsFromUser(token: String,limit: Int?, skip: Int?): List<Board> {

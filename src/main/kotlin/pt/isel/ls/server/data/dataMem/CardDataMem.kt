@@ -29,9 +29,8 @@ class CardDataMem : CardData {
         return newCard.idCard
     }
 
-    override fun getCardsFromList(idList: Int, idBoard: Int, limit: Int?, skip: Int?): List<Card> {
-        val res = cards.filter { it.idList == idList && it.idBoard == idBoard }
-        return checkPaging(res, limit, skip)
+    override fun getCardsFromList(idList: Int, idBoard: Int, limit: Int, skip: Int): List<Card> {
+        return cards.filter { it.idList == idList && it.idBoard == idBoard }.subList(skip, limit + skip)
     }
 
     override fun getCard(idCard: Int, idList: Int, idBoard: Int): Card {

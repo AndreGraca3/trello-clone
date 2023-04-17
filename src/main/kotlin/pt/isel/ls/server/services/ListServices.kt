@@ -4,6 +4,7 @@ import pt.isel.ls.server.data.dataInterfaces.ListData
 import pt.isel.ls.server.data.dataInterfaces.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.UserData
 import pt.isel.ls.server.utils.BoardList
+import pt.isel.ls.server.utils.checkPaging
 import pt.isel.ls.server.utils.isValidString
 
 class ListServices(
@@ -34,7 +35,9 @@ class ListServices(
     fun getListsOfBoard(token: String, idBoard: Int, limit: Int?, skip: Int?): List<BoardList> {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
-        return listData.getListsOfBoard(idBoard, limit, skip)
+        val count = listData.getListCount(idBoard)
+        val pairPaging = checkPaging(count, limit, skip)
+        return listData.getListsOfBoard(idBoard, pairPaging.second, pairPaging.first)
     }
 
     fun deleteList(token: String, idBoard: Int, idList: Int) {
