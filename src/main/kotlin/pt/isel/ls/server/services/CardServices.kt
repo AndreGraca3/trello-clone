@@ -4,6 +4,7 @@ import pt.isel.ls.server.data.dataInterfaces.CardData
 import pt.isel.ls.server.data.dataInterfaces.ListData
 import pt.isel.ls.server.data.dataInterfaces.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.UserData
+import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.checkEndDate
 import pt.isel.ls.server.utils.isValidString
@@ -36,11 +37,11 @@ class CardServices(
         return cardData.getCard(idCard, idList, idBoard)
     }
 
-    fun getCardsFromList(token: String, idBoard: Int, idList: Int): List<Card> {
+    fun getCardsFromList(token: String, idBoard: Int, idList: Int, limit: Int?, skip: Int?): List<Card> {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
         listData.checkListInBoard(idList, idBoard)
-        return cardData.getCardsFromList(idList, idBoard)
+        return cardData.getCardsFromList(idList, idBoard, limit, skip)
     }
 
     fun moveCard(token: String, idBoard: Int, idListNow: Int, idListDst: Int, idCard: Int, idxDst: Int) {
@@ -48,6 +49,7 @@ class CardServices(
         userBoardData.checkUserInBoard(idUser, idBoard)
         listData.checkListInBoard(idListNow, idBoard)
         listData.checkListInBoard(idListDst, idBoard)
+        if (idxDst !in 0..cardData.getNextIdx(idListDst)) throw TrelloException.IllegalArgument("idx")
         cardData.moveCard(idCard, idListNow, idBoard, idListDst, idxDst)
     }
 

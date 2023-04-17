@@ -27,4 +27,12 @@ class UserBoardDataMem : UserBoardData {
     override fun getIdUsersFromBoard(idBoard: Int): List<Int> {
         return usersBoards.filter { it.idBoard == idBoard }.map { it.idUser }
     }
+
+    override fun getBoardCountFromUser(idUser: Int): Int {
+        return usersBoards.count { it.idUser == idUser }
+    }
+
+    override fun getUserCountFromBoard(idBoard: Int): Int {
+        return usersBoards.count { it.idBoard == idBoard}
+    }
 }

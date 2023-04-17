@@ -1,16 +1,22 @@
 package pt.isel.ls.server.services
 
 import pt.isel.ls.server.data.dataInterfaces.BoardData
+import pt.isel.ls.server.data.dataInterfaces.CardData
+import pt.isel.ls.server.data.dataInterfaces.ListData
 import pt.isel.ls.server.data.dataInterfaces.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.UserData
 import pt.isel.ls.server.utils.Board
+import pt.isel.ls.server.utils.BoardHTML
 import pt.isel.ls.server.utils.User
+import pt.isel.ls.server.utils.checkPaging
 import pt.isel.ls.server.utils.isValidString
 
 class BoardServices(
     private val userData: UserData,
     private val boardData: BoardData,
-    private val userBoardData: UserBoardData
+    private val userBoardData: UserBoardData,
+    private val listData: ListData,
+    private val cardData: CardData
 ) {
 
     /** ------------------------------- *
@@ -27,16 +33,20 @@ class BoardServices(
         return idBoard
     }
 
-    fun getBoard(token: String, idBoard: Int): Board {
+    fun getBoard(token: String, idBoard: Int): BoardHTML {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
-        return boardData.getBoard(idBoard)
+        val board = boardData.getBoard(idBoard)
+        val lists = listData.getListsOfBoard(idBoard, null, null)
+        return TODO()
     }
 
-    fun getBoardsFromUser(token: String): List<Board> {
+    fun getBoardsFromUser(token: String,limit: Int?, skip: Int?): List<Board> {
         val idUser = userData.getUser(token).idUser
         val boardsIds = userBoardData.searchUserBoards(idUser)
-        return boardData.getBoardsFromUser(boardsIds)
+        val count = userBoardData.getBoardCountFromUser(idUser)
+        val pairPaging = checkPaging(count, limit, skip)
+        return boardData.getBoardsFromUser(boardsIds,pairPaging.second,pairPaging.first) // second => "limit" and first => "skip"
     }
 
     fun addUserToBoard(token: String, idNewUser: Int, idBoard: Int) {
@@ -50,10 +60,12 @@ class BoardServices(
         }
     }
 
-    fun getUsersFromBoard(token: String, idBoard: Int) : List<User> {
+    fun getUsersFromBoard(token: String, idBoard: Int, limit: Int?, skip: Int?) : List<User> {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
         val userIds = userBoardData.getIdUsersFromBoard(idBoard)
-        return userData.getUsers(userIds)
+        val count = userBoardData.getUserCountFromBoard(idBoard)
+        val pairPaging = checkPaging(count, limit, skip)
+        return userData.getUsers(userIds, pairPaging.second, pairPaging.first)
     }
 }

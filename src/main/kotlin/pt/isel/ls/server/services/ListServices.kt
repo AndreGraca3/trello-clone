@@ -12,6 +12,7 @@ class ListServices(
     private val listData: ListData
 ) {
 
+
     /** ------------------------------ *
      *         List Management         *
      *  ----------------------------- **/
@@ -30,10 +31,10 @@ class ListServices(
         return listData.getList(idList, idBoard)
     }
 
-    fun getListsOfBoard(token: String, idBoard: Int): List<BoardList> {
+    fun getListsOfBoard(token: String, idBoard: Int, limit: Int?, skip: Int?): List<BoardList> {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
-        return listData.getListsOfBoard(idBoard)
+        return listData.getListsOfBoard(idBoard, limit, skip)
     }
 
     fun deleteList(token: String, idBoard: Int, idList: Int) {

@@ -8,6 +8,9 @@ import pt.isel.ls.server.utils.setup
 
 class CardDataSQL : CardData {
 
+    override val size: Int
+        get() = TODO("Not yet implemented")
+
     override fun createCard(idList: Int, idBoard: Int, name: String, description: String, endDate: String?): Int {
         val dataSource = setup()
         val insertStmtCard = CardStatements.createCardCMD(idList, idBoard, name, description, endDate)
@@ -26,7 +29,7 @@ class CardDataSQL : CardData {
         return idCard
     }
 
-    override fun getCardsFromList(idList: Int, idBoard: Int): List<Card> {
+    override fun getCardsFromList(idList: Int, idBoard: Int, limit: Int?, skip: Int?): List<Card> {
         val dataSource = setup()
         val selectStmt = CardStatements.getCardsFromListCMD(idList, idBoard)
         val cards = mutableListOf<Card>()

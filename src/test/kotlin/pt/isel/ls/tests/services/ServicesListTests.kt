@@ -68,7 +68,7 @@ class ServicesListTests {
     fun `Get Lists of Board`() {
         val listsAmount = 2
         repeat(listsAmount) { createList(boardId, dummyBoardListName + it) }
-        val lists = services.listServices.getListsOfBoard(user.token, boardId)
+        val lists = services.listServices.getListsOfBoard(user.token, boardId, null, null)
         repeat(listsAmount) {
             assertEquals(lists[it], services.listServices.getList(user.token, boardId, it))
         }
@@ -79,7 +79,7 @@ class ServicesListTests {
         val err = assertFailsWith<TrelloException.NotAuthorized> {
             services.listServices.createList(user.token, boardId, dummyBoardListName)
             services.listServices.createList(user.token, boardId, "List2")
-            services.listServices.getListsOfBoard(invalidToken, boardId)
+            services.listServices.getListsOfBoard(invalidToken, boardId, null, null)
         }
         assertEquals(401, err.status.code)
         assertEquals("Unauthorized Operation.", err.message)

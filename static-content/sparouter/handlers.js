@@ -58,6 +58,7 @@ function getSignup(mainContent) {   // Whats this compared to below function?
 
     const signupBox = document.createElement("div");
     signupBox.classList.add("signup-box");
+    /** Refazer isto no futuro! **/
     signupBox.innerHTML = `
     <h2 style="text-align:center;">User Creation</h2>
     <form id="signup-form" style="display: flex; flex-direction: column; align-items: center;">
@@ -65,7 +66,7 @@ function getSignup(mainContent) {   // Whats this compared to below function?
       <input type="text" id="name" name="name">
 
       <label for="email">Email:</label>
-      <input type="text" id="email" name="email">
+      <input type="text" id="email" name="email" required>
 
       <label for="password">Password:</label>
       <input type="password" id="password" name="password">
@@ -159,6 +160,7 @@ function getLogin(mainContent) {
 async function getBoards(mainContent) {
     document.title = "OurTrello | Boards"
 
+    /** CÒDIGO REPETIDO !**/
     const h1 = document.createElement("h1")
     const text = document.createTextNode("My Boards")
     h1.replaceChildren(text)
@@ -178,13 +180,140 @@ async function getBoards(mainContent) {
     mainContent.appendChild(boardsContainer)
 }
 
+async function getBoard(mainContent) {
+
+    const id = document.location.hash.replace("#board/","")
+
+    document.title = "OurTrello | board"
+
+    fetch(BASE_URL + `board/${id}`, {
+        method : "GET",
+        headers: {
+            "Content-type" : "application/json",
+            "Authorization" : "Bearer token123"
+        }
+        })
+        .then(resp => resp.json())
+        .then( (board) => {
+            const h1 = document.createElement("h1")
+            const p2 = document.createElement("p")
+            const p3 = document.createElement("p")
+            const name = document.createTextNode(board.name)
+            const desc = document.createTextNode(board.description)
+            p2.replaceChildren(name)
+            p3.replaceChildren(desc)
+            h1.style.fontSize = "20px"
+            h1.appendChild(p2)
+            h1.appendChild(p3)
+
+            const bCreate = document.createElement("button")
+            const bCreateText = document.createTextNode("Create List")
+
+            const bList = document.createElement("button")
+            const bListText = document.createTextNode("Lists")
+
+            const h2 = document.createElement("button")
+            h2.addEventListener("click",() => createListForm(mainContent) )
+            bCreate.replaceChildren(bCreateText)
+            h2.replaceChildren(bCreate)
+
+            const h3 = document.createElement("button")
+            h3.addEventListener("click", () => document.location.hash = `#board/${id}/list`)
+            bList.replaceChildren(bListText)
+            h3.replaceChildren(bList)
+
+            mainContent.replaceChildren(h1,h2,h3)
+        })
+        .catch(res => {
+            /** O que coloco aqui? e como é que mostro erro da request?**/
+            const msg = document.createTextNode(res)
+            mainContent.replaceChildren(msg)
+        })
+}
+
+async function getLists(mainContent) {
+
+    const id = document.location.hash.replace("#board/","")
+    const idBoard = id.replace("/list","")
+    console.log(idBoard)
+
+    document.title = "OurTrello | lists"
+
+    const lists = await ( await fetch(BASE_URL + `board/${idBoard}/list`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer token123"
+        }
+    })).json()
+
+    const temp = document.createElement("h1")
+
+    lists.map(list => {
+        const h1 = document.createElement("h1")
+        const text = document.createTextNode(list.name)
+        h1.replaceChildren(text)
+        temp.appendChild(h1)
+    })
+
+    mainContent.replaceChildren(temp)
+}
+
+async function createListForm(mainContent) {
+    document.title = "OurTrello | creating a list.."
+
+    const id = document.location.hash.replace("#board/","")
+    const idBoard = id.replace("/list","")
+
+    const createBox = document.createElement("div");
+    createBox.innerHTML = `
+    <h2 style="text-align:center;">Create List</h2>
+    <form id="createList-form" style="display:flex;flex-direction:column;align-items:center;">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name">
+
+      <input type="submit" value="Create" style="margin-top: 1rem;">
+    </form>
+  `;
+
+    mainContent.replaceChildren(createBox)
+
+    const form = document.getElementById("createList-form");
+    form.addEventListener("submit", (event) => {
+        event.preventDefault(); // prevent form from submitting and refreshing the page
+        const formData = new FormData(form);
+        const name = formData.get("name");
+        createList(name,idBoard);
+    });
+}
+
+async function createList(name,idBoard) {
+    fetch(BASE_URL + `board/${idBoard}/list`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization" : "Bearer token123"
+        },
+        body: JSON.stringify({name}),
+    })
+        .then((res) => res.json())
+        .then((response) => {
+            // redirect to the user's page after successful sign-up
+            window.location.hash = `#board/${idBoard}/list`;
+        })
+        .catch((err) => {
+            console.error("Error creating list:", err);
+        });
+}
 
 export const handlers = {
     getHome,
     getUser,
     getLogin,
     getSignup,
-    getBoards
+    getBoards,
+    getBoard,
+    getLists
 }
 
 export default handlers

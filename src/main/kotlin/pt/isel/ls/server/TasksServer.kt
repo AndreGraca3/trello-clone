@@ -17,7 +17,7 @@ import pt.isel.ls.server.utils.logger
 
 fun main() {
     val data = DataMem()
-    // val data = DataSQL()
+    //val data = DataSQL()
     val services = Services(data)
     val webAPI = WebAPI(services)
 

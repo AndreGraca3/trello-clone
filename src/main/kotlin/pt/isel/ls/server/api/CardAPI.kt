@@ -57,7 +57,9 @@ class CardAPI(private val services: CardServices) {
     private fun getCardsFromListInternal(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
         val idList = getPathParam(request, "idList")
-        return createRsp(Status.OK, services.getCardsFromList(token, idBoard, idList))
+        val limit = getQueryParam(request,"limit")?.toIntOrNull()
+        val skip = getQueryParam(request,"skip")?.toIntOrNull()
+        return createRsp(Status.OK, services.getCardsFromList(token, idBoard, idList, limit, skip))
     }
 
     @Auth

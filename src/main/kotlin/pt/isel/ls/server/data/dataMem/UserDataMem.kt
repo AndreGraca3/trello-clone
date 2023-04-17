@@ -4,10 +4,13 @@ import pt.isel.ls.server.data.dataInterfaces.UserData
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.User
 import java.util.*
+import kotlin.math.min
 
 class UserDataMem : UserData {
 
     val users = mutableListOf<User>(User(1,"alberto.tremocos@gmail.com", "Jose", "token123"))
+
+    override val size get() = users.size
 
     override fun createUser(name: String, email: String): Pair<Int, String> {
         val token = UUID.randomUUID().toString()
@@ -28,8 +31,11 @@ class UserDataMem : UserData {
         if (users.any { it.email == email }) throw TrelloException.AlreadyExists(email)
     }
 
-    override fun getUsers(idUsers: List<Int>): List<User> {
-        return users.filter { idUsers.contains(it.idUser) }
+    override fun getUsers(idUsers: List<Int>, limit: Int?, skip: Int?): List<User> {
+        val res = users.filter { idUsers.contains(it.idUser) }
+        val skipped = skip ?: 0
+        val limited = if(limit == null) res.size else min(limit, res.size)
+        return res.subList(skipped, limited + skipped)
     }
 
     private fun getNextId(): Int {

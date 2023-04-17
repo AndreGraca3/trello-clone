@@ -7,9 +7,7 @@ import org.http4k.core.Response
 import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.NO_CONTENT
 import org.http4k.core.Status.Companion.OK
-import org.http4k.routing.path
 import pt.isel.ls.server.annotations.Auth
-import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.services.ListServices
 import pt.isel.ls.server.utils.BoardListIn
 
@@ -48,7 +46,9 @@ class ListAPI(private val services: ListServices) {
     @Auth
     private fun getListsFromBoardInternal(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
-        return createRsp(OK, services.getListsOfBoard(token, idBoard))
+        val limit = getQueryParam(request,"limit")?.toIntOrNull()
+        val skip = getQueryParam(request,"skip")?.toIntOrNull()
+        return createRsp(OK, services.getListsOfBoard(token, idBoard, limit, skip))
     }
 
     @Auth

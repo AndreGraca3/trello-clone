@@ -10,6 +10,9 @@ import java.util.*
 
 class UserDataSQL : UserData {
 
+    override val size: Int
+        get() = TODO("Not yet implemented")
+
     override fun createUser(name: String, email: String): Pair<Int, String> {
         val dataSource = setup()
         val token = UUID.randomUUID().toString()
@@ -88,7 +91,7 @@ class UserDataSQL : UserData {
         }
     }
 
-    override fun getUsers(idUsers: List<Int>): List<User> {
+    override fun getUsers(idUsers: List<Int>, limit: Int?, skip: Int?): List<User> {
         TODO("Not yet implemented") // should we retrieve all users and make a filter on that?
     }
 }

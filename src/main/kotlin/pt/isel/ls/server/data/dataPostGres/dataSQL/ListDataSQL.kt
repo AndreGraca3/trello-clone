@@ -4,6 +4,8 @@ import pt.isel.ls.server.data.dataInterfaces.ListData
 import pt.isel.ls.server.utils.BoardList
 
 class ListDataSQL : ListData {
+    override val size: Int
+        get() = TODO("Not yet implemented")
 
     override fun createList(idBoard: Int, name: String): Int {
         TODO("Not yet implemented")
@@ -13,7 +15,7 @@ class ListDataSQL : ListData {
         TODO("Not yet implemented")
     }
 
-    override fun getListsOfBoard(idBoard: Int): List<BoardList> {
+    override fun getListsOfBoard(idBoard: Int, limit: Int?, skip: Int?): List<BoardList> {
         TODO("Not yet implemented")
     }
 

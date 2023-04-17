@@ -4,6 +4,7 @@ import org.postgresql.ds.PGSimpleDataSource
 import org.slf4j.LoggerFactory
 import pt.isel.ls.server.exceptions.TrelloException
 import java.time.LocalDate
+import kotlin.math.min
 
 val logger = LoggerFactory.getLogger("pt.isel.ls.http.HTTPServer")
 
@@ -23,4 +24,10 @@ fun setup(): PGSimpleDataSource {
     val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL")
     dataSource.setURL(jdbcDatabaseURL)
     return dataSource
+}
+
+fun checkPaging(max: Int, skip: Int?, limit: Int?) : Pair<Int,Int> {
+    val skipped = skip ?: 0
+    val limited = if(limit == null) max else min(limit, max)
+    return Pair(skipped, limited)
 }

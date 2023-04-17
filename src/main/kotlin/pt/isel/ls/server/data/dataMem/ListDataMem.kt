@@ -3,10 +3,14 @@ package pt.isel.ls.server.data.dataMem
 import pt.isel.ls.server.data.dataInterfaces.ListData
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.BoardList
+import pt.isel.ls.server.utils.checkPaging
+import kotlin.math.min
 
 class ListDataMem : ListData {
 
     val lists = mutableListOf<BoardList>()
+
+    override val size get() = lists.size
 
     override fun createList(idBoard: Int, name: String): Int {
         val newBoardList = BoardList(getNextId(), idBoard, name)
@@ -19,8 +23,9 @@ class ListDataMem : ListData {
             ?: throw TrelloException.NotFound("BoardList")
     }
 
-    override fun getListsOfBoard(idBoard: Int): List<BoardList> {
-        return lists.filter { it.idBoard == idBoard }
+    override fun getListsOfBoard(idBoard: Int, limit: Int?, skip: Int?): List<BoardList> {
+        val res = lists.filter { it.idBoard == idBoard }
+        return checkPaging(res, limit, skip)
     }
 
     override fun checkListInBoard(idList: Int, idBoard: Int): BoardList {
@@ -29,6 +34,10 @@ class ListDataMem : ListData {
 
     override fun deleteList(idList: Int, idBoard: Int) {
         if(!lists.removeIf { it.idList == idList && it.idBoard == idBoard }) throw TrelloException.NoContent("List")
+    }
+
+    override fun getListCount(idBoard: Int): Int {
+        return lists.count { it.idBoard == idBoard }
     }
 
     private fun getNextId(): Int {

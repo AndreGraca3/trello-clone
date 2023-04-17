@@ -6,9 +6,7 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.OK
-import org.http4k.routing.path
 import pt.isel.ls.server.annotations.Auth
-import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.services.BoardServices
 import pt.isel.ls.server.utils.BoardIn
 import pt.isel.ls.server.utils.BoardOut
@@ -56,14 +54,17 @@ class BoardAPI(private val services: BoardServices) {
     }
 
     @Auth
-    @Suppress("unused")
     private fun getBoardsFromUserInternal(request: Request, token: String): Response {
-        return createRsp(OK, services.getBoardsFromUser(token))
+        val limit = getQueryParam(request,"limit")?.toIntOrNull()
+        val skip = getQueryParam(request,"skip")?.toIntOrNull()
+        return createRsp(OK, services.getBoardsFromUser(token, limit, skip))
     }
 
     @Auth
     private fun getUsersFromBoardInternal(request: Request, token: String) : Response{
         val idBoard = getPathParam(request, "idBoard")
-        return createRsp(OK, services.getUsersFromBoard(token, idBoard))
+        val limit = getQueryParam(request,"limit")?.toIntOrNull()
+        val skip = getQueryParam(request,"skip")?.toIntOrNull()
+        return createRsp(OK, services.getUsersFromBoard(token, idBoard, limit, skip))
     }
 }

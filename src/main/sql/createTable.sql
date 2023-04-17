@@ -16,16 +16,18 @@ create table "user" (
     token varchar(36) unique
 );
 
-create table user_board (
-    idUser Int,
-    idBoard Int,
-    primary key(idUser,idBoard)
-);
-
 create table board (
     idBoard serial primary key,
     name varchar(20) unique,
     description varchar(400)
+);
+
+create table user_board (
+    idUser Int,
+    idBoard Int,
+    primary key(idUser,idBoard),
+    foreign key (idUser) references "user"(idUser),
+    foreign key (idBoard) references board(idBoard)
 );
 
 create table list (

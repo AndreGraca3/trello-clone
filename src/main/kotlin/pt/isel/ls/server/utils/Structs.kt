@@ -68,3 +68,30 @@ data class CardOut(
     val endDate: String?,
     var archived: Boolean
 )
+
+
+/** HTML OBJECTS **/
+
+@Serializable
+data class BoardHTML(
+    val idBoard: Int,
+    val name: String,
+    val description: String,
+    val lists : List<ListHTML>
+)
+
+@Serializable
+data class ListHTML(
+    val idList: Int,
+    val idBoard: Int,
+    val name: String,
+    val cards : List<CardHTML>
+)
+
+@Serializable
+data class CardHTML(
+    val idCard: Int,
+    var idList: Int,
+    val idBoard: Int,
+    val name: String
+)

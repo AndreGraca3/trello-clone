@@ -4,11 +4,15 @@ import pt.isel.ls.server.data.dataInterfaces.BoardData
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.User
+import pt.isel.ls.server.utils.checkPaging
+import kotlin.math.min
 
 class BoardDataMem : BoardData {
 
     val boards =
         mutableListOf<Board>(Board(0, "Board1", "this is description1"), Board(1, "Board2", "this is description2"))
+
+    override val size get() = boards.size
 
     override fun createBoard(idUser: Int, name: String, description: String): Int {
         val newBoard = Board(getNextId(), name, description)
@@ -24,8 +28,8 @@ class BoardDataMem : BoardData {
         if (boards.any { it.name == name }) throw TrelloException.AlreadyExists("Board $name")
     }
 
-    override fun getBoardsFromUser(idBoards: List<Int>): List<Board> {
-        return boards.filter { idBoards.contains(it.idBoard) }
+    override fun getBoardsFromUser(idBoards: List<Int>, limit: Int, skip: Int): List<Board> {
+        return boards.filter { idBoards.contains(it.idBoard) }.subList(skip, skip + limit)
     }
 
     private fun getNextId(): Int {

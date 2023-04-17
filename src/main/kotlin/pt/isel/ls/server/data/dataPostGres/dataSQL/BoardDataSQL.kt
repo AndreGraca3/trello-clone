@@ -8,6 +8,8 @@ import pt.isel.ls.server.utils.setup
 
 class BoardDataSQL : BoardData {
 
+    override val size: Int = 0
+
     override fun createBoard(idUser: Int, name: String, description: String): Int {
         /** Not sure if I like this! **/
         val dataSource = setup()
@@ -68,7 +70,7 @@ class BoardDataSQL : BoardData {
         }
     }
 
-    override fun getBoardsFromUser(idBoards: List<Int>): List<Board> {
+    override fun getBoardsFromUser(idBoards: List<Int>, limit: Int?, skip: Int?): List<Board> {
         val dataSource = setup()
         val selectStmt = BoardStatements.getBoardsFromUser(3)
         val boards = mutableListOf<Board>()

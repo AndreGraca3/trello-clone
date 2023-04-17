@@ -10,7 +10,7 @@ function addDefaultNotFoundRouteHandler(notFoundRH) {
 }
 
 function getRouteHandler(path) {
-    const route = routes.find(r => r.path == path)
+    const route = routes.find(r => r.path == path )
     return route ? route.handler : notFoundRouteHandler
 }
 

@@ -1,6 +1,6 @@
 export const BASE_URL = "http://localhost:8080/"
 
-export const RECENT_BOARDS = [{name: "Board1", idBoard: 1, description: "never"},{name: "Board2",idBoard: 2, description: "used"}]
+export const RECENT_BOARDS = [{name: "Board1", idBoard: 0, description: "never"},{name: "Board2",idBoard: 1, description: "used"}]
 
 export const boardFunc = (board) => {
     document.location = `#board/${board.idBoard}`

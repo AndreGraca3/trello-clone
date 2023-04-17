@@ -11,4 +11,8 @@ interface UserBoardData {
     fun checkUserInBoard(idUser: Int, idBoard: Int)
 
     fun getIdUsersFromBoard(idBoard: Int) : List<Int>
+
+    fun getBoardCountFromUser(idUser: Int) : Int
+
+    fun getUserCountFromBoard(idBoard: Int) : Int
 }
