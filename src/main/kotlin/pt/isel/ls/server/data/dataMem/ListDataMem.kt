@@ -14,10 +14,10 @@ class ListDataMem : ListData {
         BoardList(2, 0, "List2"),
         BoardList(3, 0, "List3"),
         BoardList(4, 0, "List4"),
-        BoardList(5, 0, "List5"),
-        BoardList(6, 0, "List6"),
-        BoardList(7, 0, "List7"),
-        BoardList(8, 0, "List8"),
+//        BoardList(5, 0, "List5"),
+//        BoardList(6, 0, "List6"),
+//        BoardList(7, 0, "List7"),
+//        BoardList(8, 0, "List8"),
     )
 
 

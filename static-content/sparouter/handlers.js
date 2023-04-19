@@ -270,12 +270,13 @@ async function getBoard(mainContent) {
         const createListButtonContainer = document.createElement("div");
         createListButtonContainer.classList.add("list-container", "add-list"); // add these classes to the button container
         createListButtonContainer.style.backgroundColor = "transparent";
+        createListButtonContainer.style.border = "0px";
 
         const createListButton = document.createElement("button");
         createListButton.innerText = "Add new List";
         createListButton.addEventListener("click", () => {
             //createListButtonContainer.replaceChildren(createListForm());
-            TODO();
+            createListForm(mainContent)
         });
 
         createListButtonContainer.appendChild(createListButton);
@@ -322,6 +323,8 @@ async function createListForm(mainContent) {
     const id = document.location.hash.replace("#board/", "")
     const idBoard = id.replace("/list", "")
 
+    document.location.hash = "#board/" + idBoard + "/list"
+
     const createBox = document.createElement("div");
     createBox.innerHTML = `
     <h2 style="text-align:center;">Create List</h2>
@@ -356,7 +359,7 @@ async function createList(name, idBoard) {
         .then((res) => res.json())
         .then((response) => {
             // redirect to the user's page after successful sign-up
-            window.location.hash = `#board/${idBoard}/list`;
+            document.location.hash = `#board/${idBoard}`;
         })
         .catch((err) => {
             console.error("Error creating list:", err);
@@ -372,6 +375,7 @@ export const handlers = {
     getBoard,
     getLists,
     getCard,
+    createListForm,
 }
 
 export default handlers

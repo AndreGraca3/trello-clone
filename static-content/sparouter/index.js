@@ -12,7 +12,8 @@ function loadHandler() {
     router.addRouteHandler("boards", handlers.getBoards)
     router.addRouteHandler("board/:id/list/:id/card/:id", handlers.getCard)
     router.addRouteHandler("board/:id", handlers.getBoard)
-    router.addRouteHandler("board/:id/list", handlers.getLists)
+    router.addRouteHandler("board/:id/lists", handlers.getLists)
+    router.addRouteHandler("board/:id/list", handlers.createListForm)
 
     hashChangeHandler()
 }
