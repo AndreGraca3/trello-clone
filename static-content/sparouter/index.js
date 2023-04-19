@@ -10,8 +10,10 @@ function loadHandler() {
     router.addRouteHandler("login", handlers.getLogin)
     router.addRouteHandler("signup", handlers.getSignup)
     router.addRouteHandler("boards", handlers.getBoards)
+    router.addRouteHandler("board/:id/list/:id/card/:id", handlers.getCard)
     router.addRouteHandler("board/:id", handlers.getBoard)
     router.addRouteHandler("board/:id/list", handlers.getLists)
+
     hashChangeHandler()
 }
 
@@ -36,7 +38,10 @@ function hashChangeHandler() {
     }
 }
 
+//localhost:8080/board/123/list/456/card/789
+//localhost:8080/board/:id/list/:id/card/:id
 function handlePath(path) {
+    if (path.includes("board/") && path.includes("/list") && path.includes("/card")) return "board/:id/list/:id/card/:id"
     if (path.includes("board/") && path.includes("/list")) return "board/:id/list"
     if (path.includes("board/")) return "board/:id"
     return path

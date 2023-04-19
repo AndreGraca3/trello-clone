@@ -29,7 +29,7 @@ class CardDataSQL : CardData {
         return idCard
     }
 
-    override fun getCardsFromList(idList: Int, idBoard: Int, limit: Int?, skip: Int?): List<Card> {
+    override fun getCardsFromList(idList: Int, idBoard: Int, limit: Int, skip: Int): List<Card> {
         val dataSource = setup()
         val selectStmt = CardStatements.getCardsFromListCMD(idList, idBoard)
         val cards = mutableListOf<Card>()
@@ -109,6 +109,10 @@ class CardDataSQL : CardData {
     }
 
     override fun getNextIdx(idList: Int): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun getCardCount(idBoard: Int, idList: Int): Int {
         TODO("Not yet implemented")
     }
 }

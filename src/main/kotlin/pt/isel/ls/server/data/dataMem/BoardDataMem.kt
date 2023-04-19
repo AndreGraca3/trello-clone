@@ -10,7 +10,10 @@ import kotlin.math.min
 class BoardDataMem : BoardData {
 
     val boards =
-        mutableListOf<Board>(Board(0, "Board1", "this is description1"), Board(1, "Board2", "this is description2"))
+        mutableListOf<Board>(
+            Board(0, "Board0", "this is description0"),
+            Board(1, "Board1", "this is description1")
+        )
 
     override val size get() = boards.size
 

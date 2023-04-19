@@ -1,4 +1,12 @@
-import {BASE_URL, boardFunc, createHeader, createHTMLCard, createRows, RECENT_BOARDS} from "./utils.js"
+import {
+    BASE_URL,
+    boardFunc,
+    createHeader,
+    createHTMLHomeCard,
+    createHTMLList,
+    createRows,
+    RECENT_BOARDS
+} from "./utils.js"
 
 function getHome(mainContent) {
     document.title = "OurTrello | Home"
@@ -12,7 +20,7 @@ function getHome(mainContent) {
     h2.style.paddingTop = "5rem"
 
     const cards = RECENT_BOARDS.map(board =>
-        createHTMLCard(board.name, "", () => boardFunc(board), 5)
+        createHTMLHomeCard(board.name, "", () => boardFunc(board), 5)
     )
 
     const recent = createRows(cards, 3)
@@ -47,12 +55,65 @@ async function getUser(mainContent, token) {
     const pEmail = document.createElement("p")
     pEmail.innerText = `${user.email}`
 
-    div.replaceChildren(img,pName, pEmail)
+    div.replaceChildren(img, pName, pEmail)
 
     mainContent.replaceChildren(div)
-
-
 }
+// Why is this function
+async function getCard(mainContent) {
+    // console.log("card object in getCard:", card);
+    const arrayIds = document.location.hash.replace("#board/", "").split("/");
+    const idBoard = arrayIds[0];
+    const idList = arrayIds[2];
+    const idCard = arrayIds[4];
+
+    document.title = `OurTrello | Card`;
+
+    try {
+        const resp = await fetch(`${BASE_URL}board/${idBoard}/list/${idList}/card/${idCard}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer token123",
+            },
+        });
+
+        if (!resp.ok) {
+            throw new Error(`Failed to fetch card data: ${resp.statusText}`);
+        }
+
+        const cardOut = await resp.json();
+
+        const div = document.createElement("div");
+        div.classList.add("text-center");
+
+        const cardName = document.createElement("h2");
+        cardName.innerText = `${cardOut.name}`;
+
+        const cardDescription = document.createElement("p");
+        cardDescription.innerText = `Description: ${cardOut.description}`;
+
+        const cardStartDate = document.createElement("p");
+        cardStartDate.innerText = `Start Date: ${cardOut.startDate}`;
+
+        const cardEndDate = document.createElement("p");
+        cardEndDate.innerText = `End Date: ${cardOut.endDate || "Not set"}`;
+
+        const cardArchived = document.createElement("p");
+        cardArchived.innerText = `Archived: ${cardOut.archived}`;
+
+        div.append(cardName, cardDescription, cardStartDate, cardEndDate, cardArchived);
+
+        mainContent.replaceChildren(div);
+    } catch (err) {
+        const errorDiv = document.createElement("div");
+        errorDiv.classList.add("text-center");
+        const errorMsg = document.createTextNode(`Failed to fetch card data: ${err.message}`);
+        errorDiv.append(errorMsg);
+        mainContent.replaceChildren(errorDiv);
+    }
+}
+
 
 function getSignup(mainContent) {   // Whats this compared to below function?
 
@@ -174,72 +235,68 @@ async function getBoards(mainContent) {
         }
     })).json()
 
-    const cards = boards.map(board => createHTMLCard(board.name, board.description, () => boardFunc(board)))
+    const cards = boards.map(board => createHTMLHomeCard(board.name, board.description, () => boardFunc(board)))
 
     const boardsContainer = createRows(cards, 2)
     mainContent.appendChild(boardsContainer)
 }
 
 async function getBoard(mainContent) {
+    const id = document.location.hash.replace("#board/", "");
 
-    const id = document.location.hash.replace("#board/","")
+    document.title = "OurTrello | board";
 
-    document.title = "OurTrello | board"
+    try {
+        const resp = await fetch(BASE_URL + `board/${id}`, {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": "Bearer token123",
+            },
+        });
+        const board = await resp.json();
 
-    fetch(BASE_URL + `board/${id}`, {
-        method : "GET",
-        headers: {
-            "Content-type" : "application/json",
-            "Authorization" : "Bearer token123"
-        }
-        })
-        .then(resp => resp.json())
-        .then( (board) => {
-            const h1 = document.createElement("h1")
-            const p2 = document.createElement("p")
-            const p3 = document.createElement("p")
-            const name = document.createTextNode(board.name)
-            const desc = document.createTextNode(board.description)
-            p2.replaceChildren(name)
-            p3.replaceChildren(desc)
-            h1.style.fontSize = "20px"
-            h1.appendChild(p2)
-            h1.appendChild(p3)
+        const lists = board.lists;
 
-            const bCreate = document.createElement("button")
-            const bCreateText = document.createTextNode("Create List")
+        const boardContainer = document.createElement("div");
+        boardContainer.classList.add("board");
 
-            const bList = document.createElement("button")
-            const bListText = document.createTextNode("Lists")
+        lists.forEach(function (list) {
+            const listContainer = createHTMLList(list);
+            boardContainer.appendChild(listContainer);
+        });
 
-            const h2 = document.createElement("button")
-            h2.addEventListener("click",() => createListForm(mainContent) )
-            bCreate.replaceChildren(bCreateText)
-            h2.replaceChildren(bCreate)
+        // add create list button container
+        const createListButtonContainer = document.createElement("div");
+        createListButtonContainer.classList.add("list-container", "add-list"); // add these classes to the button container
+        createListButtonContainer.style.backgroundColor = "transparent";
 
-            const h3 = document.createElement("button")
-            h3.addEventListener("click", () => document.location.hash = `#board/${id}/list`)
-            bList.replaceChildren(bListText)
-            h3.replaceChildren(bList)
+        const createListButton = document.createElement("button");
+        createListButton.innerText = "Add new List";
+        createListButton.addEventListener("click", () => {
+            //createListButtonContainer.replaceChildren(createListForm());
+            TODO();
+        });
 
-            mainContent.replaceChildren(h1,h2,h3)
-        })
-        .catch(res => {
-            /** O que coloco aqui? e como é que mostro erro da request?**/
-            const msg = document.createTextNode(res)
-            mainContent.replaceChildren(msg)
-        })
+        createListButtonContainer.appendChild(createListButton);
+        boardContainer.appendChild(createListButtonContainer);
+
+        mainContent.replaceChildren(boardContainer);
+    } catch (err) {
+        const msg = document.createTextNode(err);
+        mainContent.replaceChildren(msg);
+    }
 }
 
 async function getLists(mainContent) {
 
-    const id = document.location.hash.replace("#board/","")
-    const idBoard = id.replace("/list","")
+    const id = document.location.hash.replace("#board/", "")
+    const idBoard = id.replace("/list", "")
     console.log(idBoard)
 
     document.title = "OurTrello | lists"
 
-    const lists = await ( await fetch(BASE_URL + `board/${idBoard}/list`, {
+    const lists = await (await fetch(BASE_URL + `board/${idBoard}/list`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -262,8 +319,8 @@ async function getLists(mainContent) {
 async function createListForm(mainContent) {
     document.title = "OurTrello | creating a list.."
 
-    const id = document.location.hash.replace("#board/","")
-    const idBoard = id.replace("/list","")
+    const id = document.location.hash.replace("#board/", "")
+    const idBoard = id.replace("/list", "")
 
     const createBox = document.createElement("div");
     createBox.innerHTML = `
@@ -283,16 +340,16 @@ async function createListForm(mainContent) {
         event.preventDefault(); // prevent form from submitting and refreshing the page
         const formData = new FormData(form);
         const name = formData.get("name");
-        createList(name,idBoard);
+        createList(name, idBoard);
     });
 }
 
-async function createList(name,idBoard) {
+async function createList(name, idBoard) {
     fetch(BASE_URL + `board/${idBoard}/list`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization" : "Bearer token123"
+            "Authorization": "Bearer token123"
         },
         body: JSON.stringify({name}),
     })
@@ -313,7 +370,8 @@ export const handlers = {
     getSignup,
     getBoards,
     getBoard,
-    getLists
+    getLists,
+    getCard,
 }
 
 export default handlers

@@ -39,8 +39,11 @@ class BoardServices(
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
         val board = boardData.getBoard(idBoard)
-        val lists = listData.getListsOfBoard(idBoard, null, null)
-        val cards = lists.map { cardData.getCardsFromList(it.idList,it.idBoard,null, null)}
+        val countList = listData.getListCount(idBoard)
+        val lists = listData.getListsOfBoard(idBoard, countList, 0)
+        val cards = lists.map {
+            val countCard = cardData.getCardCount(idBoard, it.idList)
+            cardData.getCardsFromList(it.idList,it.idBoard,countCard, 0)}
         val listsHTML = mutableListOf<ListHTML>()
         for(i in lists.indices) {
             val currCards = cards[i].map { CardHTML(it.idCard, it.idList, it.idBoard, it.name)}

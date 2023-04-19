@@ -70,7 +70,7 @@ class BoardDataSQL : BoardData {
         }
     }
 
-    override fun getBoardsFromUser(idBoards: List<Int>, limit: Int?, skip: Int?): List<Board> {
+    override fun getBoardsFromUser(idBoards: List<Int>, limit: Int, skip: Int): List<Board> {
         val dataSource = setup()
         val selectStmt = BoardStatements.getBoardsFromUser(3)
         val boards = mutableListOf<Board>()

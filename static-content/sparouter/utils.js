@@ -6,6 +6,10 @@ export const boardFunc = (board) => {
     document.location = `#board/${board.idBoard}`
 }
 
+export const cardFunc = (card) => {
+    document.location = `#board/${card.idBoard}/list/${card.idList}/card/${card.idCard}`
+}
+
 export function createRows(items, itemsPerRow) {
     const container = document.createElement("div")
     container.classList.add("card-container")
@@ -29,7 +33,59 @@ export function createRows(items, itemsPerRow) {
     return container
 }
 
-export function createHTMLCard(title, description, clickableFunc, size) {
+export function createHTMLList(list) {
+    const listContainer = document.createElement("div");
+    listContainer.classList.add("list-container");
+
+    const listTitle = document.createElement("h2");
+    listTitle.classList.add("list-header");
+    listTitle.innerText = list.name;
+    listContainer.appendChild(listTitle);
+
+    if (list.cards && Array.isArray(list.cards)) { // Add this check to see if list.cards is defined and an array
+        console.log("list.cards", list.cards)
+        list.cards.forEach((card) => {
+            const cardElement = createHTMLCard(card, () => cardFunc(card));
+            listContainer.appendChild(cardElement);
+        });
+    }
+
+    return listContainer;
+}
+export function createHTMLCard(card, clickableFunc) {
+    const cardContainer = document.createElement("div");
+    cardContainer.classList.add("card-container");
+
+    const cardContent = document.createElement("div");
+    cardContent.classList.add("card-content");
+
+    const cardTitle = document.createElement("h3");
+    cardTitle.classList.add("card-title");
+    cardTitle.innerText = card.name;
+    cardContent.appendChild(cardTitle);
+
+    cardContainer.appendChild(cardContent);
+
+    if(clickableFunc) cardContainer.addEventListener("click", clickableFunc)
+
+    // CSS for hover effect
+    //cardContainer.style.transition = "background-color 0.2s ease-in-out";
+    //cardContainer.style.cursor = "pointer";
+
+    cardContainer.addEventListener("mouseover", () => {
+        cardContainer.style.backgroundColor = "#ffffffff";
+    });
+
+    cardContainer.addEventListener("mouseout", () => {
+        cardContainer.style.backgroundColor = "";
+    });
+
+    return cardContainer;
+}
+
+
+
+export function createHTMLHomeCard(title, description, clickableFunc, size) {
     const card = document.createElement("div")
     card.classList.add("card")
     card.classList.add("clickable")

@@ -15,7 +15,7 @@ class ListDataSQL : ListData {
         TODO("Not yet implemented")
     }
 
-    override fun getListsOfBoard(idBoard: Int, limit: Int?, skip: Int?): List<BoardList> {
+    override fun getListsOfBoard(idBoard: Int, limit: Int, skip: Int): List<BoardList> {
         TODO("Not yet implemented")
     }
 
@@ -24,6 +24,10 @@ class ListDataSQL : ListData {
     }
 
     override fun deleteList(idList: Int, idBoard: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getListCount(idBoard: Int): Int {
         TODO("Not yet implemented")
     }
 }

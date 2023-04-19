@@ -19,4 +19,12 @@ class UserBoardDataSQL : UserBoardData {
     override fun getIdUsersFromBoard(idBoard: Int): List<Int> {
         TODO("Not yet implemented")
     }
+
+    override fun getBoardCountFromUser(idUser: Int): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun getUserCountFromBoard(idBoard: Int): Int {
+        TODO("Not yet implemented")
+    }
 }
