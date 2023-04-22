@@ -49,7 +49,7 @@ class CardDataMem : CardData {
     }
 
     override fun getCardsFromList(idList: Int, idBoard: Int, limit: Int, skip: Int): List<Card> {
-        return cards.filter { it.idList == idList && it.idBoard == idBoard }.subList(skip, limit + skip)
+        return cards.filter { it.idList == idList && it.idBoard == idBoard }.subList(skip, limit)
     }
 
     override fun getCard(idCard: Int, idList: Int, idBoard: Int): Card {

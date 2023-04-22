@@ -35,7 +35,7 @@ class ListDataMem : ListData {
     }
 
     override fun getListsOfBoard(idBoard: Int, limit: Int, skip: Int): List<BoardList> {
-        return lists.filter { it.idBoard == idBoard }.subList(skip, skip + limit)
+        return lists.filter { it.idBoard == idBoard }.subList(skip, limit)
     }
 
     override fun checkListInBoard(idList: Int, idBoard: Int): BoardList {

@@ -6,6 +6,7 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
+import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.CardIn
 import pt.isel.ls.server.utils.CardOut
@@ -22,6 +23,7 @@ import pt.isel.ls.tests.utils.dummyBoardListName
 import pt.isel.ls.tests.utils.dummyCardDescription
 import pt.isel.ls.tests.utils.dummyCardName
 import pt.isel.ls.tests.utils.listId
+import pt.isel.ls.tests.utils.services
 import pt.isel.ls.tests.utils.user
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -187,4 +189,62 @@ class CardAPITests {
 
         assertEquals(Status.UNAUTHORIZED, response.status)
     }
+
+    @Test
+    fun `get cards from list with valid pagination`() {
+        val skip = 2
+        val limit = 3
+
+        repeat(6) {
+            services.cardServices.createCard(user.token, boardId,listId,"card$it","card$it",null)
+        }
+
+        val response = app(
+            Request(Method.GET, "$baseUrl/board/$boardId/list/$listId/card?skip=$skip&limit=$limit")
+                .header("Authorization", user.token)
+        )
+
+        val cards = Json.decodeFromString<List<Card>>(response.bodyString())
+
+        assertEquals(dataMem.cardData.cards.subList(skip, skip + limit),cards)
+    }
+
+    @Test
+    fun `get boards from user with invalid pagination negative numbers`() {
+        val skip = -2
+        val limit = -2
+
+        repeat(6) {
+            services.cardServices.createCard(user.token, boardId,listId,"card$it","card$it",null)
+        }
+
+        val response = app(
+            Request(Method.GET, "$baseUrl/board/$boardId/list/$listId/card?skip=$skip&limit=$limit")
+                .header("Authorization", user.token)
+        )
+
+        val cards = Json.decodeFromString<List<Card>>(response.bodyString())
+
+        assertEquals(dataMem.cardData.cards.subList(0,cards.size),cards)
+    }
+
+    @Test
+    fun `get boards from user with invalid pagination bigger than size`() {
+        val skip = 10
+        val limit = 7
+
+        repeat(6) {
+            services.cardServices.createCard(user.token, boardId,listId,"card$it","card$it",null)
+        }
+
+        val response = app(
+            Request(Method.GET, "$baseUrl/board/$boardId/list/$listId/card?skip=$skip&limit=$limit")
+                .header("Authorization", user.token)
+        )
+
+        val cards = Json.decodeFromString<List<Card>>(response.bodyString())
+
+        assertEquals(dataMem.cardData.cards.subList(0, cards.size),cards)
+    }
+
 }

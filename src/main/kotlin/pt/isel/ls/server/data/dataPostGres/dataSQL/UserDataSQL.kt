@@ -91,7 +91,7 @@ class UserDataSQL : UserData {
         }
     }
 
-    override fun getUsers(idUsers: List<Int>, limit: Int?, skip: Int?): List<User> {
+    override fun getUsers(idUsers: List<Int>, limit: Int, skip: Int): List<User> {
         TODO("Not yet implemented") // should we retrieve all users and make a filter on that?
     }
 }

@@ -31,11 +31,8 @@ class UserDataMem : UserData {
         if (users.any { it.email == email }) throw TrelloException.AlreadyExists(email)
     }
 
-    override fun getUsers(idUsers: List<Int>, limit: Int?, skip: Int?): List<User> {
-        val res = users.filter { idUsers.contains(it.idUser) }
-        val skipped = skip ?: 0
-        val limited = if(limit == null) res.size else min(limit, res.size)
-        return res.subList(skipped, limited + skipped)
+    override fun getUsers(idUsers: List<Int>, limit: Int, skip: Int): List<User> {
+        return users.filter { idUsers.contains(it.idUser) }.subList(skip, limit)
     }
 
     private fun getNextId(): Int {
