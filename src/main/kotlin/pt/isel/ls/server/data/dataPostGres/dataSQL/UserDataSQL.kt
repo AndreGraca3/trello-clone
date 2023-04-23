@@ -113,4 +113,15 @@ class UserDataSQL : UserData {
         }
         return userList
     }
+
+    override fun changeAvatar(idUser: Int, avatar: String) {
+        val dataSource = setup()
+        //val updateStmt = UserStatements.changeAvatarCMD(idUser, avatar)
+
+        dataSource.connection.use {
+            it.autoCommit = false
+            //it.prepareStatement(updateStmt).executeUpdate()
+            it.autoCommit = true
+        }
+    }
 }

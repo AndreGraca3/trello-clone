@@ -12,7 +12,8 @@ class UserRoutes(private val webApi: UserAPI) {
     operator fun invoke(): RoutingHttpHandler {
         return routes(
             "user" bind Method.POST to { request: Request -> handleRequest(request, webApi::createUser) },
-            "user" bind Method.GET to { request: Request -> handleRequest(request, webApi::getUser) }
+            "user" bind Method.GET to { request: Request -> handleRequest(request, webApi::getUser) },
+            "user/avatar" bind Method.PUT to { request: Request -> handleRequest(request, webApi::changeAvatar) }
         )
     }
 }

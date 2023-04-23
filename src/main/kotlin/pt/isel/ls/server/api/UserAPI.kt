@@ -25,4 +25,12 @@ class UserAPI(private val services: UserServices) {
         val user = services.getUser(token)
         return createRsp(OK, user)
     }
+
+    @Auth
+    @Suppress("unused")
+    fun changeAvatar(request: Request, token: String): Response {
+        val avatar = request.bodyString()
+        services.changeAvatar(token, avatar)
+        return createRsp(OK, avatar)
+    }
 }

@@ -22,4 +22,10 @@ class UserServices(private val userData: UserData) {
     fun getUser(token: String): User {
         return userData.getUser(token)
     }
+
+    fun changeAvatar(token: String, avatar: String) {
+        isValidString(avatar, "avatar")
+        val user = userData.getUser(token)
+        userData.changeAvatar(user.idUser, avatar)
+    }
 }

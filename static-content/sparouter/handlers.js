@@ -3,7 +3,7 @@ import {
     createHTMLBoardBox,
     createHTMLList,
     createRows, darkerColor, fetchReq,
-    getBoardColor, getUserAvatar, visitBoard
+    getBoardColor, getUserAvatar, visitBoard, changeUserAvatar
 } from "./utils/utils.js"
 import {boardFunc, createList} from "./utils/buttonFuncs.js";
 import {BASE_URL, user, MAX_RECENT_BOARDS, MAX_BOARDS_DISPLAY, RECENT_BOARDS} from "./utils/storage.js";
@@ -32,31 +32,58 @@ function getHome(mainContent) {
 }
 
 async function getUser(mainContent, token) {
-    document.title = "OurTrello | User"
+    document.title = "OurTrello | User";
 
-    const user = await fetchReq("user", "GET")
+    const user = await fetchReq("user", "GET");
 
-    const div = document.createElement("div")
-    div.classList.add("text-center")
+    const div = document.createElement("div");
+    div.classList.add("text-center");
 
-    const img = document.createElement("img")
+    const img = document.createElement("img");
+
+    img.src = await getUserAvatar(token);
+    img.style.paddingTop = "2rem";
+    img.style.width = "10%";
+    img.style.borderRadius = "50%";
+
+    const tempImg = document.createElement("img");
+    tempImg.src = "https://i.imgur.com/ULhtJ4d.jpeg"; // replace with the URL of your temporary image
+
+    tempImg.style.position = "absolute";
+    tempImg.style.top = 0;
+    tempImg.style.left = 0;
+    tempImg.style.width = "100%";
+    tempImg.style.height = "100%";
+    tempImg.style.opacity = 0; // make it invisible initially
+    img.appendChild(tempImg);
+
+    img.addEventListener("mouseenter", function() {
+        tempImg.style.opacity = 1;
+        img.style.filter = "brightness(70%)";
+    });
+
+    img.addEventListener("mouseleave", function() {
+        tempImg.style.opacity = 0;
+        img.style.filter = "none";
+    });
+
+    img.addEventListener("click", function() {
+          changeUserAvatar(token);
+    });
 
 
-    img.src = await getUserAvatar(token)
-    img.style.paddingTop = "2rem"
-    img.style.width = "10%"
-    img.style.borderRadius = "50%"
 
-    const pName = document.createElement("p")
-    pName.innerText = `${user.name}`
+    const pName = document.createElement("p");
+    pName.innerText = `${user.name}`;
 
-    const pEmail = document.createElement("p")
-    pEmail.innerText = `${user.email}`
+    const pEmail = document.createElement("p");
+    pEmail.innerText = `${user.email}`;
 
-    div.replaceChildren(img, pName, pEmail)
+    div.replaceChildren(img, pName, pEmail);
 
-    mainContent.replaceChildren(div)
+    mainContent.replaceChildren(div);
 }
+
 
 async function getCard(mainContent) {
     const arrayIds = document.location.hash.replace("#board/", "").split("/");
@@ -271,7 +298,8 @@ export const handlers = {
     getBoards,
     getBoard,
     getCard,
-    getErrorPage
+    getErrorPage,
+    changeUserAvatar
 }
 
 export default handlers

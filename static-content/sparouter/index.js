@@ -14,6 +14,7 @@ async function loadHandler() {
     router.addRouteHandler("boards", handlers.getBoards)
     router.addRouteHandler("board/:idBoard/list/:idList/card/:idCard", handlers.getCard)
     router.addRouteHandler("board/:idBoard", handlers.getBoard)
+    router.addRouteHandler("user/avatar", handlers.changeUserAvatar)
 
     await hashChangeHandler()
 }

@@ -38,4 +38,9 @@ class UserDataMem : UserData {
     private fun getNextId(): Int {
         return if (users.isEmpty()) 0 else users.last().idUser + 1
     }
+
+    override fun changeAvatar(idUser: Int, avatar: String) {
+        val user = getUser(idUser)
+        users[users.indexOf(user)] = user.copy(avatar = avatar)
+    }
 }

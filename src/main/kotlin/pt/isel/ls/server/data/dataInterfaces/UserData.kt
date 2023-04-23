@@ -14,4 +14,6 @@ interface UserData {
     fun checkEmail(email: String)
 
     fun getUsers(idUsers : List<Int>, limit: Int, skip: Int) : List<User>
+
+    fun changeAvatar(idUser: Int, avatar: String)
 }
