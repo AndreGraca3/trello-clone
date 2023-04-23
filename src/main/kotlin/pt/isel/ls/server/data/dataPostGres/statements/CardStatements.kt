@@ -14,7 +14,7 @@ object CardStatements {
     }
 
     fun getCardsFromListCMD(idList: Int, idBoard: Int, limit: Int, skip: Int): String {
-        return "SELECT * FROM dbo.card WHERE idList = $idList and idBoard = $idBoard LIMIT $limit OFFSET $skip;"
+        return "SELECT * FROM dbo.card WHERE idList = $idList and idBoard = $idBoard ORDER BY idx DESC LIMIT $limit OFFSET $skip;"
     }
 
     fun getCardCMD(idCard: Int, idList: Int, idBoard: Int): String {

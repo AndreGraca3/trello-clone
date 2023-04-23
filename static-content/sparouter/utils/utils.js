@@ -78,7 +78,6 @@ export function createHTMLList(list) {
     }
     listContainer.appendChild(listCards)
 
-
     listCards.addEventListener("dragover", (event) => {
         event.preventDefault()
         const dragging = document.querySelector('.dragging')
@@ -133,21 +132,6 @@ export function createHTMLCard(card, clickableFunc) {
     cardContainer.addEventListener("dragend", () => {
         cardContainer.classList.remove("dragging")
     })
-    /*cardContainer.addEventListener("drop", async (event) => {
-        const list = cardContainer.parentNode
-        const nextCard = getNextCard(list, event.clientY)
-        let idList = list.id.split("list")[1]
-        let cix
-        if (nextCard != null) {
-            cix = Array.from(list.childNodes).indexOf(nextCard)
-        } else {
-            cix = list.childNodes.length
-        }
-        console.log(`Moved to list ${idList} and cix ${cix}`)
-
-        await fetchReq(`board/${card.idBoard}/list/${card.idList}/card/${card.idCard}`, "PUT", { idList, cix})
-    })*/
-
     cardContainer.dataset.idList = card.idList
     cardContainer.dataset.idCard = card.idCard
 

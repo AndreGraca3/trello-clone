@@ -70,8 +70,12 @@ async function addCard(listCards, input, list) {
         description: null,
         endDate: null
     }
-    await fetchReq(`board/${list.idBoard}/list/${list.idList}/card`, "POST", card)
+    const cardId = await fetchReq(`board/${list.idBoard}/list/${list.idList}/card`, "POST", card)
     input.remove()
+
+    card.idList = list.idList
+    card.idBoard = list.idBoard
+    card.idCard = cardId
     listCards.appendChild(createHTMLCard(card, () => {
         cardFunc(card)
     }))
