@@ -221,6 +221,10 @@ async function getBoard(mainContent) {
     const boardContainer = document.createElement("div")
     boardContainer.classList.add("board")
 
+    const desc = document.createElement("text")
+    desc.innerText = board.description
+    mainContent.appendChild(desc)
+
     board.lists.forEach(list => {
         const listContainer = createHTMLList(list)
         boardContainer.appendChild(listContainer)
@@ -236,8 +240,6 @@ async function getBoard(mainContent) {
 
     const color = getBoardColor(board.idBoard)
     mainContent.style.background = `linear-gradient(135deg, ${darkerColor(color)}, ${color})`
-
-    boardContainer.addEventListener("dragover", (e) => {e.preventDefault()})
 
     mainContent.replaceChildren(boardContainer)
 }

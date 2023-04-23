@@ -140,7 +140,6 @@
     margin-bottom: 10px;
     box-sizing: border-box;
     border-radius: 10px;
-    border: solid 2px orange;
 }
 
 .list-cards::-webkit-scrollbar {

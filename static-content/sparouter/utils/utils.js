@@ -87,7 +87,6 @@ export function createHTMLList(list) {
     })
 
     listCards.addEventListener("drop", async (event) => {
-        console.log("drop fired")
         const card = document.querySelector('.dragging')
         const nextCard = getNextCard(listCards, event.clientY)
         let idList = listCards.id.split("list")[1]
@@ -97,7 +96,7 @@ export function createHTMLList(list) {
         } else {
             cix = listCards.childNodes.length
         }
-        console.log(`Moved to list ${idList} and cix ${cix}`)
+        console.log(`Moved Card ${card.dataset.idCard} from list ${card.dataset.idList} to list ${idList} and cix ${cix}`)
 
         await fetchReq(`board/${list.idBoard}/list/${card.dataset.idList}/card/${card.dataset.idCard}`, "PUT", { idList, cix})
 
