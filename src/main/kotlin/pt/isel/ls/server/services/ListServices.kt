@@ -41,10 +41,8 @@ class ListServices(
     }
 
     fun deleteList(token: String, idBoard: Int, idList: Int) {
-        /** check **/
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser,idBoard)
         listData.deleteList(idList,idBoard)
-        /**In SQL, it would make more sence it to only receive idList and idBoard. **/
     }
 }

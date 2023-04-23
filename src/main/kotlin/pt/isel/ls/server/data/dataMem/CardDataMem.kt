@@ -60,8 +60,7 @@ class CardDataMem : CardData {
     override fun moveCard(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int, idxDst: Int) {
         val card = getCard(idCard, idListNow, idBoard)
         cards.forEach {
-            /** This has a bug if we try to move to the same list but != index. **/
-            if (it.idList == idListNow && it.idx >= idxDst) it.idx--
+            if (it.idList == idListNow && it.idx >= card.idx) it.idx--
             if (it.idList == idListDst && it.idx >= idxDst) it.idx++
         }
         card.idList = idListDst

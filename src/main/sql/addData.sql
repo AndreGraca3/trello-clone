@@ -11,3 +11,5 @@ commit;
 insert into list (idboard, name) values (1, 'List2');
 
 insert into card (idboard, idlist) values (1, 2);
+
+insert into card (idboard, idlist, enddate, name, description, archived, idx) values (4, 2, null, 'Card1', 'this is a Card1.', false, 0);

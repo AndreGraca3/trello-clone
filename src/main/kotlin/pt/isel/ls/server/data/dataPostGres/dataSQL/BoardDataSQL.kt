@@ -5,29 +5,24 @@ import pt.isel.ls.server.data.dataPostGres.statements.BoardStatements
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.setup
+import java.sql.Statement
 
 class BoardDataSQL : BoardData {
 
-    override val size: Int = 0
+    override val size: Int get() = getSize("idBoard","board")
 
     override fun createBoard(idUser: Int, name: String, description: String): Int {
         /** Not sure if I like this! **/
         val dataSource = setup()
-        val insertStmtBoard = BoardStatements.createBoardCMD(name, description)
-        var idBoard: Int
-        val selectStmt = BoardStatements.getBoardByNameCMD(name)
+        val insertStmt = BoardStatements.createBoardCMD(name, description)
+        var idBoard = -1
 
         dataSource.connection.use {
             it.autoCommit = false
-            it.prepareStatement(insertStmtBoard).executeUpdate()
+            val res = it.prepareStatement(insertStmt,Statement.RETURN_GENERATED_KEYS)
+            res.executeUpdate()
 
-            val res = it.prepareStatement(selectStmt).executeQuery()
-            res.next()
-
-            idBoard = res.getInt("idBoard")
-            val insertStmtUser = BoardStatements.addUserToBoard(idUser, idBoard)
-
-            it.prepareStatement(insertStmtUser).executeUpdate()
+            if (res.generatedKeys.next()) idBoard = res.generatedKeys.getInt(1)
 
             it.autoCommit = true
         }
@@ -64,7 +59,7 @@ class BoardDataSQL : BoardData {
             val res = it.prepareStatement(selectStmt).executeQuery()
             res.next()
 
-            if (res.row != 0) throw throw TrelloException.AlreadyExists(name)
+            if (res.row != 0) throw throw TrelloException.AlreadyExists("Board $name")
 
             it.autoCommit = true
         }
@@ -72,7 +67,7 @@ class BoardDataSQL : BoardData {
 
     override fun getBoardsFromUser(idBoards: List<Int>, limit: Int, skip: Int): List<Board> {
         val dataSource = setup()
-        val selectStmt = BoardStatements.getBoardsFromUser(3)
+        val selectStmt = BoardStatements.getBoardsFromUser(idBoards, limit, skip)
         val boards = mutableListOf<Board>()
 
         dataSource.connection.use {
@@ -80,7 +75,7 @@ class BoardDataSQL : BoardData {
             val res = it.prepareStatement(selectStmt).executeQuery()
 
             while (res.next()) {
-                if (res.row == 0) return emptyList()
+                if (res.row == 0) return emptyList() /** Estamos a dar return antes de acabar a ligação!!! **/
                 boards.add(
                     Board(
                         res.getInt("idBoard"),
@@ -89,9 +84,27 @@ class BoardDataSQL : BoardData {
                     )
                 )
             }
+            it.autoCommit = true
         }
         return boards
     }
+
+    /*private fun getSize(): Int {
+        val dataSource = setup()
+        val selectStmt = BoardStatements.size()
+        var res: Int
+
+        dataSource.connection.use {
+            it.autoCommit = false
+
+            val stmt = it.prepareStatement(selectStmt).executeQuery()
+            stmt.next()
+
+            res = stmt.getInt("count")
+            it.autoCommit = true
+        }
+        return res
+    }*/
 }
 
 /** Reunir quando der sobre isto !**/

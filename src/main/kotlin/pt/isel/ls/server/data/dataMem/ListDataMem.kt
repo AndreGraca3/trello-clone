@@ -31,7 +31,7 @@ class ListDataMem : ListData {
 
     override fun getList(idList: Int, idBoard: Int): BoardList {
         return lists.find { it.idList == idList && it.idBoard == idBoard }
-            ?: throw TrelloException.NotFound("BoardList")
+            ?: throw TrelloException.NotFound("List")
     }
 
     override fun getListsOfBoard(idBoard: Int, limit: Int, skip: Int): List<BoardList> {

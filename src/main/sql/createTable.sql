@@ -1,4 +1,4 @@
-CREATE DATABASE OurTrello;
+--CREATE DATABASE OurTrello;
 
 --USE OurTrello;
 
@@ -47,6 +47,7 @@ create table card (
     name varchar(20),
     description varchar(400),
     archived boolean,
+    idx Int,
     primary key (idBoard,idList,idCard),
     foreign key (idBoard,idList) references list(idBoard, idList)
 );
