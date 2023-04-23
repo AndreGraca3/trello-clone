@@ -237,7 +237,7 @@ async function getBoards(mainContent) {
     mainContent.appendChild(boardsContainer)
 }
 
-async function getBoard(mainContent, args, token) {
+async function getBoard(mainContent, args) {
     const id = args.idBoard
 
     const board = await fetchReq(`board/${id}`, "GET")

@@ -24,10 +24,16 @@ export async function createBoard() {
 
 export async function createList(boardContainer, board) {
     const input = document.createElement("input")
-    boardContainer.insertBefore(input, boardContainer.lastChild)
+    boardContainer.insertBefore(input, boardContainer.querySelector('.create-list-button'))
     boardContainer.scrollLeft = boardContainer.scrollWidth
     input.focus()
-    const handleAddList = async () => { await addList(boardContainer, input, board) }
+    const handleAddList = async () => {
+        if(input.value.trim() === ""){
+            boardContainer.removeChild(input)
+            return
+        }
+        await addList(boardContainer, input, board)
+    }
     input.addEventListener("focusout", handleAddList)
     input.addEventListener("keydown", async (event) => {
         if(event.key !== "Enter") return
@@ -37,15 +43,14 @@ export async function createList(boardContainer, board) {
 }
 
 async function addList(boardContainer, input, board) {
-    if(input.value.trim() === "") return
     const list = {
         name: input.value
     }
     const idList = await fetchReq(`board/${board.idBoard}/list`, "POST", list)
     list.idBoard = board.idBoard
     list.idList = idList
+    boardContainer.insertBefore(createHTMLList(list), input)
     input.remove()
-    boardContainer.insertBefore(createHTMLList(list), boardContainer.lastChild)
 }
 
 export async function createCard(listCards, list) {
