@@ -79,7 +79,7 @@ function handlePath(path) {
             res.args[biggestPath[i].replace(":","")] = splitPath[i]
         }
 
-        if(i + 1 == splitPath.length) {
+        if(i + 1 == splitPath.length && !biggestPath[i].includes(":")) {
             res.path += splitPath[i]
         }
 
