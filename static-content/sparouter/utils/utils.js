@@ -119,16 +119,20 @@ export function createHTMLCard(card, clickableFunc) {
         console.log("drop fired")
         const list = cardContainer.parentNode
         const nextCard = getNextCard(list, event.clientY)
-        let idList = list.id.split("list")[1]
+        let idList = list.id.split("list")[1] //
         let cix
         if (nextCard != null) {
-            cix = Array.from(list.childNodes).indexOf(nextCard) - 1
+            cix = Array.from(list.childNodes).indexOf(nextCard)
         } else {
-            cix = list.childNodes.length - 1
+            cix = list.childNodes.length
         }
         console.log(`Moved to list ${idList} and cix ${cix}`)
 
-        await fetchReq(`board/${card.idBoard}/list/${card.idList}/card/${card.idCard}`, "PUT", { idList, cix})
+        try {
+            await fetchReq(`board/${card.idBoard}/list/${card.idList}/card/${card.idCard}`, "PUT", { idList, cix})
+        } catch (ex) {
+            console.log(ex)
+        }
     })
 
 
