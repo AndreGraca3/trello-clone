@@ -138,7 +138,7 @@ class BoardAPITests {
             )
         )
 
-        val board = Json.decodeFromString<Board>(response.bodyString())
+        val board = Json.decodeFromString<BoardHTML>(response.bodyString())
 
         assertEquals(boardId, board.idBoard)
         assertTrue(dataMem.userBoardData.usersBoards.any { it.idUser == user.idUser })

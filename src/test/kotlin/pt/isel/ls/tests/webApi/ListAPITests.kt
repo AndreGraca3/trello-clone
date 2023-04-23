@@ -178,7 +178,7 @@ class ListAPITests {
         val msg = Json.decodeFromString<String>(response.bodyString())
 
         assertEquals(Status.NOT_FOUND, response.status)
-        assertEquals("BoardList not found.", msg)
+        assertEquals("List not found.", msg)
     }
 
     @Test
