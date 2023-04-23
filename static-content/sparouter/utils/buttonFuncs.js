@@ -53,7 +53,13 @@ export async function createCard(listCards, list) {
     listCards.appendChild(input)
     listCards.scrollTop = listCards.scrollHeight
     input.focus()
-    const handleAddCard = async () => { await addCard(listCards, input, list) }
+    const handleAddCard = async () => {
+        if(input.value.trim() === ""){
+            listCards.removeChild(input)
+            return
+        }
+        await addCard(listCards, input, list)
+    }
 
     input.addEventListener("focusout", handleAddCard)
     input.addEventListener("keydown", async (event) => {
@@ -64,7 +70,6 @@ export async function createCard(listCards, list) {
 }
 
 async function addCard(listCards, input, list) {
-    if(input.value.trim() === "") return
     const card = {
         name: input.value,
         description: null,

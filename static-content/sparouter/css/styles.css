@@ -251,3 +251,18 @@
     color: gray;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.85);
 }
+
+.dropdown-item-user {
+    pointer-events: none !important;
+}
+
+.dropdown-item-avatar {
+    width : 30px;
+    margin-right: 10px;
+    border-radius: 15px;
+}
+
+.dropdown-menu-user {
+    display: inline-block;
+    margin-left: 20px;
+}

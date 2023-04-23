@@ -220,3 +220,44 @@ function getNextCard(container, y) {
         else return closest
     }, {offset: Number.NEGATIVE_INFINITY}).element
 }
+
+export async function usersDropdown(idBoard) {
+
+    const divDrop = document.createElement("div")
+    divDrop.classList.add("dropdown","dropdown-menu-user")
+
+    const button = document.createElement("button")
+    button.classList.add("btn", "btn-secondary", "dropdown-toggle")
+    button.setAttribute("data-bs-toggle","dropdown")
+    button.ariaExpanded = "false"
+    button.id = "DropdownBtn"
+    button.innerText = "🙋‍♂️ Users"
+
+    divDrop.appendChild(button)
+
+    const ul = document.createElement("ul")
+    ul.classList.add("dropdown-menu","dropdown-menu-dark")
+    ul.ariaLabel = "DropdownBtn"
+
+    const users = await fetchReq(`board/${idBoard}/allUsers`, "GET")
+
+    users.forEach( user => {
+            const li = document.createElement("li")
+            li.classList.add("dropdown-item-user")
+
+            const img = document.createElement("img")
+            img.src = user.avatar
+            img.classList.add("dropdown-item-avatar")
+
+            const span = document.createElement("span")
+            span.innerText = user.name
+
+            li.appendChild(img)
+            li.appendChild(span)
+            ul.appendChild(li)
+        }
+    )
+
+    divDrop.appendChild(ul)
+    return divDrop
+}
