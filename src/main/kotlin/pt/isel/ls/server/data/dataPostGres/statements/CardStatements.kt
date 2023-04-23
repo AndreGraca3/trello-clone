@@ -8,7 +8,7 @@ object CardStatements {
         return "SELECT COUNT(idCard) FROM dbo.card;"
     }
 
-    fun createCardCMD(idList: Int, idBoard: Int, name: String, description: String, endDate: String?, idx: Int, archived: Boolean = false): String {
+    fun createCardCMD(idList: Int, idBoard: Int, name: String, description: String?, endDate: String?, idx: Int, archived: Boolean = false): String {
         return "INSERT INTO dbo.card (name, description, idList, idBoard, startDate, endDate, archived, idx) " +
                 "VALUES ('$name', '$description', $idList, $idBoard, '${LocalDate.now()}', $endDate, $archived, $idx) RETURNING idCard;"
     }

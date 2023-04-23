@@ -3,7 +3,6 @@ package pt.isel.ls.server.data.dataMem
 import pt.isel.ls.server.data.dataInterfaces.CardData
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Card
-import pt.isel.ls.server.utils.checkPaging
 import java.time.LocalDate
 
 class CardDataMem : CardData {
@@ -62,7 +61,7 @@ class CardDataMem : CardData {
     }
 
     override fun getNextIdx(idList: Int): Int {
-        val filtered = getCardsFromList(idList).sortedBy { it.idx }
+        val filtered = cards.filter { it.idList == idList }.sortedBy { it.idx }
         return if (filtered.isEmpty()) 0 else filtered.last().idx + 1
     }
 
