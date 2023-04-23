@@ -29,7 +29,7 @@ async function hashChangeHandler() {
     const handler = router.getRouteHandler(obj.path) // ,obj.args
 
     try {
-        await handler(mainContent, user.token)
+        await handler(mainContent, obj.args, user.token)
     } catch (e) {
         handlers.getErrorPage(mainContent, e)
         throw e

@@ -39,8 +39,9 @@ class CardDataMem : CardData {
 
     override fun moveCard(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int, idxDst: Int) {
         val card = getCard(idCard, idListNow, idBoard)
+        val cardIdx = card.idx
         cards.forEach {
-            if (it.idList == idListNow && it.idx >= card.idx) it.idx--
+            if (it.idList == idListNow && it.idx >= cardIdx) it.idx--
             if (it.idList == idListDst && it.idx >= idxDst) it.idx++
         }
         card.idList = idListDst

@@ -3,7 +3,7 @@ import {
     createHTMLBoardBox,
     createHTMLList,
     createRows, darkerColor, fetchReq,
-    getBoardColor, getUserAvatar, visitBoard, changeUserAvatar
+    getBoardColor, getUserAvatar, visitBoard, changeUserAvatar, usersDropdown
 } from "./utils/utils.js"
 import {boardFunc, createList} from "./utils/buttonFuncs.js";
 import {BASE_URL, user, MAX_RECENT_BOARDS, MAX_BOARDS_DISPLAY, RECENT_BOARDS} from "./utils/storage.js";
@@ -31,7 +31,7 @@ function getHome(mainContent) {
     mainContent.replaceChildren(h1, h2, recent)
 }
 
-async function getUser(mainContent, token) {
+async function getUser(mainContent, args, token) {
     document.title = "OurTrello | User";
 
     const user = await fetchReq("user", "GET");
@@ -85,11 +85,10 @@ async function getUser(mainContent, token) {
 }
 
 
-async function getCard(mainContent) {
-    const arrayIds = document.location.hash.replace("#board/", "").split("/");
-    const idBoard = arrayIds[0];
-    const idList = arrayIds[2];
-    const idCard = arrayIds[4];
+async function getCard(mainContent,args, token) {
+    const idBoard = args.idBoard;
+    const idList = args.idList;
+    const idCard = args.idCard;
 
     document.title = `OurTrello | Card`;
 
@@ -238,8 +237,8 @@ async function getBoards(mainContent) {
     mainContent.appendChild(boardsContainer)
 }
 
-async function getBoard(mainContent) {
-    const id = document.location.hash.split("/")[1]
+async function getBoard(mainContent, args, token) {
+    const id = args.idBoard
 
     const board = await fetchReq(`board/${id}`, "GET")
     document.title = `OurTrello | ${board.name}`
@@ -264,6 +263,8 @@ async function getBoard(mainContent) {
     createListButton.addEventListener("click", () => createList(boardContainer, board))
 
     boardContainer.appendChild(createListButton)
+
+    boardContainer.appendChild(await usersDropdown(board.idBoard))
 
     const color = getBoardColor(board.idBoard)
     mainContent.style.background = `linear-gradient(135deg, ${darkerColor(color)}, ${color})`
