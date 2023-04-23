@@ -173,7 +173,11 @@ The App ties everything together, serving as the main entry point to the SPA. <b
 It initializes the Router and Handlers, listens for events such as the page load and URL changes, and calls the appropriate handler function to update the content displayed on the page.<br>
 In short, the App is the glue that holds the different components of the SPA together, making it work as a cohesive whole.
 
-// TODO - add diagram about the HTML views and explain 
+Next image shows each HTML views can be accessed depending on your current view: 
+<img src="../images/Single_Page_Application.jpg" alt="Interfaces Diagram" style="width:550px;height:400px;"> 
+
+We decided to make Boards and Lists accessible in the same view, just like original Trello website
+and make every able to jump to home view.
 
 In summary, the __Router__, __Handlers__, and __App__ work together to create a dynamic and responsive SPA that can navigate between different views and pages without reloading the entire page.
 
@@ -188,4 +192,4 @@ Improvements to be made in the next phase:
 
 Improve the error handling and processing by adding more detailed error messages.
 Add support for pagination in the endpoints that return a list of items. 
-Make tests more optimized : avoid repeating same actions in test like creating a list.
+Make tests more optimized : avoid repeating same actions in test like creating a list and avoid repeating similar actions in DataSQL.
