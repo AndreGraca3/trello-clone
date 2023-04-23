@@ -11,7 +11,7 @@ class CardDataSQL : CardData {
     override val size: Int
         get() = TODO("Not yet implemented")
 
-    override fun createCard(idList: Int, idBoard: Int, name: String, description: String, endDate: String?): Int {
+    override fun createCard(idList: Int, idBoard: Int, name: String, description: String?, endDate: String?): Int {
         val dataSource = setup()
         val insertStmtCard = CardStatements.createCardCMD(idList, idBoard, name, description, endDate)
         var idCard: Int
@@ -62,9 +62,9 @@ class CardDataSQL : CardData {
         val dataSource = setup()
         val selectStmt = CardStatements.getCardCMD(idCard, idList, idBoard)
         lateinit var name: String
-        lateinit var description: String
+        var description: String?
         lateinit var startDate: String
-        lateinit var endDate: String
+        var endDate: String?
         var archived: Boolean
         var idx: Int
 

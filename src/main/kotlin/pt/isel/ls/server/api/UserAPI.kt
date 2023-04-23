@@ -14,14 +14,6 @@ import pt.isel.ls.server.utils.UserOut
 class UserAPI(private val services: UserServices) {
 
     fun createUser(request: Request): Response {
-        return handleRequest(request, ::createUserInternal)
-    }
-
-    fun getUser(request: Request): Response {
-        return handleRequest(request, ::getUserInternal)
-    }
-
-    private fun createUserInternal(request: Request): Response {
         val newUser = Json.decodeFromString<UserIn>(request.bodyString())
         val createdUser = services.createUser(newUser.name, newUser.email)
         return createRsp(CREATED, UserOut(createdUser.first, createdUser.second))
@@ -29,7 +21,7 @@ class UserAPI(private val services: UserServices) {
 
     @Auth
     @Suppress("unused")
-    private fun getUserInternal(request: Request, token: String): Response {
+    fun getUser(request: Request, token: String): Response {
         val user = services.getUser(token)
         return createRsp(OK, user)
     }

@@ -9,7 +9,7 @@ data class IDUser(val idUser: Int)
 data class NewList(val idList: Int, val cix: Int)
 
 @Serializable
-data class User(val idUser: Int, val email: String, val name: String, val token: String)
+data class User(val idUser: Int, val email: String, val name: String, val token: String, var avatar: String? = null)
 
 @Serializable
 data class UserIn(val name: String, val email: String)
@@ -46,7 +46,7 @@ data class Card(
     var idList: Int,
     val idBoard: Int,
     val name: String,
-    val description: String,
+    val description: String?,
     val startDate: String,
     val endDate: String?,
     var archived: Boolean,
@@ -56,14 +56,14 @@ data class Card(
 @Serializable
 data class CardIn(
     val name: String,
-    val description: String,
+    val description: String?,
     val endDate: String?
 ) // name and description should be vars
 
 @Serializable
 data class CardOut(
     val name: String,
-    val description: String,
+    val description: String?,
     val startDate: String,
     val endDate: String?,
     var archived: Boolean
@@ -93,5 +93,6 @@ data class CardHTML(
     val idCard: Int,
     var idList: Int,
     val idBoard: Int,
-    val name: String
+    val name: String,
+    val idx: Int
 )

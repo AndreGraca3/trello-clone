@@ -10,7 +10,7 @@
     width: auto;
 }
 
-.card-container {
+.boardBox-container {
     display: table;
     flex-wrap: wrap;
     align-self: center;
@@ -19,26 +19,31 @@
     margin: auto;
 }
 
-.card-row {
+.boardBox-row {
     display: flex;
     margin-bottom: 3rem;
 }
 
-.card {
+.boardBox {
     margin: 15px;
+    padding: 20px;
     align-items: center;
+    align-content: center;
+    border: 15px groove white;
+    width: fit-content;
 }
 
-.card-title {
-    padding-bottom: 1em;
-}
-
-.card h5 {
-    font-weight: bold;
-}
-
-.card:hover {
+.boardBox:hover {
     filter: brightness(50%);
+}
+
+.boardBox-title {
+    color: white;
+}
+
+.boardBox-text {
+    color: white;
+    text-decoration: underline;
 }
 
 .clickable {
@@ -77,6 +82,14 @@
     }
 }
 
+#mainContent {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    background-color: rgb(42, 40, 40);
+    overflow: auto;
+}
+
 .logo {
     animation-name: rotate;
     animation-duration: 5s;
@@ -93,85 +106,148 @@
     }
 }
 
+.board {
+    flex-wrap: nowrap;
+    width: 100%;
+    padding: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    flex-direction: row;
+    height: 600px;
+}
+
 .list-container {
-    /*display: inline-flex;*/
-    flex-direction: column;
-    /*background-color: #EBECF0;*/
-    min-height: 100%;
-    overflow: hidden;
+    padding: 0 10px 10px;
     vertical-align: top;
-    width: 250px; /* or any other fixed width you prefer */
-    overflow-y: auto;
+    width: 250px;
     display: inline-block;
     margin-right: 10px;
-    border: 1px solid #5C5C5C;
     border-radius: 10px;
+    height: fit-content;
+    background-color: #ebecf0;
 }
 
-.list-container::-webkit-scrollbar {
-    display: inline-block;
+.list-container .newCard {
+    display: flex;  /* displays button in middle */
 }
 
-
-.list-container .card-container {
-    /*display: flex;*/
-    padding: 20px; /* increase padding between cards */
-    flex-grow: 1;
+.list-cards {
+    max-height: calc(100vh - 300px);
     overflow-y: auto;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    width: calc(100% - 40px); /* subtract padding from the width */
-    margin-bottom: 20px; /* add margin between cards */
-    max-height: 450px; /* or any other max-height you prefer */
-    background-color: #cccccc;
-    /*transition: transform 0.2s ease-out;*/
-}
-
-/*.list-container .card-container.moving{*/
-/*    transform: translateX(200px) translateY(100px);*/
-/*}*/
-
-.list-container .card-container::-webkit-scrollbar {
-    display: none;
-}
-
-.card-container .card-content {
-    /* add box-sizing and width */
-    box-sizing: border-box;
-    width: 100%;
-}
-
-.card-title {
-    font-size: 16px;
-    font-weight: 600;
+    padding: 10px;
+    margin-top: 10px;
     margin-bottom: 10px;
-    align-content: center;
-    text-align: center;
+    box-sizing: border-box;
+    border-radius: 10px;
 }
 
-.board {
-    display: inline-block;
-    flex-wrap: nowrap;
-    /* remove overflow-x: auto; */
-    /*background-color: #F5F5F5;*/
-    width: 100%; /* subtract the padding of the board */
-    padding: 20px;
-    overflow-x: auto; /* add horizontal scrollbar */
-    white-space: nowrap; /* prevent line breaks */
-    flex-direction: row;
-    height: 600px; /* or any other fixed height you prefer */
+.list-cards::-webkit-scrollbar {
+    width: 8px;
+}
+
+.list-cards::-webkit-scrollbar-track {
+    background-color: #f2f2f2;
+}
+
+.list-cards::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+}
+
+.list-cards::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+#mainContent::-webkit-scrollbar {
+    width: 10px;
+}
+
+#mainContent::-webkit-scrollbar-track {
+    background-color: gray;
+}
+
+#mainContent::-webkit-scrollbar-thumb {
+    background-color: #333333;
+    border-radius: 4px;
+}
+
+#mainContent::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+.board::-webkit-scrollbar {
+    height: 15px;
+}
+
+.board::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.board::-webkit-scrollbar-thumb {
+    background-color: gray;
+    border-radius: 5px;
+}
+
+.board::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
 }
 
 .list-header {
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    align-self: center;
+    padding-left: 10px;
+    padding-top: 10px;
+    color: #535353;
+    font-family: Comic Sans Ms, serif
 }
 
-.list-container.add-list {
-    height: 500px; /* or any other fixed height you prefer */
+.card-container {
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,0.3);
 }
 
+.card-container:hover {
+    color: #333333;
+}
+
+.card-content {
+    white-space: pre-line;
+    word-wrap: break-word;
+    flex: 1;
+    height: auto;
+    overflow: hidden;
+    text-align: center;
+}
+
+.dragging {
+    opacity: .4;
+}
+
+.create-list-button {
+    transition: opacity 0.3s ease-in-out;
+    opacity: 40%;
+    border: transparent;
+    border-radius: 1rem;
+    width: 10rem;
+    height: 3rem;
+}
+
+.create-list-button:hover {
+    opacity: 70%;
+}
+
+.newCard {
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 5rem;
+    background-color: rgba(255, 255, 255, 0.7);
+    color: #333;
+    margin: auto auto 8px;
+    max-width: 200px;
+    transition: color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.newCard:hover {
+    color: gray;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.85);
+}

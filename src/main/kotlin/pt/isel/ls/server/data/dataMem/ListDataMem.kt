@@ -7,19 +7,8 @@ import pt.isel.ls.server.utils.checkPaging
 import kotlin.math.min
 
 class ListDataMem : ListData {
-    //  Board(0, "Board1", "this is description1"), Board(1, "Board2", "this is description2")
-    val lists = mutableListOf<BoardList>(
-        BoardList(0, 0, "List0"),
-        BoardList(1, 0, "List1"),
-        BoardList(2, 0, "List2"),
-        BoardList(3, 0, "List3"),
-        BoardList(4, 0, "List4"),
-//        BoardList(5, 0, "List5"),
-//        BoardList(6, 0, "List6"),
-//        BoardList(7, 0, "List7"),
-//        BoardList(8, 0, "List8"),
-    )
 
+    val lists = mutableListOf<BoardList>()
 
     override val size get() = lists.size
 

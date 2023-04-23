@@ -46,7 +46,7 @@ class BoardServices(
             cardData.getCardsFromList(it.idList,it.idBoard,countCard, 0)}
         val listsHTML = mutableListOf<ListHTML>()
         for(i in lists.indices) {
-            val currCards = cards[i].map { CardHTML(it.idCard, it.idList, it.idBoard, it.name)}
+            val currCards = cards[i].map { CardHTML(it.idCard, it.idList, it.idBoard, it.name, it.idx)}
             val currList = lists[i]
             listsHTML.add(ListHTML(currList.idList,currList.idBoard,currList.name,currCards))
         }

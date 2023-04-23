@@ -9,7 +9,7 @@ interface CardData {
         idList: Int,
         idBoard: Int,
         name: String,
-        description: String,
+        description: String? = null,
         endDate: String? = null
     ): Int // check endDate
 

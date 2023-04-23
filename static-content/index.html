@@ -10,10 +10,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
     <style>
 
-        body {
-            background-color: rgb(42, 40, 40);
-        }
-
         h1, h2, p {
             color: white;
         }
@@ -64,7 +60,7 @@
                 </li>
             </ul>
 
-            <img style="width: 70px" src="https://i.imgur.com/JGtwTBw.png" class="nav-link dropdown-toggle img-fluid"
+            <img style="width: 70px; border-radius: 50%" class="nav-link dropdown-toggle img-fluid"
                  href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 
             <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -106,59 +102,22 @@
     </div>
 </div>
 
-<div id="mainContent"></div>
+<div style="height: 90vh" class="default-bg" id="mainContent"></div>
 
 <script src="./sparouter/index.js" type="module"></script>
 <script type="module">
 
-    import {BASE_URL} from "./sparouter/utils.js";
-
-    function handleUserClick() {
-        const currentUser = localStorage.getItem("currentUser");
-        if (currentUser) {
-            // user is logged in, show user details
-            const user = JSON.parse(currentUser);
-            console.log(user);
-        } else {
-            // user is not logged in, show login modal
-            console.log("Login needed");
-        }
-    }
+    import {getUserAvatar} from "./sparouter/utils/utils.js";
+    import {createBoard, hideCreateBoardButton, showCreateBoardButton} from "./sparouter/utils/buttonFuncs.js";
+    import {user} from "./sparouter/utils/storage.js"
 
     $('.showCreateBoardModal').click(showCreateBoardButton);
     $('.closeModal').click(hideCreateBoardButton);
     $('.createBoardButtonModal').click(createBoard);
 
-    async function createBoard() {
-        const boardName = $('#board-name').val()
-        const boardDesc = $('#board-description').val()
 
-        const res = await fetch(BASE_URL + "board", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer token123"
-            },
-            body: JSON.stringify({name: boardName, description: boardDesc}),
-        })
-        if(!res.ok) {
-            alert(await res.json())
-            return
-        }
-        hideCreateBoardButton()
-        alert('Board Created Successfully')
-        document.location = `#board/${(await res.json()).idBoard}`
-    }
-
-    function showCreateBoardButton() {
-        $('#createBoardModal').modal('show')
-    }
-
-    function hideCreateBoardButton() {
-        $('#createBoardModal').modal('hide')
-    }
-
-
+    const img = $('.img-fluid')[0]
+    img.src = await getUserAvatar(user.token)
 
 
 </script>

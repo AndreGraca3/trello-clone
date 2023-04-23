@@ -21,9 +21,9 @@ class CardServices(
      *         Card Management         *
      *  ----------------------------- **/
 
-    fun createCard(token: String, idBoard: Int, idList: Int, name: String, description: String, endDate: String?): Int {
+    fun createCard(token: String, idBoard: Int, idList: Int, name: String, description: String?, endDate: String?): Int {
         isValidString(name, "name")
-        isValidString(description, "description")
+        if(description != null) isValidString(description, "description")
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
         listData.checkListInBoard(idList, idBoard)

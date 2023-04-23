@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 object CardStatements {
 
-    fun createCardCMD(idList: Int, idBoard: Int, name: String, description: String, endDate: String?): String {
+    fun createCardCMD(idList: Int, idBoard: Int, name: String, description: String?, endDate: String?): String {
         return "INSERT INTO dbo.card (name, description, idList, idBoard, startDate, endDate) " +
                 "VALUES ('$name', '$description', '$idList', '$idBoard', '${LocalDate.now()}', '$endDate');"
     }

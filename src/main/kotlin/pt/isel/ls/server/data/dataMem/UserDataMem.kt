@@ -8,7 +8,7 @@ import kotlin.math.min
 
 class UserDataMem : UserData {
 
-    val users = mutableListOf<User>(User(1,"alberto.tremocos@gmail.com", "Jose", "token123"))
+    val users = mutableListOf<User>(User(1,"alberto.tremocos@gmail.com", "Jose", "token123", "https://i.imgur.com/EzOJYRG.png"))
 
     override val size get() = users.size
 

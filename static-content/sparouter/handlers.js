@@ -1,29 +1,30 @@
 import {
-    BASE_URL,
-    boardFunc,
     createHeader,
-    createHTMLHomeCard,
+    createHTMLBoardBox,
     createHTMLList,
-    createRows,
-    RECENT_BOARDS
-} from "./utils.js"
+    createRows, darkerColor, fetchReq,
+    getBoardColor, getUserAvatar, visitBoard
+} from "./utils/utils.js"
+import {boardFunc, createList} from "./utils/buttonFuncs.js";
+import {BASE_URL, user, MAX_RECENT_BOARDS, MAX_BOARDS_DISPLAY, RECENT_BOARDS} from "./utils/storage.js";
 
 function getHome(mainContent) {
     document.title = "OurTrello | Home"
 
     const h1 = createHeader("Welcome to OurTrello!")
     h1.classList.add("rainbow-text")
+
     const h2 = createHeader("🕒 Recent Boards")
     h2.style.color = "#D3D3D3"
     h2.style.fontSize = "20px"
     h2.style.paddingLeft = "10rem"
     h2.style.paddingTop = "5rem"
 
-    const cards = RECENT_BOARDS.map(board =>
-        createHTMLHomeCard(board.name, "", () => boardFunc(board), 5)
-    )
+    const cards = RECENT_BOARDS.map(board => {
+        return createHTMLBoardBox(board.name, "", () => boardFunc(board), getBoardColor(board.idBoard), 5)
+    })
 
-    const recent = createRows(cards, 3)
+    const recent = createRows(cards, MAX_RECENT_BOARDS)
     recent.style.float = "left"
     recent.style.paddingLeft = "10rem"
 
@@ -33,21 +34,18 @@ function getHome(mainContent) {
 async function getUser(mainContent, token) {
     document.title = "OurTrello | User"
 
-    const user = await (await fetch(BASE_URL + "user", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        }
-    })).json()
+    const user = await fetchReq("user", "GET")
 
     const div = document.createElement("div")
     div.classList.add("text-center")
 
     const img = document.createElement("img")
-    img.src = "https://i.imgur.com/JGtwTBw.png"
+
+
+    img.src = await getUserAvatar(token)
     img.style.paddingTop = "2rem"
-    img.style.width = "10rem"
+    img.style.width = "10%"
+    img.style.borderRadius = "50%"
 
     const pName = document.createElement("p")
     pName.innerText = `${user.name}`
@@ -59,9 +57,8 @@ async function getUser(mainContent, token) {
 
     mainContent.replaceChildren(div)
 }
-// Why is this function
+
 async function getCard(mainContent) {
-    // console.log("card object in getCard:", card);
     const arrayIds = document.location.hash.replace("#board/", "").split("/");
     const idBoard = arrayIds[0];
     const idList = arrayIds[2];
@@ -69,51 +66,31 @@ async function getCard(mainContent) {
 
     document.title = `OurTrello | Card`;
 
-    try {
-        const resp = await fetch(`${BASE_URL}board/${idBoard}/list/${idList}/card/${idCard}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer token123",
-            },
-        });
+    const card = await fetchReq(`board/${idBoard}/list/${idList}/card/${idCard}`, "GET")
 
-        if (!resp.ok) {
-            throw new Error(`Failed to fetch card data: ${resp.statusText}`);
-        }
+    const div = document.createElement("div");
+    div.classList.add("text-center");
 
-        const cardOut = await resp.json();
+    const cardName = document.createElement("h2");
+    cardName.innerText = `${card.name}`;
 
-        const div = document.createElement("div");
-        div.classList.add("text-center");
+    const cardDescription = document.createElement("p");
+    cardDescription.innerText = `Description: ${card.description}`;
 
-        const cardName = document.createElement("h2");
-        cardName.innerText = `${cardOut.name}`;
+    const cardStartDate = document.createElement("p");
+    cardStartDate.innerText = `Start Date: ${card.startDate}`;
 
-        const cardDescription = document.createElement("p");
-        cardDescription.innerText = `Description: ${cardOut.description}`;
+    const cardEndDate = document.createElement("p");
+    cardEndDate.innerText = `End Date: ${card.endDate || "Not set"}`;
 
-        const cardStartDate = document.createElement("p");
-        cardStartDate.innerText = `Start Date: ${cardOut.startDate}`;
+    const cardArchived = document.createElement("p");
+    cardArchived.innerText = `Archived: ${card.archived}`;
 
-        const cardEndDate = document.createElement("p");
-        cardEndDate.innerText = `End Date: ${cardOut.endDate || "Not set"}`;
+    div.append(cardName, cardDescription, cardStartDate, cardEndDate, cardArchived);
 
-        const cardArchived = document.createElement("p");
-        cardArchived.innerText = `Archived: ${cardOut.archived}`;
+    mainContent.replaceChildren(div);
 
-        div.append(cardName, cardDescription, cardStartDate, cardEndDate, cardArchived);
-
-        mainContent.replaceChildren(div);
-    } catch (err) {
-        const errorDiv = document.createElement("div");
-        errorDiv.classList.add("text-center");
-        const errorMsg = document.createTextNode(`Failed to fetch card data: ${err.message}`);
-        errorDiv.append(errorMsg);
-        mainContent.replaceChildren(errorDiv);
-    }
 }
-
 
 function getSignup(mainContent) {   // Whats this compared to below function?
 
@@ -169,7 +146,6 @@ function createUser(name, email, password) {
         });
 }
 
-
 function getLogin(mainContent) {
     document.title = "OurTrello | Login"
 
@@ -221,149 +197,68 @@ function getLogin(mainContent) {
 async function getBoards(mainContent) {
     document.title = "OurTrello | Boards"
 
-    /** CÒDIGO REPETIDO !**/
     const h1 = document.createElement("h1")
     const text = document.createTextNode("My Boards")
     h1.replaceChildren(text)
     mainContent.replaceChildren(h1)
 
-    const boards = await (await fetch(BASE_URL + "board", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer token123"
-        }
-    })).json()
+    const boards = await fetchReq("board", "GET")
 
-    const cards = boards.map(board => createHTMLHomeCard(board.name, board.description, () => boardFunc(board)))
-
-    const boardsContainer = createRows(cards, 2)
+    const cards = boards.map(board => {
+        return createHTMLBoardBox(board.name, board.description, () => boardFunc(board), getBoardColor(board.idBoard))
+    })
+    const boardsContainer = createRows(cards, MAX_BOARDS_DISPLAY)
     mainContent.appendChild(boardsContainer)
 }
 
 async function getBoard(mainContent) {
-    const id = document.location.hash.replace("#board/", "");
+    const id = document.location.hash.split("/")[1]
 
-    document.title = "OurTrello | board";
+    const board = await fetchReq(`board/${id}`, "GET")
+    document.title = `OurTrello | ${board.name}`
+    visitBoard(board)
 
-    try {
-        const resp = await fetch(BASE_URL + `board/${id}`, {
-            method: "GET",
-            headers: {
-                "Content-type": "application/json",
-                "Authorization": "Bearer token123",
-            },
-        });
-        const board = await resp.json();
+    const boardContainer = document.createElement("div")
+    boardContainer.classList.add("board")
 
-        const lists = board.lists;
-
-        const boardContainer = document.createElement("div");
-        boardContainer.classList.add("board");
-
-        lists.forEach(function (list) {
-            const listContainer = createHTMLList(list);
-            boardContainer.appendChild(listContainer);
-        });
-
-        // add create list button container
-        const createListButtonContainer = document.createElement("div");
-        createListButtonContainer.classList.add("list-container", "add-list"); // add these classes to the button container
-        createListButtonContainer.style.backgroundColor = "transparent";
-        createListButtonContainer.style.border = "0px";
-
-        const createListButton = document.createElement("button");
-        createListButton.innerText = "Add new List";
-        createListButton.addEventListener("click", () => {
-            //createListButtonContainer.replaceChildren(createListForm());
-            createListForm(mainContent)
-        });
-
-        createListButtonContainer.appendChild(createListButton);
-        boardContainer.appendChild(createListButtonContainer);
-
-        mainContent.replaceChildren(boardContainer);
-    } catch (err) {
-        const msg = document.createTextNode(err);
-        mainContent.replaceChildren(msg);
-    }
-}
-
-async function getLists(mainContent) {
-
-    const id = document.location.hash.replace("#board/", "")
-    const idBoard = id.replace("/list", "")
-    console.log(idBoard)
-
-    document.title = "OurTrello | lists"
-
-    const lists = await (await fetch(BASE_URL + `board/${idBoard}/list`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer token123"
-        }
-    })).json()
-
-    const temp = document.createElement("h1")
-
-    lists.map(list => {
-        const h1 = document.createElement("h1")
-        const text = document.createTextNode(list.name)
-        h1.replaceChildren(text)
-        temp.appendChild(h1)
+    board.lists.forEach(list => {
+        const listContainer = createHTMLList(list)
+        boardContainer.appendChild(listContainer)
     })
 
-    mainContent.replaceChildren(temp)
+    const createListButton = document.createElement("button")
+    createListButton.innerText = "Add new List"
+    createListButton.classList.add("create-list-button")
+
+    createListButton.addEventListener("click", () => createList(boardContainer, board))
+
+    boardContainer.appendChild(createListButton)
+
+    const color = getBoardColor(board.idBoard)
+    mainContent.style.background = `linear-gradient(135deg, ${darkerColor(color)}, ${color})`
+
+    boardContainer.addEventListener("dragover", (e) => {e.preventDefault()})
+
+    mainContent.replaceChildren(boardContainer)
 }
 
-async function createListForm(mainContent) {
-    document.title = "OurTrello | creating a list.."
+function getErrorPage(mainContent, error) {
+    document.title = "OurTrello | Error"
 
-    const id = document.location.hash.replace("#board/", "")
-    const idBoard = id.replace("/list", "")
+    const h1 = createHeader("NOT THE BOARD YOU'RE LOOKING FOR")
+    h1.style.color = "red"
+    h1.style.fontSize = "5rem"
 
-    document.location.hash = "#board/" + idBoard + "/list"
+    const h2 = createHeader(error)
 
-    const createBox = document.createElement("div");
-    createBox.innerHTML = `
-    <h2 style="text-align:center;">Create List</h2>
-    <form id="createList-form" style="display:flex;flex-direction:column;align-items:center;">
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name">
+    const bg = document.createElement("div")
+    bg.style.backgroundImage = `url("https://i.imgur.com/6DdhZTP.gif")`
+    bg.style.opacity = "0.5"
+    bg.style.backgroundPosition = "center top"
+    bg.style.width = "100vw"
+    bg.style.height = "50vh"
 
-      <input type="submit" value="Create" style="margin-top: 1rem;">
-    </form>
-  `;
-
-    mainContent.replaceChildren(createBox)
-
-    const form = document.getElementById("createList-form");
-    form.addEventListener("submit", (event) => {
-        event.preventDefault(); // prevent form from submitting and refreshing the page
-        const formData = new FormData(form);
-        const name = formData.get("name");
-        createList(name, idBoard);
-    });
-}
-
-async function createList(name, idBoard) {
-    fetch(BASE_URL + `board/${idBoard}/list`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer token123"
-        },
-        body: JSON.stringify({name}),
-    })
-        .then((res) => res.json())
-        .then((response) => {
-            // redirect to the user's page after successful sign-up
-            document.location.hash = `#board/${idBoard}`;
-        })
-        .catch((err) => {
-            console.error("Error creating list:", err);
-        });
+    mainContent.replaceChildren(h1, h2, bg)
 }
 
 export const handlers = {
@@ -373,9 +268,8 @@ export const handlers = {
     getSignup,
     getBoards,
     getBoard,
-    getLists,
     getCard,
-    createListForm,
+    getErrorPage
 }
 
 export default handlers

@@ -1,10 +1,12 @@
 import router from "./router.js"
 import handlers from "./handlers.js"
+import {user} from "./utils/storage.js";
 
 window.addEventListener('load', loadHandler)
 window.addEventListener('hashchange', hashChangeHandler)
 
-function loadHandler() {
+async function loadHandler() {
+    router.addRouteHandler("error", handlers.getErrorPage)
     router.addRouteHandler("home", handlers.getHome)
     router.addRouteHandler("user", handlers.getUser)
     router.addRouteHandler("login", handlers.getLogin)
@@ -12,31 +14,25 @@ function loadHandler() {
     router.addRouteHandler("boards", handlers.getBoards)
     router.addRouteHandler("board/:id/list/:id/card/:id", handlers.getCard)
     router.addRouteHandler("board/:id", handlers.getBoard)
-    router.addRouteHandler("board/:id/lists", handlers.getLists)
-    router.addRouteHandler("board/:id/list", handlers.createListForm)
 
-    hashChangeHandler()
+    await hashChangeHandler()
 }
 
-function hashChangeHandler() {
+async function hashChangeHandler() {
     const mainContent = document.getElementById("mainContent")
-    let path = window.location.hash.replace("#", "")
+    mainContent.style.background = "rgb(42, 40, 40)"
 
+    let path = window.location.hash.replace("#", "")
     path = handlePath(path)
     const handler = router.getRouteHandler(path)
 
-    if (path === "user") {
-        //const token = localStorage.getItem('token')
-        const token = "token123" /* TEMPORARY */
-        if (token) {
-            handler(mainContent, token)
-            console.log("token is", token)
-        } else {
-            window.location.hash = "login"
-        }
-    } else {
-        handler(mainContent)
+    try {
+        await handler(mainContent, user.token)
+    } catch (e) {
+        handlers.getErrorPage(mainContent, e)
+        throw e
     }
+
 }
 
 //localhost:8080/board/123/list/456/card/789

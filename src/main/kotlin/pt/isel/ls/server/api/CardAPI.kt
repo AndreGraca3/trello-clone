@@ -13,28 +13,8 @@ import pt.isel.ls.server.utils.NewList
 
 class CardAPI(private val services: CardServices) {
 
-    fun createCard(request: Request): Response {
-        return handleRequest(request, ::createCardInternal)
-    }
-
-    fun getCard(request: Request): Response {
-        return handleRequest(request, ::getCardInternal)
-    }
-
-    fun getCardsFromList(request: Request): Response {
-        return handleRequest(request, ::getCardsFromListInternal)
-    }
-
-    fun moveCard(request: Request): Response {
-        return handleRequest(request, ::moveCardInternal)
-    }
-
-    fun deleteCard(request: Request): Response {
-        return handleRequest(request, ::deleteCardInternal)
-    }
-
     @Auth
-    private fun createCardInternal(request: Request, token: String): Response {
+    fun createCard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
         val idList = getPathParam(request, "idList")
         val newCard = Json.decodeFromString<CardIn>(request.bodyString())
@@ -45,7 +25,7 @@ class CardAPI(private val services: CardServices) {
     }
 
     @Auth
-    private fun getCardInternal(request: Request, token: String): Response {
+    fun getCard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
         val idList = getPathParam(request, "idList")
         val idCard = getPathParam(request, "idCard")
@@ -54,7 +34,7 @@ class CardAPI(private val services: CardServices) {
     }
 
     @Auth
-    private fun getCardsFromListInternal(request: Request, token: String): Response {
+    fun getCardsFromList(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
         val idList = getPathParam(request, "idList")
         val limit = getQueryParam(request,"limit")?.toIntOrNull()
@@ -63,7 +43,7 @@ class CardAPI(private val services: CardServices) {
     }
 
     @Auth
-    private fun moveCardInternal(request: Request, token: String): Response {
+    fun moveCard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
         val idListNow = getPathParam(request, "idList")
         val objIdListDst = Json.decodeFromString<NewList>(request.bodyString())
@@ -72,7 +52,7 @@ class CardAPI(private val services: CardServices) {
     }
 
     @Auth
-    private fun deleteCardInternal(request: Request, token: String): Response {
+    fun deleteCard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
         val idList = getPathParam(request, "idList")
         val idCard = getPathParam(request, "idCard")
