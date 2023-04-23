@@ -62,7 +62,7 @@ class CardDataMem : CardData {
 
     override fun getNextIdx(idList: Int): Int {
         val filtered = cards.filter { it.idList == idList }.sortedBy { it.idx }
-        return if (filtered.isEmpty()) 0 else filtered.last().idx + 1
+        return if (filtered.isEmpty()) 1 else filtered.last().idx + 1
     }
 
     override fun getCardCount(idBoard: Int, idList: Int): Int {

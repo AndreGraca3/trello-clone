@@ -56,7 +56,6 @@ export function createHTMLBoardBox(title, description, clickableFunc, color, siz
     return card
 }
 
-
 export function createHTMLList(list) {
     const listContainer = document.createElement("div");
     listContainer.classList.add("list-container");
@@ -79,12 +78,31 @@ export function createHTMLList(list) {
     }
     listContainer.appendChild(listCards)
 
+
     listCards.addEventListener("dragover", (event) => {
         event.preventDefault()
         const dragging = document.querySelector('.dragging')
         const afterCard = getNextCard(listCards, event.clientY)
         if (afterCard != null) listCards.insertBefore(dragging, afterCard)
         else listCards.appendChild(dragging)
+    })
+
+    listCards.addEventListener("drop", async (event) => {
+        console.log("drop fired")
+        const card = document.querySelector('.dragging')
+        const nextCard = getNextCard(listCards, event.clientY)
+        let idList = listCards.id.split("list")[1]
+        let cix
+        if (nextCard != null) {
+            cix = Array.from(listCards.childNodes).indexOf(nextCard)
+        } else {
+            cix = listCards.childNodes.length
+        }
+        console.log(`Moved to list ${idList} and cix ${cix}`)
+
+        await fetchReq(`board/${list.idBoard}/list/${card.dataset.idList}/card/${card.dataset.idCard}`, "PUT", { idList, cix})
+
+        card.dataset.idList = idList
     })
 
     const newCardButton = document.createElement("button")
@@ -109,28 +127,29 @@ export function createHTMLCard(card, clickableFunc) {
     cardContainer.appendChild(cardContent);
 
     cardContainer.draggable = true;
-    cardContainer.addEventListener("dragstart", (event) => {
+    cardContainer.addEventListener("dragstart", () => {
         cardContainer.classList.add("dragging")
     })
-    cardContainer.addEventListener("dragend", (event) => {
+    cardContainer.addEventListener("dragend", () => {
         cardContainer.classList.remove("dragging")
     })
-    cardContainer.addEventListener("drop", async (event) => {
-        console.log("drop fired")
+    /*cardContainer.addEventListener("drop", async (event) => {
         const list = cardContainer.parentNode
         const nextCard = getNextCard(list, event.clientY)
         let idList = list.id.split("list")[1]
         let cix
         if (nextCard != null) {
-            cix = Array.from(list.childNodes).indexOf(nextCard) - 1
+            cix = Array.from(list.childNodes).indexOf(nextCard)
         } else {
-            cix = list.childNodes.length - 1
+            cix = list.childNodes.length
         }
         console.log(`Moved to list ${idList} and cix ${cix}`)
 
         await fetchReq(`board/${card.idBoard}/list/${card.idList}/card/${card.idCard}`, "PUT", { idList, cix})
-    })
+    })*/
 
+    cardContainer.dataset.idList = card.idList
+    cardContainer.dataset.idCard = card.idCard
 
     if (clickableFunc) cardContainer.addEventListener("click", clickableFunc);
 

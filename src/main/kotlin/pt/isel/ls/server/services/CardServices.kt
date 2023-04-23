@@ -52,7 +52,7 @@ class CardServices(
         userBoardData.checkUserInBoard(idUser, idBoard)
         listData.getList(idListNow, idBoard)
         listData.getList(idListDst, idBoard)
-        if (idxDst !in 0..cardData.getNextIdx(idListDst)) throw TrelloException.IllegalArgument("idx")
+        if (idxDst !in 1..cardData.getNextIdx(idListDst)) throw TrelloException.IllegalArgument("idx")
         cardData.moveCard(idCard, idListNow, idBoard, idListDst, idxDst)
     }
 
