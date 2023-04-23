@@ -33,6 +33,6 @@ class UserBoardDataMem : UserBoardData {
     }
 
     override fun getUserCountFromBoard(idBoard: Int): Int {
-        return usersBoards.count { it.idBoard == idBoard}
+        return usersBoards.count { it.idBoard == idBoard }
     }
 }

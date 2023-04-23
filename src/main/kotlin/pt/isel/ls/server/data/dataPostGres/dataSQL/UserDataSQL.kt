@@ -10,8 +10,7 @@ import java.util.*
 
 class UserDataSQL : UserData {
 
-    override val size: Int
-        get() = TODO("Not yet implemented")
+    override val size get() = getSizeCount("idUser","user")
 
     override fun createUser(name: String, email: String): Pair<Int, String> {
         val dataSource = setup()
@@ -91,7 +90,27 @@ class UserDataSQL : UserData {
         }
     }
 
-    override fun getUsers(idUsers: List<Int>, limit: Int?, skip: Int?): List<User> {
-        TODO("Not yet implemented") // should we retrieve all users and make a filter on that?
+    override fun getUsers(idUsers: List<Int>, limit: Int, skip: Int): List<User> {
+        val dataSource = setup()
+        val selectStmt = UserStatements.getUsersByIds(idUsers, limit, skip)
+        val userList = mutableListOf<User>()
+
+        dataSource.connection.use {
+            it.autoCommit = false
+            val res = it.prepareStatement(selectStmt).executeQuery()
+
+            while (res.next()) {
+                val user = User(
+                    res.getInt("idUSer"),
+                    res.getString("email"),
+                    res.getString("name"),
+                    res.getString("token")
+                )
+                userList.add(user)
+            }
+
+            it.autoCommit = true
+        }
+        return userList
     }
 }

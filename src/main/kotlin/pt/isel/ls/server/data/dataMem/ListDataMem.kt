@@ -20,15 +20,11 @@ class ListDataMem : ListData {
 
     override fun getList(idList: Int, idBoard: Int): BoardList {
         return lists.find { it.idList == idList && it.idBoard == idBoard }
-            ?: throw TrelloException.NotFound("BoardList")
+            ?: throw TrelloException.NotFound("List")
     }
 
     override fun getListsOfBoard(idBoard: Int, limit: Int, skip: Int): List<BoardList> {
-        return lists.filter { it.idBoard == idBoard }.subList(skip, skip + limit)
-    }
-
-    override fun checkListInBoard(idList: Int, idBoard: Int): BoardList {
-        return lists.find { it.idBoard == idBoard && it.idList == idList } ?: throw TrelloException.NotFound("List")
+        return lists.filter { it.idBoard == idBoard }.subList(skip, limit)
     }
 
     override fun deleteList(idList: Int, idBoard: Int) {

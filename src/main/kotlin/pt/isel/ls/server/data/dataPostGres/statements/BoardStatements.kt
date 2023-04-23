@@ -14,8 +14,9 @@ object BoardStatements {
         return "SELECT * FROM dbo.board WHERE name = '$name';"
     }
 
-    fun getBoardsFromUser(idUser: Int): String {
-        return "SELECT * FROM dbo.board b, dbo.user_board u WHERE u.idUser = '$idUser' and b.idBoard = u.idBoard;"
+    fun getBoardsFromUser(idBoards: List<Int>, limit: Int, skip: Int): String {
+        val idBoardsString = idBoards.toString().replace("[","(").replace("]",")")
+        return "SELECT * FROM dbo.board where idBoard IN $idBoardsString LIMIT $limit OFFSET $skip;"
     }
 
     fun addUserToBoard(idUser: Int, idBoard: Int): String {
@@ -24,5 +25,9 @@ object BoardStatements {
 
     fun checkUserInBoard(idUser: Int, idBoard: Int): String {
         return "SELECT * FROM dbo.user_board WHERE idUser = $idUser and idBoard = $idBoard;"
+    }
+
+    fun size(): String {
+        return "SELECT COUNT(idBoard) FROM dbo.board;"
     }
 }

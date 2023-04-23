@@ -39,6 +39,6 @@ class ListAPI(private val services: ListServices) {
     fun deleteList(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
         val idList = getPathParam(request, "idList")
-        return createRsp(NO_CONTENT, services.deleteList(token, idBoard, idList))
+        return createRsp(OK, services.deleteList(token, idBoard, idList))
     }
 }

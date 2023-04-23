@@ -5,24 +5,24 @@ import pt.isel.ls.server.data.dataPostGres.statements.CardStatements
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.setup
+import java.sql.Statement
 
 class CardDataSQL : CardData {
 
-    override val size: Int
-        get() = TODO("Not yet implemented")
+    override val size: Int get() = getSizeCount( "idCard","card")
 
     override fun createCard(idList: Int, idBoard: Int, name: String, description: String?, endDate: String?): Int {
         val dataSource = setup()
-        val insertStmtCard = CardStatements.createCardCMD(idList, idBoard, name, description, endDate)
-        var idCard: Int
-        // how to get idCard since name isn't unique?
-        // val selectStmt = CardStatements.getCardByNameCMD(name)
+        val insertStmt = CardStatements.createCardCMD(idList, idBoard, name, description, endDate, getNextIdx(idList))
+        var idCard = -1
 
         dataSource.connection.use {
             it.autoCommit = false
-            it.prepareStatement(insertStmtCard).executeUpdate()
 
-            TODO()
+            val res = it.prepareStatement(insertStmt, Statement.RETURN_GENERATED_KEYS)
+            res.executeUpdate()
+
+            if (res.generatedKeys.next()) idCard = res.generatedKeys.getInt(1)
 
             it.autoCommit = true
         }
@@ -31,7 +31,7 @@ class CardDataSQL : CardData {
 
     override fun getCardsFromList(idList: Int, idBoard: Int, limit: Int, skip: Int): List<Card> {
         val dataSource = setup()
-        val selectStmt = CardStatements.getCardsFromListCMD(idList, idBoard)
+        val selectStmt = CardStatements.getCardsFromListCMD(idList, idBoard, limit, skip)
         val cards = mutableListOf<Card>()
 
         dataSource.connection.use {
@@ -55,7 +55,7 @@ class CardDataSQL : CardData {
                 )
             }
         }
-        return cards
+        return cards.sortedBy { it.idx }
     }
 
     override fun getCard(idCard: Int, idList: Int, idBoard: Int): Card {
@@ -64,7 +64,7 @@ class CardDataSQL : CardData {
         lateinit var name: String
         var description: String?
         lateinit var startDate: String
-        var endDate: String?
+        var endDate: String? = null
         var archived: Boolean
         var idx: Int
 
@@ -88,15 +88,17 @@ class CardDataSQL : CardData {
 
     override fun moveCard(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int, idxDst: Int) {
         val dataSource = setup()
-        val selectStmt = CardStatements.getCardCMD(idCard, idListNow, idBoard)
-        val updateStmtCard = CardStatements.moveCardCMD(idCard, idListNow, idBoard, idListDst)
+        val card = getCard(idCard, idListNow, idBoard)
+        val updateStmtCard = CardStatements.moveCardCMD(idCard, idListNow, idBoard, idListDst, idxDst)
 
         dataSource.connection.use {
             it.autoCommit = false
-            val res = it.prepareStatement(selectStmt).executeQuery()
-            res.next()
 
-            if (res.row == 0) throw TrelloException.NotFound("Card")
+            val decreaseStmt = CardStatements.decreaseIdx(idListNow, card.idx)
+            it.prepareStatement(decreaseStmt).executeUpdate()
+
+            val increaseStmt = CardStatements.increaseIdx(idListDst, idxDst)
+            it.prepareStatement(increaseStmt).executeUpdate()
 
             it.prepareStatement(updateStmtCard).executeUpdate()
 
@@ -105,14 +107,80 @@ class CardDataSQL : CardData {
     }
 
     override fun deleteCard(idCard: Int, idList: Int, idBoard: Int) {
-        TODO("Not yet implemented")
+        val dataSource = setup()
+        val deleteStmt = CardStatements.deleteCard(idCard, idList, idBoard)
+
+        dataSource.connection.use {
+            it.autoCommit = false
+
+            val res = it.prepareStatement(deleteStmt).executeQuery()
+            res.next()
+
+            if(res.row == 0) throw TrelloException.NoContent("card")
+
+            val idx = res.getInt("idx")
+
+            val updateIdxStmt = CardStatements.decreaseIdx(idList, idx)
+
+            it.prepareStatement(updateIdxStmt).executeUpdate()
+
+            it.autoCommit = true
+        }
     }
 
     override fun getNextIdx(idList: Int): Int {
-        TODO("Not yet implemented")
+        val dataSource = setup()
+        val selectStmt = CardStatements.getNextIdx(idList)
+        var nextIdx: Int
+
+        dataSource.connection.use {
+            it.autoCommit = false
+
+            val res = it.prepareStatement(selectStmt).executeQuery()
+            res.next()
+
+            nextIdx = if( res.getInt("max") == 0 ) {
+                1
+            } else {
+                res.getInt("max") + 1
+            }
+
+            it.autoCommit = true
+        }
+        return nextIdx
     }
 
     override fun getCardCount(idBoard: Int, idList: Int): Int {
-        TODO("Not yet implemented")
+        val dataSource = setup()
+        val selectStmt = CardStatements.getCardCount(idBoard, idList)
+        var count: Int
+
+        dataSource.connection.use {
+            it.autoCommit = false
+
+            val res = it.prepareStatement(selectStmt).executeQuery()
+            res.next()
+
+            count = res.getInt("count")
+        }
+        return count
+    }
+
+    private fun size(): Int {
+        val dataSource = setup()
+        val selectStmt = CardStatements.size()
+        var count: Int
+
+        dataSource.connection.use {
+            it.autoCommit = false
+
+            val res = it.prepareStatement(selectStmt).executeQuery()
+            res.next()
+
+            count = res.getInt("count")
+
+            it.autoCommit = true
+        }
+        return count
     }
 }

@@ -30,7 +30,7 @@ class CardDataMem : CardData {
     }
 
     override fun getCardsFromList(idList: Int, idBoard: Int, limit: Int, skip: Int): List<Card> {
-        return cards.filter { it.idList == idList && it.idBoard == idBoard }.subList(skip, limit + skip)
+        return cards.filter { it.idList == idList && it.idBoard == idBoard }.subList(skip, limit).sortedBy { it.idx }
     }
 
     override fun getCard(idCard: Int, idList: Int, idBoard: Int): Card {
@@ -49,16 +49,21 @@ class CardDataMem : CardData {
     }
 
     override fun deleteCard(idCard: Int, idList: Int, idBoard: Int) {
-        val card = getCard(idCard, idList, idBoard)
-        if(!cards.remove(card)) throw TrelloException.NoContent("card")
+        val card : Card
+        try {
+           card = getCard(idCard, idList, idBoard)
+        } catch (ex : TrelloException) {
+            throw TrelloException.NoContent("card")
+        }
+        cards.remove(card)
         cards.forEach {
             if (it.idList == idList && it.idx >= card.idx) it.idx--
         }
     }
 
     override fun getNextIdx(idList: Int): Int {
-        val filtered = cards.filter { it.idList == idList }
-        return if (filtered.isEmpty()) 0 else filtered.maxByOrNull { it.idx }!!.idx + 1
+        val filtered = getCardsFromList(idList).sortedBy { it.idx }
+        return if (filtered.isEmpty()) 0 else filtered.last().idx + 1
     }
 
     override fun getCardCount(idBoard: Int, idList: Int): Int {

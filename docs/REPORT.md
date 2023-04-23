@@ -1,4 +1,4 @@
-# LS Project Phase 1
+# LS Project Phase 2
 ## Introduction
 This document presents the design and implementation aspects of the LS Project's first phase. <br>
 The system is designed to manage information related to Trello Boards and their elements, such as boards, lists and cards.<br>
@@ -114,6 +114,68 @@ This way, we can easily swap out dependencies without having to modify the codeb
 
 <img src="../images/Interfaces_Diagram.jpg" alt="Interfaces Diagram" style="width:750px;height:550px;">
 
+### Pagination
+
+Web API GET operations that return a large sequence can be challenging to handle by clients. To alleviate this problem, paging is often employed.  <br>
+Paging allows the client to request a subsequence of the entire sequence. Paging is achieved by specifying two parameters: limit, which is the length of the subsequence to return, and skip, which is the start position of the subsequence to return.
+
+#### Implementation
+
+To implement paging in a Web API GET operation, the server must be able to determine the number of items in the sequence, and apply the paging parameters to return the requested subsequence. <br>
+We have implemented a checkPaging function to calculate the subsequence to return, given the paging parameters and the total number of items in the sequence.
+
+```kotlin
+fun checkPaging(max: Int, limit: Int?, skip: Int?) : Pair<Int,Int> {
+    val skipped = if(skip == null || skip < 0) 0 else min(skip,max)
+    val limited = if(limit == null || limit < 0) max else min(skip!! + limit, max)
+    return Pair(skipped, limited)
+}
+```
+
+The __checkPaging__ function takes three parameters: 
+- __max__, which is the total number of items in the sequence; 
+- __limit__, which is the requested length of the subsequence;
+- __skip__, which is the requested start position of the subsequence. <br>
+
+Once the subsequence is determined, the server can return the requested items to the client. <br>
+
+Paging is an effective mechanism for handling large sequences in Web API GET operations. By specifying the paging parameters, clients can retrieve a subsequence of the entire sequence, reducing the load on both the server and the client.
+
+### Aditional Operations
+
+The move card operation has been updated to receive two new parameters:
+- __lid__ stands for the identifier of the destination list where the card is going to be moved. <br>
+- __cix__ is the new index for the card in the destination list. <br>
+
+The __deleteCard__ and __deleteList__ operations have also been implemented correctly and are working properly. The __getUsersFromBoard__ operation has been added to retrieve the list of users associated with a particular board.
+
+Overall, these additional operations have been integrated smoothly into our Trello API and enhance the functionality of our application.
+
+## Single Page Application
+
+This implementation is using a Single Page Application (SPA) using JavaScript, HTML, and CSS. The SPA provides a web user interface for the GET operations developed in the first phase. The application is divided into two parts: a router and a set of handlers.
+
+The router defines the routes that the application can handle and the corresponding handlers that should be called when each route is accessed. The handlers implement the logic for each route, fetching data from the API and rendering it on the page.
+
+
+### Router
+The Router is responsible for keeping track of the current URL and navigating between different pages without reloading the entire page. <br>
+It does this by listening for changes in the URL, parsing it, and calling the appropriate handler function to update the content displayed on the page. <br>
+In essence, it helps the application to maintain its state and keeps track of the user's current location within the application.
+
+### Handlers
+The Handlers are functions that define how to render the different pages or views in the application. <br>
+They receive data from the server and use it to update the DOM, displaying the appropriate content on the page. <br>
+Each handler corresponds to a different route, which is a unique URL that maps to a specific view or page in the application.
+
+### App
+The App ties everything together, serving as the main entry point to the SPA. <br>
+It initializes the Router and Handlers, listens for events such as the page load and URL changes, and calls the appropriate handler function to update the content displayed on the page.<br>
+In short, the App is the glue that holds the different components of the SPA together, making it work as a cohesive whole.
+
+// TODO - add diagram about the HTML views and explain 
+
+In summary, the __Router__, __Handlers__, and __App__ work together to create a dynamic and responsive SPA that can navigate between different views and pages without reloading the entire page.
 
 ## Critical Evaluation
 Functionality that is not yet concluded:

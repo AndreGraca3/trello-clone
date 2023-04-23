@@ -6,6 +6,7 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
+import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.BoardList
 import pt.isel.ls.server.utils.BoardListIn
 import pt.isel.ls.server.utils.DeleteListIn
@@ -177,7 +178,7 @@ class ListAPITests {
         val msg = Json.decodeFromString<String>(response.bodyString())
 
         assertEquals(Status.NOT_FOUND, response.status)
-        assertEquals("BoardList not found.", msg)
+        assertEquals("List not found.", msg)
     }
 
     @Test
@@ -282,5 +283,60 @@ class ListAPITests {
         assertEquals("List didn't exist.", msg)
     }
 
+    @Test
+    fun `get Lists from board with valid pagination`() {
+        val skip = 2
+        val limit = 3
 
+        repeat(6) {
+            services.listServices.createList(user.token, boardId,"list$it")
+        }
+
+        val response = app(
+            Request(Method.GET, "$baseUrl/board/$boardId/list?skip=$skip&limit=$limit")
+                .header("Authorization", user.token)
+        )
+
+        val lists = Json.decodeFromString<List<BoardList>>(response.bodyString())
+
+        assertEquals(dataMem.listData.lists.subList(skip, skip + limit),lists)
+    }
+
+    @Test
+    fun `get boards from user with invalid pagination negative numbers`() {
+        val skip = -2
+        val limit = -2
+
+        repeat(6) {
+            services.listServices.createList(user.token, boardId,"list$it")
+        }
+
+        val response = app(
+            Request(Method.GET, "$baseUrl/board/$boardId/list?skip=$skip&limit=$limit")
+                .header("Authorization", user.token)
+        )
+
+        val lists = Json.decodeFromString<List<BoardList>>(response.bodyString())
+
+        assertEquals(dataMem.listData.lists.subList(0, lists.size),lists)
+    }
+
+    @Test
+    fun `get boards from user with invalid pagination bigger than size`() {
+        val skip = 10
+        val limit = 7
+
+        repeat(6) {
+            services.listServices.createList(user.token, boardId,"list$it")
+        }
+
+        val response = app(
+            Request(Method.GET, "$baseUrl/board/$boardId/list?skip=$skip&limit=$limit")
+                .header("Authorization", user.token)
+        )
+
+        val lists = Json.decodeFromString<List<BoardList>>(response.bodyString())
+
+        assertEquals(dataMem.listData.lists.subList(0, lists.size),lists)
+    }
 }

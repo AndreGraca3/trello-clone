@@ -56,6 +56,6 @@ class CardAPI(private val services: CardServices) {
         val idBoard = getPathParam(request, "idBoard")
         val idList = getPathParam(request, "idList")
         val idCard = getPathParam(request, "idCard")
-        return createRsp(Status.NO_CONTENT, services.deleteCard(token, idBoard, idList, idCard))
+        return createRsp(Status.OK, services.deleteCard(token, idBoard, idList, idCard))
     }
 }

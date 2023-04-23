@@ -138,7 +138,7 @@ class BoardAPITests {
             )
         )
 
-        val board = Json.decodeFromString<Board>(response.bodyString())
+        val board = Json.decodeFromString<BoardHTML>(response.bodyString())
 
         assertEquals(boardId, board.idBoard)
         assertTrue(dataMem.userBoardData.usersBoards.any { it.idUser == user.idUser })
@@ -264,5 +264,128 @@ class BoardAPITests {
 
         assertEquals(Status.NOT_FOUND, response.status)
         assertEquals("Board not found.", msg)
+    }
+
+    @Test
+    fun `get boards from user with valid pagination`() {
+        val skip = 2
+        val limit = 3
+
+        repeat(6) {
+            services.boardServices.createBoard(user.token,"board$it","description$it")
+        }
+
+        val response = app(
+            Request(Method.GET, "$baseUrl/board?skip=$skip&limit=$limit")
+                .header("Authorization", user.token)
+        )
+
+        val boards = Json.decodeFromString<List<Board>>(response.bodyString())
+
+        assertEquals(dataMem.boardData.boards.subList(skip, skip + limit),boards)
+    }
+
+    @Test
+    fun `get boards from user with invalid pagination negative numbers`() {
+        val skip = -2
+        val limit = -2
+
+        repeat(6) {
+            services.boardServices.createBoard(user.token,"board$it","description$it")
+        }
+
+        val response = app(
+            Request(Method.GET, "$baseUrl/board?skip=$skip&limit=$limit")
+                .header("Authorization", user.token)
+        )
+
+        val boards = Json.decodeFromString<List<Board>>(response.bodyString())
+
+        assertEquals(dataMem.boardData.boards.subList(0, boards.size),boards)
+    }
+
+    @Test
+    fun `get boards from user with invalid pagination bigger than size`() {
+        val skip = 10
+        val limit = 7
+
+        repeat(6) {
+            services.boardServices.createBoard(user.token,"board$it","description$it")
+        }
+
+        val response = app(
+            Request(Method.GET, "$baseUrl/board?skip=$skip&limit=$limit")
+                .header("Authorization", user.token)
+        )
+
+        val boards = Json.decodeFromString<List<Board>>(response.bodyString())
+
+        assertEquals(dataMem.boardData.boards.subList(0, boards.size),boards)
+    }
+
+    @Test
+    fun `get users from boards with valid pagination`() {
+        val skip = 2
+        val limit = 3
+
+        val idBoard = services.boardServices.createBoard(user.token,"board1","description1")
+
+        repeat(6) {
+            val newUser = services.userServices.createUser("user$it","$it@gmail.com")
+            services.boardServices.addUserToBoard(user.token,newUser.first,idBoard)
+        }
+
+        val response = app(
+            Request(Method.GET, "$baseUrl/board/$idBoard/allUsers?skip=$skip&limit=$limit")
+                .header("Authorization", user.token)
+        )
+
+        val users = Json.decodeFromString<List<User>>(response.bodyString())
+
+        assertEquals(dataMem.userData.users.subList(skip, skip + limit),users)
+    }
+
+    @Test
+    fun `get users from board with invalid pagination negative numbers`() {
+        val skip = -2
+        val limit = -2
+
+        val idBoard = services.boardServices.createBoard(user.token,"board1","description1")
+
+        repeat(6) {
+            val newUser = services.userServices.createUser("user$it","$it@gmail.com")
+            services.boardServices.addUserToBoard(user.token,newUser.first,idBoard)
+        }
+
+        val response = app(
+            Request(Method.GET, "$baseUrl/board/$idBoard/allUsers?skip=$skip&limit=$limit")
+                .header("Authorization", user.token)
+        )
+
+        val users = Json.decodeFromString<List<User>>(response.bodyString())
+
+        assertEquals(dataMem.userData.users.subList(0,users.size),users)
+    }
+
+    @Test
+    fun `get users from board with invalid pagination bigger than size`() {
+        val skip = 10
+        val limit = 7
+
+        val idBoard = services.boardServices.createBoard(user.token,"board1","description1")
+
+        repeat(6) {
+            val newUser = services.userServices.createUser("user$it","$it@gmail.com")
+            services.boardServices.addUserToBoard(user.token,newUser.first,idBoard)
+        }
+
+        val response = app(
+            Request(Method.GET, "$baseUrl/board/$idBoard/allUsers?skip=$skip&limit=$limit")
+                .header("Authorization", user.token)
+        )
+
+        val users = Json.decodeFromString<List<User>>(response.bodyString())
+
+        assertEquals(dataMem.userData.users.subList(0, users.size),users)
     }
 }

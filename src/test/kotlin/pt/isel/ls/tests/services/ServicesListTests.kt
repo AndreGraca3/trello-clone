@@ -61,7 +61,7 @@ class ServicesListTests {
             services.listServices.getList(user.token, boardId, invalidId)
         }
         assertEquals(404, err.status.code)
-        assertEquals("BoardList not found.", err.message)
+        assertEquals("List not found.", err.message)
     }
 
     @Test
