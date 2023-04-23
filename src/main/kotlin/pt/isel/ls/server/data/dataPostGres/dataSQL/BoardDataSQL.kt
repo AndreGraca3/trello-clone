@@ -9,7 +9,7 @@ import java.sql.Statement
 
 class BoardDataSQL : BoardData {
 
-    override val size: Int get() = getSize("idBoard","board")
+    override val size: Int get() = getSizeCount("idBoard","board")
 
     override fun createBoard(idUser: Int, name: String, description: String): Int {
         /** Not sure if I like this! **/
@@ -88,26 +88,9 @@ class BoardDataSQL : BoardData {
         }
         return boards
     }
-
-    /*private fun getSize(): Int {
-        val dataSource = setup()
-        val selectStmt = BoardStatements.size()
-        var res: Int
-
-        dataSource.connection.use {
-            it.autoCommit = false
-
-            val stmt = it.prepareStatement(selectStmt).executeQuery()
-            stmt.next()
-
-            res = stmt.getInt("count")
-            it.autoCommit = true
-        }
-        return res
-    }*/
 }
 
-/** Reunir quando der sobre isto !**/
+/** Reunir quando der sobre isto ! **/
 /*     override fun getBoardsFromUser(idUser: Int): List<Board> {
         val dataSource = setup()
         val selectStmt = BoardStatements.getBoardsFromUser(idUser)

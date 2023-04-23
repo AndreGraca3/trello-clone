@@ -68,8 +68,13 @@ class CardDataMem : CardData {
     }
 
     override fun deleteCard(idCard: Int, idList: Int, idBoard: Int) {
-        val card = getCard(idCard, idList, idBoard)
-        if(!cards.remove(card)) throw TrelloException.NoContent("card")
+        val card : Card
+        try {
+           card = getCard(idCard, idList, idBoard)
+        } catch (ex : TrelloException) {
+            throw TrelloException.NoContent("card")
+        }
+        cards.remove(card)
         cards.forEach {
             if (it.idList == idList && it.idx >= card.idx) it.idx--
         }

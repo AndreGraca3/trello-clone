@@ -10,7 +10,7 @@ import java.util.*
 
 class UserDataSQL : UserData {
 
-    override val size get() = getSize("idUser","user")
+    override val size get() = getSizeCount("idUser","user")
 
     override fun createUser(name: String, email: String): Pair<Int, String> {
         val dataSource = setup()
@@ -113,21 +113,4 @@ class UserDataSQL : UserData {
         }
         return userList
     }
-
-    /*private fun getSize(): Int {
-        val dataSource = setup()
-        val selectStmt = UserStatements.size()
-        var res: Int
-
-        dataSource.connection.use {
-            it.autoCommit = false
-
-            val stmt = it.prepareStatement(selectStmt).executeQuery()
-            stmt.next()
-
-            res = stmt.getInt("count")
-            it.autoCommit = true
-        }
-        return res
-    }*/
 }

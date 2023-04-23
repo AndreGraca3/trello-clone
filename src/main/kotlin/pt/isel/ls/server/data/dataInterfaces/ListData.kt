@@ -11,8 +11,6 @@ interface ListData {
 
     fun getListsOfBoard(idBoard: Int, limit: Int, skip: Int): List<BoardList>
 
-    fun checkListInBoard(idList: Int, idBoard: Int): BoardList
-
     fun deleteList(idList: Int, idBoard: Int)
 
     fun getListCount(idBoard: Int) : Int

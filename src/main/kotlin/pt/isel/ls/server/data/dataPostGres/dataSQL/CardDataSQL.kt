@@ -9,7 +9,7 @@ import java.sql.Statement
 
 class CardDataSQL : CardData {
 
-    override val size: Int get() = getSize("idCard","card")
+    override val size: Int get() = getSizeCount( "idCard","card")
 
     override fun createCard(idList: Int, idBoard: Int, name: String, description: String, endDate: String?): Int {
         val dataSource = setup()
@@ -166,7 +166,7 @@ class CardDataSQL : CardData {
         return count
     }
 
-    /*private fun getSize(): Int {
+    private fun size(): Int {
         val dataSource = setup()
         val selectStmt = CardStatements.size()
         var count: Int
@@ -182,5 +182,5 @@ class CardDataSQL : CardData {
             it.autoCommit = true
         }
         return count
-    }*/
+    }
 }

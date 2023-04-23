@@ -38,10 +38,6 @@ class ListDataMem : ListData {
         return lists.filter { it.idBoard == idBoard }.subList(skip, limit)
     }
 
-    override fun checkListInBoard(idList: Int, idBoard: Int): BoardList {
-        return lists.find { it.idBoard == idBoard && it.idList == idList } ?: throw TrelloException.NotFound("List")
-    }
-
     override fun deleteList(idList: Int, idBoard: Int) {
         if(!lists.removeIf { it.idList == idList && it.idBoard == idBoard }) throw TrelloException.NoContent("List")
     }

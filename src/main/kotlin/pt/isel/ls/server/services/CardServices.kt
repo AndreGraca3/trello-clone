@@ -26,7 +26,7 @@ class CardServices(
         isValidString(description, "description")
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
-        listData.checkListInBoard(idList, idBoard)
+        listData.getList(idList, idBoard)
         if (endDate != null) checkEndDate(endDate)
         return cardData.createCard(idList, idBoard, name, description, endDate)
     }
@@ -34,14 +34,14 @@ class CardServices(
     fun getCard(token: String, idBoard: Int, idList: Int, idCard: Int): Card {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
-        listData.checkListInBoard(idList, idBoard)
+        listData.getList(idList, idBoard)
         return cardData.getCard(idCard, idList, idBoard)
     }
 
     fun getCardsFromList(token: String, idBoard: Int, idList: Int, limit: Int?, skip: Int?): List<Card> {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
-        listData.checkListInBoard(idList, idBoard)
+        listData.getList(idList, idBoard)
         val count = cardData.getCardCount(idBoard,idList)
         val pairPaging = checkPaging(count, limit, skip)
         return cardData.getCardsFromList(idList, idBoard, pairPaging.second, pairPaging.first)
@@ -50,8 +50,8 @@ class CardServices(
     fun moveCard(token: String, idBoard: Int, idListNow: Int, idListDst: Int, idCard: Int, idxDst: Int) {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
-        listData.checkListInBoard(idListNow, idBoard)
-        listData.checkListInBoard(idListDst, idBoard)
+        listData.getList(idListNow, idBoard)
+        listData.getList(idListDst, idBoard)
         if (idxDst !in 0..cardData.getNextIdx(idListDst)) throw TrelloException.IllegalArgument("idx")
         cardData.moveCard(idCard, idListNow, idBoard, idListDst, idxDst)
     }
@@ -59,7 +59,7 @@ class CardServices(
     fun deleteCard(token: String, idBoard: Int, idList: Int, idCard: Int) {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
-        listData.checkListInBoard(idList, idBoard)
+        listData.getList(idList, idBoard)
         return cardData.deleteCard(idCard, idList, idBoard)
     }
 }

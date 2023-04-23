@@ -12,7 +12,7 @@ class DataSQL : Data {
     override val cardData = CardDataSQL()
 }
 
-fun getSize(id: String, table: String): Int {
+fun getSizeCount(id: String, table: String): Int {
     val dataSource = setup()
     val selectStmt = size(id,table)
     var res: Int

@@ -9,7 +9,7 @@ import pt.isel.ls.server.utils.setup
 import java.sql.Statement
 
 class ListDataSQL : ListData {
-    override val size: Int get() = getSize("idList","list")
+    override val size: Int get() = getSizeCount("idList","list")
 
     override fun createList(idBoard: Int, name: String): Int {
         val dataSource = setup()
@@ -79,30 +79,6 @@ class ListDataSQL : ListData {
         return lists
     }
 
-    override fun checkListInBoard(idList: Int, idBoard: Int): BoardList {
-        val dataSource = setup()
-        val selectStmt = ListStatement.checkListInBoard(idList, idBoard)
-        var list: BoardList
-
-        dataSource.connection.use {
-            it.autoCommit = false
-
-            val res = it.prepareStatement(selectStmt).executeQuery()
-            res.next()
-
-            if(res.row == 0) throw TrelloException.NotFound("List")
-
-            list = BoardList(
-                res.getInt("idList"),
-                res.getInt("idBoard"),
-                res.getString("name")
-            )
-
-            it.autoCommit = true
-        }
-        return list
-    }
-
     override fun deleteList(idList: Int, idBoard: Int) {
         val dataSource = setup()
         val deleteStmt = ListStatement.deleteList(idList, idBoard)
@@ -137,22 +113,4 @@ class ListDataSQL : ListData {
         return count
 
     }
-
-    /*private fun getSize(): Int {
-        val dataSource = setup()
-        val selectStmt = ListStatement.size()
-        var count: Int
-
-        dataSource.connection.use {
-            it.autoCommit = false
-
-            val res = it.prepareStatement(selectStmt).executeQuery()
-            res.next()
-
-            count = res.getInt("count")
-
-            it.autoCommit = true
-        }
-        return count
-    }*/
 }
