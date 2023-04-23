@@ -55,7 +55,7 @@ class CardDataSQL : CardData {
                 )
             }
         }
-        return cards
+        return cards.sortedBy { it.idx }
     }
 
     override fun getCard(idCard: Int, idList: Int, idBoard: Int): Card {

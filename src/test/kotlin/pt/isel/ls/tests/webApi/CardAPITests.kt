@@ -224,11 +224,9 @@ class CardAPITests {
         assertEquals(2,listSrc.size)
         assertEquals(4,listDst.size)
 
-        listSrc.sortedBy { it.idx }.forEach { assertEquals( it.idx, listSrc.indexOf(it) ) }
+        listSrc.forEach { assertEquals( it.idx, listSrc.indexOf(it) ) }
 
-        val sorted = listDst.sortedBy { it.idx }
-
-        sorted.forEach { assertEquals( it.idx, sorted.indexOf(it) ) }
+        listDst.forEach { assertEquals( it.idx, listDst.indexOf(it) ) }
     }
 
     @Test
@@ -259,9 +257,7 @@ class CardAPITests {
 
         assertEquals(6,listSrc.size)
 
-        val sorted = listSrc.sortedBy { it.idx }
-
-        sorted.forEach { assertEquals( it.idx, sorted.indexOf(it) ) }
+        listSrc.forEach { assertEquals( it.idx, listSrc.indexOf(it) ) }
     }
 
     @Test

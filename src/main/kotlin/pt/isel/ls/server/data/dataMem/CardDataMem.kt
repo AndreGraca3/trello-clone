@@ -49,7 +49,7 @@ class CardDataMem : CardData {
     }
 
     override fun getCardsFromList(idList: Int, idBoard: Int, limit: Int, skip: Int): List<Card> {
-        return cards.filter { it.idList == idList && it.idBoard == idBoard }.subList(skip, limit)
+        return cards.filter { it.idList == idList && it.idBoard == idBoard }.subList(skip, limit).sortedBy { it.idx }
     }
 
     override fun getCard(idCard: Int, idList: Int, idBoard: Int): Card {
@@ -76,7 +76,7 @@ class CardDataMem : CardData {
     }
 
     override fun getNextIdx(idList: Int): Int {
-        val filtered = cards.filter { it.idList == idList }
+        val filtered = cards.filter { it.idList == idList }.sortedBy { it.idx }
         return if (filtered.isEmpty()) 0 else filtered.last().idx + 1
     }
 
