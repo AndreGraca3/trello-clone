@@ -72,9 +72,7 @@ export function createHTMLList(list) {
     listCards.id = `list${list.idList}`
 
     if (list.cards) {
-        list.cards.sort((card1, card2) => {
-            return card1.idx - card2.idx
-        }).forEach((card) => {
+        list.cards.forEach((card) => {
             const cardElement = createHTMLCard(card, () => cardFunc(card));
             listCards.appendChild(cardElement);
         })

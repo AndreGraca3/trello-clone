@@ -79,9 +79,9 @@ function handlePath(path) {
             res.args[biggestPath[i].replace(":","")] = splitPath[i]
         }
 
-        if(i + 1 == splitPath.length) {
+        /*if(i + 1 == splitPath.length) {
             res.path += splitPath[i]
-        }
+        }*/
 
         if(i + 1 < splitPath.length) { // puts "/" in path, excluding last place.
             res.path += "/"
