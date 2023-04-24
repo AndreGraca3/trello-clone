@@ -102,7 +102,7 @@ export function hideCreateBoardButton() {
 export async function changeUserAvatar() {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = 'image/png';
+    input.accept = 'image/*';
 
     input.addEventListener('change', () => {
         const file = input.files[0]
@@ -117,5 +117,5 @@ export async function changeUserAvatar() {
         reader.readAsDataURL(file)
     })
 
-    input.click();
+    input.click()
 }

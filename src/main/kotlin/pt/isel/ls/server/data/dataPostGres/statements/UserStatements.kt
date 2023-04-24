@@ -26,4 +26,8 @@ object UserStatements {
         val idUsersString = idUsers.toString().replace("[","(").replace("]",")")
         return "SELECT * from dbo.user where idUser IN $idUsersString LIMIT $limit OFFSET $skip;"
     }
+
+    fun changeAvatarCMD(idUser: Int, avatar: String): String {
+        return "UPDATE dbo.user SET avatar = '$avatar' WHERE idUser = $idUser"
+    }
 }

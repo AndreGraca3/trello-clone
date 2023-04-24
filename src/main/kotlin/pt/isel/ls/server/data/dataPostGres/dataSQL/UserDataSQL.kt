@@ -36,6 +36,7 @@ class UserDataSQL : UserData {
         var idUser: Int
         lateinit var email: String
         lateinit var name: String
+        var avatar: String?
 
         dataSource.connection.use {
             it.autoCommit = false
@@ -47,10 +48,11 @@ class UserDataSQL : UserData {
             idUser = res.getInt("idUser")
             email = res.getString("email")
             name = res.getString("name")
+            avatar = res.getString("avatar")
 
             it.autoCommit = true
         }
-        return User(idUser, email, name, token)
+        return User(idUser, email, name, token, avatar)
     }
 
     override fun getUser(idUser: Int): User {
@@ -116,11 +118,11 @@ class UserDataSQL : UserData {
 
     override fun changeAvatar(idUser: Int, avatar: String) {
         val dataSource = setup()
-        //val updateStmt = UserStatements.changeAvatarCMD(idUser, avatar)
+        val updateStmt = UserStatements.changeAvatarCMD(idUser, avatar)
 
         dataSource.connection.use {
             it.autoCommit = false
-            //it.prepareStatement(updateStmt).executeUpdate()
+            it.prepareStatement(updateStmt).executeUpdate()
             it.autoCommit = true
         }
     }

@@ -66,9 +66,10 @@ class BoardDataSQL : BoardData {
     }
 
     override fun getBoardsFromUser(idBoards: List<Int>, limit: Int, skip: Int): List<Board> {
+        val boards = mutableListOf<Board>()
+        if (idBoards.isEmpty()) return boards
         val dataSource = setup()
         val selectStmt = BoardStatements.getBoardsFromUser(idBoards, limit, skip)
-        val boards = mutableListOf<Board>()
 
         dataSource.connection.use {
             it.autoCommit = false
