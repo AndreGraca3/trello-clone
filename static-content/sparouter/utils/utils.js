@@ -175,30 +175,6 @@ export async function getUserAvatar(token) {
     })).json()
     return `${user.avatar ?? 'https://i.imgur.com/JGtwTBw.png'}`
 }
-export function changeUserAvatar(token) {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.click();
-    input.addEventListener("change", async function() {
-        const file = input.files[0];
-        const formData = new FormData();
-        formData.append("avatar", file);
-        const response = await fetch(BASE_URL + "user/avatar", {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            body: formData,
-        });
-        if (response.ok) {
-            const data = await response.json();
-            img.src = data.url;
-            //tempImg.src = data.url;
-        }
-        console.log(response);
-    });
-}
 
 export function getBoardColor(idBoard) {
     const color = localStorage.getItem("color" + idBoard)

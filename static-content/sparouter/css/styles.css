@@ -257,12 +257,39 @@
 }
 
 .dropdown-item-avatar {
+    object-fit: cover;
     width : 30px;
+    height : 30px;
     margin-right: 10px;
-    border-radius: 15px;
+    margin-left: 5px;
+    border-radius: 50%;
 }
 
 .dropdown-menu-user {
     display: inline-block;
     margin-left: 20px;
+}
+
+.avatar {
+    margin-top: 2rem;
+    object-fit: cover;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+}
+
+.avatar:hover {
+    filter: brightness(70%);
+    opacity: 1;
+}
+
+.avatar-icon {
+    padding: unset !important;
+    object-fit: cover;
+    width: 50px;
+    height: 50px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    border-radius: 50%;
 }

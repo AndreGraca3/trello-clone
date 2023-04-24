@@ -3,9 +3,9 @@ import {
     createHTMLBoardBox,
     createHTMLList,
     createRows, darkerColor, fetchReq,
-    getBoardColor, getUserAvatar, visitBoard, changeUserAvatar, usersDropdown
+    getBoardColor, getUserAvatar, visitBoard, usersDropdown
 } from "./utils/utils.js"
-import {boardFunc, createList} from "./utils/buttonFuncs.js";
+import {boardFunc, createList, changeUserAvatar} from "./utils/buttonFuncs.js";
 import {BASE_URL, user, MAX_RECENT_BOARDS, MAX_BOARDS_DISPLAY, RECENT_BOARDS} from "./utils/storage.js";
 
 function getHome(mainContent) {
@@ -40,38 +40,13 @@ async function getUser(mainContent, args, token) {
     div.classList.add("text-center");
 
     const img = document.createElement("img");
+    img.classList.add("avatar")
 
-    img.src = await getUserAvatar(token);
-    img.style.paddingTop = "2rem";
-    img.style.width = "10%";
-    img.style.borderRadius = "50%";
+    img.src = await getUserAvatar(token)
 
-    const tempImg = document.createElement("img");
-    tempImg.src = "https://i.imgur.com/ULhtJ4d.jpeg"; // replace with the URL of your temporary image
-
-    tempImg.style.position = "absolute";
-    tempImg.style.top = 0;
-    tempImg.style.left = 0;
-    tempImg.style.width = "100%";
-    tempImg.style.height = "100%";
-    tempImg.style.opacity = 0; // make it invisible initially
-    img.appendChild(tempImg);
-
-    img.addEventListener("mouseenter", function() {
-        tempImg.style.opacity = 1;
-        img.style.filter = "brightness(70%)";
+    img.addEventListener("click", async () => {
+          await changeUserAvatar(token);
     });
-
-    img.addEventListener("mouseleave", function() {
-        tempImg.style.opacity = 0;
-        img.style.filter = "none";
-    });
-
-    img.addEventListener("click", function() {
-          changeUserAvatar(token);
-    });
-
-
 
     const pName = document.createElement("p");
     pName.innerText = `${user.name}`;

@@ -6,6 +6,9 @@ import kotlinx.serialization.Serializable
 data class IDUser(val idUser: Int)
 
 @Serializable
+data class Avatar(val imgUrl: String)
+
+@Serializable
 data class NewList(val idList: Int, val cix: Int)
 
 @Serializable
