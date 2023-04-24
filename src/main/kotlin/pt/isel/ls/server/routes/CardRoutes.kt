@@ -40,7 +40,7 @@ class CardRoutes(private val webApi: CardAPI) {
                     request,
                     webApi::deleteCard
                 )
-            },
+            }
         )
     }
 }

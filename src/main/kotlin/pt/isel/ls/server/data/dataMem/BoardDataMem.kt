@@ -3,9 +3,6 @@ package pt.isel.ls.server.data.dataMem
 import pt.isel.ls.server.data.dataInterfaces.BoardData
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Board
-import pt.isel.ls.server.utils.User
-import pt.isel.ls.server.utils.checkPaging
-import kotlin.math.min
 
 class BoardDataMem : BoardData {
 

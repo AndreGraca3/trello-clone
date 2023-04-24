@@ -6,7 +6,7 @@ object ListStatement {
         return "SELECT COUNT(idList) FROM dbo.list;"
     }
 
-    fun createListCMD(idBoard:Int, name: String): String {
+    fun createListCMD(idBoard: Int, name: String): String {
         return "INSERT INTO dbo.list (idBoard, name) VALUES ($idBoard, '$name') RETURNING idList;"
     }
 

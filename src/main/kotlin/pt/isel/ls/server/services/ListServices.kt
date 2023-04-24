@@ -13,7 +13,6 @@ class ListServices(
     private val listData: ListData
 ) {
 
-
     /** ------------------------------ *
      *         List Management         *
      *  ----------------------------- **/
@@ -42,7 +41,7 @@ class ListServices(
 
     fun deleteList(token: String, idBoard: Int, idList: Int) {
         val idUser = userData.getUser(token).idUser
-        userBoardData.checkUserInBoard(idUser,idBoard)
-        listData.deleteList(idList,idBoard)
+        userBoardData.checkUserInBoard(idUser, idBoard)
+        listData.deleteList(idList, idBoard)
     }
 }

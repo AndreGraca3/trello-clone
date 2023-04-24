@@ -15,7 +15,7 @@ object BoardStatements {
     }
 
     fun getBoardsFromUser(idBoards: List<Int>, limit: Int, skip: Int): String {
-        val idBoardsString = idBoards.toString().replace("[","(").replace("]",")")
+        val idBoardsString = idBoards.toString().replace("[", "(").replace("]", ")")
         return "SELECT * FROM dbo.board where idBoard IN $idBoardsString LIMIT $limit OFFSET $skip;"
     }
 

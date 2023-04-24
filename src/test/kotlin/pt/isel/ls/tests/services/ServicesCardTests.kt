@@ -153,7 +153,7 @@ class ServicesCardTests {
         assertEquals(listId, newCard.idList)
 
         val listId2 = services.listServices.createList(user.token, boardId, dummyBoardListName)
-        services.cardServices.moveCard(user.token, boardId, listId, listId2, newCardId, 0)
+        services.cardServices.moveCard(user.token, boardId, listId, listId2, newCardId, 1)
         val movedCard = services.cardServices.getCard(user.token, boardId, listId2, newCardId)
         assertEquals(newCardId, movedCard.idCard)
         assertEquals(listId2, movedCard.idList)
@@ -194,7 +194,7 @@ class ServicesCardTests {
     fun `Move card from list to another list with invalid card`() {
         val listId2 = services.listServices.createList(user.token, boardId, dummyBoardListName)
         val err = assertFailsWith<TrelloException.NotFound> {
-            services.cardServices.moveCard(user.token, boardId, listId, listId2, invalidId, 0)
+            services.cardServices.moveCard(user.token, boardId, listId, listId2, invalidId, 1)
         }
         assertEquals(404, err.status.code)
         assertEquals("Card not found.", err.message)

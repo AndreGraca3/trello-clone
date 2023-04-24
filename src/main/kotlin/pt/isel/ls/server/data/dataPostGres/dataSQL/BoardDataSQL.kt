@@ -9,7 +9,7 @@ import java.sql.Statement
 
 class BoardDataSQL : BoardData {
 
-    override val size: Int get() = getSizeCount("idBoard","board")
+    override val size: Int get() = getSizeCount("idBoard", "board")
 
     override fun createBoard(idUser: Int, name: String, description: String): Int {
         /** Not sure if I like this! **/
@@ -19,7 +19,7 @@ class BoardDataSQL : BoardData {
 
         dataSource.connection.use {
             it.autoCommit = false
-            val res = it.prepareStatement(insertStmt,Statement.RETURN_GENERATED_KEYS)
+            val res = it.prepareStatement(insertStmt, Statement.RETURN_GENERATED_KEYS)
             res.executeUpdate()
 
             if (res.generatedKeys.next()) idBoard = res.generatedKeys.getInt(1)

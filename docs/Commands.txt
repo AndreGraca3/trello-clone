@@ -1,0 +1,11 @@
+gradlew clean
+gradlew build
+gradlew clean
+gradlew build
+gradlew copyruntimedependencies
+
+java -cp ./build/libs/* pt.isel.ls.server.TasksServer.kt
+
+java -jar ./build/libs/* .jar
+
+

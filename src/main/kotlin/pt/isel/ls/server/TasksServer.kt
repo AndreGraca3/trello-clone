@@ -6,7 +6,6 @@ import org.http4k.routing.singlePageApp
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import pt.isel.ls.server.api.WebAPI
-import pt.isel.ls.server.data.dataMem.DataMem
 import pt.isel.ls.server.data.dataPostGres.dataSQL.DataSQL
 import pt.isel.ls.server.routes.BoardRoutes
 import pt.isel.ls.server.routes.CardRoutes
@@ -16,7 +15,7 @@ import pt.isel.ls.server.services.Services
 import pt.isel.ls.server.utils.logger
 
 fun main() {
-    //val data = DataMem()
+    // val data = DataMem()
     val data = DataSQL()
     val services = Services(data)
     val webAPI = WebAPI(services)
@@ -28,7 +27,6 @@ fun main() {
         CardRoutes(webAPI.cardAPI)(),
         singlePageApp(ResourceLoader.Directory("static-content"))
     )
-
 
     val jettyServer = app.asServer(Jetty(8080)).start()
     logger.info("Server started listening...")

@@ -10,7 +10,7 @@ import java.util.*
 
 class UserDataSQL : UserData {
 
-    override val size get() = getSizeCount("idUser","user")
+    override val size get() = getSizeCount("idUser", "user")
 
     override fun createUser(name: String, email: String): Pair<Int, String> {
         val dataSource = setup()

@@ -113,7 +113,7 @@ class ServicesListTests {
         assertEquals("List didn't exist.", err.message)
     }
 
-    //IDEA: Update List
+    // IDEA: Update List
 //    @Test
 //    fun `Update List from Board`() {
 //        val listId = createList(boardId)
@@ -133,5 +133,4 @@ class ServicesListTests {
 //        assertEquals(401, err.status.code)
 //        assertEquals("Unauthorized Operation.", err.message)
 //    }
-
 }

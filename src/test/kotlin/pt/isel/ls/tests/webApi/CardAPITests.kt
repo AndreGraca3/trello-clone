@@ -6,7 +6,6 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
-import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.CardIn
 import pt.isel.ls.server.utils.CardOut
@@ -158,7 +157,7 @@ class CardAPITests {
         val idCard = createCard(listId, boardId, dummyCardName, dummyCardDescription)
         val idListDst = createList(boardId, dummyBoardListName + "2")
 
-        val requestBody = Json.encodeToString(NewList(idListDst, 0))
+        val requestBody = Json.encodeToString(NewList(idListDst, 1))
 
         val response = app(
             Request(
@@ -197,12 +196,12 @@ class CardAPITests {
         val idListDst = createList(boardId, dummyBoardListName + "2")
 
         for (i in 1..6) {
-            if( i <= 3 ) createCard(listId, boardId, "card$i", "this is a card$i.",null)
-            if( i > 3 ) createCard(idListDst, boardId, "card$i", "this is a card$i.",null)
+            if (i <= 3) createCard(listId, boardId, "card$i", "this is a card$i.", null)
+            if (i > 3) createCard(idListDst, boardId, "card$i", "this is a card$i.", null)
         }
 
-        assertEquals(3,dataMem.cardData.getCardsFromList(listId, boardId,3,0).size)
-        assertEquals(3,dataMem.cardData.getCardsFromList(idListDst, boardId,3,0).size)
+        assertEquals(3, dataMem.cardData.getCardsFromList(listId, boardId, 3, 0).size)
+        assertEquals(3, dataMem.cardData.getCardsFromList(idListDst, boardId, 3, 0).size)
 
         val requestBody = Json.encodeToString(NewList(idListDst, 2))
 
@@ -218,15 +217,15 @@ class CardAPITests {
 
         assertEquals(Status.OK, response.status)
 
-        val listSrc = dataMem.cardData.getCardsFromList(listId, boardId,2,0)
-        val listDst = dataMem.cardData.getCardsFromList(idListDst, boardId,4,0)
+        val listSrc = dataMem.cardData.getCardsFromList(listId, boardId, 2, 0)
+        val listDst = dataMem.cardData.getCardsFromList(idListDst, boardId, 4, 0)
 
-        assertEquals(2,listSrc.size)
-        assertEquals(4,listDst.size)
+        assertEquals(2, listSrc.size)
+        assertEquals(4, listDst.size)
 
-        listSrc.forEach { assertEquals( it.idx, listSrc.indexOf(it) ) }
+        listSrc.forEach { assertEquals(it.idx, listSrc.indexOf(it) + 1) }
 
-        listDst.forEach { assertEquals( it.idx, listDst.indexOf(it) ) }
+        listDst.forEach { assertEquals(it.idx, listDst.indexOf(it) + 1) }
     }
 
     @Test
@@ -234,10 +233,10 @@ class CardAPITests {
         val idCard = 1
 
         for (i in 1..6) {
-            createCard(listId, boardId, "card$i", "this is a card$i.",null)
+            createCard(listId, boardId, "card$i", "this is a card$i.", null)
         }
 
-        assertEquals(6,dataMem.cardData.getCardsFromList(listId, boardId,6,0).size)
+        assertEquals(6, dataMem.cardData.getCardsFromList(listId, boardId, 6, 0).size)
 
         val requestBody = Json.encodeToString(NewList(listId, 4))
 
@@ -253,11 +252,11 @@ class CardAPITests {
 
         assertEquals(Status.OK, response.status)
 
-        val listSrc = dataMem.cardData.getCardsFromList(listId, boardId,6,0)
+        val listSrc = dataMem.cardData.getCardsFromList(listId, boardId, 6, 0)
 
-        assertEquals(6,listSrc.size)
+        assertEquals(6, listSrc.size)
 
-        listSrc.forEach { assertEquals( it.idx, listSrc.indexOf(it) ) }
+        listSrc.forEach { assertEquals(it.idx, listSrc.indexOf(it) + 1) }
     }
 
     @Test
@@ -266,7 +265,7 @@ class CardAPITests {
         val limit = 3
 
         repeat(6) {
-            services.cardServices.createCard(user.token, boardId,listId,"card$it","card$it",null)
+            services.cardServices.createCard(user.token, boardId, listId, "card$it", "card$it", null)
         }
 
         val response = app(
@@ -276,7 +275,7 @@ class CardAPITests {
 
         val cards = Json.decodeFromString<List<Card>>(response.bodyString())
 
-        assertEquals(dataMem.cardData.cards.subList(skip, skip + limit),cards)
+        assertEquals(dataMem.cardData.cards.subList(skip, skip + limit), cards)
     }
 
     @Test
@@ -285,7 +284,7 @@ class CardAPITests {
         val limit = -2
 
         repeat(6) {
-            services.cardServices.createCard(user.token, boardId,listId,"card$it","card$it",null)
+            services.cardServices.createCard(user.token, boardId, listId, "card$it", "card$it", null)
         }
 
         val response = app(
@@ -295,7 +294,7 @@ class CardAPITests {
 
         val cards = Json.decodeFromString<List<Card>>(response.bodyString())
 
-        assertEquals(dataMem.cardData.cards.subList(0,cards.size),cards)
+        assertEquals(dataMem.cardData.cards.subList(0, cards.size), cards)
     }
 
     @Test
@@ -304,7 +303,7 @@ class CardAPITests {
         val limit = 7
 
         repeat(6) {
-            services.cardServices.createCard(user.token, boardId,listId,"card$it","card$it",null)
+            services.cardServices.createCard(user.token, boardId, listId, "card$it", "card$it", null)
         }
 
         val response = app(
@@ -314,7 +313,7 @@ class CardAPITests {
 
         val cards = Json.decodeFromString<List<Card>>(response.bodyString())
 
-        assertEquals(dataMem.cardData.cards.subList(0, cards.size),cards)
+        assertEquals(dataMem.cardData.cards.subList(0, cards.size), cards)
     }
 
     @Test
@@ -328,7 +327,7 @@ class CardAPITests {
                 .header("Authorization", user.token)
         )
 
-        assertEquals(Status.OK,response.status)
+        assertEquals(Status.OK, response.status)
         assertEquals(0, dataMem.cardData.cards.size)
     }
 
@@ -343,7 +342,7 @@ class CardAPITests {
                 .header("Authorization", invalidToken)
         )
 
-        assertEquals(Status.UNAUTHORIZED,response.status)
+        assertEquals(Status.UNAUTHORIZED, response.status)
         assertEquals(1, dataMem.cardData.cards.size)
     }
 

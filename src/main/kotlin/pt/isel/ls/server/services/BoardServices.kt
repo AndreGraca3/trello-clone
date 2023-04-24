@@ -43,22 +43,23 @@ class BoardServices(
         val lists = listData.getListsOfBoard(idBoard, countList, 0)
         val cards = lists.map {
             val countCard = cardData.getCardCount(idBoard, it.idList)
-            cardData.getCardsFromList(it.idList,it.idBoard,countCard, 0)}
-        val listsHTML = mutableListOf<ListHTML>()
-        for(i in lists.indices) {
-            val currCards = cards[i].map { CardHTML(it.idCard, it.idList, it.idBoard, it.name, it.idx)}
-            val currList = lists[i]
-            listsHTML.add(ListHTML(currList.idList,currList.idBoard,currList.name,currCards))
+            cardData.getCardsFromList(it.idList, it.idBoard, countCard, 0)
         }
-        return BoardHTML(board.idBoard,board.name,board.description,listsHTML)
+        val listsHTML = mutableListOf<ListHTML>()
+        for (i in lists.indices) {
+            val currCards = cards[i].map { CardHTML(it.idCard, it.idList, it.idBoard, it.name, it.idx) }
+            val currList = lists[i]
+            listsHTML.add(ListHTML(currList.idList, currList.idBoard, currList.name, currCards))
+        }
+        return BoardHTML(board.idBoard, board.name, board.description, listsHTML)
     }
 
-    fun getBoardsFromUser(token: String,limit: Int?, skip: Int?): List<Board> {
+    fun getBoardsFromUser(token: String, limit: Int?, skip: Int?): List<Board> {
         val idUser = userData.getUser(token).idUser
         val boardsIds = userBoardData.searchUserBoards(idUser)
         val count = userBoardData.getBoardCountFromUser(idUser)
         val pairPaging = checkPaging(count, limit, skip)
-        return boardData.getBoardsFromUser(boardsIds,pairPaging.second,pairPaging.first) // second => "limit" and first => "skip"
+        return boardData.getBoardsFromUser(boardsIds, pairPaging.second, pairPaging.first) // second => "limit" and first => "skip"
     }
 
     fun addUserToBoard(token: String, idNewUser: Int, idBoard: Int) {
@@ -72,7 +73,7 @@ class BoardServices(
         }
     }
 
-    fun getUsersFromBoard(token: String, idBoard: Int, limit: Int?, skip: Int?) : List<User> {
+    fun getUsersFromBoard(token: String, idBoard: Int, limit: Int?, skip: Int?): List<User> {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
         val userIds = userBoardData.getIdUsersFromBoard(idBoard)

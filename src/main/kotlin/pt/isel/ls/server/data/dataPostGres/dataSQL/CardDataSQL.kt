@@ -9,7 +9,7 @@ import java.sql.Statement
 
 class CardDataSQL : CardData {
 
-    override val size: Int get() = getSizeCount( "idCard","card")
+    override val size: Int get() = getSizeCount("idCard", "card")
 
     override fun createCard(idList: Int, idBoard: Int, name: String, description: String?, endDate: String?): Int {
         val dataSource = setup()
@@ -39,7 +39,7 @@ class CardDataSQL : CardData {
             val res = it.prepareStatement(selectStmt).executeQuery()
 
             while (res.next()) {
-                if (res.row == 0) return emptyList()    // test if this works both in here and in BoardSQL
+                if (res.row == 0) return emptyList() // test if this works both in here and in BoardSQL
                 cards.add(
                     Card(
                         res.getInt("idCard"),
@@ -116,7 +116,7 @@ class CardDataSQL : CardData {
             val res = it.prepareStatement(deleteStmt).executeQuery()
             res.next()
 
-            if(res.row == 0) throw TrelloException.NoContent("card")
+            if (res.row == 0) throw TrelloException.NoContent("card")
 
             val idx = res.getInt("idx")
 
@@ -139,7 +139,7 @@ class CardDataSQL : CardData {
             val res = it.prepareStatement(selectStmt).executeQuery()
             res.next()
 
-            nextIdx = if( res.getInt("max") == 0 ) {
+            nextIdx = if (res.getInt("max") == 0) {
                 1
             } else {
                 res.getInt("max") + 1

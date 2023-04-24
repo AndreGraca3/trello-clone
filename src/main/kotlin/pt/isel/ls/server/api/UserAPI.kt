@@ -28,7 +28,6 @@ class UserAPI(private val services: UserServices) {
     }
 
     @Auth
-    @Suppress("unused")
     fun changeAvatar(request: Request, token: String): Response {
         val avatar = Json.decodeFromString<Avatar>(request.bodyString())
         services.changeAvatar(token, avatar.imgUrl)

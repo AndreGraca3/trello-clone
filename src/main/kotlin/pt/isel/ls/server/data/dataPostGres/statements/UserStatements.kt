@@ -2,7 +2,7 @@ package pt.isel.ls.server.data.dataPostGres.statements
 
 object UserStatements {
 
-    fun size(): String{
+    fun size(): String {
         return "SELECT COUNT(idUser) FROM dbo.user;"
     }
 
@@ -22,8 +22,8 @@ object UserStatements {
         return "SELECT * FROM dbo.user WHERE email = '$email';"
     }
 
-    fun getUsersByIds(idUsers: List<Int>, limit: Int, skip: Int) : String {
-        val idUsersString = idUsers.toString().replace("[","(").replace("]",")")
+    fun getUsersByIds(idUsers: List<Int>, limit: Int, skip: Int): String {
+        val idUsersString = idUsers.toString().replace("[", "(").replace("]", ")")
         return "SELECT * from dbo.user where idUser IN $idUsersString LIMIT $limit OFFSET $skip;"
     }
 

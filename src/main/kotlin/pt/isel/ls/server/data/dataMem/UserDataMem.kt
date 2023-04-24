@@ -4,11 +4,10 @@ import pt.isel.ls.server.data.dataInterfaces.UserData
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.User
 import java.util.*
-import kotlin.math.min
 
 class UserDataMem : UserData {
 
-    val users = mutableListOf<User>(User(1,"alberto.tremocos@gmail.com", "Jose", "token123", "https://live.staticflickr.com/65535/52841364369_13521f6ef1_m.jpg"))
+    val users = mutableListOf<User>(User(1, "alberto.tremocos@gmail.com", "Jose", "token123", "https://live.staticflickr.com/65535/52841364369_13521f6ef1_m.jpg"))
 
     override val size get() = users.size
 

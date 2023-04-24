@@ -3,8 +3,6 @@ package pt.isel.ls.server.data.dataMem
 import pt.isel.ls.server.data.dataInterfaces.ListData
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.BoardList
-import pt.isel.ls.server.utils.checkPaging
-import kotlin.math.min
 
 class ListDataMem : ListData {
 
@@ -28,7 +26,7 @@ class ListDataMem : ListData {
     }
 
     override fun deleteList(idList: Int, idBoard: Int) {
-        if(!lists.removeIf { it.idList == idList && it.idBoard == idBoard }) throw TrelloException.NoContent("List")
+        if (!lists.removeIf { it.idList == idList && it.idBoard == idBoard }) throw TrelloException.NoContent("List")
     }
 
     override fun getListCount(idBoard: Int): Int {

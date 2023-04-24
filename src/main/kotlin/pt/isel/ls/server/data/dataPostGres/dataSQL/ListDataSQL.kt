@@ -3,17 +3,16 @@ package pt.isel.ls.server.data.dataPostGres.dataSQL
 import pt.isel.ls.server.data.dataInterfaces.ListData
 import pt.isel.ls.server.data.dataPostGres.statements.ListStatement
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.BoardList
 import pt.isel.ls.server.utils.setup
 import java.sql.Statement
 
 class ListDataSQL : ListData {
-    override val size: Int get() = getSizeCount("idList","list")
+    override val size: Int get() = getSizeCount("idList", "list")
 
     override fun createList(idBoard: Int, name: String): Int {
         val dataSource = setup()
-        val insertStmt = ListStatement.createListCMD(idBoard,name)
+        val insertStmt = ListStatement.createListCMD(idBoard, name)
         var idList = -1
 
         dataSource.connection.use {
@@ -40,7 +39,7 @@ class ListDataSQL : ListData {
             val res = it.prepareStatement(selectStmt).executeQuery()
             res.next()
 
-            if(res.row == 0 ) throw TrelloException.NotFound("List")
+            if (res.row == 0) throw TrelloException.NotFound("List")
 
             list = BoardList(
                 res.getInt("idList"),
@@ -89,7 +88,7 @@ class ListDataSQL : ListData {
             val res = it.prepareStatement(deleteStmt).executeQuery()
             res.next()
 
-            if(res.row == 0) throw TrelloException.NoContent("List")
+            if (res.row == 0) throw TrelloException.NoContent("List")
 
             it.autoCommit = true
         }
@@ -111,6 +110,5 @@ class ListDataSQL : ListData {
             it.autoCommit = true
         }
         return count
-
     }
 }

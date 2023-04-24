@@ -26,8 +26,8 @@ fun setup(): PGSimpleDataSource {
     return dataSource
 }
 
-fun checkPaging(max: Int, limit: Int?, skip: Int?) : Pair<Int,Int> {
-    val skipped = if(skip == null || skip < 0) 0 else min(skip,max)
-    val limited = if(limit == null || limit < 0) max else min(skip!! + limit, max)
+fun checkPaging(max: Int, limit: Int?, skip: Int?): Pair<Int, Int> {
+    val skipped = if (skip == null || skip < 0) 0 else min(skip, max)
+    val limited = if (limit == null || limit < 0) max else min(skip!! + limit, max)
     return Pair(skipped, limited)
 }

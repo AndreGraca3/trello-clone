@@ -6,11 +6,21 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
-import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.BoardList
 import pt.isel.ls.server.utils.BoardListIn
 import pt.isel.ls.server.utils.DeleteListIn
-import pt.isel.ls.tests.utils.*
+import pt.isel.ls.tests.utils.app
+import pt.isel.ls.tests.utils.baseUrl
+import pt.isel.ls.tests.utils.boardId
+import pt.isel.ls.tests.utils.createList
+import pt.isel.ls.tests.utils.dataMem
+import pt.isel.ls.tests.utils.dataSetup
+import pt.isel.ls.tests.utils.dummyBoardListName
+import pt.isel.ls.tests.utils.invalidId
+import pt.isel.ls.tests.utils.invalidToken
+import pt.isel.ls.tests.utils.listId
+import pt.isel.ls.tests.utils.services
+import pt.isel.ls.tests.utils.user
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -208,8 +218,7 @@ class ListAPITests {
     }
 
     @Test
-    fun `delete list from board`(){
-
+    fun `delete list from board`() {
         val response = app(
             Request(
                 Method.DELETE,
@@ -225,11 +234,11 @@ class ListAPITests {
         val msg = Json.decodeFromString<String>(response.bodyString())
 
         assertEquals(response.status, Status.NO_CONTENT)
-        //assertEquals("list deleted successfully", msg)
+        // assertEquals("list deleted successfully", msg)
     }
 
     @Test
-    fun `delete list from invalid board`(){
+    fun `delete list from invalid board`() {
         val response = app(
             Request(
                 Method.DELETE,
@@ -248,8 +257,7 @@ class ListAPITests {
     }
 
     @Test
-    fun `delete list from board invalid token`(){
-
+    fun `delete list from board invalid token`() {
         val response = app(
             Request(
                 Method.DELETE,
@@ -265,7 +273,7 @@ class ListAPITests {
     }
 
     @Test
-    fun `delete non-existing list from board`(){
+    fun `delete non-existing list from board`() {
         val response = app(
             Request(
                 Method.DELETE,
@@ -289,7 +297,7 @@ class ListAPITests {
         val limit = 3
 
         repeat(6) {
-            services.listServices.createList(user.token, boardId,"list$it")
+            services.listServices.createList(user.token, boardId, "list$it")
         }
 
         val response = app(
@@ -299,7 +307,7 @@ class ListAPITests {
 
         val lists = Json.decodeFromString<List<BoardList>>(response.bodyString())
 
-        assertEquals(dataMem.listData.lists.subList(skip, skip + limit),lists)
+        assertEquals(dataMem.listData.lists.subList(skip, skip + limit), lists)
     }
 
     @Test
@@ -308,7 +316,7 @@ class ListAPITests {
         val limit = -2
 
         repeat(6) {
-            services.listServices.createList(user.token, boardId,"list$it")
+            services.listServices.createList(user.token, boardId, "list$it")
         }
 
         val response = app(
@@ -318,7 +326,7 @@ class ListAPITests {
 
         val lists = Json.decodeFromString<List<BoardList>>(response.bodyString())
 
-        assertEquals(dataMem.listData.lists.subList(0, lists.size),lists)
+        assertEquals(dataMem.listData.lists.subList(0, lists.size), lists)
     }
 
     @Test
@@ -327,7 +335,7 @@ class ListAPITests {
         val limit = 7
 
         repeat(6) {
-            services.listServices.createList(user.token, boardId,"list$it")
+            services.listServices.createList(user.token, boardId, "list$it")
         }
 
         val response = app(
@@ -337,6 +345,6 @@ class ListAPITests {
 
         val lists = Json.decodeFromString<List<BoardList>>(response.bodyString())
 
-        assertEquals(dataMem.listData.lists.subList(0, lists.size),lists)
+        assertEquals(dataMem.listData.lists.subList(0, lists.size), lists)
     }
 }

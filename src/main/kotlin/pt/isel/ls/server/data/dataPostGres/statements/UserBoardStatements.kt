@@ -21,5 +21,4 @@ object UserBoardStatements {
     fun getUserCountFromBoard(idBoard: Int): String {
         return "SELECT COUNT(idUser) FROM dbo.user_board where idBoard = $idBoard;"
     }
-
 }

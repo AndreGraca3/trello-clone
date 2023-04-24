@@ -69,6 +69,7 @@ class ServicesBoardTests {
         assertEquals(404, err.status.code)
         assertEquals("Board not found.", err.message)
     }
+
     @Test
     fun `Add User to a Board`() {
         val user2 = createUser(dummyName + 2, dummyEmail + 2)
@@ -119,7 +120,7 @@ class ServicesBoardTests {
         val user2 = createUser(dummyName + 2, dummyEmail + 2)
         val newBoardId = createBoard(user.idUser)
         services.boardServices.addUserToBoard(user.token, user2.first, newBoardId)
-        val users = services.boardServices.getUsersFromBoard(user.token, newBoardId,null,null)
+        val users = services.boardServices.getUsersFromBoard(user.token, newBoardId, null, null)
         assertEquals(2, users.size)
         assertEquals(user.idUser, users.first().idUser)
         assertEquals(user2.first, users.last().idUser)
@@ -151,7 +152,7 @@ class ServicesBoardTests {
         val user2 = createUser(dummyName + 2, dummyEmail + 2)
         val newBoardId = createBoard(user.idUser)
         services.boardServices.addUserToBoard(user.token, user2.first, newBoardId)
-        val boards = services.boardServices.getBoardsFromUser(user.token,null,null)
+        val boards = services.boardServices.getBoardsFromUser(user.token, null, null)
         assertEquals(1, boards.size)
         assertEquals(newBoardId, boards.first().idBoard)
     }

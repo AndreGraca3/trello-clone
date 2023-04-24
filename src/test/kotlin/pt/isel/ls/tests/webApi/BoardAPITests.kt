@@ -6,8 +6,24 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
-import pt.isel.ls.server.utils.*
-import pt.isel.ls.tests.utils.*
+import pt.isel.ls.server.utils.Board
+import pt.isel.ls.server.utils.BoardHTML
+import pt.isel.ls.server.utils.BoardIn
+import pt.isel.ls.server.utils.BoardOut
+import pt.isel.ls.server.utils.IDUser
+import pt.isel.ls.server.utils.User
+import pt.isel.ls.tests.utils.app
+import pt.isel.ls.tests.utils.baseUrl
+import pt.isel.ls.tests.utils.boardId
+import pt.isel.ls.tests.utils.createBoard
+import pt.isel.ls.tests.utils.createUser
+import pt.isel.ls.tests.utils.dataMem
+import pt.isel.ls.tests.utils.dataSetup
+import pt.isel.ls.tests.utils.dummyBoardDescription
+import pt.isel.ls.tests.utils.dummyBoardName
+import pt.isel.ls.tests.utils.invalidToken
+import pt.isel.ls.tests.utils.services
+import pt.isel.ls.tests.utils.user
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -217,8 +233,9 @@ class BoardAPITests {
         assertEquals(Status.UNAUTHORIZED, response.status)
         assertEquals("Unauthorized Operation.", msg)
     }
+
     @Test
-    fun `get users from board`(){
+    fun `get users from board`() {
         val user1 = createUser("Boris", "boris@gmail.com")
         val user2 = createUser("Johson", "Johson@gmail.com")
         val user3 = createUser("Pelegrini", "Pelegrini@gmail.com")
@@ -241,7 +258,6 @@ class BoardAPITests {
 
     @Test
     fun `get users from board without being logged in`() {
-
         val response = app(
             Request(Method.GET, "$baseUrl/board/$boardId/allUsers")
                 .header("Authorization", invalidToken)
@@ -272,7 +288,7 @@ class BoardAPITests {
         val limit = 3
 
         repeat(6) {
-            services.boardServices.createBoard(user.token,"board$it","description$it")
+            services.boardServices.createBoard(user.token, "board$it", "description$it")
         }
 
         val response = app(
@@ -282,7 +298,7 @@ class BoardAPITests {
 
         val boards = Json.decodeFromString<List<Board>>(response.bodyString())
 
-        assertEquals(dataMem.boardData.boards.subList(skip, skip + limit),boards)
+        assertEquals(dataMem.boardData.boards.subList(skip, skip + limit), boards)
     }
 
     @Test
@@ -291,7 +307,7 @@ class BoardAPITests {
         val limit = -2
 
         repeat(6) {
-            services.boardServices.createBoard(user.token,"board$it","description$it")
+            services.boardServices.createBoard(user.token, "board$it", "description$it")
         }
 
         val response = app(
@@ -301,7 +317,7 @@ class BoardAPITests {
 
         val boards = Json.decodeFromString<List<Board>>(response.bodyString())
 
-        assertEquals(dataMem.boardData.boards.subList(0, boards.size),boards)
+        assertEquals(dataMem.boardData.boards.subList(0, boards.size), boards)
     }
 
     @Test
@@ -310,7 +326,7 @@ class BoardAPITests {
         val limit = 7
 
         repeat(6) {
-            services.boardServices.createBoard(user.token,"board$it","description$it")
+            services.boardServices.createBoard(user.token, "board$it", "description$it")
         }
 
         val response = app(
@@ -320,7 +336,7 @@ class BoardAPITests {
 
         val boards = Json.decodeFromString<List<Board>>(response.bodyString())
 
-        assertEquals(dataMem.boardData.boards.subList(0, boards.size),boards)
+        assertEquals(dataMem.boardData.boards.subList(0, boards.size), boards)
     }
 
     @Test
@@ -328,11 +344,11 @@ class BoardAPITests {
         val skip = 2
         val limit = 3
 
-        val idBoard = services.boardServices.createBoard(user.token,"board1","description1")
+        val idBoard = services.boardServices.createBoard(user.token, "board1", "description1")
 
         repeat(6) {
-            val newUser = services.userServices.createUser("user$it","$it@gmail.com")
-            services.boardServices.addUserToBoard(user.token,newUser.first,idBoard)
+            val newUser = services.userServices.createUser("user$it", "$it@gmail.com")
+            services.boardServices.addUserToBoard(user.token, newUser.first, idBoard)
         }
 
         val response = app(
@@ -342,7 +358,7 @@ class BoardAPITests {
 
         val users = Json.decodeFromString<List<User>>(response.bodyString())
 
-        assertEquals(dataMem.userData.users.subList(skip, skip + limit),users)
+        assertEquals(dataMem.userData.users.subList(skip, skip + limit), users)
     }
 
     @Test
@@ -350,11 +366,11 @@ class BoardAPITests {
         val skip = -2
         val limit = -2
 
-        val idBoard = services.boardServices.createBoard(user.token,"board1","description1")
+        val idBoard = services.boardServices.createBoard(user.token, "board1", "description1")
 
         repeat(6) {
-            val newUser = services.userServices.createUser("user$it","$it@gmail.com")
-            services.boardServices.addUserToBoard(user.token,newUser.first,idBoard)
+            val newUser = services.userServices.createUser("user$it", "$it@gmail.com")
+            services.boardServices.addUserToBoard(user.token, newUser.first, idBoard)
         }
 
         val response = app(
@@ -364,7 +380,7 @@ class BoardAPITests {
 
         val users = Json.decodeFromString<List<User>>(response.bodyString())
 
-        assertEquals(dataMem.userData.users.subList(0,users.size),users)
+        assertEquals(dataMem.userData.users.subList(0, users.size), users)
     }
 
     @Test
@@ -372,11 +388,11 @@ class BoardAPITests {
         val skip = 10
         val limit = 7
 
-        val idBoard = services.boardServices.createBoard(user.token,"board1","description1")
+        val idBoard = services.boardServices.createBoard(user.token, "board1", "description1")
 
         repeat(6) {
-            val newUser = services.userServices.createUser("user$it","$it@gmail.com")
-            services.boardServices.addUserToBoard(user.token,newUser.first,idBoard)
+            val newUser = services.userServices.createUser("user$it", "$it@gmail.com")
+            services.boardServices.addUserToBoard(user.token, newUser.first, idBoard)
         }
 
         val response = app(
@@ -386,6 +402,6 @@ class BoardAPITests {
 
         val users = Json.decodeFromString<List<User>>(response.bodyString())
 
-        assertEquals(dataMem.userData.users.subList(0, users.size),users)
+        assertEquals(dataMem.userData.users.subList(0, users.size), users)
     }
 }

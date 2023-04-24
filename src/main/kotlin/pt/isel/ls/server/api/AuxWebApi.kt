@@ -23,7 +23,7 @@ fun getPathParam(request: Request, name: String): Int {
     return request.path(name)?.toIntOrNull() ?: throw TrelloException.IllegalArgument(name)
 }
 
-fun getQueryParam(request: Request, name: String) : String? {
+fun getQueryParam(request: Request, name: String): String? {
     return request.query(name)
 }
 

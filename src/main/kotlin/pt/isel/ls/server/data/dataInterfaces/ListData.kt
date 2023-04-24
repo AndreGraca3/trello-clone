@@ -13,5 +13,5 @@ interface ListData {
 
     fun deleteList(idList: Int, idBoard: Int)
 
-    fun getListCount(idBoard: Int) : Int
+    fun getListCount(idBoard: Int): Int
 }

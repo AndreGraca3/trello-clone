@@ -2,7 +2,6 @@ package pt.isel.ls.server.data.dataMem
 
 import pt.isel.ls.server.data.dataInterfaces.UserBoardData
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.utils.User
 import pt.isel.ls.server.utils.UserBoard
 
 class UserBoardDataMem : UserBoardData {

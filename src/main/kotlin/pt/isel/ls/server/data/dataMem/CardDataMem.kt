@@ -49,10 +49,10 @@ class CardDataMem : CardData {
     }
 
     override fun deleteCard(idCard: Int, idList: Int, idBoard: Int) {
-        val card : Card
+        val card: Card
         try {
-           card = getCard(idCard, idList, idBoard)
-        } catch (ex : TrelloException) {
+            card = getCard(idCard, idList, idBoard)
+        } catch (ex: TrelloException) {
             throw TrelloException.NoContent("card")
         }
         cards.remove(card)

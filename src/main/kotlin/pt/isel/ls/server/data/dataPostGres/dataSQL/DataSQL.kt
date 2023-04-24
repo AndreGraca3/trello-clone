@@ -1,7 +1,6 @@
 package pt.isel.ls.server.data.dataPostGres.dataSQL
 
 import pt.isel.ls.server.data.dataInterfaces.Data
-import pt.isel.ls.server.data.dataPostGres.statements.BoardStatements
 import pt.isel.ls.server.utils.setup
 
 class DataSQL : Data {
@@ -14,7 +13,7 @@ class DataSQL : Data {
 
 fun getSizeCount(id: String, table: String): Int {
     val dataSource = setup()
-    val selectStmt = size(id,table)
+    val selectStmt = size(id, table)
     var res: Int
 
     dataSource.connection.use {

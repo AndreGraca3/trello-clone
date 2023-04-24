@@ -23,5 +23,5 @@ interface CardData {
 
     fun getNextIdx(idList: Int): Int
 
-    fun getCardCount(idBoard: Int, idList: Int) : Int
+    fun getCardCount(idBoard: Int, idList: Int): Int
 }

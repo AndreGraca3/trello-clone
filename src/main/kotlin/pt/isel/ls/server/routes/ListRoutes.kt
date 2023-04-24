@@ -34,7 +34,7 @@ class ListRoutes(private val webApi: ListAPI) {
                     request,
                     webApi::deleteList
                 )
-            },
+            }
         )
     }
 }

@@ -23,7 +23,7 @@ class CardServices(
 
     fun createCard(token: String, idBoard: Int, idList: Int, name: String, description: String?, endDate: String?): Int {
         isValidString(name, "name")
-        if(description != null) isValidString(description, "description")
+        if (description != null) isValidString(description, "description")
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
         listData.getList(idList, idBoard)
@@ -42,7 +42,7 @@ class CardServices(
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
         listData.getList(idList, idBoard)
-        val count = cardData.getCardCount(idBoard,idList)
+        val count = cardData.getCardCount(idBoard, idList)
         val pairPaging = checkPaging(count, limit, skip)
         return cardData.getCardsFromList(idList, idBoard, pairPaging.second, pairPaging.first)
     }

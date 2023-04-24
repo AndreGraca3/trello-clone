@@ -10,7 +10,7 @@ object CardStatements {
 
     fun createCardCMD(idList: Int, idBoard: Int, name: String, description: String?, endDate: String?, idx: Int, archived: Boolean = false): String {
         return "INSERT INTO dbo.card (name, description, idList, idBoard, startDate, endDate, archived, idx) " +
-                "VALUES ('$name', '$description', $idList, $idBoard, '${LocalDate.now()}', $endDate, $archived, $idx) RETURNING idCard;"
+            "VALUES ('$name', '$description', $idList, $idBoard, '${LocalDate.now()}', $endDate, $archived, $idx) RETURNING idCard;"
     }
 
     fun getCardsFromListCMD(idList: Int, idBoard: Int, limit: Int, skip: Int): String {
@@ -23,7 +23,7 @@ object CardStatements {
 
     fun moveCardCMD(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int, idxDst: Int): String {
         return "UPDATE dbo.card SET idList = $idListDst, idx = $idxDst " +
-               "WHERE idCard = $idCard and idList = $idListNow and idBoard = $idBoard;"
+            "WHERE idCard = $idCard and idList = $idListNow and idBoard = $idBoard;"
     }
 
     fun deleteCard(idCard: Int, idList: Int, idBoard: Int): String {

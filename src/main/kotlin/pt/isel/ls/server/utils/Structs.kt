@@ -72,7 +72,6 @@ data class CardOut(
     var archived: Boolean
 )
 
-
 /** HTML OBJECTS **/
 
 @Serializable
@@ -80,7 +79,7 @@ data class BoardHTML(
     val idBoard: Int,
     val name: String,
     val description: String,
-    val lists : List<ListHTML>
+    val lists: List<ListHTML>
 )
 
 @Serializable
@@ -88,7 +87,7 @@ data class ListHTML(
     val idList: Int,
     val idBoard: Int,
     val name: String,
-    val cards : List<CardHTML>
+    val cards: List<CardHTML>
 )
 
 @Serializable

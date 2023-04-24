@@ -42,7 +42,7 @@ class UserBoardDataSQL : UserBoardData {
 
     override fun checkUserInBoard(idUser: Int, idBoard: Int) {
         val dataSource = setup()
-        val selectStmt = UserBoardStatements.checkUserInBoard(idUser,idBoard)
+        val selectStmt = UserBoardStatements.checkUserInBoard(idUser, idBoard)
 
         dataSource.connection.use {
             it.autoCommit = false
@@ -50,7 +50,7 @@ class UserBoardDataSQL : UserBoardData {
             val res = it.prepareStatement(selectStmt).executeQuery()
             res.next()
 
-            if(res.row == 0) throw TrelloException.NotFound("Board")
+            if (res.row == 0) throw TrelloException.NotFound("Board")
 
             it.autoCommit = true
         }
@@ -59,7 +59,7 @@ class UserBoardDataSQL : UserBoardData {
     override fun getIdUsersFromBoard(idBoard: Int): List<Int> {
         val dataSource = setup()
         val selectStmt = UserBoardStatements.getIdUsersFromBoard(idBoard)
-        val userIds =  mutableListOf<Int>()
+        val userIds = mutableListOf<Int>()
 
         dataSource.connection.use {
             it.autoCommit = false
