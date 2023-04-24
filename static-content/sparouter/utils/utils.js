@@ -72,8 +72,9 @@ export function createHTMLList(list) {
 
     if (list.cards) {
         list.cards.forEach((card) => {
-            const cardElement = createHTMLCard(card, () => cardFunc(card));
-            listCards.appendChild(cardElement);
+            const cardElement = createHTMLCard(card)
+            cardElement.addEventListener("click", () => cardFunc(card, cardElement))
+            listCards.appendChild(cardElement)
         })
     }
     listContainer.appendChild(listCards)

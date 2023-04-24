@@ -4,8 +4,8 @@ export const boardFunc = (board) => {
     document.location = `#board/${board.idBoard}`
 }
 
-export const cardFunc = (card) => {
-    document.location = `#board/${card.idBoard}/list/${card.idList}/card/${card.idCard}`
+export const cardFunc = (card, elem) => {
+    document.location = `#board/${card.idBoard}/list/${elem.dataset.idList}/card/${elem.dataset.idCard}`
 }
 
 export async function createBoard() {
@@ -86,9 +86,9 @@ async function addCard(listCards, input, list) {
     card.idList = list.idList
     card.idBoard = list.idBoard
     card.idCard = cardId
-    listCards.appendChild(createHTMLCard(card, () => {
-        cardFunc(card)
-    }))
+    const cardElem = createHTMLCard(card)
+    cardElem.addEventListener("click", () => {cardFunc(card, cardElem)})
+    listCards.appendChild(cardElem)
 }
 
 export function showCreateBoardButton() {
