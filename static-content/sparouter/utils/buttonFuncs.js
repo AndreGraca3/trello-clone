@@ -1,6 +1,4 @@
-import {createHTMLCard, createHTMLList, fadeOutText, fetchReq} from "./utils.js";
-//import {endTimeLen} from "./storage";
-//import {user} from "./storage";
+import {createHTMLCard, createHTMLList, fetchReq} from "./utils.js";
 
 export const boardFunc = (board) => {
     document.location = `#board/${board.idBoard}`
@@ -116,9 +114,9 @@ async function addCard(listCards, input, list) {
     card.idList = list.idList
     card.idBoard = list.idBoard
     card.idCard = cardId
-    listCards.appendChild(createHTMLCard(card, () => {
-        cardFunc(card)
-    }))
+    const cardElem = createHTMLCard(card)
+    cardElem.addEventListener("click", () => {cardFunc(card)})
+    listCards.appendChild(cardElem)
 }
 
 export function showCreateBoardButton() {
