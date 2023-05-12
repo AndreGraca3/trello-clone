@@ -3,7 +3,7 @@ import {
     createHTMLBoardBox,
     createHTMLList,
     createRows, darkerColor, fetchReq,
-    getBoardColor, getUserAvatar, visitBoard, usersDropdown
+    getBoardColor, getUserAvatar, visitBoard, usersDropdown, cardModalHTML, archivedDropdown, listModalHTML
 } from "./utils/utils.js"
 import {boardFunc, createList, changeUserAvatar} from "./utils/buttonFuncs.js";
 import {BASE_URL, user, MAX_RECENT_BOARDS, MAX_BOARDS_DISPLAY, RECENT_BOARDS} from "./utils/storage.js";
@@ -15,18 +15,14 @@ function getHome(mainContent) {
     h1.classList.add("rainbow-text")
 
     const h2 = createHeader("🕒 Recent Boards")
-    h2.style.color = "#D3D3D3"
-    h2.style.fontSize = "20px"
-    h2.style.paddingLeft = "10rem"
-    h2.style.paddingTop = "5rem"
+    h2.classList.add("recent-boards")
 
-    const cards = RECENT_BOARDS.map(board => {
+    const recentBoards = RECENT_BOARDS.map(board => {
         return createHTMLBoardBox(board.name, "", () => boardFunc(board), getBoardColor(board.idBoard), 5)
     })
 
-    const recent = createRows(cards, MAX_RECENT_BOARDS)
-    recent.style.float = "left"
-    recent.style.paddingLeft = "10rem"
+    const recent = createRows(recentBoards, MAX_RECENT_BOARDS)
+    recent.classList.add("recent-rows")
 
     mainContent.replaceChildren(h1, h2, recent)
 }
@@ -42,7 +38,7 @@ async function getUser(mainContent, args, token) {
     const img = document.createElement("img");
     img.classList.add("avatar")
 
-    img.src = await getUserAvatar(token)
+    img.src = user.avatar //await getUserAvatar(token)
 
     img.addEventListener("click", async () => {
           await changeUserAvatar(token);
@@ -60,7 +56,7 @@ async function getUser(mainContent, args, token) {
 }
 
 
-async function getCard(mainContent,args, token) {
+async function getCard(mainContent, args, token) {
     const idBoard = args.idBoard;
     const idList = args.idList;
     const idCard = args.idCard;
@@ -87,7 +83,21 @@ async function getCard(mainContent,args, token) {
     const cardArchived = document.createElement("p");
     cardArchived.innerText = `Archived: ${card.archived}`;
 
-    div.append(cardName, cardDescription, cardStartDate, cardEndDate, cardArchived);
+    const button = document.createElement("button")
+    button.classList.add("btn","btn-success")
+    button.innerText = "📁"
+    button.addEventListener("click", async () => {
+        const changes = {
+            archived : false,
+            description: card.description,
+            endDate: card.endDate
+        }
+
+        await fetchReq(`board/${idBoard}/list/${idList}/card/${idCard}/updateCard`, "PUT", changes)
+        document.location = `#board/${idBoard}`
+    })
+
+    div.append(cardName, cardDescription, cardStartDate, cardEndDate, cardArchived,button);
 
     mainContent.replaceChildren(div);
 
@@ -198,9 +208,7 @@ function getLogin(mainContent) {
 async function getBoards(mainContent) {
     document.title = "OurTrello | Boards"
 
-    const h1 = document.createElement("h1")
-    const text = document.createTextNode("My Boards")
-    h1.replaceChildren(text)
+    const h1 = createHeader("My Boards")
     mainContent.replaceChildren(h1)
 
     const boards = await fetchReq("board", "GET")
@@ -208,6 +216,7 @@ async function getBoards(mainContent) {
     const cards = boards.map(board => {
         return createHTMLBoardBox(board.name, board.description, () => boardFunc(board), getBoardColor(board.idBoard))
     })
+
     const boardsContainer = createRows(cards, MAX_BOARDS_DISPLAY)
     mainContent.appendChild(boardsContainer)
 }
@@ -219,12 +228,22 @@ async function getBoard(mainContent, args) {
     document.title = `OurTrello | ${board.name}`
     visitBoard(board)
 
+    const boardHeader = document.createElement("h5")
+
+    const desc = document.createElement("p")
+    desc.innerText = board.description.charAt(0).toUpperCase() + board.description.slice(1)
+    desc.classList.add("board-desc")
+
+    const archived = await archivedDropdown(board)
+
+    const users = await usersDropdown(board.idBoard)
+
+    boardHeader.replaceChildren(desc, users, archived)
+
     const boardContainer = document.createElement("div")
     boardContainer.classList.add("board")
+    boardContainer.id = "boardContainer"
 
-    const desc = document.createElement("text")
-    desc.innerText = board.description
-    mainContent.appendChild(desc)
 
     board.lists.forEach(list => {
         const listContainer = createHTMLList(list)
@@ -239,29 +258,25 @@ async function getBoard(mainContent, args) {
 
     boardContainer.appendChild(createListButton)
 
-    boardContainer.appendChild(await usersDropdown(board.idBoard))
-
     const color = getBoardColor(board.idBoard)
     mainContent.style.background = `linear-gradient(135deg, ${darkerColor(color)}, ${color})`
 
-    mainContent.replaceChildren(boardContainer)
+    const cardModal = cardModalHTML()
+    const listModal = listModalHTML()
+
+    mainContent.replaceChildren(boardHeader, boardContainer, cardModal, listModal)
 }
 
 function getErrorPage(mainContent, error) {
     document.title = "OurTrello | Error"
 
     const h1 = createHeader("NOT THE BOARD YOU'RE LOOKING FOR")
-    h1.style.color = "red"
-    h1.style.fontSize = "5rem"
+    h1.classList.add("error-header")
 
     const h2 = createHeader(error)
 
     const bg = document.createElement("div")
-    bg.style.backgroundImage = `url("https://i.imgur.com/6DdhZTP.gif")`
-    bg.style.opacity = "0.5"
-    bg.style.backgroundPosition = "center top"
-    bg.style.width = "100vw"
-    bg.style.height = "50vh"
+    bg.classList.add("bg-error")
 
     mainContent.replaceChildren(h1, h2, bg)
 }

@@ -1,11 +1,32 @@
-import {createHTMLCard, createHTMLList, fetchReq} from "./utils.js";
+import {createHTMLCard, createHTMLList, fadeOutText, fetchReq} from "./utils.js";
+//import {endTimeLen} from "./storage";
+//import {user} from "./storage";
 
 export const boardFunc = (board) => {
     document.location = `#board/${board.idBoard}`
 }
 
-export const cardFunc = (card) => {
-    document.location = `#board/${card.idBoard}/list/${card.idList}/card/${card.idCard}`
+export const cardFunc = async (card) => {
+
+    const fetchedCard = await fetchReq(`board/${card.idBoard}/list/${card.idList}/card/${card.idCard}`,"GET")
+
+    document.querySelector("#CardTitleModal").innerText = fetchedCard.name
+    document.querySelector("#CardStartDateModal").innerText = fetchedCard.startDate
+
+    if(fetchedCard.description !== null) {
+        document.querySelector("#CardDescModal").innerText = fetchedCard.description
+    }
+    if(fetchedCard.endDate !== null) {
+        document.querySelector("#endDateTime").value = fetchedCard.endDate.replace(" ", "T")
+    }
+
+    document.querySelector("#cardSaveButton").addEventListener("click", async () => saveCard(card))
+    document.querySelector("#cardArchiveButton").addEventListener("click",async () => archiveCard(card))
+    document.querySelector("#cardDeleteButton").addEventListener("click",async () => deleteCard(card))
+
+    $('#cardModal').modal('show')
+
+    //$('#cardModal').on("hidden.bs.modal",async () => updateCard(card))
 }
 
 export async function createBoard() {
@@ -15,10 +36,19 @@ export async function createBoard() {
     try {
         const res = await fetchReq("board", "POST", {name: boardName, description: boardDesc})
         hideCreateBoardButton()
-        alert('Board Created Successfully')
+
+        $("#pop-up").fadeIn();
+        setInterval(function () {
+            $("#pop-up").fadeOut();
+        },3000)
+
         document.location = `#board/${res.idBoard}`
     } catch (e) {
-        alert(e)
+        $("#pop-up").innerHTML = e
+        $("#pop-up").fadeIn();
+        setInterval(function () {
+            $("#pop-up").fadeOut();
+        },3000)
     }
 }
 
@@ -112,10 +142,102 @@ export async function changeUserAvatar() {
         reader.onload = () => {
             const imgUrl = reader.result
             fetchReq("user/avatar", "PUT", {imgUrl})
+            user.avatar = imgUrl
+            console.log(user)
             document.location.reload()
+            console.log("reload")
         }
         reader.readAsDataURL(file)
     })
 
     input.click()
+}
+
+async function archiveCard(card) {
+    const cardToArchive = document.querySelector(`#Card${card.idCard}`)
+
+    const archivedCard = document.querySelector(`#ArchivedCard${card.idCard}`)
+
+    const list = document.querySelector(`#list${card.idList}`)
+
+    const markDown = document.querySelector(`#dropdownMenu-archived`)
+
+    if(!card.archived) {
+        list.remove(cardToArchive)
+
+        const getCardArchived = document.createElement("a")
+        getCardArchived.classList.add("dropdown-item")
+        getCardArchived.innerText = card.name
+        getCardArchived.addEventListener("click", async () => cardFunc(card))
+
+        $("#dropdownMenu-archived").append(getCardArchived)
+    } else {
+        // tenho de converter no elemento de html certo.
+        markDown.removeChild(archivedCard)
+        const DeArchivedCard = createHTMLCard(card, async () => cardFunc(card))
+        list.appendChild(DeArchivedCard)
+    }
+
+    let newEndDate = document.querySelector("#endDateTime").value.replace("T", " ")
+
+    const newDescription = document.querySelector("#Description-textBox").value
+
+    const Changes = {
+            archived: !card.archived,
+            description: newDescription,
+            endDate: newEndDate
+    }
+
+    $('#cardModal').modal('hide')
+
+    await fetchReq(`board/${card.idBoard}/list/${card.idList}/card/${card.idCard}/updateCard`, "PUT", Changes)
+}
+async function deleteCard(card) {
+    const cardToDelete = document.querySelector(`#Card${card.idCard}`)
+
+    const list = document.querySelector(`#list${card.idList}`)
+
+    list.remove(cardToDelete)
+
+    $('#cardModal').modal('hide')
+
+    await fetchReq(`board/${card.idBoard}/list/${card.idList}/card/${card.idCard}`, "DELETE")
+}
+
+export async function deleteList(list) {
+    const listToDelete = document.querySelector(`#List${list.idList}`)
+
+    const card = listToDelete.querySelector(".card-container")
+
+    if(!card) {
+        const board = document.querySelector("#boardContainer")
+
+        board.remove(listToDelete)
+
+        await fetchReq(`board/${list.idBoard}/list/${list.idList}`, "DELETE")
+    } else {
+        $('#listModal').modal('show')
+
+        //document.querySelector("#listArchiveButton").addEventListener("click", async () => archivarOsCardsEApagarLista())
+        //document.querySelector("#listDeleteButton").addEventListener("click", async () => apagarCardsELista())
+
+    }
+}
+
+async function saveCard(card) {
+    const newEndDate = document.querySelector("#endDateTime").value.replace("T", " ")
+
+    const newDescription = document.querySelector("#Description-textBox").value
+
+    const Changes = {
+        archived: card.archived,
+        description: newDescription,
+        endDate: newEndDate
+    }
+
+    console.log(card)
+
+    $('#cardModal').modal('hide')
+
+    await fetchReq(`board/${card.idBoard}/list/${card.idList}/card/${card.idCard}/updateCard`, "PUT", Changes)
 }

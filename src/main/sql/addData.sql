@@ -12,4 +12,4 @@ insert into list (idboard, name) values (1, 'List2');
 
 insert into card (idboard, idlist) values (1, 2);
 
-insert into card (idboard, idlist, enddate, name, description, archived, idx) values (4, 2, null, 'Card1', 'this is a Card1.', false, 0);
+insert into card (idboard, idlist, enddate, name, description, archived, idx) values (1, 1, '2023-10-20 17:15:00', 'Card7', 'this is a Card7.', false, 6);

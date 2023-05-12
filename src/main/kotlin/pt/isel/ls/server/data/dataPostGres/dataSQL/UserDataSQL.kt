@@ -36,7 +36,7 @@ class UserDataSQL : UserData {
         var idUser: Int
         lateinit var email: String
         lateinit var name: String
-        var avatar: String?
+        var avatar: String
 
         dataSource.connection.use {
             it.autoCommit = false
@@ -61,6 +61,8 @@ class UserDataSQL : UserData {
         lateinit var email: String
         lateinit var name: String
         lateinit var token: String
+        lateinit var avatar: String
+
 
         dataSource.connection.use {
             it.autoCommit = false
@@ -72,10 +74,11 @@ class UserDataSQL : UserData {
             email = res.getString("email")
             name = res.getString("name")
             token = res.getString("token")
+            avatar = res.getString("avatar")
 
             it.autoCommit = true
         }
-        return User(idUser, email, name, token)
+        return User(idUser, email, name, token, avatar)
     }
 
     override fun checkEmail(email: String) {
@@ -106,7 +109,8 @@ class UserDataSQL : UserData {
                     res.getInt("idUSer"),
                     res.getString("email"),
                     res.getString("name"),
-                    res.getString("token")
+                    res.getString("token"),
+                    res.getString("avatar")
                 )
                 userList.add(user)
             }

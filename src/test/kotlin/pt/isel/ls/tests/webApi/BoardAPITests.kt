@@ -54,7 +54,7 @@ class BoardAPITests {
         val board = Json.decodeFromString<BoardOut>(response.bodyString())
 
         assertEquals(Status.CREATED, response.status)
-        assertEquals(0, board.idBoard)
+        assertEquals(1, board.idBoard)
     }
 
     @Test
@@ -107,7 +107,7 @@ class BoardAPITests {
         assertEquals(boardsAmount, fetchedBoards.size)
         fetchedBoards.forEachIndexed { i, it ->
             assertTrue(dataMem.userBoardData.usersBoards.any { it.idUser == user.idUser })
-            assertEquals(i, it.idBoard)
+            assertEquals(i + 1, it.idBoard)
             assertEquals(dummyBoardName + i, it.name)
         }
         assertEquals(response.status, Status.OK)

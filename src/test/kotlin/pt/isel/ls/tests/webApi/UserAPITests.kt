@@ -37,7 +37,7 @@ class UserAPITests {
 
         assertEquals(Status.CREATED, response.status)
         assertEquals(response.header("content-type"), "application/json")
-        assertEquals(0, userOut.idUser)
+        assertEquals(1, userOut.idUser)
     }
 
     @Test

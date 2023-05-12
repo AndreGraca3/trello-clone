@@ -28,6 +28,6 @@ fun setup(): PGSimpleDataSource {
 
 fun checkPaging(max: Int, limit: Int?, skip: Int?): Pair<Int, Int> {
     val skipped = if (skip == null || skip < 0) 0 else min(skip, max)
-    val limited = if (limit == null || limit < 0) max else min(skip!! + limit, max)
+    val limited = if (limit == null || limit < 0 || skipped + limit > max) max - skipped else limit
     return Pair(skipped, limited)
 }

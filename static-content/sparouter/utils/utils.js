@@ -1,4 +1,4 @@
-import {cardFunc, createCard} from "./buttonFuncs.js";
+import {cardFunc, createCard, deleteList} from "./buttonFuncs.js";
 import {BASE_URL, RECENT_BOARDS, user, MAX_RECENT_BOARDS} from "./storage.js";
 
 export function createRows(items, itemsPerRow) {
@@ -24,6 +24,7 @@ export function createRows(items, itemsPerRow) {
     return container
 }
 
+//creates clickable board in recent boards.
 export function createHTMLBoardBox(title, description, clickableFunc, color, size) {
     const card = document.createElement("div")
     card.classList.add("boardBox")
@@ -59,12 +60,20 @@ export function createHTMLBoardBox(title, description, clickableFunc, color, siz
 export function createHTMLList(list) {
     const listContainer = document.createElement("div");
     listContainer.classList.add("list-container");
+    listContainer.id = `List${list.idList}`
 
     const listHeader = document.createElement("div")
     listHeader.classList.add("list-header")
     listHeader.innerText = list.name
 
+    const deleteButton = document.createElement("button")
+    deleteButton.classList.add("btn", "listDeleteButton")
+    deleteButton.type = "button"
+    deleteButton.innerText = "🗑️"
+    deleteButton.addEventListener("click",async () => deleteList(list))
+
     listContainer.appendChild(listHeader)
+    listContainer.appendChild(deleteButton)
 
     const listCards = document.createElement("div")
     listCards.classList.add("list-cards")
@@ -72,8 +81,10 @@ export function createHTMLList(list) {
 
     if (list.cards) {
         list.cards.forEach((card) => {
-            const cardElement = createHTMLCard(card, () => cardFunc(card));
-            listCards.appendChild(cardElement);
+            if(card.archived === false) {
+                    const cardElement = createHTMLCard(card, () => cardFunc(card));
+                listCards.appendChild(cardElement);
+            }
         })
     }
     listContainer.appendChild(listCards)
@@ -117,6 +128,7 @@ export function createHTMLList(list) {
 
 export function createHTMLCard(card, clickableFunc) {
     const cardContainer = document.createElement("button");
+    cardContainer.id = `Card${card.idCard}`
     cardContainer.classList.add("card-container");
 
     const cardContent = document.createElement("div");
@@ -227,7 +239,7 @@ export async function usersDropdown(idBoard) {
     divDrop.classList.add("dropdown","dropdown-menu-user")
 
     const button = document.createElement("button")
-    button.classList.add("btn", "btn-secondary", "dropdown-toggle")
+    button.classList.add("btn", "btn-secondary", "dropdown-toggle", "dropdown-users")
     button.setAttribute("data-bs-toggle","dropdown")
     button.ariaExpanded = "false"
     button.id = "DropdownBtn"
@@ -260,4 +272,220 @@ export async function usersDropdown(idBoard) {
 
     divDrop.appendChild(ul)
     return divDrop
+}
+
+export function cardModalHTML() {
+
+    // <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    const modal = document.createElement("div")
+    modal.classList.add("modal","fade")
+    modal.id = "cardModal"
+    modal.tabIndex = -1
+    modal.role = "dialog"
+    modal.ariaLabel = "cardModalLabel"
+    modal.ariaHidden = "true"
+
+    // <div class="modal-dialog" role="document">
+    const modalDialog = document.createElement("div")
+    modalDialog.classList.add("modal-dialog")
+    modalDialog.role = "document"
+
+    // <div class="modal-content">
+    const modalContent = document.createElement("div")
+    modalContent.classList.add("modal-content")
+
+    // <div class="modal-header">
+    const modalHeader = document.createElement("div")
+    modalHeader.classList.add("modal-header")
+
+    // <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+    const modalTitle = document.createElement("h5")
+    modalTitle.classList.add("modal-cardTitle")
+    modalTitle.id = "CardTitleModal"
+
+    const modalStartDate = document.createElement("h5")
+    modalStartDate.classList.add("modal-cardStartDate")
+    modalStartDate.id = "CardStartDateModal"
+
+    const modalDescription = document.createElement("div")
+    modalDescription.classList.add("modal-cardDesc","hide")
+    modalDescription.id = "CardDescModal"
+
+    //<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    //           <span aria-hidden="true">&times;</span>
+    //</button>
+
+    modalHeader.replaceChildren(modalTitle, modalStartDate,modalDescription)
+
+    const modalBody = document.createElement("div")
+    modalBody.classList.add("modal-body")
+
+    const endDate = document.createElement("div")
+    endDate.classList.add("modal-body-endDate")
+    endDate.innerText = "End Date: "
+
+    const time = document.createElement("input")
+    time.type = "datetime-local"
+    time.id = "endDateTime"
+
+    endDate.appendChild(time)
+
+    //<label for="board-description" class="col-form-label">Description:</label>
+    //                         <textarea class="form-control" id="board-description"></textarea>
+    const description = document.createElement("div")
+    description.classList.add("col-form-label")
+    description.innerText = "Description :"
+
+    const textBox = document.createElement("textarea")
+    textBox.classList.add("form-control")
+    textBox.id = "Description-textBox"
+
+    description.appendChild(textBox)
+
+    modalBody.replaceChildren(endDate, description)
+
+    const modalFooter = document.createElement("div")
+    modalFooter.classList.add("modal-footer")
+
+    const saveButton = document.createElement("button")
+    saveButton.type = "button"
+    saveButton.id = "cardSaveButton"
+    saveButton.classList.add("btn", "btn-success")
+    saveButton.innerText = "Save"
+
+    const archiveButton = document.createElement("button")
+    archiveButton.type = "button"
+    archiveButton.id = "cardArchiveButton"
+    archiveButton.classList.add("btn", "btn-primary")
+    archiveButton.innerText = "Archive"
+
+    const deleteButton = document.createElement("button")
+    deleteButton.type = "button"
+    deleteButton.id = "cardDeleteButton"
+    deleteButton.classList.add("btn", "btn-danger")
+    deleteButton.innerText = "Delete"
+
+    modalFooter.replaceChildren(saveButton, archiveButton, deleteButton)
+
+    modalContent.replaceChildren(modalHeader, modalBody, modalFooter)
+
+    modalDialog.replaceChildren(modalContent)
+
+    modal.replaceChildren(modalDialog)
+
+    return modal
+}
+
+export function fadeOutText(description) {
+    const text = document.createElement("div")
+    text.innerText = description
+    text.id = "fadeOutText"
+    return text
+}
+
+export async function archivedDropdown(board) { // html board
+
+    const divDrop = document.createElement("div")
+    divDrop.classList.add("dropdown","dropdown-menu-archived")
+
+    const button = document.createElement("button")
+    button.classList.add("btn", "btn-primary", "dropdown-toggle","dropdown-archived")
+    button.type = "button"
+    button.setAttribute("data-bs-toggle","dropdown")
+    button.ariaExpanded = "false"
+    button.ariaHasPopup = "true"
+    button.id = "DropdownBtn"
+    button.innerText = "📁"
+
+    const div = document.createElement("div")
+    div.id = "dropdownMenu-archived"
+    div.classList.add("dropdown-menu", "dropdown-menu-dark")
+    div.ariaLabel = "dropdownMenuButton"
+
+    board.lists.forEach(
+        list => {
+            list.cards.forEach(
+                card => {
+                    if(card.archived) {
+                        const getCardArchived = document.createElement("a")
+                        getCardArchived.classList.add("dropdown-item")
+                        getCardArchived.id = `ArchivedCard${card.idCard}`
+                        getCardArchived.innerText = card.name
+
+                        getCardArchived.addEventListener("click", async () => cardFunc(card))
+
+                        div.appendChild(getCardArchived)
+                    }
+                }
+            )
+        }
+    )
+
+    divDrop.replaceChildren(button,div)
+    return divDrop
+}
+
+export function listModalHTML() {
+
+    // <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    const modal = document.createElement("div")
+    modal.classList.add("modal","fade")
+    modal.id = "listModal"
+    modal.tabIndex = -1
+    modal.role = "dialog"
+    modal.ariaLabel = "listModalLabel"
+    modal.ariaHidden = "true"
+
+    // <div class="modal-dialog" role="document">
+    const modalDialog = document.createElement("div")
+    modalDialog.classList.add("modal-dialog")
+    modalDialog.role = "document"
+
+    // <div class="modal-content">
+    const modalContent = document.createElement("div")
+    modalContent.classList.add("modal-content")
+
+    // <div class="modal-header">
+    const modalHeader = document.createElement("div")
+    modalHeader.classList.add("modal-header")
+
+    // <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+    const modalTitle = document.createElement("h5")
+    modalTitle.classList.add("modal-cardTitle")
+    modalTitle.id = "listTitleModal"
+
+    modalHeader.replaceChildren(modalTitle)
+
+    const modalBody = document.createElement("div")
+    modalBody.classList.add("modal-body")
+
+    const msg = document.createElement("div")
+    msg.innerText= "You are about to delete a list with cards, what do you want to do?"
+
+    modalBody.replaceChildren(msg)
+
+    const modalFooter = document.createElement("div")
+    modalFooter.classList.add("modal-footer")
+
+    const archiveCardsButton = document.createElement("button")
+    archiveCardsButton.type = "button"
+    archiveCardsButton.id = "listArchiveButton"
+    archiveCardsButton.classList.add("btn", "btn-success")
+    archiveCardsButton.innerText = "Archive cards"
+
+    const deleteButton = document.createElement("button")
+    deleteButton.type = "button"
+    deleteButton.id = "listDeleteButton"
+    deleteButton.classList.add("btn", "btn-danger")
+    deleteButton.innerText = "Delete Cards"
+
+    modalFooter.replaceChildren(archiveCardsButton, deleteButton)
+
+    modalContent.replaceChildren(modalHeader, modalBody, modalFooter)
+
+    modalDialog.replaceChildren(modalContent)
+
+    modal.replaceChildren(modalDialog)
+
+    return modal
 }

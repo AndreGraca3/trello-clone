@@ -26,10 +26,10 @@ class BoardDataMem : BoardData {
     }
 
     override fun getBoardsFromUser(idBoards: List<Int>, limit: Int, skip: Int): List<Board> {
-        return boards.filter { idBoards.contains(it.idBoard) }.subList(skip, limit)
+        return boards.filter { idBoards.contains(it.idBoard) }.subList(skip, skip + limit)
     }
 
     private fun getNextId(): Int {
-        return if (boards.isEmpty()) 0 else boards.last().idBoard + 1
+        return if (boards.isEmpty()) 1 else boards.last().idBoard + 1
     }
 }

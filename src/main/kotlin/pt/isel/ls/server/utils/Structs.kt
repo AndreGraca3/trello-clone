@@ -12,7 +12,7 @@ data class Avatar(val imgUrl: String)
 data class NewList(val idList: Int, val cix: Int)
 
 @Serializable
-data class User(val idUser: Int, val email: String, val name: String, val token: String, var avatar: String? = null)
+data class User(val idUser: Int, val email: String, val name: String, val token: String, var avatar: String)
 
 @Serializable
 data class UserIn(val name: String, val email: String)
@@ -49,9 +49,9 @@ data class Card(
     var idList: Int,
     val idBoard: Int,
     val name: String,
-    val description: String?,
+    var description: String?,
     val startDate: String,
-    val endDate: String?,
+    var endDate: String?,
     var archived: Boolean,
     var idx: Int
 )
@@ -96,5 +96,13 @@ data class CardHTML(
     var idList: Int,
     val idBoard: Int,
     val name: String,
-    val idx: Int
+    val idx: Int,
+    var archived: Boolean
+)
+
+@Serializable
+data class Changes(
+    val archived: Boolean,
+    val description: String,
+    val endDate: String
 )

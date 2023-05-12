@@ -13,7 +13,7 @@ class UserDataMem : UserData {
 
     override fun createUser(name: String, email: String): Pair<Int, String> {
         val token = UUID.randomUUID().toString()
-        val newUser = User(getNextId(), email, name, token)
+        val newUser = User(getNextId(), email, name, token, "https://i.imgur.com/JGtwTBw.png")
         users.add(newUser)
         return Pair(newUser.idUser, token)
     }
@@ -31,11 +31,11 @@ class UserDataMem : UserData {
     }
 
     override fun getUsers(idUsers: List<Int>, limit: Int, skip: Int): List<User> {
-        return users.filter { idUsers.contains(it.idUser) }.subList(skip, limit)
+        return users.filter { idUsers.contains(it.idUser) }.subList(skip, skip + limit)
     }
 
     private fun getNextId(): Int {
-        return if (users.isEmpty()) 0 else users.last().idUser + 1
+        return if (users.isEmpty()) 1 else users.last().idUser + 1
     }
 
     override fun changeAvatar(idUser: Int, avatar: String) {

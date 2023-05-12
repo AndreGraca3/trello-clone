@@ -25,7 +25,7 @@ class ServicesListTests {
     @Test
     fun `Create a List in board`() {
         val newBoardListId = services.listServices.createList(user.token, boardId, dummyBoardListName)
-        assertEquals(0, newBoardListId)
+        assertEquals(1, newBoardListId)
     }
 
     @Test
@@ -70,7 +70,7 @@ class ServicesListTests {
         repeat(listsAmount) { createList(boardId, dummyBoardListName + it) }
         val lists = services.listServices.getListsOfBoard(user.token, boardId, null, null)
         repeat(listsAmount) {
-            assertEquals(lists[it], services.listServices.getList(user.token, boardId, it))
+            assertEquals(lists[it], services.listServices.getList(user.token, boardId, it + 1))
         }
     }
 

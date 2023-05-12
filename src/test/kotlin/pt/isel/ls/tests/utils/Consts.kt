@@ -42,7 +42,7 @@ val services = Services(dataMem)
 val webAPI = WebAPI(services)
 
 /** tests initial components **/
-var user = User(0, dummyEmail, dummyName, "4143809c-511a-4dc0-a3cf-a270eb2388c0")
+var user = User(0, dummyEmail, dummyName, "4143809c-511a-4dc0-a3cf-a270eb2388c0", "")
 var boardId = 0
 var listId = 0
 var cardId = 0

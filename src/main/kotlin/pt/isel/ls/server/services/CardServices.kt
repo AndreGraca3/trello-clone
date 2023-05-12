@@ -9,6 +9,8 @@ import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.checkEndDate
 import pt.isel.ls.server.utils.checkPaging
 import pt.isel.ls.server.utils.isValidString
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class CardServices(
     private val userData: UserData,
@@ -61,5 +63,15 @@ class CardServices(
         userBoardData.checkUserInBoard(idUser, idBoard)
         listData.getList(idList, idBoard)
         return cardData.deleteCard(idCard, idList, idBoard)
+    }
+
+    fun updateCard(token: String, idBoard: Int, idList: Int, idCard: Int, archived: Boolean, description: String, endDate: String) {
+        val idUser = userData.getUser(token).idUser
+        userBoardData.checkUserInBoard(idUser, idBoard)
+        listData.getList(idList, idBoard)
+        val card = cardData.getCard(idCard, idList, idBoard)
+        val newDesc = if(description == "") card.description else description
+        val newEndDate = if(endDate == "") null else endDate
+        return cardData.updateCard(card, archived, newDesc!!, newEndDate)
     }
 }

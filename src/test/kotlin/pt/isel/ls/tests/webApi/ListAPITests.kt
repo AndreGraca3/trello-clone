@@ -51,7 +51,7 @@ class ListAPITests {
 
         val listOut = Json.decodeFromString<Int>(response.bodyString())
 
-        assertEquals(0, listOut)
+        assertEquals(1, listOut)
     }
 
     @Test
@@ -107,7 +107,7 @@ class ListAPITests {
 
         val listOut = Json.decodeFromString<BoardList>(response.bodyString())
 
-        assertEquals(0, listOut.idList)
+        assertEquals(1, listOut.idList)
         assertEquals(dummyBoardListName, listOut.name)
         assertEquals(boardId, listOut.idBoard)
         assertEquals(response.status, Status.OK)
@@ -133,7 +133,7 @@ class ListAPITests {
         assertEquals(listsAmount, fetchedLists.size)
         fetchedLists.forEachIndexed { i, it ->
             assertEquals(boardId, it.idBoard)
-            assertEquals(i, it.idList)
+            assertEquals(i + 1, it.idList)
         }
         assertEquals(response.status, Status.OK)
     }

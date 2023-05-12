@@ -6,6 +6,9 @@ import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.setup
 import java.sql.Statement
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.util.Date
 
 class CardDataSQL : CardData {
 
@@ -162,8 +165,34 @@ class CardDataSQL : CardData {
             res.next()
 
             count = res.getInt("count")
+
+            it.autoCommit = true
         }
         return count
+    }
+
+    override fun updateCard(
+        card: Card,
+        archived: Boolean,
+        description: String,
+        endDate: String?
+    ) {
+        val dataSource = setup()
+        val updateStmt = CardStatements.updateCard(
+            card.idCard,
+            card.idList,
+            card.idBoard,
+            archived,
+            description,
+            endDate)
+
+        dataSource.connection.use {
+            it.autoCommit = false
+
+            it.prepareStatement(updateStmt).executeUpdate()
+
+            it.autoCommit = true
+        }
     }
 
     private fun size(): Int {

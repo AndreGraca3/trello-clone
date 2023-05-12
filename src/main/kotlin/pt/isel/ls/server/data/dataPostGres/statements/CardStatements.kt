@@ -1,6 +1,9 @@
 package pt.isel.ls.server.data.dataPostGres.statements
 
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 object CardStatements {
 
@@ -10,11 +13,11 @@ object CardStatements {
 
     fun createCardCMD(idList: Int, idBoard: Int, name: String, description: String?, endDate: String?, idx: Int, archived: Boolean = false): String {
         return "INSERT INTO dbo.card (name, description, idList, idBoard, startDate, endDate, archived, idx) " +
-            "VALUES ('$name', '$description', $idList, $idBoard, '${LocalDate.now()}', $endDate, $archived, $idx) RETURNING idCard;"
+            "VALUES ('$name', '$description', $idList, $idBoard, '${LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))}', $endDate, $archived, $idx) RETURNING idCard;"
     }
 
     fun getCardsFromListCMD(idList: Int, idBoard: Int, limit: Int, skip: Int): String {
-        return "SELECT * FROM dbo.card WHERE idList = $idList and idBoard = $idBoard ORDER BY idx DESC LIMIT $limit OFFSET $skip;"
+        return "SELECT * FROM dbo.card WHERE idList = $idList and idBoard = $idBoard ORDER BY idx ASC LIMIT $limit OFFSET $skip;"
     }
 
     fun getCardCMD(idCard: Int, idList: Int, idBoard: Int): String {
@@ -44,5 +47,9 @@ object CardStatements {
 
     fun increaseIdx(idList: Int, idx: Int): String {
         return "UPDATE dbo.card SET idx = idx + 1 WHERE idList = $idList and idx >= $idx;"
+    }
+
+    fun updateCard(idCard: Int, idList: Int, idBoard: Int, archived: Boolean, description: String, endDate: String?): String {
+        return "UPDATE dbo.card SET archived = '$archived', description = '$description', endDate = ${if(endDate != null) "'$endDate'" else null}  where idCard = $idCard and idList = $idList and idBoard = $idBoard;"
     }
 }

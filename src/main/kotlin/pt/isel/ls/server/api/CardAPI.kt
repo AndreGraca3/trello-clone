@@ -9,6 +9,7 @@ import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.services.CardServices
 import pt.isel.ls.server.utils.CardIn
 import pt.isel.ls.server.utils.CardOut
+import pt.isel.ls.server.utils.Changes
 import pt.isel.ls.server.utils.NewList
 
 class CardAPI(private val services: CardServices) {
@@ -57,5 +58,14 @@ class CardAPI(private val services: CardServices) {
         val idList = getPathParam(request, "idList")
         val idCard = getPathParam(request, "idCard")
         return createRsp(Status.OK, services.deleteCard(token, idBoard, idList, idCard))
+    }
+
+    @Auth
+    fun updateCard(request: Request, token: String): Response {
+        val idBoard = getPathParam(request, "idBoard")
+        val idList = getPathParam(request, "idList")
+        val idCard = getPathParam(request, "idCard")
+        val changes = Json.decodeFromString<Changes>(request.bodyString())
+        return createRsp(Status.OK, services.updateCard(token, idBoard, idList, idCard, changes.archived, changes.description, changes.endDate))
     }
 }

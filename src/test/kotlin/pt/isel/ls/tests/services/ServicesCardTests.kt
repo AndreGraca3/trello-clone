@@ -30,7 +30,7 @@ class ServicesCardTests {
     fun `Create a valid card without endDate`() {
         val newCardId =
             services.cardServices.createCard(user.token, boardId, listId, dummyCardName, dummyCardDescription, null)
-        assertEquals(0, newCardId)
+        assertEquals(1, newCardId)
     }
 
     @Test
@@ -43,7 +43,7 @@ class ServicesCardTests {
             dummyCardDescription,
             validEndDate
         )
-        assertEquals(0, newCardId)
+        assertEquals(1, newCardId)
     }
 
     @Test

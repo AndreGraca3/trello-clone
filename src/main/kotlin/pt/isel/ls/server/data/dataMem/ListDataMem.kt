@@ -22,7 +22,7 @@ class ListDataMem : ListData {
     }
 
     override fun getListsOfBoard(idBoard: Int, limit: Int, skip: Int): List<BoardList> {
-        return lists.filter { it.idBoard == idBoard }.subList(skip, limit)
+        return lists.filter { it.idBoard == idBoard }.subList(skip, skip + limit)
     }
 
     override fun deleteList(idList: Int, idBoard: Int) {
@@ -34,6 +34,6 @@ class ListDataMem : ListData {
     }
 
     private fun getNextId(): Int {
-        return if (lists.isEmpty()) 0 else lists.last().idList + 1
+        return if (lists.isEmpty()) 1 else lists.last().idList + 1
     }
 }

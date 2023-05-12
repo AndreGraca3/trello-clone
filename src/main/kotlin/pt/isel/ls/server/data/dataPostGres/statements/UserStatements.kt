@@ -7,7 +7,7 @@ object UserStatements {
     }
 
     fun createUserCMD(email: String, name: String, token: String): String {
-        return "INSERT INTO dbo.user (email, name, token) VALUES ('$email', '$name', '$token');"
+        return "INSERT INTO dbo.user (email, name, token) VALUES ('$email', '$name', '$token', 'https://i.imgur.com/JGtwTBw.png');"
     }
 
     fun getUserCMD(token: String): String {

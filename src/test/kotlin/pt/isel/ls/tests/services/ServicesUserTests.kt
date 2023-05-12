@@ -24,7 +24,7 @@ class ServicesUserTests {
     @Test
     fun `Create a valid user`() {
         val user = services.userServices.createUser(dummyName, dummyEmail)
-        assertEquals(0, user.first)
+        assertEquals(1, user.first)
     }
 
     @Test
@@ -40,7 +40,7 @@ class ServicesUserTests {
     fun `Get existing user`() {
         val token = createUser().second
         val user = services.userServices.getUser(token)
-        assertEquals(0, user.idUser)
+        assertEquals(1, user.idUser)
         assertEquals(dummyName, user.name)
         assertEquals(dummyEmail, user.email)
     }

@@ -29,7 +29,7 @@ class ServicesBoardTests {
     @Test
     fun `Create a valid board`() {
         val newBoardId = services.boardServices.createBoard(user.token, dummyBoardName, dummyBoardDescription)
-        assertEquals(0, newBoardId)
+        assertEquals(1, newBoardId)
     }
 
     @Test

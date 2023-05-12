@@ -8,6 +8,7 @@ import pt.isel.ls.server.data.dataInterfaces.UserData
 import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.BoardHTML
 import pt.isel.ls.server.utils.CardHTML
+import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.ListHTML
 import pt.isel.ls.server.utils.User
 import pt.isel.ls.server.utils.checkPaging
@@ -47,7 +48,7 @@ class BoardServices(
         }
         val listsHTML = mutableListOf<ListHTML>()
         for (i in lists.indices) {
-            val currCards = cards[i].map { CardHTML(it.idCard, it.idList, it.idBoard, it.name, it.idx) }
+            val currCards = cards[i].map { CardHTML(it.idCard, it.idList, it.idBoard, it.name, it.idx, it.archived) }
             val currList = lists[i]
             listsHTML.add(ListHTML(currList.idList, currList.idBoard, currList.name, currCards))
         }

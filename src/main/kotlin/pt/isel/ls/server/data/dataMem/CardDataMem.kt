@@ -3,7 +3,9 @@ package pt.isel.ls.server.data.dataMem
 import pt.isel.ls.server.data.dataInterfaces.CardData
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Card
-import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class CardDataMem : CardData {
 
@@ -19,7 +21,7 @@ class CardDataMem : CardData {
                 idBoard,
                 name,
                 description,
-                LocalDate.now().toString(),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")),
                 endDate,
                 false,
                 getNextIdx(idList)
@@ -29,7 +31,7 @@ class CardDataMem : CardData {
     }
 
     override fun getCardsFromList(idList: Int, idBoard: Int, limit: Int, skip: Int): List<Card> {
-        return cards.filter { it.idList == idList && it.idBoard == idBoard }.subList(skip, limit).sortedBy { it.idx }
+        return cards.filter { it.idList == idList && it.idBoard == idBoard }.subList(skip, skip + limit).sortedBy { it.idx }
     }
 
     override fun getCard(idCard: Int, idList: Int, idBoard: Int): Card {
@@ -70,7 +72,13 @@ class CardDataMem : CardData {
         return cards.count { it.idBoard == idBoard && it.idList == idList }
     }
 
+    override fun updateCard(card: Card, archived: Boolean, description: String, endDate: String?) {
+        card.archived = archived
+        card.description = description
+        card.endDate = endDate
+    }
+
     private fun getNextId(): Int {
-        return if (cards.isEmpty()) 0 else cards.last().idCard + 1
+        return if (cards.isEmpty()) 1 else cards.last().idCard + 1
     }
 }

@@ -36,7 +36,7 @@ fun dataSetup(clazz: Class<*>) {
     if (clazz.simpleName == User::class.simpleName) return
 
     val userPair = createUser()
-    user = User(userPair.first, dummyEmail, dummyName, userPair.second)
+    user = User(userPair.first, dummyEmail, dummyName, userPair.second, "")
     if (clazz.simpleName == Board::class.simpleName) return
 
     boardId = createBoard(user.idUser)

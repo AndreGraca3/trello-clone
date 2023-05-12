@@ -1,6 +1,8 @@
 package pt.isel.ls.server.data.dataInterfaces
 
 import pt.isel.ls.server.utils.Card
+import java.time.LocalDateTime
+import java.util.*
 
 interface CardData {
     val size: Int
@@ -24,4 +26,6 @@ interface CardData {
     fun getNextIdx(idList: Int): Int
 
     fun getCardCount(idBoard: Int, idList: Int): Int
+
+    fun updateCard(card: Card, archived: Boolean, description: String, endDate: String?)
 }

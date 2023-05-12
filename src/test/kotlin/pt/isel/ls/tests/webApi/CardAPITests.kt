@@ -9,6 +9,7 @@ import org.http4k.core.Status
 import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.CardIn
 import pt.isel.ls.server.utils.CardOut
+import pt.isel.ls.server.utils.Changes
 import pt.isel.ls.server.utils.NewList
 import pt.isel.ls.tests.utils.app
 import pt.isel.ls.tests.utils.baseUrl
@@ -61,7 +62,7 @@ class CardAPITests {
         val bodyString = response.bodyString()
 
         val cardOut = Json.decodeFromString<Int>(bodyString)
-        assertEquals(0, cardOut)
+        assertEquals(1, cardOut)
     }
 
     @Test
@@ -377,5 +378,29 @@ class CardAPITests {
 
         assertEquals(Status.NO_CONTENT, response.status)
         assertEquals(1, dataMem.cardData.cards.size)
+    }
+
+    @Test
+    fun `update a card`() {
+        val idCard = services.cardServices.createCard(user.token, boardId, listId, dummyCardName, dummyCardDescription, null)
+
+        val archived = true
+        val newDesc = ""
+        val newEndDate = ""
+
+        val requestBody = Json.encodeToString(Changes(archived, newDesc, newEndDate))
+
+        val response = app(
+            Request(Method.PUT, "$baseUrl/board/$boardId/list/$listId/card/${idCard}/updateCard")
+                .header("Authorization", user.token)
+                .body(requestBody)
+        )
+
+        val dataCard = dataMem.cardData.getCard(idCard, listId, boardId)
+
+        assertEquals(Status.OK, response.status)
+        assertEquals(archived, dataCard.archived)
+        assertEquals(dummyCardDescription, dataCard.description)
+        assertEquals(newEndDate, dataCard.endDate)
     }
 }
