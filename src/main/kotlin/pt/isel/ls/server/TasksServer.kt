@@ -16,8 +16,8 @@ import pt.isel.ls.server.services.Services
 import pt.isel.ls.server.utils.logger
 
 fun main() {
-    val data = DataMem()
-    // val data = DataSQL()
+    //val data = DataMem()
+    val data = DataSQL()
     val services = Services(data)
     val webAPI = WebAPI(services)
 
@@ -29,7 +29,7 @@ fun main() {
         singlePageApp(ResourceLoader.Directory("static-content"))
     )
 
-    repeat(2) {
+    /*repeat(2) {
         data.boardData.createBoard(1, "Board $it", "this is $it")
         data.userBoardData.addUserToBoard(1,it)
     }
@@ -38,7 +38,7 @@ fun main() {
     }
     repeat(10) {
         data.cardData.createCard(it % 2, 0, "Card $it")
-    }
+    }*/
 
     val jettyServer = app.asServer(Jetty(8080)).start()
     logger.info("Server started listening...")
