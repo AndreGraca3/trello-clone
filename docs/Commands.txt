@@ -1,10 +1,14 @@
+git clone git@github.com:isel-leic-ls/2223-2-LEIC42D-G07.git
+cd
+git checkout 0.2.2
+
 gradlew clean
 gradlew build
 gradlew clean
 gradlew build
 gradlew copyruntimedependencies
 
-java -cp ./build/libs/* pt.isel.ls.server.TasksServer.kt
+java -cp ./build/libs/* pt.isel.ls.server.TasksServerKt
 
 java -jar ./build/libs/* .jar
 

@@ -8,6 +8,6 @@ export const user = {
 export const MAX_RECENT_BOARDS = 5
 export const MAX_BOARDS_DISPLAY = 3
 
-export const RECENT_BOARDS = []
+export const LIMIT_INITIAL_VALUE = 3
 
-//export const endTimeLen = 16
+export const RECENT_BOARDS = []

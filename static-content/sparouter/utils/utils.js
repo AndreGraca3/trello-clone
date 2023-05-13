@@ -24,38 +24,41 @@ export function createRows(items, itemsPerRow) {
     return container
 }
 
-//creates clickable board in recent boards.
 export function createHTMLBoardBox(title, description, clickableFunc, color, size) {
-    const card = document.createElement("div")
-    card.classList.add("boardBox")
-    card.classList.add("clickable")
+    const card = document.createElement("div");
+    card.classList.add("boardBox");
+    card.classList.add("clickable");
 
-    card.style.background = `linear-gradient(135deg, ${darkerColor(color)}, ${color})`
+    card.style.background = `linear-gradient(135deg, ${darkerColor(color)}, ${color})`;
 
-    const cardBody = document.createElement("div")
-    cardBody.classList.add("boardBox-body")
-    card.appendChild(cardBody)
+    const cardBody = document.createElement("div");
+    cardBody.classList.add("boardBox-body");
+    cardBody.style.height = "75px"; // Set a fixed height
+    cardBody.style.width = "120px"; // Set a fixed width
+    card.appendChild(cardBody);
 
-    const cardTitle = document.createElement("h5")
-    cardTitle.classList.add("boardBox-title")
-    cardTitle.innerText = title
-    cardBody.appendChild(cardTitle)
+    const cardTitle = document.createElement("h5");
+    cardTitle.classList.add("boardBox-title");
+    cardTitle.innerText = title;
+    cardBody.appendChild(cardTitle);
 
-    const cardText = document.createElement("p1")
-    cardText.classList.add("boardBox-text")
-    cardText.innerText = description
-    cardBody.appendChild(cardText)
+    const cardText = document.createElement("p1");
+    cardText.classList.add("boardBox-text");
+    cardText.innerText = description;
+    cardText.style.overflow = "hidden"; // Add overflow hidden
+    cardText.style.textOverflow = "ellipsis"; // Add text-overflow ellipsis
+    cardText.style.whiteSpace = "nowrap"; // Add white-space nowrap
+    cardBody.appendChild(cardText);
 
-    card.appendChild(cardBody)
-
-    if (clickableFunc) card.addEventListener("click", clickableFunc)
+    if (clickableFunc) card.addEventListener("click", clickableFunc);
 
     if (size) {
-        card.style.border = "5px groove white"
-        cardTitle.style.fontSize = `${0.2 * size}em`
+        card.style.border = "5px groove white";
+        cardTitle.style.fontSize = `${0.2 * size}em`;
     }
-    return card
+    return card;
 }
+
 
 export function createHTMLList(list) {
     const listContainer = document.createElement("div");

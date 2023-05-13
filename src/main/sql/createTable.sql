@@ -1,4 +1,4 @@
---CREATE DATABASE OurTrello;
+-- CREATE DATABASE OurTrello;
 
 --USE OurTrello;
 
