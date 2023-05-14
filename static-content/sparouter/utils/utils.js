@@ -45,9 +45,6 @@ export function createHTMLBoardBox(title, description, clickableFunc, color, siz
     const cardText = document.createElement("p1");
     cardText.classList.add("boardBox-text");
     cardText.innerText = description;
-    cardText.style.overflow = "hidden"; // Add overflow hidden
-    cardText.style.textOverflow = "ellipsis"; // Add text-overflow ellipsis
-    cardText.style.whiteSpace = "nowrap"; // Add white-space nowrap
     cardBody.appendChild(cardText);
 
     if (clickableFunc) card.addEventListener("click", clickableFunc);
@@ -85,7 +82,7 @@ export function createHTMLList(list) {
     if (list.cards) {
         list.cards.forEach((card) => {
             if(card.archived === false) {
-                    const cardElement = createHTMLCard(card, () => cardFunc(card));
+                const cardElement = createHTMLCard(card, () => cardFunc(card));
                 listCards.appendChild(cardElement);
             }
         })

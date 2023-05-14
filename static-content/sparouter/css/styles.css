@@ -27,12 +27,20 @@
 }
 
 .boardBox {
+    display: inline-block;
     margin: 15px;
     padding: 20px;
     align-items: center;
     align-content: center;
     border: 15px groove white;
-    width: fit-content;
+    width: 200px;
+    overflow: hidden;
+}
+
+.boardBox-body {
+    text-align: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .boardBox:hover {
@@ -41,11 +49,16 @@
 
 .boardBox-title {
     color: white;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .boardBox-text {
+    display: block;
     color: white;
     text-decoration: underline;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .clickable {

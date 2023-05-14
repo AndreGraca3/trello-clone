@@ -20,7 +20,7 @@ export const cardFunc = async (card) => {
 
     document.querySelector("#cardSaveButton").onclick = async () => saveCard(card)
     document.querySelector("#cardArchiveButton").onclick = async () => archiveCard(card)
-    document.querySelector("#cardDeleteButton").onclick =async () => deleteCard(card)
+    document.querySelector("#cardDeleteButton").onclick = async () => deleteCard(card)
 
     $('#cardModal').modal('show')
 
@@ -35,6 +35,7 @@ export async function createBoard() {
         const res = await fetchReq("board", "POST", {name: boardName, description: boardDesc})
         hideCreateBoardButton()
 
+        document.querySelector('#pop-up').innerText = "Board created Successfully!!"
         $("#pop-up").fadeIn();
         setInterval(function () {
             $("#pop-up").fadeOut();
@@ -42,10 +43,10 @@ export async function createBoard() {
 
         document.location = `#board/${res.idBoard}`
     } catch (e) {
-        $("#pop-up").innerHTML = e
-        $("#pop-up").fadeIn();
+        document.querySelector('#pop-up').innerText = e
+        $('#pop-up').fadeIn();
         setInterval(function () {
-            $("#pop-up").fadeOut();
+            $('#pop-up').fadeOut();
         },3000)
     }
 }
