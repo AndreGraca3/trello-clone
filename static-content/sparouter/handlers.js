@@ -18,7 +18,7 @@ function getHome(mainContent) {
     h2.classList.add("recent-boards")
 
     const recentBoards = RECENT_BOARDS.map(board => {
-        return createHTMLBoardBox(board.name, "", () => boardFunc(board), getBoardColor(board.idBoard), 5)
+        return createHTMLBoardBox(board.name, "", "", () => boardFunc(board), getBoardColor(board.idBoard), 5)
     })
 
     const recent = createRows(recentBoards, MAX_RECENT_BOARDS)
@@ -220,7 +220,8 @@ async function getBoards(mainContent, args) {
     document.location = `#boards?skip=${args.skip}&limit=${args.limit}`
 
     const cards = boards.map(board => {
-        return createHTMLBoardBox(board.name, board.description, () => boardFunc(board), getBoardColor(board.idBoard))
+        console.log(board)
+        return createHTMLBoardBox(board.name, board.description, board.numLists, () => boardFunc(board), getBoardColor(board.idBoard))
     })
 
     const boardsContainer = createRows(cards, MAX_BOARDS_DISPLAY)

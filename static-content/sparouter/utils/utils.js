@@ -24,7 +24,7 @@ export function createRows(items, itemsPerRow) {
     return container
 }
 
-export function createHTMLBoardBox(title, description, clickableFunc, color, size) {
+export function createHTMLBoardBox(title, description, numList, clickableFunc, color, size) {
     const card = document.createElement("div");
     card.classList.add("boardBox");
     card.classList.add("clickable");
@@ -46,6 +46,11 @@ export function createHTMLBoardBox(title, description, clickableFunc, color, siz
     cardText.classList.add("boardBox-text");
     cardText.innerText = description;
     cardBody.appendChild(cardText);
+
+    const numListText = document.createElement("p2");
+    numListText.classList.add("boardBox-text");
+    numListText.innerText = "nº Lists: " + numList;
+    cardBody.appendChild(numListText);
 
     if (clickableFunc) card.addEventListener("click", clickableFunc);
 

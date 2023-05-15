@@ -5,14 +5,7 @@ import pt.isel.ls.server.data.dataInterfaces.CardData
 import pt.isel.ls.server.data.dataInterfaces.ListData
 import pt.isel.ls.server.data.dataInterfaces.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.UserData
-import pt.isel.ls.server.utils.Board
-import pt.isel.ls.server.utils.BoardHTML
-import pt.isel.ls.server.utils.CardHTML
-import pt.isel.ls.server.utils.Card
-import pt.isel.ls.server.utils.ListHTML
-import pt.isel.ls.server.utils.User
-import pt.isel.ls.server.utils.checkPaging
-import pt.isel.ls.server.utils.isValidString
+import pt.isel.ls.server.utils.*
 
 class BoardServices(
     private val userData: UserData,
@@ -55,7 +48,7 @@ class BoardServices(
         return BoardHTML(board.idBoard, board.name, board.description, listsHTML)
     }
 
-    fun getBoardsFromUser(token: String, limit: Int?, skip: Int?): List<Board> {
+    fun getBoardsFromUser(token: String, limit: Int?, skip: Int?): List<BoardWithLists> {
         val idUser = userData.getUser(token).idUser
         val boardsIds = userBoardData.searchUserBoards(idUser)
         val count = userBoardData.getBoardCountFromUser(idUser)

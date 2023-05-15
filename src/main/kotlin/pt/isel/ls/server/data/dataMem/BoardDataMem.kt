@@ -3,6 +3,7 @@ package pt.isel.ls.server.data.dataMem
 import pt.isel.ls.server.data.dataInterfaces.BoardData
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Board
+import pt.isel.ls.server.utils.BoardWithLists
 
 class BoardDataMem : BoardData {
 
@@ -25,8 +26,8 @@ class BoardDataMem : BoardData {
         if (boards.any { it.name == name }) throw TrelloException.AlreadyExists("Board $name")
     }
 
-    override fun getBoardsFromUser(idBoards: List<Int>, limit: Int, skip: Int): List<Board> {
-        return boards.filter { idBoards.contains(it.idBoard) }.subList(skip, skip + limit)
+    override fun getBoardsFromUser(idBoards: List<Int>, limit: Int, skip: Int): List<BoardWithLists> {
+        return boards.filter { idBoards.contains(it.idBoard) }.subList(skip, skip + limit).map { BoardWithLists(it.idBoard, it.name, it.description, 0) }
     }
 
     private fun getNextId(): Int {

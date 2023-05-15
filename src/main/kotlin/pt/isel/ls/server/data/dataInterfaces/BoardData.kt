@@ -1,6 +1,7 @@
 package pt.isel.ls.server.data.dataInterfaces
 
 import pt.isel.ls.server.utils.Board
+import pt.isel.ls.server.utils.BoardWithLists
 
 interface BoardData {
     val size: Int
@@ -11,5 +12,5 @@ interface BoardData {
 
     fun checkBoardName(name: String)
 
-    fun getBoardsFromUser(idBoards: List<Int>, limit: Int, skip: Int): List<Board>
+    fun getBoardsFromUser(idBoards: List<Int>, limit: Int, skip: Int): List<BoardWithLists>
 }

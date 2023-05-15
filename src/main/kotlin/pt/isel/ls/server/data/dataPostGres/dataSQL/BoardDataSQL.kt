@@ -4,6 +4,7 @@ import pt.isel.ls.server.data.dataInterfaces.BoardData
 import pt.isel.ls.server.data.dataPostGres.statements.BoardStatements
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Board
+import pt.isel.ls.server.utils.BoardWithLists
 import pt.isel.ls.server.utils.setup
 import java.sql.Statement
 
@@ -65,8 +66,8 @@ class BoardDataSQL : BoardData {
         }
     }
 
-    override fun getBoardsFromUser(idBoards: List<Int>, limit: Int, skip: Int): List<Board> {
-        val boards = mutableListOf<Board>()
+    override fun getBoardsFromUser(idBoards: List<Int>, limit: Int, skip: Int): List<BoardWithLists> {
+        val boards = mutableListOf<BoardWithLists>()
         if (idBoards.isEmpty()) return boards
         val dataSource = setup()
         val selectStmt = BoardStatements.getBoardsFromUser(idBoards, limit, skip)
@@ -78,10 +79,11 @@ class BoardDataSQL : BoardData {
             while (res.next()) {
                 if (res.row == 0) return emptyList() /** Estamos a dar return antes de acabar a ligação!!! **/
                 boards.add(
-                    Board(
+                    BoardWithLists(
                         res.getInt("idBoard"),
                         res.getString("name"),
-                        res.getString("description")
+                        res.getString("description"),
+                        res.getInt("numLists")
                     )
                 )
             }

@@ -16,7 +16,14 @@ object BoardStatements {
 
     fun getBoardsFromUser(idBoards: List<Int>, limit: Int, skip: Int): String {
         val idBoardsString = idBoards.toString().replace("[", "(").replace("]", ")")
-        return "SELECT * FROM dbo.board where idBoard IN $idBoardsString LIMIT $limit OFFSET $skip;"
+        //return "SELECT * FROM dbo.board where idBoard IN $idBoardsString LIMIT $limit OFFSET $skip;"
+        return "SELECT b.idboard, b.name, b.description, COUNT(l.idlist) AS numLists\n" +
+                "from dbo.board b\n" +
+                "left outer join dbo.list l on b.idboard = l.idboard\n" +
+                "where b.idboard IN $idBoardsString\n" +
+                "group by b.idboard\n" +
+                "order by b.idboard ASC\n" +
+                "LIMIT $limit OFFSET $skip;"
     }
 
     fun addUserToBoard(idUser: Int, idBoard: Int): String {
