@@ -28,44 +28,35 @@ class CardAPI(private val services: CardServices) {
     @Auth
     fun getCard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
-        val idList = getPathParam(request, "idList")
+        //val idList = getPathParam(request, "idList")
         val idCard = getPathParam(request, "idCard")
-        val card = services.getCard(token, idBoard, idList, idCard)
+        val card = services.getCard(token, idBoard, idCard)
         return createRsp(Status.OK, CardOut(card.name, card.description, card.startDate, card.endDate, card.archived))
-    }
-
-    @Auth
-    fun getCardsFromList(request: Request, token: String): Response {
-        val idBoard = getPathParam(request, "idBoard")
-        val idList = getPathParam(request, "idList")
-        val limit = getQueryParam(request, "limit")?.toIntOrNull()
-        val skip = getQueryParam(request, "skip")?.toIntOrNull()
-        return createRsp(Status.OK, services.getCardsFromList(token, idBoard, idList, limit, skip))
     }
 
     @Auth
     fun moveCard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
-        val idListNow = getPathParam(request, "idList")
+        //val idListNow = getPathParam(request, "idList")
         val objIdListDst = Json.decodeFromString<NewList>(request.bodyString())
         val idCard = getPathParam(request, "idCard")
-        return createRsp(Status.OK, services.moveCard(token, idBoard, idListNow, objIdListDst.idList, idCard, objIdListDst.cix))
+        return createRsp(Status.OK, services.moveCard(token, idBoard, objIdListDst.idListNow, objIdListDst.idListDst, idCard, objIdListDst.cix))
     }
 
     @Auth
     fun deleteCard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
-        val idList = getPathParam(request, "idList")
+        //val idList = getPathParam(request, "idList")
         val idCard = getPathParam(request, "idCard")
-        return createRsp(Status.OK, services.deleteCard(token, idBoard, idList, idCard))
+        return createRsp(Status.OK, services.deleteCard(token, idBoard, idCard))
     }
 
     @Auth
     fun updateCard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
-        val idList = getPathParam(request, "idList")
+        //val idList = getPathParam(request, "idList")
         val idCard = getPathParam(request, "idCard")
         val changes = Json.decodeFromString<Changes>(request.bodyString())
-        return createRsp(Status.OK, services.updateCard(token, idBoard, idList, idCard, changes.archived, changes.description, changes.endDate))
+        return createRsp(Status.OK, services.updateCard(token, idBoard, idCard, changes.archived, changes.description, changes.endDate))
     }
 }

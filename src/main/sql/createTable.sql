@@ -52,6 +52,7 @@ create table card (
     description varchar(400),
     archived boolean,
     idx Int,
-    primary key (idBoard,idList,idCard),
-    foreign key (idBoard,idList) references list(idBoard, idList)
+    primary key (idBoard,idCard),
+    foreign key (idBoard) references board(idBoard),
+    foreign key (idBoard,idList) references list(idBoard,idList)
 );

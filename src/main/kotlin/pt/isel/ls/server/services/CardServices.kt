@@ -33,20 +33,11 @@ class CardServices(
         return cardData.createCard(idList, idBoard, name, description, endDate)
     }
 
-    fun getCard(token: String, idBoard: Int, idList: Int, idCard: Int): Card {
+    fun getCard(token: String, idBoard: Int, idCard: Int): Card {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
-        listData.getList(idList, idBoard)
-        return cardData.getCard(idCard, idList, idBoard)
-    }
-
-    fun getCardsFromList(token: String, idBoard: Int, idList: Int, limit: Int?, skip: Int?): List<Card> {
-        val idUser = userData.getUser(token).idUser
-        userBoardData.checkUserInBoard(idUser, idBoard)
-        listData.getList(idList, idBoard)
-        val count = cardData.getCardCount(idBoard, idList)
-        val pairPaging = checkPaging(count, limit, skip)
-        return cardData.getCardsFromList(idList, idBoard, pairPaging.second, pairPaging.first)
+        //listData.getList(idList, idBoard)
+        return cardData.getCard(idCard, idBoard)
     }
 
     fun moveCard(token: String, idBoard: Int, idListNow: Int, idListDst: Int, idCard: Int, idxDst: Int) {
@@ -55,21 +46,21 @@ class CardServices(
         listData.getList(idListNow, idBoard)
         listData.getList(idListDst, idBoard)
         if (idxDst !in 1..cardData.getNextIdx(idListDst)) throw TrelloException.IllegalArgument("idx")
-        cardData.moveCard(idCard, idListNow, idBoard, idListDst, idxDst)
+        cardData.moveCard(idCard, idBoard, idListDst, idxDst)
     }
 
-    fun deleteCard(token: String, idBoard: Int, idList: Int, idCard: Int) {
+    fun deleteCard(token: String, idBoard: Int, idCard: Int) {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
-        listData.getList(idList, idBoard)
-        return cardData.deleteCard(idCard, idList, idBoard)
+        //listData.getList(idList, idBoard)
+        return cardData.deleteCard(idCard, idBoard)
     }
 
-    fun updateCard(token: String, idBoard: Int, idList: Int, idCard: Int, archived: Boolean, description: String, endDate: String) {
+    fun updateCard(token: String, idBoard: Int, idCard: Int, archived: Boolean, description: String, endDate: String) {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
-        listData.getList(idList, idBoard)
-        val card = cardData.getCard(idCard, idList, idBoard)
+        //listData.getList(idList, idBoard)
+        val card = cardData.getCard(idCard, idBoard)
         val newDesc = if(description == "") card.description else description
         val newEndDate = if(endDate == "") null else endDate
         return cardData.updateCard(card, archived, newDesc!!, newEndDate)

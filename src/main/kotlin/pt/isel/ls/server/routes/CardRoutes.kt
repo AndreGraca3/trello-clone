@@ -11,31 +11,25 @@ import pt.isel.ls.server.api.handleRequest
 class CardRoutes(private val webApi: CardAPI) {
     operator fun invoke(): RoutingHttpHandler {
         return routes(
-            "board/{idBoard}/list/{idList}/card" bind Method.POST to { request: Request ->
+            "board/{idBoard}/card" bind Method.POST to { request: Request ->
                 handleRequest(
                     request,
                     webApi::createCard
                 )
             },
-            "board/{idBoard}/list/{idList}/card" bind Method.GET to { request: Request ->
-                handleRequest(
-                    request,
-                    webApi::getCardsFromList
-                )
-            },
-            "board/{idBoard}/list/{idList}/card/{idCard}" bind Method.GET to { request: Request ->
+            "board/{idBoard}/card/{idCard}" bind Method.GET to { request: Request ->
                 handleRequest(
                     request,
                     webApi::getCard
                 )
             },
-            "board/{idBoard}/list/{idList}/card/{idCard}" bind Method.PUT to { request: Request ->
+            "board/{idBoard}/card/{idCard}" bind Method.PUT to { request: Request ->
                 handleRequest(
                     request,
                     webApi::moveCard
                 )
             },
-            "board/{idBoard}/list/{idList}/card/{idCard}" bind Method.DELETE to { request: Request ->
+            "board/{idBoard}/card/{idCard}" bind Method.DELETE to { request: Request ->
                 handleRequest(
                     request,
                     webApi::deleteCard

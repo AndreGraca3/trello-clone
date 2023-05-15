@@ -4,6 +4,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.http4k.core.Request
 import org.http4k.core.Response
+import org.http4k.core.Status
 import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.OK
 import pt.isel.ls.server.annotations.Auth
@@ -24,6 +25,15 @@ class ListAPI(private val services: ListServices) {
         val idBoard = getPathParam(request, "idBoard")
         val idList = getPathParam(request, "idList")
         return createRsp(OK, services.getList(token, idBoard, idList))
+    }
+
+    @Auth
+    fun getCardsFromList(request: Request, token: String): Response {
+        val idBoard = getPathParam(request, "idBoard")
+        val idList = getPathParam(request, "idList")
+        val limit = getQueryParam(request, "limit")?.toIntOrNull()
+        val skip = getQueryParam(request, "skip")?.toIntOrNull()
+        return createRsp(OK, services.getCardsFromList(token, idBoard, idList, limit, skip))
     }
 
     @Auth

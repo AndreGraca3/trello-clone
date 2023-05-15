@@ -9,7 +9,7 @@ data class IDUser(val idUser: Int)
 data class Avatar(val imgUrl: String)
 
 @Serializable
-data class NewList(val idList: Int, val cix: Int)
+data class NewList(val idListNow: Int, val idListDst: Int, val cix: Int)
 
 @Serializable
 data class User(val idUser: Int, val email: String, val name: String, val token: String, var avatar: String)
@@ -49,7 +49,7 @@ data class DeleteListIn(val boardId: Int, val listId: Int)
 @Serializable
 data class Card(
     val idCard: Int,
-    var idList: Int,
+    var idList: Int?,
     val idBoard: Int,
     val name: String,
     var description: String?,
@@ -96,7 +96,7 @@ data class ListHTML(
 @Serializable
 data class CardHTML(
     val idCard: Int,
-    var idList: Int,
+    var idList: Int?,
     val idBoard: Int,
     val name: String,
     val idx: Int,

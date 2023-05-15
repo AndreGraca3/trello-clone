@@ -34,32 +34,33 @@ class CardDataMem : CardData {
         return cards.filter { it.idList == idList && it.idBoard == idBoard }.subList(skip, skip + limit).sortedBy { it.idx }
     }
 
-    override fun getCard(idCard: Int, idList: Int, idBoard: Int): Card {
-        return cards.find { it.idCard == idCard && it.idList == idList && it.idBoard == idBoard }
+    override fun getCard(idCard: Int, idBoard: Int): Card {
+        return cards.find { it.idCard == idCard &&  it.idBoard == idBoard }
             ?: throw TrelloException.NotFound("Card")
     }
 
-    override fun moveCard(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int, idxDst: Int) {
-        val card = getCard(idCard, idListNow, idBoard)
+    override fun moveCard(idCard: Int, idBoard: Int, idListDst: Int, idxDst: Int) {
+        val card = getCard(idCard, idBoard)
         val cardIdx = card.idx
         cards.forEach {
-            if (it.idList == idListNow && it.idx >= cardIdx) it.idx--
+            if (it.idList == card.idList && it.idx >= cardIdx) it.idx--
             if (it.idList == idListDst && it.idx >= idxDst) it.idx++
         }
         card.idList = idListDst
         card.idx = idxDst
     }
 
-    override fun deleteCard(idCard: Int, idList: Int, idBoard: Int) {
+    override fun deleteCard(idCard: Int, idBoard: Int) {
         val card: Card
         try {
-            card = getCard(idCard, idList, idBoard)
+            card = getCard(idCard, idBoard)
         } catch (ex: TrelloException) {
             throw TrelloException.NoContent("card")
         }
         cards.remove(card)
+        if(card.idList == null) return
         cards.forEach {
-            if (it.idList == idList && it.idx >= card.idx) it.idx--
+            if (it.idList == card.idList && it.idx >= card.idx) it.idx--
         }
     }
 

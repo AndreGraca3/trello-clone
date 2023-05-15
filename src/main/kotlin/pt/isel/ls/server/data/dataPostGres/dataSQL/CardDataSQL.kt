@@ -61,9 +61,10 @@ class CardDataSQL : CardData {
         return cards.sortedBy { it.idx }
     }
 
-    override fun getCard(idCard: Int, idList: Int, idBoard: Int): Card {
+    override fun getCard(idCard: Int, idBoard: Int): Card {
         val dataSource = setup()
-        val selectStmt = CardStatements.getCardCMD(idCard, idList, idBoard)
+        val selectStmt = CardStatements.getCardCMD(idCard, idBoard)
+        var idList: Int
         lateinit var name: String
         var description: String?
         lateinit var startDate: String
@@ -78,6 +79,7 @@ class CardDataSQL : CardData {
 
             if (res.row == 0) throw TrelloException.NotFound("Card")
 
+            idList = res.getInt("idList")
             name = res.getString("name")
             description = res.getString("description")
             startDate = res.getString("startDate")
@@ -89,15 +91,15 @@ class CardDataSQL : CardData {
         return Card(idCard, idList, idBoard, name, description, startDate, endDate, archived, idx)
     }
 
-    override fun moveCard(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int, idxDst: Int) {
+    override fun moveCard(idCard: Int, idBoard: Int, idListDst: Int, idxDst: Int) {
         val dataSource = setup()
-        val card = getCard(idCard, idListNow, idBoard)
-        val updateStmtCard = CardStatements.moveCardCMD(idCard, idListNow, idBoard, idListDst, idxDst)
+        val card = getCard(idCard, idBoard)
+        val updateStmtCard = CardStatements.moveCardCMD(idCard, card.idList!!, idBoard, idListDst, idxDst)
 
         dataSource.connection.use {
             it.autoCommit = false
 
-            val decreaseStmt = CardStatements.decreaseIdx(idListNow, card.idx)
+            val decreaseStmt = CardStatements.decreaseIdx(card.idList!!, card.idx)
             it.prepareStatement(decreaseStmt).executeUpdate()
 
             val increaseStmt = CardStatements.increaseIdx(idListDst, idxDst)
@@ -109,9 +111,9 @@ class CardDataSQL : CardData {
         }
     }
 
-    override fun deleteCard(idCard: Int, idList: Int, idBoard: Int) {
+    override fun deleteCard(idCard: Int, idBoard: Int) {
         val dataSource = setup()
-        val deleteStmt = CardStatements.deleteCard(idCard, idList, idBoard)
+        val deleteStmt = CardStatements.deleteCard(idCard, idBoard)
 
         dataSource.connection.use {
             it.autoCommit = false
@@ -121,11 +123,14 @@ class CardDataSQL : CardData {
 
             if (res.row == 0) throw TrelloException.NoContent("card")
 
-            val idx = res.getInt("idx")
+            val idList = res.getInt("idList")
+            if( idList != 0) {
+                val idx = res.getInt("idx")
 
-            val updateIdxStmt = CardStatements.decreaseIdx(idList, idx)
+                val updateIdxStmt = CardStatements.decreaseIdx(idList, idx)
 
-            it.prepareStatement(updateIdxStmt).executeUpdate()
+                it.prepareStatement(updateIdxStmt).executeUpdate()
+            }
 
             it.autoCommit = true
         }

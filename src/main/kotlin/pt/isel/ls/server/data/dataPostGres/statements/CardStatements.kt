@@ -20,8 +20,9 @@ object CardStatements {
         return "SELECT * FROM dbo.card WHERE idList = $idList and idBoard = $idBoard ORDER BY idx ASC LIMIT $limit OFFSET $skip;"
     }
 
-    fun getCardCMD(idCard: Int, idList: Int, idBoard: Int): String {
-        return "SELECT * FROM dbo.card WHERE idCard = $idCard and idList = $idList and idBoard = $idBoard;"
+    fun getCardCMD(idCard: Int, idBoard: Int): String {
+        //return "SELECT * FROM dbo.card WHERE idCard = $idCard and idList = $idList and idBoard = $idBoard;"
+        return "SELECT * FROM dbo.card WHERE idCard = $idCard and idBoard = $idBoard;"
     }
 
     fun moveCardCMD(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int, idxDst: Int): String {
@@ -29,8 +30,8 @@ object CardStatements {
             "WHERE idCard = $idCard and idList = $idListNow and idBoard = $idBoard;"
     }
 
-    fun deleteCard(idCard: Int, idList: Int, idBoard: Int): String {
-        return "DELETE FROM dbo.card where idCard = $idCard and idList = $idList and idBoard = $idBoard RETURNING idx;"
+    fun deleteCard(idCard: Int, idBoard: Int): String {
+        return "DELETE FROM dbo.card where idCard = $idCard and idBoard = $idBoard RETURNING idx, idList;"
     }
 
     fun getNextIdx(idList: Int): String {
@@ -49,7 +50,7 @@ object CardStatements {
         return "UPDATE dbo.card SET idx = idx + 1 WHERE idList = $idList and idx >= $idx;"
     }
 
-    fun updateCard(idCard: Int, idList: Int, idBoard: Int, archived: Boolean, description: String, endDate: String?): String {
+    fun updateCard(idCard: Int, idList: Int?, idBoard: Int, archived: Boolean, description: String, endDate: String?): String {
         return "UPDATE dbo.card SET archived = '$archived', description = '$description', endDate = ${if(endDate != null) "'$endDate'" else null}  where idCard = $idCard and idList = $idList and idBoard = $idBoard;"
     }
 }

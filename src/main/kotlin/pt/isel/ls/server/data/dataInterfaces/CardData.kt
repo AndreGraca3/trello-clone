@@ -17,11 +17,11 @@ interface CardData {
 
     fun getCardsFromList(idList: Int, idBoard: Int, limit: Int, skip: Int): List<Card>
 
-    fun getCard(idCard: Int, idList: Int, idBoard: Int): Card
+    fun getCard(idCard: Int, idBoard: Int): Card
 
-    fun moveCard(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int, idxDst: Int)
+    fun moveCard(idCard: Int, idBoard: Int, idListDst: Int, idxDst: Int)
 
-    fun deleteCard(idCard: Int, idList: Int, idBoard: Int)
+    fun deleteCard(idCard: Int, idBoard: Int)
 
     fun getNextIdx(idList: Int): Int
 
