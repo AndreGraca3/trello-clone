@@ -63,17 +63,9 @@ data class Card(
 data class CardIn(
     val name: String,
     val description: String?,
-    val endDate: String?
-) // name and description should be vars
-
-@Serializable
-data class CardOut(
-    val name: String,
-    val description: String?,
-    val startDate: String,
     val endDate: String?,
-    var archived: Boolean
-)
+    val idList: Int
+) // name and description should be vars
 
 /** HTML OBJECTS **/
 

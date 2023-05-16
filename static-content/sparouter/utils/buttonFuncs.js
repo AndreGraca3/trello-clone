@@ -6,7 +6,7 @@ export const boardFunc = (board) => {
 
 export const cardFunc = async (card) => {
 
-    const fetchedCard = await fetchReq(`board/${card.idBoard}/list/${card.idList}/card/${card.idCard}`,"GET")
+    const fetchedCard = await fetchReq(`board/${card.idBoard}/card/${card.idCard}`,"GET")
 
     document.querySelector("#CardTitleModal").innerText = fetchedCard.name
     document.querySelector("#CardStartDateModal").innerText = fetchedCard.startDate
@@ -18,13 +18,11 @@ export const cardFunc = async (card) => {
         document.querySelector("#endDateTime").value = fetchedCard.endDate.replace(" ", "T")
     }
 
-    document.querySelector("#cardSaveButton").onclick = async () => saveCard(card)
-    document.querySelector("#cardArchiveButton").onclick = async () => archiveCard(card)
-    document.querySelector("#cardDeleteButton").onclick = async () => deleteCard(card)
+    document.querySelector("#cardSaveButton").onclick = async () => saveCard(fetchedCard)
+    document.querySelector("#cardArchiveButton").onclick = async () => archiveCard(fetchedCard)
+    document.querySelector("#cardDeleteButton").onclick = async () => deleteCard(fetchedCard)
 
     $('#cardModal').modal('show')
-
-    //$('#cardModal').on("hidden.bs.modal",async () => updateCard(card))
 }
 
 export async function createBoard() {
@@ -105,11 +103,12 @@ export async function createCard(listCards, list) {
 
 async function addCard(listCards, input, list) {
     const card = {
+        idList: list.idList,
         name: input.value,
         description: null,
         endDate: null
     }
-    const cardId = await fetchReq(`board/${list.idBoard}/list/${list.idList}/card`, "POST", card)
+    const cardId = await fetchReq(`board/${list.idBoard}/card`, "POST", card)
     input.remove()
 
     card.idList = list.idList
@@ -158,7 +157,6 @@ async function archiveCard(card) {
     const archivedCard = document.querySelector(`#ArchivedCard${card.idCard}`)
 
     const list = document.querySelector(`#list${card.idList}`)
-
     const markDown = document.querySelector(`#dropdownMenu-archived`)
 
     if(!card.archived) {
@@ -189,7 +187,7 @@ async function archiveCard(card) {
 
     $('#cardModal').modal('hide')
 
-    await fetchReq(`board/${card.idBoard}/list/${card.idList}/card/${card.idCard}/updateCard`, "PUT", Changes)
+    await fetchReq(`board/${card.idBoard}/card/${card.idCard}/update`, "PUT", Changes)
 }
 async function deleteCard(card) {
     const cardToDelete = document.querySelector(`#Card${card.idCard}`)
@@ -200,7 +198,7 @@ async function deleteCard(card) {
 
     $('#cardModal').modal('hide')
 
-    await fetchReq(`board/${card.idBoard}/list/${card.idList}/card/${card.idCard}`, "DELETE")
+    await fetchReq(`board/${card.idBoard}/card/${card.idCard}`, "DELETE")
 }
 
 export async function deleteList(list) {
@@ -238,5 +236,5 @@ async function saveCard(card) {
 
     $('#cardModal').modal('hide')
 
-    await fetchReq(`board/${card.idBoard}/list/${card.idList}/card/${card.idCard}/updateCard`, "PUT", Changes)
+    await fetchReq(`board/${card.idBoard}/card/${card.idCard}/update`, "PUT", Changes)
 }

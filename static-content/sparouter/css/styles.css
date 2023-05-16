@@ -34,13 +34,11 @@
     align-content: center;
     border: 15px groove white;
     width: 200px;
-    overflow: hidden;
 }
 
 .boardBox-body {
     text-align: center;
     text-overflow: ellipsis;
-    overflow: hidden;
 }
 
 .boardBox:hover {

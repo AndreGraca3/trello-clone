@@ -114,7 +114,13 @@ export function createHTMLList(list) {
         }
         console.log(`Moved Card ${card.dataset.idCard} from list ${card.dataset.idList} to list ${idList} and cix ${cix}`)
 
-        await fetchReq(`board/${list.idBoard}/list/${card.dataset.idList}/card/${card.dataset.idCard}`, "PUT", { idList, cix})
+        const body = {
+            idListNow: card.dataset.idList,
+            idListDst: idList,
+            cix
+        }
+
+        await fetchReq(`board/${list.idBoard}/card/${card.dataset.idCard}`, "PUT", body)
 
         card.dataset.idList = idList
     })
