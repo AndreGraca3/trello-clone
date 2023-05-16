@@ -1,4 +1,5 @@
 import {createHTMLCard, createHTMLList, fetchReq} from "./utils.js";
+import {user} from "./storage";
 
 export const boardFunc = (board) => {
     document.location = `#board/${board.idBoard}`
