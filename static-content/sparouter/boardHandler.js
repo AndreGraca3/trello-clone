@@ -7,19 +7,19 @@ import {
     getBoardColor, listModalHTML, usersDropdown,
     visitBoard
 }
-    from "./utils/utils";
+    from "./utils/utils.js";
 
 import {
     LIMIT_INITIAL_VALUE,
     MAX_BOARDS_DISPLAY
 }
-    from "./utils/storage";
+    from "./utils/storage.js";
 
 import {
     boardFunc,
     createList
 }
-    from "./utils/buttonFuncs";
+    from "./utils/buttonFuncs.js";
 
 async function getBoards(mainContent, args) {
 
