@@ -1,45 +1,26 @@
-import {
-    fetchReq,
-}
-    from "./utils/utils.js"
+import { fetchReq } from "../utils/auxs/utils.js"
+import { changeUserAvatar } from "../utils/listenerHandlers/userFuncs.js";
+import {BASE_URL, user} from "../utils/storage.js";
+import {createElement} from "../utils/components/components.js";
 
-import {
-    changeUserAvatar
-}
-    from "./utils/buttonFuncs.js";
 
-import {
-    BASE_URL,
-    user
-}
-    from "./utils/storage.js";
+async function getUser(args, token) {
 
-async function getUser(mainContent, args, token) {
     document.title = "OurTrello | User";
 
     const user = await fetchReq("user", "GET");
 
-    const div = document.createElement("div");
-    div.classList.add("text-center");
-
-    const img = document.createElement("img");
-    img.classList.add("avatar")
-
-    img.src = user.avatar //await getUserAvatar(token)
-
+    const img = createElement("img", null, "avatar")
+    img.src = user.avatar
     img.addEventListener("click", async () => {
         await changeUserAvatar(token);
     });
 
-    const pName = document.createElement("p");
-    pName.innerText = `${user.name}`;
-
-    const pEmail = document.createElement("p");
-    pEmail.innerText = `${user.email}`;
-
-    div.replaceChildren(img, pName, pEmail);
-
-    mainContent.replaceChildren(div);
+    createElement("div", null, "text-center", null,
+        img,
+        createElement("p", `${user.name}`),
+        createElement("p", `${user.email}`)
+    )
 }
 
 function getSignup(mainContent) {   // Whats this compared to below function?
@@ -144,11 +125,9 @@ function getLogin(mainContent) {
     });
 }
 
-export const userHandler = {
+export default {
     getUser,
     getLogin,
     getSignup,
     changeUserAvatar
 }
-
-export default userHandler

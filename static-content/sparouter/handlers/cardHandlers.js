@@ -1,4 +1,4 @@
-import {fetchReq} from "./utils/utils.js";
+import {fetchReq} from "../utils/auxs/utils.js";
 
 
 async function getCard(mainContent, args) {
@@ -48,8 +48,8 @@ async function getCard(mainContent, args) {
 
 }
 
-export const cardHandler = {
+export const cardHandlers = {
     getCard
 }
 
-export default cardHandler
+export default cardHandlers

@@ -1,9 +1,4 @@
-import {createHTMLCard, createHTMLList, fetchReq} from "./utils.js";
-import {user} from "./storage.js";
-
-export const boardFunc = (board) => {
-    document.location = `#board/${board.idBoard}`
-}
+import {createHTMLCard, fetchReq} from "../auxs/utils.js";
 
 export const cardFunc = async (card) => {
 
@@ -24,61 +19,6 @@ export const cardFunc = async (card) => {
     document.querySelector("#cardDeleteButton").onclick = async () => deleteCard(fetchedCard)
 
     $('#cardModal').modal('show')
-}
-
-export async function createBoard() {
-    const boardName = $('#board-name').val()
-    const boardDesc = $('#board-description').val()
-
-    try {
-        const res = await fetchReq("board", "POST", {name: boardName, description: boardDesc})
-        hideCreateBoardButton()
-
-        document.querySelector('#pop-up').innerText = "Board created Successfully!!"
-        $("#pop-up").fadeIn();
-        setInterval(function () {
-            $("#pop-up").fadeOut();
-        },3000)
-
-        document.location = `#board/${res.idBoard}`
-    } catch (e) {
-        document.querySelector('#pop-up').innerText = e
-        $('#pop-up').fadeIn();
-        setInterval(function () {
-            $('#pop-up').fadeOut();
-        },3000)
-    }
-}
-
-export async function createList(boardContainer, board) {
-    const input = document.createElement("input")
-    boardContainer.insertBefore(input, boardContainer.querySelector('.create-list-button'))
-    boardContainer.scrollLeft = boardContainer.scrollWidth
-    input.focus()
-    const handleAddList = async () => {
-        if(input.value.trim() === ""){
-            boardContainer.removeChild(input)
-            return
-        }
-        await addList(boardContainer, input, board)
-    }
-    input.addEventListener("focusout", handleAddList)
-    input.addEventListener("keydown", async (event) => {
-        if(event.key !== "Enter") return
-        input.removeEventListener("focusout", handleAddList)
-        await handleAddList()
-    })
-}
-
-async function addList(boardContainer, input, board) {
-    const list = {
-        name: input.value
-    }
-    const idList = await fetchReq(`board/${board.idBoard}/list`, "POST", list)
-    list.idBoard = board.idBoard
-    list.idList = idList
-    boardContainer.insertBefore(createHTMLList(list), input)
-    input.remove()
 }
 
 export async function createCard(listCards, list) {
@@ -120,38 +60,6 @@ async function addCard(listCards, input, list) {
     listCards.appendChild(cardElem)
 }
 
-export function showCreateBoardButton() {
-    $('#createBoardModal').modal('show')
-}
-
-export function hideCreateBoardButton() {
-    $('#createBoardModal').modal('hide')
-}
-
-export async function changeUserAvatar() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-
-    input.addEventListener('change', () => {
-        const file = input.files[0]
-        if (!file) return
-
-        const reader = new FileReader()
-        reader.onload = () => {
-            const imgUrl = reader.result
-            fetchReq("user/avatar", "PUT", {imgUrl})
-            user.avatar = imgUrl
-            console.log(user)
-            document.location.reload()
-            console.log("reload")
-        }
-        reader.readAsDataURL(file)
-    })
-
-    input.click()
-}
-
 async function archiveCard(card) {
     const cardToArchive = document.querySelector(`#Card${card.idCard}`)
 
@@ -170,7 +78,6 @@ async function archiveCard(card) {
 
         $("#dropdownMenu-archived").append(getCardArchived)
     } else {
-        // tenho de converter no elemento de html certo.
         markDown.removeChild(archivedCard)
         const DeArchivedCard = createHTMLCard(card, async () => cardFunc(card))
         list.appendChild(DeArchivedCard)
@@ -181,15 +88,16 @@ async function archiveCard(card) {
     const newDescription = document.querySelector("#Description-textBox").value
 
     const Changes = {
-            archived: !card.archived,
-            description: newDescription,
-            endDate: newEndDate
+        archived: !card.archived,
+        description: newDescription,
+        endDate: newEndDate
     }
 
     $('#cardModal').modal('hide')
 
     await fetchReq(`board/${card.idBoard}/card/${card.idCard}/update`, "PUT", Changes)
 }
+
 async function deleteCard(card) {
     const cardToDelete = document.querySelector(`#Card${card.idCard}`)
 
@@ -200,26 +108,6 @@ async function deleteCard(card) {
     $('#cardModal').modal('hide')
 
     await fetchReq(`board/${card.idBoard}/card/${card.idCard}`, "DELETE")
-}
-
-export async function deleteList(list) {
-    const listToDelete = document.querySelector(`#List${list.idList}`)
-
-    const card = listToDelete.querySelector(".card-container")
-
-    if(!card) {
-        const board = document.querySelector("#boardContainer")
-
-        board.removeChild(listToDelete)
-
-        await fetchReq(`board/${list.idBoard}/list/${list.idList}`, "DELETE")
-    } else {
-        $('#listModal').modal('show')
-
-        //document.querySelector("#listArchiveButton").addEventListener("click", async () => archivarOsCardsEApagarLista())
-        //document.querySelector("#listDeleteButton").addEventListener("click", async () => apagarCardsELista())
-
-    }
 }
 
 async function saveCard(card) {

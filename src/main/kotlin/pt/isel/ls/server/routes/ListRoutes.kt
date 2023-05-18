@@ -23,7 +23,7 @@ class ListRoutes(private val webApi: ListAPI) {
                     webApi::getList
                 )
             },
-            "board/{idBoard}/list/{idList}/cards " bind Method.GET to { request: Request ->
+            "board/{idBoard}/list/{idList}/cards" bind Method.GET to { request: Request ->
                 handleRequest(
                     request,
                     webApi::getCardsFromList
