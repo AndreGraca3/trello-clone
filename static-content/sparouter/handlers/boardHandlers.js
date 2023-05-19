@@ -10,20 +10,22 @@ import {createList} from "../utils/listenerHandlers/listFuncs.js";
 
 
 async function getBoards(args) {
-    args.totalBoards = 9    // TODO: waiting for Backend implementation
     document.title = "OurTrello | Boards"
 
     createElement("h1", "My Boards")
+
+    const boards =
+        await fetchReq(`board?skip=${args.skip}&limit=${args.limit}${args.name!=null ? `&name=${args.name}` : ''}`,
+            "GET")
+
+    boards.totalBoards = 9    // TODO: waiting for Backend implementation
 
     // Prevent from going off range
     if (!args.skip) args.skip = 0
     if (!args.limit) args.limit = LIMIT_INITIAL_VALUE
     if (args.skip < 0) args.skip = Math.max(0, args.skip)
-    if (args.skip > args.totalBoards) args.skip = Math.min(args.totalBoards - args.limit + 1, args.skip)
-
-    const boards =
-        await fetchReq(`board?skip=${args.skip}&limit=${args.limit}${args.name!=null ? `&name=${args.name}` : ''}`,
-        "GET")
+    if (args.skip > boards.totalBoards) args.skip = Math.min(boards.totalBoards - args.limit + 1, args.skip)
+    document.location = `#boards?skip=${args.skip}&limit=${args.limit}${args.name!=null ? `&name=${args.name}` : ''}`
 
     const boardCards = boards.map(board =>
         createHTMLBoard(board.name, board.description, board.numLists, () =>
@@ -47,9 +49,9 @@ async function getBoards(args) {
         if (ev.key === "Enter") window.location.hash += `&name=${searchBar.value}`
     })
 
-    createElement("div", "", "pagination", null,
+    createElement("div", null, "paginationContainer", null,
         createElement("div", "Boards per Page: ", "pagination-control", null, select),
-        createPaginationButtons(args.skip, args.limit, args.totalBoards),
+        createPaginationButtons(args.skip, args.limit, boards.totalBoards, args.name),
         searchBar
     )
 

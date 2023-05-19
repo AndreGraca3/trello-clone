@@ -11,6 +11,7 @@ async function getUser(args, token) {
     const user = await fetchReq("user", "GET");
 
     const img = createElement("img", null, "avatar")
+    img.classList.add("avatarImg")
     img.src = user.avatar
     img.addEventListener("click", async () => {
         await changeUserAvatar(token);
@@ -127,7 +128,7 @@ function getLogin(mainContent) {
 
 export default {
     getUser,
-    getLogin,
     getSignup,
-    changeUserAvatar
+    createUser,
+    getLogin
 }

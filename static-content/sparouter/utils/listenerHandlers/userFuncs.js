@@ -1,5 +1,4 @@
 import {fetchReq} from "../auxs/utils.js";
-import {user} from "../storage.js";
 
 
 export async function changeUserAvatar() {
@@ -12,11 +11,10 @@ export async function changeUserAvatar() {
         if (!file) return
 
         const reader = new FileReader()
-        reader.onload = () => {
+        reader.onload = async () => {
             const imgUrl = reader.result
-            fetchReq("user/avatar", "PUT", {imgUrl})
-            user.avatar = imgUrl
-            document.location.reload()
+            await fetchReq("user/avatar", "PUT", {imgUrl})
+            document.querySelectorAll('.avatarImg').forEach(a => a.src = imgUrl)
         }
         reader.readAsDataURL(file)
     })

@@ -14,10 +14,10 @@ export async function createList(boardContainer, board) {
         await addList(boardContainer, input, board)
     }
     input.addEventListener("focusout", handleAddList)
-    input.addEventListener("keydown", async (event) => {
-        if(event.key !== "Enter") return
+    input.addEventListener("keydown", (event) => {
+        if(event.key !== "Enter" || event.repeat) return
         input.removeEventListener("focusout", handleAddList)
-        await handleAddList()
+        handleAddList()
     })
 }
 

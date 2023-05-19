@@ -4,72 +4,57 @@ import {cardFunc} from "../listenerHandlers/cardFuncs.js";
 
 export async function usersDropdown(idBoard) {
 
-    const divDrop = document.createElement("div")
-    divDrop.classList.add("dropdown","dropdown-menu-user")
-
-    const button = document.createElement("button")
-    button.classList.add("btn", "btn-secondary", "dropdown-toggle", "dropdown-users")
+    const button = createElement("button","🙋‍♂️ Users", "dropdown-users", "DropdownBtn")
+    button.classList.add("btn", "btn-secondary", "dropdown-toggle")
     button.setAttribute("data-bs-toggle","dropdown")
-    button.ariaExpanded = "false"
-    button.id = "DropdownBtn"
-    button.innerText = "🙋‍♂️ Users"
 
-    divDrop.appendChild(button)
-
-    const ul = document.createElement("ul")
-    ul.classList.add("dropdown-menu","dropdown-menu-dark")
-    ul.ariaLabel = "DropdownBtn"
+    const ul = createElement("ul", null, "dropdown-menu-dark")
+    ul.classList.add("dropdown-menu", "dropdown-menu-scrollable")
 
     const users = await fetchReq(`board/${idBoard}/allUsers`, "GET")
 
     users.forEach( user => {
-            const li = document.createElement("li")
-            li.classList.add("dropdown-item-user")
-
-            const img = document.createElement("img")
+            const img = createElement("img", null, "dropdown-item-avatar")
             img.src = user.avatar
-            img.classList.add("dropdown-item-avatar")
 
-            const span = document.createElement("span")
-            span.innerText = user.name
-
-            li.appendChild(img)
-            li.appendChild(span)
+            const li = createElement("li", null, "dropdown-item-user", null, img,
+                createElement("span", user.name)
+            )
             ul.appendChild(li)
         }
     )
 
-    divDrop.appendChild(ul)
-    return divDrop
+    return createElement("div", null, "dropdown", null, button, ul)
 }
 
 export async function archivedDropdown(board) { // html board
 
-    const button = createElement("button", "📁 Archived", "dropdown-archived", "DropdownBtn")
-    button.classList.add("btn", "btn-primary", "dropdown-toggle")
+    const button = createElement("button", "📎 Archived", "dropdown-archived", "DropdownBtn")
+    button.classList.add("btn", "btn-primary", "dropdown-toggle", "dropdown-menu-scrollable")
     button.setAttribute("data-bs-toggle","dropdown")
 
-    const div = createElement("div", null, "dropdown-menu-dark", "dropdownMenu-archived")
-    div.classList.add("dropdown-menu")
+    const ul = createElement("ul", null, "dropdown-menu-dark", "dropdownMenu-archived")
+    ul.classList.add("dropdown-menu", "dropdown-menu-scrollable")
 
     board.lists.forEach(
         list => {
             list.cards.forEach(
                 card => {
                     if(card.archived) {
-                        const getCardArchived = createElement("a", card.name, "dropdown-item",
-                            `ArchivedCard${card.idCard}`)
-                        getCardArchived.addEventListener("click", async () => cardFunc(card))
-
-                        div.appendChild(getCardArchived)
+                        const li = createElement("li", null, "dropdown-item",
+                            `Card${card.idCard}`,
+                            createElement("span", "📋 " + card.name)
+                        )
+                        li.addEventListener("click", async () => cardFunc(card))
+                        li.classList.add("clickable")
+                        ul.appendChild(li)
                     }
                 }
             )
         }
     )
 
-    const divDrop = createElement("div", null, "dropdown-menu-archived", null, button, div)
-    divDrop.classList.add("dropdown")
-
+    const divDrop = createElement("div", null, "dropdown", null, button, ul)
+    divDrop.classList.add("dropdown-archived")
     return divDrop
 }

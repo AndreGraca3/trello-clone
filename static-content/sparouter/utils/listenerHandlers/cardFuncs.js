@@ -1,5 +1,6 @@
 import {fetchReq} from "../auxs/utils.js";
 import {createHTMLCard} from "../components/modelComponents.js";
+import {createElement} from "../components/components.js";
 
 export const cardFunc = async (card) => {
 
@@ -23,7 +24,7 @@ export const cardFunc = async (card) => {
 }
 
 export async function createCard(listCards, list) {
-    const input = document.createElement("input")
+    const input = createElement("input")
     listCards.appendChild(input)
     listCards.scrollTop = listCards.scrollHeight
     input.focus()
@@ -36,10 +37,10 @@ export async function createCard(listCards, list) {
     }
 
     input.addEventListener("focusout", handleAddCard)
-    input.addEventListener("keydown", async (event) => {
-        if(event.key !== "Enter") return
+    input.addEventListener("keydown", (event) => {
+        if(event.key !== "Enter" || event.repeat) return
         input.removeEventListener("focusout", handleAddCard)
-        await handleAddCard()
+        handleAddCard()
     })
 }
 
@@ -50,36 +51,38 @@ async function addCard(listCards, input, list) {
         description: null,
         endDate: null
     }
-    const cardId = await fetchReq(`board/${list.idBoard}/card`, "POST", card)   // TODO: Has to return idx
+    const cardId = await fetchReq(`board/${list.idBoard}/card`, "POST", card)
     input.remove()
 
     card.idList = list.idList
     card.idBoard = list.idBoard
     card.idCard = cardId
+    card.idx = listCards.lastChild? parseInt(listCards.lastChild.dataset.idx) + 1 : 1
     const cardElem = createHTMLCard(card)
     cardElem.addEventListener("click", () => {cardFunc(card)})
     listCards.appendChild(cardElem)
 }
 
 async function archiveCard(card) {
-    const cardToArchive = document.querySelector(`#Card${card.idCard}`)
-
-    const archivedCard = document.querySelector(`#ArchivedCard${card.idCard}`)
-
+    const cardToMove = document.querySelector(`#Card${card.idCard}`)
     const list = document.querySelector(`#list${card.idList}`)
-    const markDown = document.querySelector(`#dropdownMenu-archived`)
+    const archivedContainer = document.querySelector(`#dropdownMenu-archived`)
 
     if(!card.archived) {
-        list.removeChild(cardToArchive)
+        // move to archived
+        list.removeChild(cardToMove)
 
-        const getCardArchived = document.createElement("a")
-        getCardArchived.classList.add("dropdown-item")
-        getCardArchived.innerText = card.name
-        getCardArchived.addEventListener("click", async () => cardFunc(card))
+        const newArchived = createElement("li", null, "dropdown-item",
+            `Card${card.idCard}`,
+            createElement("span", "📋 " + card.name)
+        )
+        newArchived.addEventListener("click", async () => cardFunc(card))
+        newArchived.classList.add("clickable")
 
-        $("#dropdownMenu-archived").append(getCardArchived)
+        archivedContainer.appendChild(newArchived)
     } else {
-        markDown.removeChild(archivedCard)
+        // return to origin TODO: check if list exits if i want to unarchive
+        archivedContainer.removeChild(cardToMove)
         const DeArchivedCard = createHTMLCard(card, async () => cardFunc(card))
         list.appendChild(DeArchivedCard)
     }
@@ -88,7 +91,7 @@ async function archiveCard(card) {
 
     const newDescription = document.querySelector("#Description-textBox").value
 
-    const Changes = {
+    const body = {
         archived: !card.archived,
         description: newDescription,
         endDate: newEndDate
@@ -96,19 +99,23 @@ async function archiveCard(card) {
 
     $('#cardModal').modal('hide')
 
-    await fetchReq(`board/${card.idBoard}/card/${card.idCard}/update`, "PUT", Changes)
+    await fetchReq(`board/${card.idBoard}/card/${card.idCard}/update`, "PUT", body)
 }
 
 async function deleteCard(card) {
+    await fetchReq(`board/${card.idBoard}/card/${card.idCard}`, "DELETE")
+
     const cardToDelete = document.querySelector(`#Card${card.idCard}`)
 
-    const list = document.querySelector(`#list${card.idList}`)
-
-    list.removeChild(cardToDelete)
+    if(!card.archived) {
+        const list = document.querySelector(`#list${card.idList}`)
+        list.removeChild(cardToDelete)
+    } else {
+        const archivedContainer = document.querySelector(`#dropdownMenu-archived`)
+        archivedContainer.removeChild(cardToDelete)
+    }
 
     $('#cardModal').modal('hide')
-
-    await fetchReq(`board/${card.idBoard}/card/${card.idCard}`, "DELETE")
 }
 
 async function saveCard(card) {
@@ -122,9 +129,6 @@ async function saveCard(card) {
         endDate: newEndDate
     }
 
-    console.log(card)
-
-    $('#cardModal').modal('hide')
-
     await fetchReq(`board/${card.idBoard}/card/${card.idCard}/update`, "PUT", Changes)
+    $('#cardModal').modal('hide')
 }

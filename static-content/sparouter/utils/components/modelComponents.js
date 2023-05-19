@@ -4,13 +4,14 @@ import {cardFunc, createCard} from "../listenerHandlers/cardFuncs.js";
 import {darkerColor, fetchReq} from "../auxs/utils.js";
 import {getNextCard} from "../auxs/modelAuxs.js";
 
-export function createPaginationButtons(skip, limit, totalBoards) {
+export function createPaginationButtons(skip, limit, totalBoards, nameSearch) {
+
     const prevBtn = createElement("button", "Previous", "btn-secondary")
     prevBtn.classList.add("btn", "prev-pagination")
     prevBtn.disabled = skip === 0
     prevBtn.addEventListener("click", () => {
         skip -= limit
-        document.location = `#boards?skip=${skip}&limit=${limit}`
+        document.location = `#boards?skip=${skip}&limit=${limit}${nameSearch!=null ? `&name=${nameSearch}` : ''}`
     })
 
     const nextBtn = createElement("button", "Next", "btn-secondary")
@@ -18,22 +19,39 @@ export function createPaginationButtons(skip, limit, totalBoards) {
     nextBtn.disabled = skip >= totalBoards - limit
     nextBtn.addEventListener("click", () => {
         skip += limit
-        document.location = `#boards?skip=${skip}&limit=${limit}`
+        document.location = `#boards?skip=${skip}&limit=${limit}${nameSearch!=null ? `&name=${nameSearch}` : ''}`
     })
-    return createElement("div", null, "pagination-buttons", null, prevBtn, nextBtn)
+
+    const indices = []
+    const currentPage = Math.floor(skip / limit) + 1
+
+    for (let i = 1; i <= Math.ceil(totalBoards / limit); i++) {
+        const a = createElement("a", i, "page-link")
+        a.href = `#boards?skip=${(i-1)*limit}&limit=${limit}`
+
+        const li = createElement("li", null, "page-item", null, a)
+        if(i === currentPage) li.classList.add("active")
+
+        indices.push(li)
+    }
+
+    return createElement("nav", null, "pagination-buttons", null,
+        createElement("ul", null, "pagination", null,
+            prevBtn, ...indices, nextBtn)
+    )
 }
 
 export function createHTMLBoard(title, description, numList, clickableFunc, color, size) {
 
     const cardTitle = createElement("h5", title, "boardBox-title")
     const cardText = createElement("p1", description, "boardBox-text")
-    const numListText = createElement("p2", numList, "boardBox-text")
+    const numListText = createElement("p2", numList, "boardBox-numLists")
 
     const cardBody = createElement("div", null, "boardBox-body", null,
         cardTitle, cardText, numListText
     )
 
-    const card = createElement("div", null,"boardBox", null, cardBody)
+    const card = createElement("div", null, "boardBox", null, cardBody)
     card.classList.add("clickable")
     card.style.background = `linear-gradient(135deg, ${darkerColor(color)}, ${color})`
 
@@ -61,7 +79,7 @@ export function createHTMLList(list) {
 
     if (list.cards) {
         list.cards.forEach((card) => {
-            if(!card.archived) {
+            if (!card.archived) {
                 const cardElement = createHTMLCard(card, () => cardFunc(card));
                 listCards.appendChild(cardElement);
             }
@@ -80,7 +98,7 @@ export function createHTMLList(list) {
         const dragging = document.querySelector('.dragging')
         if (!listCards.contains(event.relatedTarget)) {
             const origin = document.getElementById(`list${dragging.dataset.idList}`)
-            // TODO: back to original cix
+            // TODO: back to original idx
             origin.appendChild(dragging)
         }
     });
@@ -106,7 +124,7 @@ export function createHTMLList(list) {
         await fetchReq(`board/${list.idBoard}/card/${card.dataset.idCard}`, "PUT", body)
 
         card.dataset.idList = idList
-        card.dataset.cix = cix
+        card.dataset.idx = cix
     })
 
     const newCardButton = createElement("button", "Add Card", "newCard")
@@ -134,7 +152,7 @@ export function createHTMLCard(card, clickableFunc) {
     })
     cardContainer.dataset.idCard = card.idCard
     cardContainer.dataset.idList = card.idList
-    cardContainer.dataset.cix = card.idx
+    cardContainer.dataset.idx = card.idx
 
     if (clickableFunc) cardContainer.addEventListener("click", clickableFunc)
 
