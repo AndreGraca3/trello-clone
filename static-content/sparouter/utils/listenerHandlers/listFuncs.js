@@ -1,4 +1,5 @@
-import {createHTMLList, fetchReq} from "../auxs/utils.js";
+import {fetchReq} from "../auxs/utils.js";
+import {createHTMLList} from "../components/modelComponents.js";
 
 export async function createList(boardContainer, board) {
     const input = document.createElement("input")
@@ -44,9 +45,5 @@ export async function deleteList(list) {
         await fetchReq(`board/${list.idBoard}/list/${list.idList}`, "DELETE")
     } else {
         $('#listModal').modal('show')
-
-        //document.querySelector("#listArchiveButton").addEventListener("click", async () => archivarOsCardsEApagarLista())
-        //document.querySelector("#listDeleteButton").addEventListener("click", async () => apagarCardsELista())
-
     }
 }

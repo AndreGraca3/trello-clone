@@ -1,4 +1,5 @@
-import {createHTMLCard, fetchReq} from "../auxs/utils.js";
+import {fetchReq} from "../auxs/utils.js";
+import {createHTMLCard} from "../components/modelComponents.js";
 
 export const cardFunc = async (card) => {
 
@@ -49,7 +50,7 @@ async function addCard(listCards, input, list) {
         description: null,
         endDate: null
     }
-    const cardId = await fetchReq(`board/${list.idBoard}/card`, "POST", card)
+    const cardId = await fetchReq(`board/${list.idBoard}/card`, "POST", card)   // TODO: Has to return idx
     input.remove()
 
     card.idList = list.idList

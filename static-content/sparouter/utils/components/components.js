@@ -4,9 +4,9 @@ import {mainContent} from "../storage.js"
 export function createElement(tagName, innerText, className, id, ...children) {
     const element = document.createElement(tagName);
 
-    if (className) element.classList.add(className)
-    if (id) element.id = id
-    if (innerText) element.innerText = innerText
+    if (className != null) element.classList.add(className)
+    if (id != null) element.id = id
+    if (innerText != null) element.innerText = innerText
 
     children.forEach(child => {
         if (typeof child === "string") {

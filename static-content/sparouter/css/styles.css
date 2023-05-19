@@ -40,6 +40,9 @@
 .boardBox-body {
     text-align: center;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 120px;
+    height: 75px;
 }
 
 .boardBox:hover {
@@ -50,6 +53,7 @@
     color: white;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .boardBox-text {

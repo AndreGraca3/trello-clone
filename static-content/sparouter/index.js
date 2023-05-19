@@ -2,7 +2,6 @@ import router from "./router.js"
 import defaultHandlers from "./handlers/defaultHandlers.js"
 import userHandlers from "./handlers/userHandlers.js";
 import boardHandlers from "./handlers/boardHandlers.js";
-import cardHandlers from "./handlers/cardHandlers.js";
 import {mainContent, user} from "./utils/storage.js";
 import {handlePath} from "./handlers/handlePath.js";
 
@@ -16,7 +15,6 @@ async function loadHandler() {
     router.addRouteHandler("login", userHandlers.getLogin)
     router.addRouteHandler("signup", userHandlers.getSignup)
     router.addRouteHandler("boards", boardHandlers.getBoards)
-    router.addRouteHandler("board/:idBoard/card/:idCard", cardHandlers.getCard)
     router.addRouteHandler("board/:idBoard", boardHandlers.getBoard)
     router.addRouteHandler("user/avatar", userHandlers.changeUserAvatar)
 

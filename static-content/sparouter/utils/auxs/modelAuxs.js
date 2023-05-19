@@ -26,3 +26,14 @@ export function visitBoard(board) {
     if (RECENT_BOARDS.length === MAX_RECENT_BOARDS) RECENT_BOARDS.pop()
     RECENT_BOARDS.unshift(board)
 }
+
+export function getNextCard(container, y) {
+    const draggableElements = Array.from(container.querySelectorAll('.card-container:not(.dragging)'))
+
+    return draggableElements.reduce((closest, card) => {
+        const box = card.getBoundingClientRect()
+        const offset = y - box.top - box.height / 2
+        if (offset < 0 && offset > closest.offset) return {offset: offset, element: card}
+        else return closest
+    }, {offset: Number.NEGATIVE_INFINITY}).element
+}

@@ -1,8 +1,8 @@
-import {createHTMLBoard} from "../utils/auxs/utils.js"
 import {MAX_RECENT_BOARDS, RECENT_BOARDS} from "../utils/storage.js";
 import {createElement, createRows} from "../utils/components/components.js";
 import {boardFunc} from "../utils/listenerHandlers/boardFuncs.js";
 import {getBoardColor} from "../utils/auxs/modelAuxs.js";
+import {createHTMLBoard} from "../utils/components/modelComponents.js";
 
 
 function getHome() {
@@ -12,7 +12,7 @@ function getHome() {
     createElement("h1", "🕒 Recent Boards", "recent-boards")
 
     const recentBoards = RECENT_BOARDS.map(board => {
-        return createHTMLBoard(board.name, "", "", () => boardFunc(board), getBoardColor(board.idBoard), 5)
+        return createHTMLBoard(board.name, "", null, () => boardFunc(board), getBoardColor(board.idBoard), 5)
     })
 
     const recent = createRows(recentBoards, MAX_RECENT_BOARDS)
