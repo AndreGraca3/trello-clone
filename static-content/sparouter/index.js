@@ -1,20 +1,23 @@
 import router from "./router.js"
-import handlers from "./handlers.js"
+import defaultHandler from "./defaultHandler.js"
+import userHandler from "./userHandler.js";
+import boardHandler from "./boardHandler.js";
+import cardHandler from "./cardHandler.js";
 import {user} from "./utils/storage.js";
 
 window.addEventListener('load', loadHandler)
 window.addEventListener('hashchange', hashChangeHandler)
 
 async function loadHandler() {
-    router.addRouteHandler("error", handlers.getErrorPage)
-    router.addRouteHandler("home", handlers.getHome)
-    router.addRouteHandler("user", handlers.getUser)
-    router.addRouteHandler("login", handlers.getLogin)
-    router.addRouteHandler("signup", handlers.getSignup)
-    router.addRouteHandler("boards", handlers.getBoards)
-    router.addRouteHandler("board/:idBoard/card/:idCard", handlers.getCard)
-    router.addRouteHandler("board/:idBoard", handlers.getBoard)
-    router.addRouteHandler("user/avatar", handlers.changeUserAvatar)
+    router.addRouteHandler("error", defaultHandler.getErrorPage)
+    router.addRouteHandler("home", defaultHandler.getHome)
+    router.addRouteHandler("user", userHandler.getUser)
+    router.addRouteHandler("login", userHandler.getLogin)
+    router.addRouteHandler("signup", userHandler.getSignup)
+    router.addRouteHandler("boards", boardHandler.getBoards)
+    router.addRouteHandler("board/:idBoard/card/:idCard", cardHandler.getCard)
+    router.addRouteHandler("board/:idBoard", boardHandler.getBoard)
+    router.addRouteHandler("user/avatar", userHandler.changeUserAvatar)
 
     await hashChangeHandler()
 }
@@ -31,7 +34,7 @@ async function hashChangeHandler() {
     try {
         await handler(mainContent, obj.args, user.token)
     } catch (e) {
-        handlers.getErrorPage(mainContent, e)
+        defaultHandler.getErrorPage(mainContent, e)
         throw e
     }
 }

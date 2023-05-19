@@ -1,7 +1,7 @@
 import {fetchReq} from "./utils/utils.js";
 
 
-async function getCard(mainContent, args, token) {
+async function getCard(mainContent, args) {
     const idBoard = args.idBoard;
     const idList = args.idList;
     const idCard = args.idCard;
