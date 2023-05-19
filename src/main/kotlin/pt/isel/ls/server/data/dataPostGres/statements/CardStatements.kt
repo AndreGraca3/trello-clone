@@ -16,7 +16,7 @@ object CardStatements {
             "VALUES ('$name', '$description', $idList, $idBoard, '${LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))}', $endDate, $archived, $idx) RETURNING idCard;"
     }
 
-    fun getCardsFromListCMD(idList: Int, idBoard: Int, limit: Int, skip: Int): String {
+    fun getCardsFromListCMD(idList: Int, idBoard: Int, limit: Int?, skip: Int?): String {
         return "SELECT * FROM dbo.card WHERE idList = $idList and idBoard = $idBoard ORDER BY idx ASC LIMIT $limit OFFSET $skip;"
     }
 
@@ -32,6 +32,14 @@ object CardStatements {
 
     fun deleteCard(idCard: Int, idBoard: Int): String {
         return "DELETE FROM dbo.card where idCard = $idCard and idBoard = $idBoard RETURNING idx, idList;"
+    }
+
+    fun deleteCards(idList: Int): String {
+        return "DELETE FROM dbo.card WHERE idList = $idList;"
+    }
+
+    fun archiveCards(idList: Int): String {
+        return "UPDATE dbo.card SET idList = null, archived = true WHERE idList = $idList;"
     }
 
     fun getNextIdx(idList: Int): String {
@@ -50,7 +58,7 @@ object CardStatements {
         return "UPDATE dbo.card SET idx = idx + 1 WHERE idList = $idList and idx >= $idx;"
     }
 
-    fun updateCard(idCard: Int, idList: Int?, idBoard: Int, archived: Boolean, description: String, endDate: String?): String {
-        return "UPDATE dbo.card SET archived = '$archived', description = '$description', endDate = ${if(endDate != null) "'$endDate'" else null}  where idCard = $idCard and idList = $idList and idBoard = $idBoard;"
+    fun updateCard(idCard: Int, idBoard: Int, archived: Boolean, description: String, endDate: String?): String {
+        return "UPDATE dbo.card SET archived = '$archived', description = '$description', endDate = ${if(endDate != null) "'$endDate'" else null}  where idCard = $idCard and idBoard = $idBoard;"
     }
 }

@@ -16,17 +16,22 @@ class UserDataSQL : UserData {
         val dataSource = setup()
         val token = UUID.randomUUID().toString()
         val insertStmt = UserStatements.createUserCMD(email, name, token)
-        var userId = -1
+        var userId: Int
 
         dataSource.connection.use {
             it.autoCommit = false
-            val ps = it.prepareStatement(insertStmt, Statement.RETURN_GENERATED_KEYS)
+            /*val ps = it.prepareStatement(insertStmt, Statement.RETURN_GENERATED_KEYS)
             ps.executeUpdate()
 
-            if (ps.generatedKeys.next()) userId = ps.generatedKeys.getInt(1)
+            if (ps.generatedKeys.next()) userId = ps.generatedKeys.getInt(1)*/
+            val res = it.prepareStatement(insertStmt).executeQuery()
+            res.next()
+
+            userId = res.getInt("idUser")
 
             it.autoCommit = true
         }
+        println("returned id: $userId")
         return Pair(userId, token)
     }
 
@@ -95,9 +100,9 @@ class UserDataSQL : UserData {
         }
     }
 
-    override fun getUsers(idUsers: List<Int>, limit: Int, skip: Int): List<User> {
+    override fun getUsers(idBoard: Int, limit: Int?, skip: Int?): List<User> {
         val dataSource = setup()
-        val selectStmt = UserStatements.getUsersByIds(idUsers, limit, skip)
+        val selectStmt = UserStatements.getUsersFromBoard(idBoard, limit, skip)
         val userList = mutableListOf<User>()
 
         dataSource.connection.use {
@@ -106,7 +111,7 @@ class UserDataSQL : UserData {
 
             while (res.next()) {
                 val user = User(
-                    res.getInt("idUSer"),
+                    res.getInt("idUser"),
                     res.getString("email"),
                     res.getString("name"),
                     res.getString("token"),
@@ -120,13 +125,15 @@ class UserDataSQL : UserData {
         return userList
     }
 
-    override fun changeAvatar(idUser: Int, avatar: String) {
+    override fun changeAvatar(token: String, avatar: String) {
         val dataSource = setup()
-        val updateStmt = UserStatements.changeAvatarCMD(idUser, avatar)
+        val updateStmt = UserStatements.changeAvatarCMD(token, avatar)
 
         dataSource.connection.use {
             it.autoCommit = false
+
             it.prepareStatement(updateStmt).executeUpdate()
+
             it.autoCommit = true
         }
     }

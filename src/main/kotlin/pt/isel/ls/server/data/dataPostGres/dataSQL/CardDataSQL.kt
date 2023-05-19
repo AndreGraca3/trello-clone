@@ -17,22 +17,21 @@ class CardDataSQL : CardData {
     override fun createCard(idList: Int, idBoard: Int, name: String, description: String?, endDate: String?): Int {
         val dataSource = setup()
         val insertStmt = CardStatements.createCardCMD(idList, idBoard, name, description, endDate, getNextIdx(idList))
-        var idCard = -1
+        var idCard: Int
 
         dataSource.connection.use {
             it.autoCommit = false
+            val res = it.prepareStatement(insertStmt).executeQuery()
+            res.next()
 
-            val res = it.prepareStatement(insertStmt, Statement.RETURN_GENERATED_KEYS)
-            res.executeUpdate()
-
-            if (res.generatedKeys.next()) idCard = res.generatedKeys.getInt(1)
+            idCard = res.getInt("idCard")
 
             it.autoCommit = true
         }
         return idCard
     }
 
-    override fun getCardsFromList(idList: Int, idBoard: Int, limit: Int, skip: Int): List<Card> {
+    override fun getCardsFromList(idList: Int, idBoard: Int, limit: Int?, skip: Int?): List<Card> {
         val dataSource = setup()
         val selectStmt = CardStatements.getCardsFromListCMD(idList, idBoard, limit, skip)
         val cards = mutableListOf<Card>()
@@ -136,6 +135,33 @@ class CardDataSQL : CardData {
         }
     }
 
+    override fun deleteCards(idList: Int) {
+        val dataSource = setup()
+        val updateStmt = CardStatements.deleteCards(idList)
+
+        dataSource.connection.use {
+            it.autoCommit = false
+
+            it.prepareStatement(updateStmt).executeUpdate()
+
+            it.autoCommit = true
+        }
+
+    }
+
+    override fun archiveCards(idList: Int) {
+        val dataSource = setup()
+        val updateStmt = CardStatements.archiveCards(idList)
+
+        dataSource.connection.use {
+            it.autoCommit = false
+
+            it.prepareStatement(updateStmt).executeUpdate()
+
+            it.autoCommit = true
+        }
+    }
+
     override fun getNextIdx(idList: Int): Int {
         val dataSource = setup()
         val selectStmt = CardStatements.getNextIdx(idList)
@@ -185,7 +211,6 @@ class CardDataSQL : CardData {
         val dataSource = setup()
         val updateStmt = CardStatements.updateCard(
             card.idCard,
-            card.idList,
             card.idBoard,
             archived,
             description,
@@ -217,4 +242,14 @@ class CardDataSQL : CardData {
         }
         return count
     }
+}
+
+fun <T,R>dataBaseConnection(context: Function<T>) : R {
+    val dataSource = setup()
+    dataSource.connection.use {
+        it.autoCommit = false
+        context
+        it.autoCommit = true
+    }
+    return 1 as R
 }

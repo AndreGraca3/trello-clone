@@ -101,3 +101,20 @@ data class Changes(
     val description: String,
     val endDate: String
 )
+
+data class BoardSQL(
+    val boardName: String,
+    val boardDescription: String,
+    val idList: Int,
+    val listName: String,
+    val idCard: Int?,
+    val cardName: String?,
+    val cardIdx: Int?,
+    val cardArchived: Boolean?
+)
+
+@Serializable
+data class TotalBoards(
+    val totalBoards: Int,
+    val boards: List<BoardWithLists>
+)

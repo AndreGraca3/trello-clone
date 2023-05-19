@@ -18,3 +18,7 @@ sealed class TrelloException(message: String, val status: Status) : Exception(me
 
     class NoContent(obj: String) : TrelloException("$obj didn't exist.", NO_CONTENT)
 }
+
+val map: Map<String, (String) -> TrelloException> = mapOf(
+    "23505" to { str -> TrelloException.AlreadyExists(str) }
+)

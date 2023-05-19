@@ -10,6 +10,7 @@ import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.logger
 import java.lang.reflect.InvocationTargetException
+import java.sql.SQLException
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.jvm.isAccessible
@@ -39,6 +40,12 @@ fun handleRequest(request: Request, handler: KFunction<Response>): Response {
     } catch (e: Exception) {
         when (val cause = if (e is InvocationTargetException) e.targetException else e) {
             is TrelloException -> createRsp(cause.status, cause.message)
+            is SQLException -> {
+                println(cause.localizedMessage)
+                println(cause.sqlState)
+                println(cause.errorCode)
+                createRsp(Status.BAD_REQUEST, cause.message)
+            }
             else -> createRsp(Status.BAD_REQUEST, cause.message)
         }
     }

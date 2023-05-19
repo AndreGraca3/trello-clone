@@ -2,6 +2,10 @@ package pt.isel.ls.server.data.dataPostGres.statements
 
 object UserBoardStatements {
 
+    fun addUserToBoard(idUser: Int, idBoard: Int): String {
+        return "INSERT INTO dbo.user_board (idUser, idBoard) VALUES ($idUser,$idBoard);"
+    }
+
     fun getBoardIdsFromUser(idUser: Int): String {
         return "SELECT idBoard FROM dbo.user_board where idUser = $idUser;"
     }

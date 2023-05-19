@@ -10,7 +10,7 @@ class UserBoardDataSQL : UserBoardData {
 
     override fun addUserToBoard(idUser: Int, idBoard: Int) {
         val dataSource = setup()
-        val insertStmt = BoardStatements.addUserToBoard(idUser, idBoard)
+        val insertStmt = UserBoardStatements.addUserToBoard(idUser, idBoard)
 
         dataSource.connection.use {
             it.autoCommit = false

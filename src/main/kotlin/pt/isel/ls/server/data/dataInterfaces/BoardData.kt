@@ -1,6 +1,6 @@
 package pt.isel.ls.server.data.dataInterfaces
 
-import pt.isel.ls.server.utils.Board
+import pt.isel.ls.server.utils.BoardSQL
 import pt.isel.ls.server.utils.BoardWithLists
 
 interface BoardData {
@@ -8,9 +8,9 @@ interface BoardData {
 
     fun createBoard(idUser: Int, name: String, description: String): Int
 
-    fun getBoard(idBoard: Int): Board
+    fun getBoard(idBoard: Int): List<BoardSQL>
 
     fun checkBoardName(name: String)
 
-    fun getBoardsFromUser(idBoards: List<Int>, limit: Int, skip: Int): List<BoardWithLists>
+    fun getBoardsFromUser(idUser: Int, limit: Int?, skip: Int?): List<BoardWithLists>
 }

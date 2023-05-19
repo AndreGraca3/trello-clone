@@ -5,7 +5,17 @@ import pt.isel.ls.server.data.dataInterfaces.CardData
 import pt.isel.ls.server.data.dataInterfaces.ListData
 import pt.isel.ls.server.data.dataInterfaces.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.UserData
-import pt.isel.ls.server.utils.*
+import pt.isel.ls.server.exceptions.TrelloException
+import pt.isel.ls.server.exceptions.map
+import pt.isel.ls.server.utils.BoardHTML
+import pt.isel.ls.server.utils.BoardWithLists
+import pt.isel.ls.server.utils.CardHTML
+import pt.isel.ls.server.utils.ListHTML
+import pt.isel.ls.server.utils.TotalBoards
+import pt.isel.ls.server.utils.User
+import pt.isel.ls.server.utils.checkPaging
+import pt.isel.ls.server.utils.isValidString
+import java.sql.SQLException
 
 class BoardServices(
     private val userData: UserData,
@@ -22,17 +32,21 @@ class BoardServices(
     fun createBoard(token: String, name: String, description: String): Int {
         isValidString(name, "name")
         isValidString(description, "description")
-        boardData.checkBoardName(name)
+        //boardData.checkBoardName(name)
         val idUser = userData.getUser(token).idUser
-        val idBoard = boardData.createBoard(idUser, name, description)
-        userBoardData.addUserToBoard(idUser, idBoard)
-        return idBoard
+        //userBoardData.addUserToBoard(idUser, idBoard)
+        try{
+            return boardData.createBoard(idUser, name, description)
+        } catch (ex: SQLException) {
+            val trelloException = map[ex.sqlState] ?: throw Exception() // upper modules will see this exception has a bad request.
+            throw trelloException("board")
+        }
     }
 
     fun getBoard(token: String, idBoard: Int): BoardHTML {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
-        val board = boardData.getBoard(idBoard)
+        /*val board = boardData.getBoard(idBoard)
         val countList = listData.getListCount(idBoard)
         val lists = listData.getListsOfBoard(idBoard, countList, 0)
         val cards = lists.map {
@@ -44,35 +58,69 @@ class BoardServices(
             val currCards = cards[i].map { CardHTML(it.idCard, it.idList, it.idBoard, it.name, it.idx, it.archived) }
             val currList = lists[i]
             listsHTML.add(ListHTML(currList.idList, currList.idBoard, currList.name, currCards))
+        }*/
+        val boardsSQL = boardData.getBoard(idBoard)
+        val listsHtml = mutableListOf<ListHTML>()
+        var cardsHtml = mutableListOf<CardHTML>()
+
+        for (i in boardsSQL.indices) {
+            if (boardsSQL[i].idCard == null) {
+                listsHtml.add(ListHTML(boardsSQL[i].idList, idBoard, boardsSQL[i].listName, emptyList()))
+            } else {
+                val currListId = boardsSQL[i].idList
+                cardsHtml.add(
+                    CardHTML(
+                        boardsSQL[i].idCard!!,
+                        currListId,
+                        idBoard,
+                        boardsSQL[i].cardName!!,
+                        boardsSQL[i].cardIdx!!,
+                        boardsSQL[i].cardArchived!!
+                    )
+                )
+                if(i + 1 >= boardsSQL.size || currListId != boardsSQL[i + 1].idList ) {
+                    listsHtml.add(ListHTML(currListId, idBoard, boardsSQL[i].listName, cardsHtml))
+                    cardsHtml = mutableListOf()
+                }
+            }
         }
-        return BoardHTML(board.idBoard, board.name, board.description, listsHTML)
+        return BoardHTML(idBoard, boardsSQL.first().boardName, boardsSQL.first().boardDescription, listsHtml)
     }
 
-    fun getBoardsFromUser(token: String, limit: Int?, skip: Int?): List<BoardWithLists> {
+    fun getBoardsFromUser(token: String, limit: Int?, skip: Int?): TotalBoards {
         val idUser = userData.getUser(token).idUser
-        val boardsIds = userBoardData.searchUserBoards(idUser)
-        val count = userBoardData.getBoardCountFromUser(idUser)
-        val pairPaging = checkPaging(count, limit, skip)
-        return boardData.getBoardsFromUser(boardsIds, pairPaging.second, pairPaging.first) // second => "limit" and first => "skip"
+        //val boardsIds = userBoardData.searchUserBoards(idUser)
+        //val count = userBoardData.getBoardCountFromUser(idUser)
+        //val pairPaging = checkPaging(count, limit, skip)
+        val boards = boardData.getBoardsFromUser(
+            idUser,
+            if(limit != null && limit < 0) null else limit,
+            if(skip != null && skip < 0) null else skip
+        ) // second => "limit" and first => "skip"
+        return TotalBoards(boards.size, boards)
     }
 
     fun addUserToBoard(token: String, idNewUser: Int, idBoard: Int) {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
         userData.getUser(idNewUser) // check if user to add exists
-        try {
+        /*try {
             userBoardData.checkUserInBoard(idNewUser, idBoard) // this throws exception
         } catch (e: Exception) {
             userBoardData.addUserToBoard(idNewUser, idBoard)
-        }
+        }*/
+        userBoardData.addUserToBoard(idNewUser, idBoard)
     }
 
     fun getUsersFromBoard(token: String, idBoard: Int, limit: Int?, skip: Int?): List<User> {
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
-        val userIds = userBoardData.getIdUsersFromBoard(idBoard)
-        val count = userBoardData.getUserCountFromBoard(idBoard)
-        val pairPaging = checkPaging(count, limit, skip)
-        return userData.getUsers(userIds, pairPaging.second, pairPaging.first)
+        //val userIds = userBoardData.getIdUsersFromBoard(idBoard)
+        //val count = userBoardData.getUserCountFromBoard(idBoard)
+        //val pairPaging = checkPaging(count, limit, skip)
+        return userData.getUsers(idBoard,
+            if(limit != null && limit < 0) null else limit ,
+            if(skip != null && skip < 0) null else skip
+        )
     }
 }

@@ -30,8 +30,9 @@ class CardDataMem : CardData {
         return newCard.idCard
     }
 
-    override fun getCardsFromList(idList: Int, idBoard: Int, limit: Int, skip: Int): List<Card> {
-        return cards.filter { it.idList == idList && it.idBoard == idBoard }.subList(skip, skip + limit).sortedBy { it.idx }
+    override fun getCardsFromList(idList: Int, idBoard: Int, limit: Int?, skip: Int?): List<Card> {
+        //return cards.filter { it.idList == idList && it.idBoard == idBoard }.subList(skip, skip + limit).sortedBy { it.idx }
+        TODO("Not yet implemented.")
     }
 
     override fun getCard(idCard: Int, idBoard: Int): Card {
@@ -62,6 +63,14 @@ class CardDataMem : CardData {
         cards.forEach {
             if (it.idList == card.idList && it.idx >= card.idx) it.idx--
         }
+    }
+
+    override fun deleteCards(idList: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun archiveCards(idList: Int) {
+        TODO("Not yet implemented")
     }
 
     override fun getNextIdx(idList: Int): Int {
