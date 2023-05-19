@@ -37,7 +37,9 @@ class BoardAPI(private val services: BoardServices) {
     fun getBoardsFromUser(request: Request, token: String): Response {
         val limit = getQueryParam(request, "limit")?.toIntOrNull()
         val skip = getQueryParam(request, "skip")?.toIntOrNull()
-        return createRsp(OK, services.getBoardsFromUser(token, limit, skip))
+        val name = getQueryParam(request, "name")
+        val numLists = getQueryParam(request, "numLists")?.toIntOrNull()
+        return createRsp(OK, services.getBoardsFromUser(token, limit, skip, name, numLists))
     }
 
     @Auth

@@ -87,17 +87,20 @@ class BoardServices(
         return BoardHTML(idBoard, boardsSQL.first().boardName, boardsSQL.first().boardDescription, listsHtml)
     }
 
-    fun getBoardsFromUser(token: String, limit: Int?, skip: Int?): TotalBoards {
+    fun getBoardsFromUser(token: String, limit: Int?, skip: Int?, name: String?, numLists: Int?): TotalBoards {
         val idUser = userData.getUser(token).idUser
         //val boardsIds = userBoardData.searchUserBoards(idUser)
-        //val count = userBoardData.getBoardCountFromUser(idUser)
+        val count = userBoardData.getBoardCountFromUser(idUser) //TODO
         //val pairPaging = checkPaging(count, limit, skip)
+
         val boards = boardData.getBoardsFromUser(
             idUser,
             if(limit != null && limit < 0) null else limit,
             if(skip != null && skip < 0) null else skip
+//            name,
+//            numLists
         ) // second => "limit" and first => "skip"
-        return TotalBoards(boards.size, boards)
+        return TotalBoards(count, boards)
     }
 
     fun addUserToBoard(token: String, idNewUser: Int, idBoard: Int) {
