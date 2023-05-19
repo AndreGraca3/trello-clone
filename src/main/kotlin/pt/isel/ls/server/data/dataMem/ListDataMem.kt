@@ -21,8 +21,9 @@ class ListDataMem : ListData {
             ?: throw TrelloException.NotFound("List")
     }
 
-    override fun getListsOfBoard(idBoard: Int, limit: Int, skip: Int): List<BoardList> {
-        return lists.filter { it.idBoard == idBoard }.subList(skip, skip + limit)
+    override fun getListsOfBoard(idBoard: Int, limit: Int?, skip: Int?): List<BoardList> {
+        //return lists.filter { it.idBoard == idBoard }.subList(skip, skip + limit)
+        TODO("Not yet implemented.")
     }
 
     override fun deleteList(idList: Int, idBoard: Int) {

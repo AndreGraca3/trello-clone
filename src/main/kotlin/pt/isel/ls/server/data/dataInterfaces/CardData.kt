@@ -15,13 +15,17 @@ interface CardData {
         endDate: String? = null
     ): Int // check endDate
 
-    fun getCardsFromList(idList: Int, idBoard: Int, limit: Int, skip: Int): List<Card>
+    fun getCardsFromList(idList: Int, idBoard: Int, limit: Int?, skip: Int?): List<Card>
 
     fun getCard(idCard: Int, idBoard: Int): Card
 
     fun moveCard(idCard: Int, idBoard: Int, idListDst: Int, idxDst: Int)
 
     fun deleteCard(idCard: Int, idBoard: Int)
+
+    fun deleteCards(idList: Int)
+
+    fun archiveCards(idList: Int)
 
     fun getNextIdx(idList: Int): Int
 

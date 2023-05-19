@@ -2,8 +2,10 @@ package pt.isel.ls.server.services
 
 import pt.isel.ls.server.data.dataInterfaces.UserData
 import pt.isel.ls.server.exceptions.TrelloException
+import pt.isel.ls.server.exceptions.map
 import pt.isel.ls.server.utils.User
 import pt.isel.ls.server.utils.isValidString
+import java.sql.SQLException
 
 class UserServices(private val userData: UserData) {
 
@@ -15,8 +17,13 @@ class UserServices(private val userData: UserData) {
         isValidString(name, "name")
         isValidString(email, "email")
         if (!Regex("@").containsMatchIn(email)) throw TrelloException.IllegalArgument(email)
-        userData.checkEmail(email)
-        return userData.createUser(name, email)
+        // userData.checkEmail(email)
+        try {
+            return userData.createUser(name, email)
+        } catch (ex: SQLException) {
+            val trelloException = map[ex.sqlState] ?: throw Exception()
+            throw trelloException("email")
+        }
     }
 
     fun getUser(token: String): User {
@@ -25,7 +32,7 @@ class UserServices(private val userData: UserData) {
 
     fun changeAvatar(token: String, avatar: String) {
         isValidString(avatar, "avatar")
-        val user = userData.getUser(token)
-        userData.changeAvatar(user.idUser, avatar)
+        userData.getUser(token)
+        userData.changeAvatar(token, avatar) // verify if this throws a SQLException in some situation.
     }
 }

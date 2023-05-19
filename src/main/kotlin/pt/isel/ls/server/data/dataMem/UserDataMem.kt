@@ -30,16 +30,17 @@ class UserDataMem : UserData {
         if (users.any { it.email == email }) throw TrelloException.AlreadyExists(email)
     }
 
-    override fun getUsers(idUsers: List<Int>, limit: Int, skip: Int): List<User> {
-        return users.filter { idUsers.contains(it.idUser) }.subList(skip, skip + limit)
+    override fun getUsers(idBoard: Int, limit: Int?, skip: Int?): List<User> {
+        //return users.filter { idUsers.contains(it.idUser) }.subList(skip, skip + limit)
+        TODO("Not yet implemented!")
     }
 
     private fun getNextId(): Int {
         return if (users.isEmpty()) 1 else users.last().idUser + 1
     }
 
-    override fun changeAvatar(idUser: Int, avatar: String) {
-        val user = getUser(idUser)
+    override fun changeAvatar(token: String, avatar: String) {
+        val user = getUser(token)
         users[users.indexOf(user)] = user.copy(avatar = avatar)
     }
 }

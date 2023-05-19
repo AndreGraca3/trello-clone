@@ -13,15 +13,15 @@ class ListDataSQL : ListData {
     override fun createList(idBoard: Int, name: String): Int {
         val dataSource = setup()
         val insertStmt = ListStatement.createListCMD(idBoard, name)
-        var idList = -1
+        var idList: Int
 
         dataSource.connection.use {
             it.autoCommit = true
 
-            val res = it.prepareStatement(insertStmt, Statement.RETURN_GENERATED_KEYS)
-            res.executeUpdate()
+            val res = it.prepareStatement(insertStmt).executeQuery()
+            res.next()
 
-            if (res.generatedKeys.next()) idList = res.generatedKeys.getInt(1)
+            idList = res.getInt("idList")
 
             it.autoCommit = true
         }
@@ -52,7 +52,7 @@ class ListDataSQL : ListData {
         return list
     }
 
-    override fun getListsOfBoard(idBoard: Int, limit: Int, skip: Int): List<BoardList> {
+    override fun getListsOfBoard(idBoard: Int, limit: Int?, skip: Int?): List<BoardList> {
         val dataSource = setup()
         val selectStmt = ListStatement.getListOfBoard(idBoard, limit, skip)
         val lists = mutableListOf<BoardList>()

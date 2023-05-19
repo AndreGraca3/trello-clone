@@ -5,10 +5,12 @@ import pt.isel.ls.server.data.dataInterfaces.ListData
 import pt.isel.ls.server.data.dataInterfaces.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.UserData
 import pt.isel.ls.server.exceptions.TrelloException
+import pt.isel.ls.server.exceptions.map
 import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.checkEndDate
 import pt.isel.ls.server.utils.checkPaging
 import pt.isel.ls.server.utils.isValidString
+import java.sql.SQLException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -28,9 +30,14 @@ class CardServices(
         if (description != null) isValidString(description, "description")
         val idUser = userData.getUser(token).idUser
         userBoardData.checkUserInBoard(idUser, idBoard)
-        listData.getList(idList, idBoard)
+        //listData.getList(idList, idBoard)
         if (endDate != null) checkEndDate(endDate)
-        return cardData.createCard(idList, idBoard, name, description, endDate)
+        try{
+            return cardData.createCard(idList, idBoard, name, description, endDate)
+        } catch (ex: SQLException) {
+            val trelloException = map[ex.sqlState] ?: throw Exception()
+            throw trelloException("List")
+        }
     }
 
     fun getCard(token: String, idBoard: Int, idCard: Int): Card {

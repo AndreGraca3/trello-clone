@@ -7,7 +7,7 @@ object UserStatements {
     }
 
     fun createUserCMD(email: String, name: String, token: String): String {
-        return "INSERT INTO dbo.user (email, name, token) VALUES ('$email', '$name', '$token', 'https://i.imgur.com/JGtwTBw.png');"
+        return "INSERT INTO dbo.user (email, name, token, avatar) VALUES ('$email', '$name', '$token', 'https://i.imgur.com/JGtwTBw.png') returning idUser;"
     }
 
     fun getUserCMD(token: String): String {
@@ -22,12 +22,16 @@ object UserStatements {
         return "SELECT * FROM dbo.user WHERE email = '$email';"
     }
 
-    fun getUsersByIds(idUsers: List<Int>, limit: Int, skip: Int): String {
-        val idUsersString = idUsers.toString().replace("[", "(").replace("]", ")")
-        return "SELECT * from dbo.user where idUser IN $idUsersString LIMIT $limit OFFSET $skip;"
+    fun getUsersFromBoard(idBoard: Int, limit: Int?, skip: Int?): String {
+        //val idUsersString = idUsers.toString().replace("[", "(").replace("]", ")")
+        //return "SELECT * from dbo.user where idUser IN $idUsersString LIMIT $limit OFFSET $skip;"
+        return "SELECT u.iduser, u2.name, u2.email, u2.token, u2.avatar FROM dbo.user_board u\n" +
+                "inner join dbo.user u2 on u2.iduser = u.iduser\n" +
+                "where u.idboard = $idBoard\n"+
+                "LIMIT $limit OFFSET $skip;"
     }
 
-    fun changeAvatarCMD(idUser: Int, avatar: String): String {
-        return "UPDATE dbo.user SET avatar = '$avatar' WHERE idUser = $idUser"
+    fun changeAvatarCMD(token: String, avatar: String): String {
+        return "UPDATE dbo.user SET avatar = '$avatar' WHERE token = '$token';"
     }
 }
