@@ -14,17 +14,17 @@ async function getBoards(args) {
 
     createElement("h1", "My Boards")
 
-    const boards =
+    const res =
         await fetchReq(`board?skip=${args.skip}&limit=${args.limit}${args.name!=null ? `&name=${args.name}` : ''}`,
             "GET")
 
-    boards.totalBoards = 9    // TODO: waiting for Backend implementation
+    const boards = res.boards
 
     // Prevent from going off range
     if (!args.skip) args.skip = 0
     if (!args.limit) args.limit = LIMIT_INITIAL_VALUE
     if (args.skip < 0) args.skip = Math.max(0, args.skip)
-    if (args.skip > boards.totalBoards) args.skip = Math.min(boards.totalBoards - args.limit + 1, args.skip)
+    if (args.skip > res.totalBoards) args.skip = Math.min(res.totalBoards - args.limit + 1, args.skip)
     document.location = `#boards?skip=${args.skip}&limit=${args.limit}${args.name!=null ? `&name=${args.name}` : ''}`
 
     const boardCards = boards.map(board =>
@@ -51,7 +51,7 @@ async function getBoards(args) {
 
     createElement("div", null, "paginationContainer", null,
         createElement("div", "Boards per Page: ", "pagination-control", null, select),
-        createPaginationButtons(args.skip, args.limit, boards.totalBoards, args.name),
+        createPaginationButtons(args.skip, args.limit, res.totalBoards, args.name),
         searchBar
     )
 
