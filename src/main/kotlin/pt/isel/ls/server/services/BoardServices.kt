@@ -89,17 +89,17 @@ class BoardServices(
 
     fun getBoardsFromUser(token: String, limit: Int?, skip: Int?, name: String?, numLists: Int?): TotalBoards {
         val idUser = userData.getUser(token).idUser
-        //val boardsIds = userBoardData.searchUserBoards(idUser)
-        val count = userBoardData.getBoardCountFromUser(idUser) //TODO
-        //val pairPaging = checkPaging(count, limit, skip)
+        val name = name ?: ""
+        val numLists = numLists ?: 0
+        val count = userBoardData.getBoardCountFromUser(idUser, name, numLists)
 
         val boards = boardData.getBoardsFromUser(
             idUser,
             if(limit != null && limit < 0) null else limit,
-            if(skip != null && skip < 0) null else skip
-//            name,
-//            numLists
-        ) // second => "limit" and first => "skip"
+            if(skip != null && skip < 0) null else skip,
+            name,
+            numLists
+        )
         return TotalBoards(count, boards)
     }
 

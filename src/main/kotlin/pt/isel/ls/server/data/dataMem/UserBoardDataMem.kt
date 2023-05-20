@@ -27,7 +27,7 @@ class UserBoardDataMem : UserBoardData {
         return usersBoards.filter { it.idBoard == idBoard }.map { it.idUser }
     }
 
-    override fun getBoardCountFromUser(idUser: Int): Int {
+    override fun getBoardCountFromUser(idUser: Int, name: String, numLists: Int): Int {
         return usersBoards.count { it.idUser == idUser }
     }
 

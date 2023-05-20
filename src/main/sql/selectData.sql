@@ -27,5 +27,33 @@ inner join "user" u2 on u2.iduser = u.iduser
 where u.idboard = 1
 LIMIT null OFFSET null;
 
-insert into card(idboard, idlist, startdate, name, archived, idx)
-values (1, null, '2023-05-18 16:40', 'CardDelete', false, 100);
+--getBoards
+SELECT b.idboard, b.name, b.description, COUNT(l.idlist) AS numLists
+FROM dbo.board b
+         INNER JOIN dbo.user_board u ON u.idboard = b.idboard
+         LEFT OUTER JOIN dbo.list l ON l.idboard = b.idboard
+WHERE u.iduser = 1 AND b.name LIKE '%Boa%'
+GROUP BY b.idboard, b.name, b.description
+HAVING COUNT(l.idlist) >= 0
+ORDER BY b.idboard ASC
+LIMIT 4 OFFSET 1;
+
+--getBoardsCount
+SELECT COUNT(*) AS count
+FROM (
+         SELECT DISTINCT b.idBoard
+         FROM dbo.board b
+                  INNER JOIN dbo.user_board ub ON ub.idBoard = b.idBoard
+                  LEFT JOIN dbo.list l ON l.idBoard = b.idBoard
+         WHERE ub.idUser = 1 AND b.name LIKE '%Bo%'
+         GROUP BY b.idBoard
+         HAVING COUNT(l.idList) >= 0
+    ) AS subquery;
+
+-- getBoard
+SELECT b.name, b.description, l.idlist, l.name AS listName, c.idcard, c.name AS cardName, c.idx, c.archived
+FROM dbo.board b
+INNER JOIN dbo.list l on l.idboard = b.idboard
+LEFT OUTER JOIN dbo.card c ON c.idlist = l.idlist
+WHERE b.idboard = 21
+ORDER BY l.idlist ASC, c.idcard ASC;

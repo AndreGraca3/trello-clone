@@ -10,7 +10,5 @@ interface BoardData {
 
     fun getBoard(idBoard: Int): List<BoardSQL>
 
-    fun checkBoardName(name: String)
-
-    fun getBoardsFromUser(idUser: Int, limit: Int?, skip: Int?): List<BoardWithLists>
+    fun getBoardsFromUser(idUser: Int, limit: Int?, skip: Int?, name: String, numLists: Int): List<BoardWithLists>
 }

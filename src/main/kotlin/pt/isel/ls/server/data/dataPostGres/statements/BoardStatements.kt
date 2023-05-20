@@ -7,7 +7,6 @@ object BoardStatements {
     }
 
     fun getBoardCMD(idBoard: Int): String {
-        //return "SELECT * FROM dbo.board WHERE idBoard = $idBoard;"
         return "SELECT b.name, b.description, l.idlist, l.name AS listName, c.idcard, c.name AS cardName, c.idx, c.archived FROM dbo.board b\n" +
                 "INNER JOIN dbo.list l on l.idboard = b.idboard\n" +
                 "LEFT OUTER JOIN dbo.card c ON c.idlist = l.idlist\n" +
@@ -15,19 +14,15 @@ object BoardStatements {
                 "ORDER BY l.idlist ASC, c.idcard ASC;"
     }
 
-    fun getBoardByNameCMD(name: String): String {
-        return "SELECT * FROM dbo.board WHERE name = '$name';"
-    }
-
-    fun getBoardsFromUser(idUser: Int, limit: Int?, skip: Int?): String {
-        //return "SELECT * FROM dbo.board where idBoard IN $idBoardsString LIMIT $limit OFFSET $skip;"
+    fun getBoardsFromUser(idUser: Int, limit: Int?, skip: Int?, name: String, numLists: Int): String {
         return "SELECT b.idboard, b.name, b.description, COUNT(l.idlist) AS numLists\n" +
                 "FROM dbo.board b\n" +
-                "INNER JOIN dbo.user_board u on u.idboard = b.idboard\n" +
-                "left outer join dbo.list l on l.idboard = b.idboard\n" +
-                "where u.iduser = $idUser\n" +
-                "group by b.idboard\n" +
-                "order by b.idboard ASC\n" +
+                "INNER JOIN dbo.user_board u ON u.idboard = b.idboard\n" +
+                "LEFT OUTER JOIN dbo.list l ON l.idboard = b.idboard\n" +
+                "WHERE u.iduser = $idUser AND b.name LIKE '%$name%'\n" +
+                "GROUP BY b.idboard, b.name, b.description\n" +
+                "HAVING COUNT(l.idlist) >= $numLists\n" +
+                "ORDER BY b.idboard ASC\n" +
                 "LIMIT $limit OFFSET $skip;"
     }
 

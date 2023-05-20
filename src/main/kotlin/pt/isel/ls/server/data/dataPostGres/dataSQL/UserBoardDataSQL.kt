@@ -75,9 +75,9 @@ class UserBoardDataSQL : UserBoardData {
         return userIds
     }
 
-    override fun getBoardCountFromUser(idUser: Int): Int {
+    override fun getBoardCountFromUser(idUser: Int, name: String, numLists: Int): Int {
         val dataSource = setup()
-        val selectStmt = UserBoardStatements.getBoardCountFromUser(idUser)
+        val selectStmt = UserBoardStatements.getBoardCountFromUser(idUser, name, numLists)
         var count: Int
 
         dataSource.connection.use {

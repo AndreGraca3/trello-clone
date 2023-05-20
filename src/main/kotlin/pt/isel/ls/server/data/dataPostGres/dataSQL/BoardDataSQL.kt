@@ -6,6 +6,7 @@ import pt.isel.ls.server.data.dataPostGres.statements.UserBoardStatements
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.BoardSQL
 import pt.isel.ls.server.utils.BoardWithLists
+import pt.isel.ls.server.utils.TotalBoards
 import pt.isel.ls.server.utils.setup
 
 class BoardDataSQL : BoardData {
@@ -40,23 +41,8 @@ class BoardDataSQL : BoardData {
 
         dataSource.connection.use {
             it.autoCommit = false
+
             val res = it.prepareStatement(selectStmt).executeQuery()
-            res.next()
-
-            if (res.row == 0) throw TrelloException.NotFound("Board")
-
-            listBoardSQL.add(
-                BoardSQL(
-                    res.getString("name"),
-                    res.getString("description"),
-                    res.getInt("idList"),
-                    res.getString("listName"),
-                    if (res.getInt("idCard") == 0) null else res.getInt("idCard"),
-                    res.getString("cardName"),
-                    res.getInt("idx"),
-                    res.getBoolean("archived")
-                )
-            )
 
             while (res.next()) {
                 listBoardSQL.add(
@@ -77,25 +63,17 @@ class BoardDataSQL : BoardData {
         return listBoardSQL
     }
 
-    override fun checkBoardName(name: String) {
-        val dataSource = setup()
-        val selectStmt = BoardStatements.getBoardByNameCMD(name)
+    override fun getBoardsFromUser(
+        idUser: Int,
+        limit: Int?,
+        skip: Int?,
+        name: String,
+        numLists: Int
+    ): List<BoardWithLists> {
 
-        dataSource.connection.use {
-            it.autoCommit = false
-            val res = it.prepareStatement(selectStmt).executeQuery()
-            res.next()
-
-            if (res.row != 0) throw throw TrelloException.AlreadyExists("Board $name")
-
-            it.autoCommit = true
-        }
-    }
-
-    override fun getBoardsFromUser(idUser: Int, limit: Int?, skip: Int?): List<BoardWithLists> {
         val boards = mutableListOf<BoardWithLists>()
         val dataSource = setup()
-        val selectStmt = BoardStatements.getBoardsFromUser(idUser, limit, skip)
+        val selectStmt = BoardStatements.getBoardsFromUser(idUser, limit, skip, name, numLists)
 
         dataSource.connection.use {
             it.autoCommit = false

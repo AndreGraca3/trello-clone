@@ -13,3 +13,6 @@ insert into list (idboard, name) values (1, 'List2');
 insert into card (idboard, idlist) values (1, 2);
 
 insert into card (idboard, idlist, startdate, name, description, archived, idx) values (1, 1, '2023-10-20 17:15:00', 'Card3', 'this is a Card3.', false, 3);
+
+insert into card(idboard, idlist, startdate, name, archived, idx)
+values (1, null, '2023-05-18 16:40', 'CardDelete', false, 100);
