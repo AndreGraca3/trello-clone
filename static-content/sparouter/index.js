@@ -25,7 +25,7 @@ async function hashChangeHandler() {
     mainContent.style.background = "rgb(42, 40, 40)"
     mainContent.replaceChildren()
 
-    let path = window.location.hash.replace("#", "")
+    let path = window.location.hash.slice(1)
 
     let obj = handlePath(path)
     const handler = router.getRouteHandler(obj.path) // ,obj.args

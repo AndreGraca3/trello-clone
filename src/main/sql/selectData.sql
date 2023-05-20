@@ -55,5 +55,5 @@ SELECT b.name, b.description, l.idlist, l.name AS listName, c.idcard, c.name AS 
 FROM dbo.board b
 INNER JOIN dbo.list l on l.idboard = b.idboard
 LEFT OUTER JOIN dbo.card c ON c.idlist = l.idlist
-WHERE b.idboard = 21
+WHERE b.idboard = 30
 ORDER BY l.idlist ASC, c.idcard ASC;

@@ -82,3 +82,10 @@ export function handlePath(path) {
 function checkPaging(path) {
     return (path.includes("?") && (path.includes("limit") || path.includes("skip")))
 }
+
+export function addOrChangeQuery(query, value) {
+    const hash = document.location.hash.split('?')
+    const params = new URLSearchParams(hash[1])
+    params.set(query, value)
+    document.location.hash = hash[0] + '?' + params.toString()
+}

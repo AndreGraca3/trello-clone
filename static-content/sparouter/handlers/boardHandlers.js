@@ -1,6 +1,6 @@
 import {darkerColor, fetchReq} from "../utils/auxs/utils.js";
 import {LIMIT_INITIAL_VALUE, mainContent, MAX_BOARDS_DISPLAY, PAGINATION_CONTROL_VALUES} from "../utils/storage.js";
-import {createElement, createRows} from "../utils/components/components.js";
+import {createElement, createRows, createSearchBar} from "../utils/components/components.js";
 import {createHTMLBoard, createHTMLList, createPaginationButtons} from "../utils/components/modelComponents.js";
 import {archivedDropdown, usersDropdown} from "../utils/dropdowns/modelDropdowns.js";
 import {boardFunc} from "../utils/listenerHandlers/boardFuncs.js";
@@ -43,11 +43,7 @@ async function getBoards(args) {
     select.value = args.limit
     select.addEventListener("change", (ev) => document.location = `#boards?skip=${args.skip}&limit=${ev.target.value}`)
 
-    const searchBar = createElement("input", null, "mr-sm-2")
-    searchBar.placeholder = "🔍 Search Board"
-    searchBar.addEventListener("keyup", (ev) => {
-        if (ev.key === "Enter") window.location.hash += `&name=${searchBar.value}`
-    })
+    const searchBar = createSearchBar()
 
     createElement("div", null, "paginationContainer", null,
         createElement("div", "Boards per Page: ", "pagination-control", null, select),

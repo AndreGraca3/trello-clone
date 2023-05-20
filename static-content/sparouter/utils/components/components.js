@@ -1,4 +1,5 @@
 import {mainContent} from "../storage.js"
+import {addOrChangeQuery} from "../../handlers/handlePath.js";
 
 
 export function createElement(tagName, innerText, className, id, ...children) {
@@ -39,4 +40,39 @@ export function createRows(items, itemsPerRow) {
         container.appendChild(row)
     }
     return container
+}
+
+export function createSearchBar() {
+    const searchBar = createElement("input", null, "mr-sm-2")
+    searchBar.classList.add("searchBar")
+    searchBar.placeholder = "Search Board's Name"
+
+    const selector = createElement("select", null, "search-selector")
+    selector.addEventListener("change", () => {
+        const selectedValue = selector.value
+        if (selectedValue === "name") {
+            searchBar.placeholder = "Search Board's Name"
+        } else if (selectedValue === "numLists") {
+            searchBar.placeholder = "Search Lists Num."
+        }
+    })
+
+    const nameOption = createElement("option", "🔠")
+    nameOption.value = "name"
+    const numListsOption = createElement("option", "🔢")
+    numListsOption.value = "numLists"
+
+    selector.add(nameOption)
+    selector.add(numListsOption)
+
+    searchBar.addEventListener("keyup", (ev) => {
+        if (ev.key === "Enter") {
+            const selectedValue = selector.value
+            if (selectedValue === "name" || selectedValue === "numLists")
+                addOrChangeQuery(selectedValue, searchBar.value)
+        }
+    })
+
+    return createElement("div", null, "search-selector-container", null,
+        selector, searchBar)
 }

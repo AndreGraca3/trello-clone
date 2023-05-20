@@ -17,8 +17,18 @@
     justify-content: center;
     align-items: center;
     margin: auto;
-    /*float: left;
-    padding-left: 10em;*/
+    opacity: 0;
+    animation: fadeIn 0.8s ease-in;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .boardBox-row {
@@ -172,6 +182,60 @@
     display: grid;
     justify-content: right;
     margin-right: 30px;
+}
+
+.searchBar {
+    flex-grow: 1;
+}
+
+.search-selector-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+}
+
+.search-selector option {
+    background-color: #333333;
+}
+
+.search-selector {
+    font-size: 20px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-radius: 4px;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    transition: border-color 0.3s ease-in-out;
+}
+
+.search-selector:hover {
+    border-color: #999999;
+}
+
+.search-selector:focus {
+    border-color: #333333;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(51, 51, 51, 0.2);
+}
+
+.mr-sm-2 {
+    /* Add any desired styles for the input field */
+}
+
+.search-selector:hover::after {
+    transform: rotate(180deg);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-5%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 .dropdown-menu-scrollable {
@@ -379,6 +443,10 @@
 .paginationContainer {
     display: flex;
     margin-top: 50px;
+    animation-name: slideIn;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
 }
 
 .pagination-buttons {
@@ -446,7 +514,6 @@
     color: white;
 }
 
-/* Dropdown arrow icon */
 .pagination-control::after {
     content: "";
     position: absolute;
