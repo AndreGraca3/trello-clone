@@ -31,15 +31,11 @@ class UserBoardDataMem : UserBoardData {
         return usersBoards.filter { it.idBoard == idBoard }.map { it.idUser }
     }
 
+    /** returns total of boards available with applied filters **/
     override fun getBoardCountFromUser(idUser: Int, name: String, numLists: Int?): Int {
-        val boards = boards.filter { it.name == name }
-            .map {
-                board -> lists.count { it.idBoard == board.idBoard }
-            }
-            .filter {
-                it == numLists
-            }
-        return boards.size
+        val boards = boards.filter { it.name.contains(name) }
+        val counts = boards.map { b ->  Pair(b.idBoard, lists.count { it.idBoard == b.idBoard }) }
+        return counts.count { it.second == (numLists ?: it.second) }
     }
 
     override fun getUserCountFromBoard(idBoard: Int): Int {
