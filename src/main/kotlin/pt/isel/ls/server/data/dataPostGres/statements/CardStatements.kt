@@ -68,7 +68,7 @@ object CardStatements {
         return "SELECT * FROM dbo.card where card.idList is null and card.idBoard = $idBoard;"
     }
 
-    fun decreaseIdx(idList: Int, idx: Int): String {
+    fun decreaseIdx(idList: Int?, idx: Int): String {
         return "UPDATE dbo.card SET idx = idx - 1 WHERE idList = $idList and idx >= $idx;"
     }
 
@@ -76,10 +76,11 @@ object CardStatements {
         return "UPDATE dbo.card SET idx = idx + 1 WHERE idList = $idList and idx >= $idx;"
     }
 
-    fun updateCard(idCard: Int, idBoard: Int, description: String?, endDate: String?): String {
+    fun updateCard(idCard: Int, idBoard: Int, description: String?, endDate: String?, idList: Int?, archived: Boolean): String {
         return "UPDATE dbo.card " +
                 "SET description = ${if (description != null) "'$description'" else null}, " +
-                "endDate = ${if (endDate != null) "'$endDate'" else null} " +
+                "endDate = ${if (endDate != null) "'$endDate'" else null}, " +
+                "idList = $idList, archived = $archived " +
                 "where idCard = $idCard and idBoard = $idBoard;"
     }
 }

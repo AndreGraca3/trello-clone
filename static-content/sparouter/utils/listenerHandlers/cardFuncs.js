@@ -70,7 +70,6 @@ async function archiveCard(card) {
 
     if(!card.archived) {
         // move to archived
-        await fetchReq(`board/${card.idBoard}/card/${card.idCard}/archive`, "PUT")
         list.removeChild(cardToMove)
 
         const newArchived = createElement("li", null, "dropdown-item",
@@ -82,14 +81,24 @@ async function archiveCard(card) {
 
         archivedContainer.appendChild(newArchived)
     } else {
-        // TODO: waiting for Backend implementation
         // return to origin TODO: check if list exits if i want to unarchive
-        // await fetchReq(`board/${card.idBoard}/card/${card.idCard}/dearchive`, "PUT")
         archivedContainer.removeChild(cardToMove)
         const DeArchivedCard = createHTMLCard(card, async () => cardFunc(card))
         list.appendChild(DeArchivedCard)
     }
 
+    let newEndDate = document.querySelector("#endDateTime").value.replace("T", " ")
+
+    const newDescription = document.querySelector("#Description-textBox").value
+
+    const body = {
+        archived: !card.archived,
+        description: newDescription,
+        endDate: newEndDate,
+        idList: null
+    }
+
+    await fetchReq(`board/${card.idBoard}/card/${card.idCard}/update`, "PUT", body)
     $('#cardModal').modal('hide')
 }
 

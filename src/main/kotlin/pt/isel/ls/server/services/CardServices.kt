@@ -66,24 +66,14 @@ class CardServices(
         } as Unit
     }
 
-    fun archiveCard(token: String, idBoard: Int, idCard: Int) {
-        return dataExecutor.execute {
-            val idUser = userData.getUser(token, it).idUser
-            userBoardData.checkUserInBoard(idUser, idBoard, it)
-            val card = cardData.getCard(idCard, idBoard, it)
-            if(card.idList != null) cardData.archiveCard(idBoard, card.idList!!, idCard, card.idx, it)
-        } as Unit
-    }
-
-    fun updateCard(token: String, idBoard: Int, idCard: Int, description: String, endDate: String) {
+    fun updateCard(token: String, idBoard: Int, idCard: Int, description: String, endDate: String, idList: Int?, archived: Boolean) {
         return dataExecutor.execute {
             val idUser = userData.getUser(token, it).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, it)
             val card = cardData.getCard(idCard, idBoard, it)
             val newDesc = if (description == "") card.description else description
             val newEndDate = if (endDate == "") null else endDate
-            cardData.updateCard(card, newDesc, newEndDate, it)
-
+            cardData.updateCard(card, newDesc, newEndDate, idList, archived, it)
         } as Unit
     }
 }

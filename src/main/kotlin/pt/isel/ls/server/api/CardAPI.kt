@@ -64,23 +64,13 @@ class CardAPI(private val services: CardServices) {
     }
 
     @Auth
-    fun archiveCard(request: Request, token: String): Response {
-        val idBoard = getPathParam(request, "idBoard")
-        val idCard = getPathParam(request, "idCard")
-        return createRsp(
-            Status.OK,
-            services.archiveCard(token, idBoard, idCard)
-        )
-    }
-
-    @Auth
     fun updateCard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
         val idCard = getPathParam(request, "idCard")
         val changes = Json.decodeFromString<Changes>(request.bodyString())
         return createRsp(
             Status.OK,
-            services.updateCard(token, idBoard, idCard, changes.description, changes.endDate)
+            services.updateCard(token, idBoard, idCard, changes.description, changes.endDate, changes.idList, changes.archived)
         )
     }
 }

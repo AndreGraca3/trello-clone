@@ -58,7 +58,7 @@ class ListServices(
             userBoardData.checkUserInBoard(idUser, idBoard, it)
             when(action){
                 "delete" -> cardData.deleteCards(idList, it)
-                "archive" -> cardData.archiveCards(idList, it)
+                "archive" -> cardData.archiveCards(idBoard, idList, it)
             }
             listData.deleteList(idList, idBoard, it)
         } as Unit

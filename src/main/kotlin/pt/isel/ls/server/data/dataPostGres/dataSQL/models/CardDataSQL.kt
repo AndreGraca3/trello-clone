@@ -119,13 +119,6 @@ class CardDataSQL : CardData {
         con.prepareStatement(updateStmt).executeUpdate()
     }
 
-    override fun archiveCard(idBoard: Int, idList: Int, idCard: Int, idx: Int, con: Connection) {
-        val updateStmt = CardStatements.archiveCard(idBoard, idCard)
-        con.prepareStatement(updateStmt).executeUpdate()
-        val decreaseIdxStmt = CardStatements.decreaseIdx(idList, idx)
-        con.prepareStatement(decreaseIdxStmt).executeUpdate()
-    }
-
     override fun archiveCards(idBoard: Int, idList: Int, con: Connection) {
         val updateStmt = CardStatements.archiveCards(idBoard, idList)
         con.prepareStatement(updateStmt).executeUpdate()
@@ -174,14 +167,24 @@ class CardDataSQL : CardData {
         return cards
     }
 
-    override fun updateCard(card: Card, description: String?, endDate: String?, con: Connection) {
+    override fun updateCard(
+        card: Card,
+        description: String?,
+        endDate: String?,
+        idList: Int?,
+        archived: Boolean,
+        con: Connection
+    ) {
         val updateStmt = CardStatements.updateCard(
             card.idCard,
             card.idBoard,
             description,
-            endDate
+            endDate,
+            idList,
+            archived
         )
 
         con.prepareStatement(updateStmt).executeUpdate()
+        val decreaseStmt = CardStatements.decreaseIdx(card.idList, card.idx)
     }
 }

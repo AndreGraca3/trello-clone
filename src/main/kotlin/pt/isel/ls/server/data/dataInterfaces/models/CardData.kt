@@ -36,8 +36,6 @@ interface CardData {
 
     fun deleteCards(idList: Int, con: Connection)
 
-    fun archiveCard(idBoard: Int, idList: Int, idCard: Int, idx: Int, con: Connection)
-
     fun archiveCards(idBoard: Int, idList: Int, con: Connection)
 
     fun getNextIdx(idList: Int, con: Connection): Int
@@ -46,5 +44,5 @@ interface CardData {
 
     fun getArchivedCards(idBoard: Int, con: Connection): List<Card>
 
-    fun updateCard(card: Card, description: String?, endDate: String?, con: Connection)
+    fun updateCard(card: Card, description: String?, endDate: String?, idList: Int?, archived: Boolean, con: Connection)
 }

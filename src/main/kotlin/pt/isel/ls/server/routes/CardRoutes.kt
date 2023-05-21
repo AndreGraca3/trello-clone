@@ -35,12 +35,6 @@ class CardRoutes(private val webApi: CardAPI) {
                     webApi::deleteCard
                 )
             },
-            "board/{idBoard}/card/{idCard}/archive" bind Method.PUT to { request: Request ->
-                handleRequest(
-                    request,
-                    webApi::archiveCard
-                )
-            },
             "board/{idBoard}/card/{idCard}/update" bind Method.PUT to { request: Request ->
                 handleRequest(
                     request,
