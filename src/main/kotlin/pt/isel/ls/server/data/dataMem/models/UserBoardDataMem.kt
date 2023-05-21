@@ -1,13 +1,13 @@
-package pt.isel.ls.server.data.dataMem
+package pt.isel.ls.server.data.dataMem.models
 
 import pt.isel.ls.server.data.dataInterfaces.models.UserBoardData
+import pt.isel.ls.server.data.dataMem.usersBoards
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.UserBoard
 import java.sql.Connection
 
 class UserBoardDataMem : UserBoardData {
 
-    val usersBoards = mutableListOf<UserBoard>()
 
     override fun addUserToBoard(idUser: Int, idBoard: Int, con: Connection) {
         usersBoards.add(UserBoard(idUser, idBoard))
