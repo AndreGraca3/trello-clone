@@ -7,11 +7,9 @@ object BoardStatements {
     }
 
     fun getBoardCMD(idBoard: Int): String {
-        return "SELECT b.name, b.description, l.idlist, l.name AS listName, c.idcard, c.name AS cardName, c.idx, c.archived FROM dbo.board b\n" +
-                "INNER JOIN dbo.list l on l.idboard = b.idboard\n" +
-                "LEFT OUTER JOIN dbo.card c ON c.idlist = l.idlist\n" +
-                "WHERE b.idboard = $idBoard\n" +
-                "ORDER BY l.idlist ASC, c.idcard ASC;"
+        return "SELECT name, description\n" +
+                "FROM dbo.board\n" +
+                "WHERE idboard = $idBoard;"
     }
 
     fun getBoardsFromUser(idUser: Int, limit: Int?, skip: Int?, name: String, numLists: Int): String {
@@ -21,7 +19,7 @@ object BoardStatements {
                 "LEFT OUTER JOIN dbo.list l ON l.idboard = b.idboard\n" +
                 "WHERE u.iduser = $idUser AND b.name LIKE '%$name%'\n" +
                 "GROUP BY b.idboard, b.name, b.description\n" +
-                "HAVING COUNT(l.idlist) >= $numLists\n" +
+                "HAVING COUNT(l.idlist) = coalesce($numLists,count(l.idlist))\n" +
                 "ORDER BY b.idboard ASC\n" +
                 "LIMIT $limit OFFSET $skip;"
     }

@@ -2,7 +2,7 @@ package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
 import pt.isel.ls.server.data.dataInterfaces.models.BoardData
 import pt.isel.ls.server.data.dataPostGres.statements.BoardStatements
-import pt.isel.ls.server.utils.BoardSQL
+import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.BoardWithLists
 import java.sql.Connection
 
@@ -20,27 +20,13 @@ class BoardDataSQL : BoardData {
         return idBoard
     }
 
-    override fun getBoard(idBoard: Int, con: Connection): List<BoardSQL> {
+    override fun getBoard(idBoard: Int, con: Connection): Board {
         val selectStmt = BoardStatements.getBoardCMD(idBoard)
-        val listBoardSQL = mutableListOf<BoardSQL>()
 
         val res = con.prepareStatement(selectStmt).executeQuery()
+        res.next()
 
-        while (res.next()) {
-            listBoardSQL.add(
-                BoardSQL(
-                    res.getString("name"),
-                    res.getString("description"),
-                    res.getInt("idList"),
-                    res.getString("listName"),
-                    if (res.getInt("idCard") == 0) null else res.getInt("idCard"),
-                    res.getString("cardName"),
-                    res.getInt("idx"),
-                    res.getBoolean("archived")
-                )
-            )
-        }
-        return listBoardSQL
+        return Board(idBoard, res.getString("name"), res.getString("description"))
     }
 
     override fun getBoardsFromUser(

@@ -15,7 +15,7 @@ async function getBoards(args) {
     createElement("h1", "My Boards")
 
     const res =
-        await fetchReq(`board?skip=${args.skip}&limit=${args.limit}${args.name!=null ? `&name=${args.name}` : ''}`,
+        await fetchReq(`board?skip=${args.skip}&limit=${args.limit}${args.name!=null ? `&name=${args.name}` : ''}${args.numLists != null ? `&numLists=${args.numLists}` : ''}`,
             "GET")
 
     const boards = res.boards
@@ -25,7 +25,8 @@ async function getBoards(args) {
     if (!args.limit) args.limit = LIMIT_INITIAL_VALUE
     if (args.skip < 0) args.skip = Math.max(0, args.skip)
     if (args.skip > res.totalBoards) args.skip = Math.min(res.totalBoards - args.limit + 1, args.skip)
-    document.location = `#boards?skip=${args.skip}&limit=${args.limit}${args.name!=null ? `&name=${args.name}` : ''}`
+    document.location =
+        `#boards?skip=${args.skip}&limit=${args.limit}${args.name!=null ? `&name=${args.name}` : ''}${args.numLists!= null? `&numLists=${args.numLists}` : '' }`
 
     const boardCards = boards.map(board =>
         createHTMLBoard(board.name, board.description, board.numLists, () =>

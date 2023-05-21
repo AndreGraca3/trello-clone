@@ -41,14 +41,14 @@ class BoardServices(
             val board = boardData.getBoard(idBoard, con)
             val lists = listData.getListsOfBoard(idBoard, con)
 
-            val detailedList = lists.map { l ->
+            val detailedLists = lists.map { l ->
                 ListHTML(
                     l.idList, l.idBoard, l.name,
                     cardData.getCardsFromList(l.idList, l.idBoard, con)
                         .map { CardHTML(it.idCard, it.idList, it.idBoard, it.name, it.idx, it.archived) }
                 )
             }
-            BoardHTML(idBoard, board[0].boardName, board[0].boardDescription, detailedList)
+            BoardHTML(idBoard, board.name, board.description, detailedLists)
         } as BoardHTML
     }
 

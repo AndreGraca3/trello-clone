@@ -1,26 +1,17 @@
 //board/123/list/456/card/789
 //board/:id/list/:id/card/:id
+
+const fixedPaths = ["home", "user", "login", "signup", "boards"]
+const biggestPath = "board/:idBoard/list/:idList/card/:idCard"
+const biggestPath1 = "board/:idBoard/list/:idList".split("/") // ["board",":idBoard","list",...]
+const biggestPath2 = "board/:idBoard/card/:idCard".split("/") // ["board",":idBoard","card",...]
+
 export function handlePath(path) {
     let res = {path: "", args: []}
 
-    if (checkPaging(path)) {
-        const start = path.indexOf("?")
-
-        const queryString = path.substring(start) // "?limit=20&skip=20"
-
-        const queryStringParams = queryString.replace("?", "").split("&") // ["limit=20","skip=20"]
-
-        for (let i = 0; i < queryStringParams.length; i++) {
-            const parameter = queryStringParams[i].split("=") // ["limit","20"]
-
-            res.args[parameter[0]] = parseInt(parameter[1]) // { "limit" : 20 }
-        }
-
-        path = path.replace(queryString, "")
-        console.log(path) /** debug purposes. **/
+    if (checkQuery(path)) {
+        path = getQueryParams(path, res)
     }
-
-    const fixedPaths = ["home", "user", "login", "signup", "boards"]
 
     if (fixedPaths.find(it => it === path)) {
         res.path = path
@@ -28,22 +19,20 @@ export function handlePath(path) {
         return res
     }
 
-    const biggestPath1 = "board/:idBoard/list/:idList".split("/") // ["board",":idBoard","list",...]
-    const biggestPath2 = "board/:idBoard/card/:idCard".split("/") // ["board",":idBoard","card",...]
     const splitPath = path.split("/")
 
     for (let i = 0; i < splitPath.length; i++) {
 
-        if (splitPath[i] === biggestPath1[i]) {
-            res.path += biggestPath1[i]
+        if (splitPath[i] === biggestPath[i]) {
+            res.path += biggestPath[i]
         }
 
-        if (biggestPath1[i].includes(":")) {
-            res.path += biggestPath1[i]
-            res.args[biggestPath1[i].replace(":", "")] = splitPath[i]
+        if (biggestPath[i].includes(":")) {
+            res.path += biggestPath[i]
+            res.args[biggestPath[i].replace(":", "")] = splitPath[i]
         }
 
-        if (i + 1 === splitPath.length && !biggestPath1[i].includes(":")) {
+        if (i + 1 === splitPath.length && !biggestPath[i].includes(":")) {
             res.path += splitPath[i]
         }
 
@@ -52,7 +41,7 @@ export function handlePath(path) {
         }
     }
 
-    if (res.path !== "board/:idBoard/list/:idList" && res.path !== "board/:idBoard") {
+    /*if (res.path !== "board/:idBoard/list/:idList" && res.path !== "board/:idBoard") {
         res.path = res.path + "/"
         for (let i = 2; i < splitPath.length; i++) {
 
@@ -73,14 +62,40 @@ export function handlePath(path) {
                 res.path += "/"
             }
         }
-    }
+    }*/
 
     console.log(res) /** debug purposes. **/
     return res
 }
 
-function checkPaging(path) {
-    return (path.includes("?") && (path.includes("limit") || path.includes("skip")))
+function checkQuery(path) {
+    return (path.includes("?") &&
+        (
+            path.includes("limit")
+            || path.includes("skip")
+            || path.includes("action")
+            || path.includes("name")
+            || path.includes("numLists")
+        )
+    )
+}
+
+function getQueryParams(path, res) {
+    const start = path.indexOf("?")
+
+    const queryString = path.substring(start) // "?limit=20&skip=20&action=delete"
+
+    const queryStringParams = queryString.replace("?", "").split("&") // ["limit=20","skip=20","action=delete"]
+
+    console.log(queryStringParams)
+    for (let i = 0; i < queryStringParams.length; i++) {
+
+        const parameter = queryStringParams[i].split("=") // ["limit","20"]
+
+        res.args[parameter[0]] = parameter[1] // { "limit" : "20" }
+    }
+
+    return path.replace(queryString, "")
 }
 
 export function addOrChangeQuery(query, value) {

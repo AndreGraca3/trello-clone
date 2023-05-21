@@ -2,7 +2,6 @@ package pt.isel.ls.server.data.dataMem
 
 import pt.isel.ls.server.data.dataInterfaces.models.BoardData
 import pt.isel.ls.server.utils.Board
-import pt.isel.ls.server.utils.BoardSQL
 import pt.isel.ls.server.utils.BoardWithLists
 import java.sql.Connection
 
@@ -17,7 +16,7 @@ class BoardDataMem : BoardData {
         return newBoard.idBoard
     }
 
-    override fun getBoard(idBoard: Int, con: Connection): List<BoardSQL> {
+    override fun getBoard(idBoard: Int, con: Connection): Board {
         //return boards.find { it.idBoard == idBoard } ?: throw TrelloException.NotFound("Board")
         TODO("Not yet implemented!")
     }
