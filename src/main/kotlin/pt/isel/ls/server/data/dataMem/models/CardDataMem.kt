@@ -64,6 +64,10 @@ class CardDataMem : CardData {
         card.idx = idxDst
     }
 
+    override fun decreaseIdx(idList: Int, idx: Int, con: Connection) {
+        cards.forEach { if (it.idList == idList && it.idx >= idx) it.idx-- }
+    }
+
     override fun deleteCard(idCard: Int, idBoard: Int, con: Connection) {
         val card: Card
         try {
@@ -83,8 +87,8 @@ class CardDataMem : CardData {
         cards.removeAll(filtered)
     }
 
-    override fun archiveCards(idList: Int, con: Connection) {
-        val filtered = cards.filter { it.idList == idList }
+    override fun archiveCards(idBoard: Int, idList: Int, con: Connection) {
+        val filtered = cards.filter { it.idList == idList && it.idBoard == idBoard}
         filtered.forEach {
             it.archived = true
             it.idList = null
@@ -100,10 +104,23 @@ class CardDataMem : CardData {
         return cards.count { it.idBoard == idBoard && it.idList == idList }
     }
 
-    override fun updateCard(card: Card, archived: Boolean, description: String, endDate: String?, con: Connection) {
-        card.archived = archived
-        card.description = description
-        card.endDate = endDate
+    override fun getArchivedCards(idBoard: Int, con: Connection): List<Card> {
+        return cards.filter { it.idBoard == idBoard && it.idList == null }
+    }
+
+    override fun updateCard(
+        card: Card,
+        description: String?,
+        endDate: String?,
+        idList: Int?,
+        archived: Boolean,
+        con: Connection
+    ) {
+        val found = cards.find { it.idCard == card.idCard } ?: return
+        found.archived = archived
+        found.description = description
+        found.endDate = endDate
+        found.idList = idList
     }
 
     private fun getNextId(): Int {

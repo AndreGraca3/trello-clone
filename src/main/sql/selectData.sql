@@ -57,3 +57,6 @@ INNER JOIN dbo.list l on l.idboard = b.idboard
 LEFT OUTER JOIN dbo.card c ON c.idlist = l.idlist
 WHERE b.idboard = 30
 ORDER BY l.idlist ASC, c.idcard ASC;
+
+-- getArchivedCards
+SELECT * FROM dbo.card where card.idList is null and card.idBoard = 2;

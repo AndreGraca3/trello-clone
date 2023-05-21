@@ -4,43 +4,6 @@ import {cardFunc, createCard} from "../listenerHandlers/cardFuncs.js";
 import {darkerColor, fetchReq} from "../auxs/utils.js";
 import {getNextCard} from "../auxs/modelAuxs.js";
 
-export function createPaginationButtons(skip, limit, totalBoards, nameSearch) {
-
-    const prevBtn = createElement("button", "Previous", "btn-secondary")
-    prevBtn.classList.add("btn", "prev-pagination")
-    prevBtn.disabled = skip === 0
-    prevBtn.addEventListener("click", () => {
-        skip -= limit
-        document.location = `#boards?skip=${skip}&limit=${limit}${nameSearch!=null ? `&name=${nameSearch}` : ''}`
-    })
-
-    const nextBtn = createElement("button", "Next", "btn-secondary")
-    nextBtn.classList.add("btn", "next-pagination")
-    nextBtn.disabled = skip >= totalBoards - limit
-    nextBtn.addEventListener("click", () => {
-        skip += limit
-        document.location = `#boards?skip=${skip}&limit=${limit}${nameSearch!=null ? `&name=${nameSearch}` : ''}`
-    })
-
-    const indices = []
-    const currentPage = Math.floor(skip / limit) + 1
-
-    for (let i = 1; i <= Math.ceil(totalBoards / limit); i++) {
-        const a = createElement("a", i, "page-link")
-        a.href = `#boards?skip=${(i-1)*limit}&limit=${limit}`
-
-        const li = createElement("li", null, "page-item", null, a)
-        if(i === currentPage) li.classList.add("active")
-
-        indices.push(li)
-    }
-
-    return createElement("nav", null, "pagination-buttons", null,
-        createElement("ul", null, "pagination", null,
-            prevBtn, ...indices, nextBtn)
-    )
-}
-
 export function createHTMLBoard(title, description, numList, clickableFunc, color, size) {
 
     const cardTitle = createElement("h5", title, "boardBox-title")

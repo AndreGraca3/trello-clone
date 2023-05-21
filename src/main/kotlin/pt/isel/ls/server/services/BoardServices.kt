@@ -6,12 +6,7 @@ import pt.isel.ls.server.data.dataInterfaces.models.CardData
 import pt.isel.ls.server.data.dataInterfaces.models.ListData
 import pt.isel.ls.server.data.dataInterfaces.models.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
-import pt.isel.ls.server.utils.BoardHTML
-import pt.isel.ls.server.utils.CardHTML
-import pt.isel.ls.server.utils.ListHTML
-import pt.isel.ls.server.utils.TotalBoards
-import pt.isel.ls.server.utils.User
-import pt.isel.ls.server.utils.isValidString
+import pt.isel.ls.server.utils.*
 
 class BoardServices(
     private val userData: UserData,
@@ -34,7 +29,7 @@ class BoardServices(
         } as Int
     }
 
-    fun getBoard(token: String, idBoard: Int): BoardHTML {
+    fun getBoard(token: String, idBoard: Int): BoardDetailed {
         return dataExecutor.execute { con ->
             val idUser = userData.getUser(token, con).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, con)
@@ -42,14 +37,18 @@ class BoardServices(
             val lists = listData.getListsOfBoard(idBoard, con)
 
             val detailedLists = lists.map { l ->
-                ListHTML(
-                    l.idList, l.idBoard, l.name,
-                    cardData.getCardsFromList(l.idList, l.idBoard, con)
-                        .map { CardHTML(it.idCard, it.idList, it.idBoard, it.name, it.idx, it.archived) }
+                ListDetailed(
+                    l.idList,
+                    l.idBoard,
+                    l.name,
+                    cardData.getCardsFromList(l.idList, idBoard, con)
                 )
             }
-            BoardHTML(idBoard, board.name, board.description, detailedLists)
-        } as BoardHTML
+
+            val archivedCards = cardData.getArchivedCards(idBoard, con)
+
+            BoardDetailed(idBoard, board.name, board.description, detailedLists, archivedCards)
+        } as BoardDetailed
     }
 
     fun getBoardsFromUser(token: String, limit: Int?, skip: Int?, name: String?, numLists: Int?): TotalBoards {
@@ -60,8 +59,8 @@ class BoardServices(
             val count = userBoardData.getBoardCountFromUser(idUser, name, numLists)
             val boards = boardData.getBoardsFromUser(
                 idUser,
-                if(limit != null && limit < 0) null else limit,
-                if(skip != null && skip < 0) null else skip,
+                if (limit != null && limit < 0) null else limit,
+                if (skip != null && skip < 0) null else skip,
                 name,
                 numLists,
                 it
@@ -83,9 +82,10 @@ class BoardServices(
         return dataExecutor.execute {
             val idUser = userData.getUser(token, it).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, it)
-            userData.getUsers(idBoard,
-                if(limit != null && limit < 0) null else limit ,
-                if(skip != null && skip < 0) null else skip,
+            userData.getUsers(
+                idBoard,
+                if (limit != null && limit < 0) null else limit,
+                if (skip != null && skip < 0) null else skip,
                 it
             )
         } as List<User>

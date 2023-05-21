@@ -11,9 +11,19 @@ object CardStatements {
         return "SELECT COUNT(idCard) FROM dbo.card;"
     }
 
-    fun createCardCMD(idList: Int, idBoard: Int, name: String, description: String?, endDate: String?, idx: Int, archived: Boolean = false): String {
+    fun createCardCMD(
+        idList: Int,
+        idBoard: Int,
+        name: String,
+        description: String?,
+        endDate: String?,
+        idx: Int,
+        archived: Boolean = false
+    ): String {
         return "INSERT INTO dbo.card (name, description, idList, idBoard, startDate, endDate, archived, idx) " +
-            "VALUES ('$name', '$description', $idList, $idBoard, '${LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))}', $endDate, $archived, $idx) RETURNING idCard;"
+                "VALUES ('$name', '$description', $idList, $idBoard, '${
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
+                }', $endDate, $archived, $idx) RETURNING idCard;"
     }
 
     fun getCardsFromListCMD(idList: Int, idBoard: Int): String {
@@ -27,7 +37,7 @@ object CardStatements {
 
     fun moveCardCMD(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int, idxDst: Int): String {
         return "UPDATE dbo.card SET idList = $idListDst, idx = $idxDst " +
-            "WHERE idCard = $idCard and idList = $idListNow and idBoard = $idBoard;"
+                "WHERE idCard = $idCard and idList = $idListNow and idBoard = $idBoard;"
     }
 
     fun deleteCard(idCard: Int, idBoard: Int): String {
@@ -38,8 +48,12 @@ object CardStatements {
         return "DELETE FROM dbo.card WHERE idList = $idList;"
     }
 
-    fun archiveCards(idList: Int): String {
-        return "UPDATE dbo.card SET idList = null, archived = true WHERE idList = $idList;"
+    fun archiveCard(idBoard: Int, idCard: Int): String {
+        return "UPDATE dbo.card SET idList = null, archived = true WHERE idList = $idCard and idBoard = $idBoard;"
+    }
+
+    fun archiveCards(idBoard: Int, idList: Int): String {
+        return "UPDATE dbo.card SET idList = null, archived = true WHERE idList = $idList and idBoard = $idBoard;"
     }
 
     fun getNextIdx(idList: Int): String {
@@ -50,7 +64,11 @@ object CardStatements {
         return "SELECT COUNT(idCard) FROM dbo.card where idBoard = $idBoard and idList = $idList;"
     }
 
-    fun decreaseIdx(idList: Int, idx: Int): String {
+    fun getArchivedCards(idBoard: Int): String {
+        return "SELECT * FROM dbo.card where card.idList is null and card.idBoard = $idBoard;"
+    }
+
+    fun decreaseIdx(idList: Int?, idx: Int): String {
         return "UPDATE dbo.card SET idx = idx - 1 WHERE idList = $idList and idx >= $idx;"
     }
 
@@ -58,7 +76,11 @@ object CardStatements {
         return "UPDATE dbo.card SET idx = idx + 1 WHERE idList = $idList and idx >= $idx;"
     }
 
-    fun updateCard(idCard: Int, idBoard: Int, archived: Boolean, description: String, endDate: String?): String {
-        return "UPDATE dbo.card SET archived = '$archived', description = '$description', endDate = ${if(endDate != null) "'$endDate'" else null}  where idCard = $idCard and idBoard = $idBoard;"
+    fun updateCard(idCard: Int, idBoard: Int, description: String?, endDate: String?, idList: Int?, archived: Boolean): String {
+        return "UPDATE dbo.card " +
+                "SET description = ${if (description != null) "'$description'" else null}, " +
+                "endDate = ${if (endDate != null) "'$endDate'" else null}, " +
+                "idList = $idList, archived = $archived " +
+                "where idCard = $idCard and idBoard = $idBoard;"
     }
 }

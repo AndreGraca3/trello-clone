@@ -8,7 +8,6 @@ import pt.isel.ls.server.exceptions.ALREADY_EXISTS
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Board
-import pt.isel.ls.server.utils.BoardSQL
 import pt.isel.ls.server.utils.BoardWithLists
 import pt.isel.ls.server.utils.checkPaging
 import java.sql.Connection
@@ -37,7 +36,7 @@ class BoardDataMem : BoardData {
     ): List<BoardWithLists> {
         val max = usersBoards.filter { it.idUser == idUser }.size
         val paging = checkPaging(max, limit, skip)
-        return usersBoards.filter { it.idUser == idUser }.subList(paging.first,paging.second)
+        val filtered = usersBoards.filter { it.idUser == idUser }.subList(paging.first,paging.second)
             .map {
                 BoardWithLists(
                     it.idBoard,
@@ -45,9 +44,8 @@ class BoardDataMem : BoardData {
                     boards.find { board -> board.idBoard == it.idBoard }!!.description,
                     lists.count { list -> list.idBoard == it.idBoard }
                 )
-            }.also {
-                if(numLists != null) it.filter { board -> board.numLists == numLists }
             }
+        return filtered.filter { b -> b.numLists == (numLists ?: b.numLists) && b.name.contains(name) }
     }
 
     private fun getNextId(): Int {

@@ -6,11 +6,9 @@ import pt.isel.ls.server.data.dataInterfaces.models.ListData
 import pt.isel.ls.server.data.dataInterfaces.models.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.exceptions.map
 import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.checkEndDate
 import pt.isel.ls.server.utils.isValidString
-import java.sql.SQLException
 
 class CardServices(
     private val userData: UserData,
@@ -68,14 +66,14 @@ class CardServices(
         } as Unit
     }
 
-    fun updateCard(token: String, idBoard: Int, idCard: Int, archived: Boolean, description: String, endDate: String) {
+    fun updateCard(token: String, idBoard: Int, idCard: Int, description: String, endDate: String, idList: Int?, archived: Boolean) {
         return dataExecutor.execute {
             val idUser = userData.getUser(token, it).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, it)
             val card = cardData.getCard(idCard, idBoard, it)
             val newDesc = if (description == "") card.description else description
             val newEndDate = if (endDate == "") null else endDate
-            cardData.updateCard(card, archived, newDesc!!, newEndDate, it)
+            cardData.updateCard(card, newDesc, newEndDate, idList, archived, it)
         } as Unit
     }
 }

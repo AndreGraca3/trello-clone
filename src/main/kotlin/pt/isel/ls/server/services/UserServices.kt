@@ -4,10 +4,8 @@ import pt.isel.ls.server.data.dataInterfaces.DataExecutor
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
 import pt.isel.ls.server.exceptions.INVAL_PARAM
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.exceptions.map
 import pt.isel.ls.server.utils.User
 import pt.isel.ls.server.utils.isValidString
-import java.sql.SQLException
 
 class UserServices(private val userData: UserData, private val dataExecutor: DataExecutor<Any>) {
 

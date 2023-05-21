@@ -51,8 +51,8 @@ async function addCard(listCards, input, list) {
         description: null,
         endDate: null
     }
-    const cardId = await fetchReq(`board/${list.idBoard}/card`, "POST", card)
     input.remove()
+    const cardId = await fetchReq(`board/${list.idBoard}/card`, "POST", card)
 
     card.idList = list.idList
     card.idBoard = list.idBoard
@@ -94,12 +94,12 @@ async function archiveCard(card) {
     const body = {
         archived: !card.archived,
         description: newDescription,
-        endDate: newEndDate
+        endDate: newEndDate,
+        idList: null
     }
 
-    $('#cardModal').modal('hide')
-
     await fetchReq(`board/${card.idBoard}/card/${card.idCard}/update`, "PUT", body)
+    $('#cardModal').modal('hide')
 }
 
 async function deleteCard(card) {

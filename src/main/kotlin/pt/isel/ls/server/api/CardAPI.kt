@@ -66,12 +66,11 @@ class CardAPI(private val services: CardServices) {
     @Auth
     fun updateCard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
-        //val idList = getPathParam(request, "idList")
         val idCard = getPathParam(request, "idCard")
         val changes = Json.decodeFromString<Changes>(request.bodyString())
         return createRsp(
             Status.OK,
-            services.updateCard(token, idBoard, idCard, changes.archived, changes.description, changes.endDate)
+            services.updateCard(token, idBoard, idCard, changes.description, changes.endDate, changes.idList, changes.archived)
         )
     }
 }

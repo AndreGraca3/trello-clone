@@ -9,7 +9,7 @@ import org.http4k.core.Status
 import pt.isel.ls.server.data.dataMem.boards
 import pt.isel.ls.server.data.dataMem.usersBoards
 import pt.isel.ls.server.utils.Board
-import pt.isel.ls.server.utils.BoardHTML
+import pt.isel.ls.server.utils.BoardDetailed
 import pt.isel.ls.server.utils.BoardIn
 import pt.isel.ls.server.utils.BoardOut
 import pt.isel.ls.server.utils.BoardWithLists
@@ -164,7 +164,7 @@ class BoardAPITests {
             )
         )
 
-        val board = Json.decodeFromString<BoardHTML>(response.bodyString())
+        val board = Json.decodeFromString<BoardDetailed>(response.bodyString())
 
         assertEquals(boardId, board.idBoard)
         assertTrue(usersBoards.any { it.idUser == user.idUser })
