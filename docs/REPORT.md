@@ -21,7 +21,7 @@ We highlight the following aspects of the conceptual model:
 
 __Boards__ have a title, description, and creation date.\
 __Lists__ belong to a board and have a title and position.\
-__Cards__ belong to a list and have a title, description, position, and due date.
+__Cards__ can or not belong to a list and have a title, description, position, and due date.
 The conceptual model has the following restrictions:
 
 - A board can have multiple lists.
@@ -151,6 +151,12 @@ The __deleteCard__ and __deleteList__ operations have also been implemented corr
 
 Overall, these additional operations have been integrated smoothly into our Trello API and enhance the functionality of our application.
 
+### Otimization regarding the fetching of data
+
+The DataExecutor interface is designed to handle the execution of database operations and provide a convenient way to work with database connections. <br>
+It abstracts away the connection management and provides a clean interface for executing actions on a database connection. <br>
+The usage of DataExecutor helps in reducing the number of fetch operations required to execute multiple database operations. It encapsulates the common connection handling logic and provides a single entry point (execute function) for executing actions on the database.
+
 ## Single Page Application
 
 This implementation is using a Single Page Application (SPA) using JavaScript, HTML, and CSS. The SPA provides a web user interface for the GET operations developed in the first phase. The application is divided into two parts: a router and a set of handlers.
@@ -181,6 +187,35 @@ and make every able to jump to home view.
 
 In summary, the __Router__, __Handlers__, and __App__ work together to create a dynamic and responsive SPA that can navigate between different views and pages without reloading the entire page.
 
+#### App Features
+
+##### Search Feature
+The App Search Feature is a search bar that allows users to search for boards and lists by name and number of lists. <br>
+This implementation that we have developed features a dropdown which displays the possible options of the filters to be
+applied to the search. <br>
+
+Explaining a little furthermore the search bar using the name filter. Supposedly, the user chooses the option correspondent
+to the name filter, then when proceeding to search it displays in the query string the correct property with its value. After that,
+the api, services and dataMem method that is responsible for the search is called and its signature have both name and numLists with String? and Int? 
+respectively. <br>
+
+##### Number of Lists in a Board Card Feature
+
+We decide to add a feature that displays the number of lists in a board card. This feature is implemented in the board view and in the search view 
+when displaying the board cards. <br>
+
+##### App Move Card Feature
+
+The App Move Card Feature is a feature that allows users to move cards between lists in board. <br>
+The Card can be moved to a different list by clicking on the card and dragging it to the desired list. <br>
+
+##### Pagination Buttons Feature
+
+The Pagination Buttons Feature is a feature that allows users to navigate between pages of boards and lists. <br>
+The buttons are displayed at the top of the page and can be used to go to the previous or next page. <br>
+There are also indexes of the pages displayed in the middle of the previous and next buttons. <br>
+When clicking a certain index card it shows the content of that page. <br>
+
 ## Critical Evaluation
 Functionality that is not yet concluded:
 
@@ -193,3 +228,8 @@ Improvements to be made in the next phase:
 Improve the error handling and processing by adding more detailed error messages.
 Add support for pagination in the endpoints that return a list of items. 
 Make tests more optimized : avoid repeating same actions in test like creating a list and avoid repeating similar actions in DataSQL.
+
+
+
+
+
