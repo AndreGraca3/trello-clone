@@ -75,7 +75,7 @@ class ServicesCardTests {
     fun `Get a card from a list`() {
         val newCardId =
             services.cardServices.createCard(user.token, boardId, listId, dummyCardName, dummyCardDescription, null)
-        val card = services.cardServices.getCard(user.token, boardId, listId, newCardId)
+        val card = services.cardServices.getCard(user.token, boardId, newCardId)
         assertEquals(newCardId, card.idCard)
         assertEquals(listId, card.idList)
     }
@@ -83,7 +83,7 @@ class ServicesCardTests {
     @Test
     fun `Get a card from an invalid board`() {
         val err = assertFailsWith<TrelloException.NotFound> {
-            services.cardServices.getCard(user.token, invalidId, listId, cardId)
+            services.cardServices.getCard(user.token, invalidId, cardId)
         }
         assertEquals(404, err.status.code)
         assertEquals("Board not found.", err.message)
@@ -92,7 +92,7 @@ class ServicesCardTests {
     @Test
     fun `Get a card from an invalid list`() {
         val err = assertFailsWith<TrelloException.NotFound> {
-            services.cardServices.getCard(user.token, boardId, invalidId, cardId)
+            services.cardServices.getCard(user.token, boardId, cardId)
         }
         assertEquals(404, err.status.code)
         assertEquals("List not found.", err.message)
@@ -101,7 +101,7 @@ class ServicesCardTests {
     @Test
     fun `Get a card from an invalid user`() {
         val err = assertFailsWith<TrelloException.NotAuthorized> {
-            services.cardServices.getCard(invalidToken, boardId, listId, cardId)
+            services.cardServices.getCard(invalidToken, boardId, cardId)
         }
         assertEquals(401, err.status.code)
         assertEquals("Unauthorized Operation.", err.message)
@@ -111,7 +111,7 @@ class ServicesCardTests {
     fun `Get cards from a list`() {
         val newCardId =
             services.cardServices.createCard(user.token, boardId, listId, dummyCardName, dummyCardDescription, null)
-        val cards = services.cardServices.getCardsFromList(user.token, boardId, listId, null, null)
+        val cards = services.listServices.getCardsFromList(user.token, boardId, listId, null, null)
         assertEquals(1, cards.size)
         assertEquals(newCardId, cards[0].idCard)
         assertEquals(listId, cards[0].idList)
@@ -120,7 +120,7 @@ class ServicesCardTests {
     @Test
     fun `Get cards from invalid board`() {
         val err = assertFailsWith<TrelloException.NotFound> {
-            services.cardServices.getCardsFromList(user.token, invalidId, listId, null, null)
+            services.listServices.getCardsFromList(user.token, invalidId, listId, null, null)
         }
         assertEquals(404, err.status.code)
         assertEquals("Board not found.", err.message)
@@ -129,7 +129,7 @@ class ServicesCardTests {
     @Test
     fun `Get cards from invalid list`() {
         val err = assertFailsWith<TrelloException.NotFound> {
-            services.cardServices.getCardsFromList(user.token, boardId, invalidId, null, null)
+            services.listServices.getCardsFromList(user.token, boardId, invalidId, null, null)
         }
         assertEquals(404, err.status.code)
         assertEquals("List not found.", err.message)
@@ -138,7 +138,7 @@ class ServicesCardTests {
     @Test
     fun `Get cards from invalid user`() {
         val err = assertFailsWith<TrelloException.NotAuthorized> {
-            services.cardServices.getCardsFromList(invalidToken, boardId, listId, null, null)
+            services.listServices.getCardsFromList(invalidToken, boardId, listId, null, null)
         }
         assertEquals(401, err.status.code)
         assertEquals("Unauthorized Operation.", err.message)
@@ -148,13 +148,13 @@ class ServicesCardTests {
     fun `Move card from list to another list`() {
         val newCardId =
             services.cardServices.createCard(user.token, boardId, listId, dummyCardName, dummyCardDescription, null)
-        val newCard = services.cardServices.getCard(user.token, boardId, listId, newCardId)
+        val newCard = services.cardServices.getCard(user.token, boardId, newCardId)
         assertEquals(newCardId, newCard.idCard)
         assertEquals(listId, newCard.idList)
 
         val listId2 = services.listServices.createList(user.token, boardId, dummyBoardListName)
         services.cardServices.moveCard(user.token, boardId, listId, listId2, newCardId, 1)
-        val movedCard = services.cardServices.getCard(user.token, boardId, listId2, newCardId)
+        val movedCard = services.cardServices.getCard(user.token, boardId, newCardId)
         assertEquals(newCardId, movedCard.idCard)
         assertEquals(listId2, movedCard.idList)
     }
@@ -163,7 +163,7 @@ class ServicesCardTests {
     fun `Move card from list to another invalid list`() {
         val newCardId =
             services.cardServices.createCard(user.token, boardId, listId, dummyCardName, dummyCardDescription, null)
-        val newCard = services.cardServices.getCard(user.token, boardId, listId, newCardId)
+        val newCard = services.cardServices.getCard(user.token, boardId, newCardId)
         assertEquals(newCardId, newCard.idCard)
         assertEquals(listId, newCard.idList)
 
@@ -178,7 +178,7 @@ class ServicesCardTests {
     fun `Move card from list to another list with invalid user`() {
         val newCardId =
             services.cardServices.createCard(user.token, boardId, listId, dummyCardName, dummyCardDescription, null)
-        val newCard = services.cardServices.getCard(user.token, boardId, listId, newCardId)
+        val newCard = services.cardServices.getCard(user.token, boardId, newCardId)
         assertEquals(newCardId, newCard.idCard)
         assertEquals(listId, newCard.idList)
 

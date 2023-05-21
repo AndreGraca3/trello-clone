@@ -1,5 +1,6 @@
 package pt.isel.ls.tests.services
 
+import pt.isel.ls.server.data.dataMem.usersBoards
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Board
 import pt.isel.ls.tests.utils.createBoard
@@ -76,7 +77,7 @@ class ServicesBoardTests {
         val newBoardId = createBoard(user.idUser)
         services.boardServices.addUserToBoard(user.token, user2.first, newBoardId)
         val board = services.boardServices.getBoard(user.token, newBoardId)
-        val usersBoards = dataMem.userBoardData.usersBoards
+        val usersBoards = usersBoards
         assertEquals(usersBoards.first().idUser, user.idUser)
         assertEquals(usersBoards.last().idUser, user2.first)
         assertEquals(newBoardId, board.idBoard)
@@ -152,8 +153,8 @@ class ServicesBoardTests {
         val user2 = createUser(dummyName + 2, dummyEmail + 2)
         val newBoardId = createBoard(user.idUser)
         services.boardServices.addUserToBoard(user.token, user2.first, newBoardId)
-        val boards = services.boardServices.getBoardsFromUser(user.token, null, null)
-        assertEquals(1, boards.size)
-        assertEquals(newBoardId, boards.first().idBoard)
+        val boards = services.boardServices.getBoardsFromUser(user.token, null, null, null, null)
+        assertEquals(1, boards.totalBoards)
+        assertEquals(newBoardId, boards.boards.first().idBoard)
     }
 }

@@ -2,10 +2,7 @@
 //board/:id/list/:id/card/:id
 
 const fixedPaths = ["home", "user", "login", "signup", "boards"]
-const biggestPath = "board/:idBoard/list/:idList/card/:idCard"
-const biggestPath1 = "board/:idBoard/list/:idList".split("/") // ["board",":idBoard","list",...]
-const biggestPath2 = "board/:idBoard/card/:idCard".split("/") // ["board",":idBoard","card",...]
-
+const biggestPath = "board/:idBoard/list/:idList/card/:idCard".split("/")
 export function handlePath(path) {
     let res = {path: "", args: []}
 
@@ -40,30 +37,6 @@ export function handlePath(path) {
             res.path += "/"
         }
     }
-
-    /*if (res.path !== "board/:idBoard/list/:idList" && res.path !== "board/:idBoard") {
-        res.path = res.path + "/"
-        for (let i = 2; i < splitPath.length; i++) {
-
-            if (splitPath[i] === biggestPath2[i]) {
-                res.path += biggestPath2[i]
-            }
-
-            if (biggestPath2[i].includes(":")) {
-                res.path += biggestPath2[i]
-                res.args[biggestPath2[i].replace(":", "")] = splitPath[i]
-            }
-
-            if (i + 1 === splitPath.length && !biggestPath2[i].includes(":")) {
-                res.path += splitPath[i]
-            }
-
-            if (i + 1 < splitPath.length) { // puts "/" in path, excluding last place.
-                res.path += "/"
-            }
-        }
-    }*/
-
     console.log(res) /** debug purposes. **/
     return res
 }
