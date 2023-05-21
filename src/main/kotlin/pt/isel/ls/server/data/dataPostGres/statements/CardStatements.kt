@@ -16,8 +16,8 @@ object CardStatements {
             "VALUES ('$name', '$description', $idList, $idBoard, '${LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))}', $endDate, $archived, $idx) RETURNING idCard;"
     }
 
-    fun getCardsFromListCMD(idList: Int, idBoard: Int, limit: Int?, skip: Int?): String {
-        return "SELECT * FROM dbo.card WHERE idList = $idList and idBoard = $idBoard ORDER BY idx ASC LIMIT $limit OFFSET $skip;"
+    fun getCardsFromListCMD(idList: Int, idBoard: Int): String {
+        return "SELECT * FROM dbo.card WHERE idList = $idList and idBoard = $idBoard ORDER BY idx ASC;"
     }
 
     fun getCardCMD(idCard: Int, idBoard: Int): String {

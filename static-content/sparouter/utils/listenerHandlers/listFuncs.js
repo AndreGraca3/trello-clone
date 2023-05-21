@@ -38,11 +38,10 @@ export async function deleteList(list) {
     const card = listToDelete.querySelector(".card-container")
 
     if(!card) {
-        const board = document.querySelector("#boardContainer")
-
-        board.removeChild(listToDelete)
-
         await fetchReq(`board/${list.idBoard}/list/${list.idList}`, "DELETE")
+
+        const board = document.querySelector("#boardContainer")
+        board.removeChild(listToDelete)
     } else {
         $('#listModal').modal('show')
     }

@@ -16,7 +16,7 @@ fun checkEndDate(endDate: String) {
 fun isValidString(value: String, property: String): Boolean {
     val trim = value.trim()
     if (trim != "" && trim != "null") return true
-    throw TrelloException.IllegalArgument(property)
+    throw TrelloException.IllegalArgument("$property is not a valid.")
 }
 
 fun setup(): PGSimpleDataSource {

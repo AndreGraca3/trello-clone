@@ -14,12 +14,8 @@ object ListStatement {
         return "SELECT * FROM dbo.list where idList = $idList and idBoard = $idBoard;"
     }
 
-    fun getListOfBoard(idBoard: Int, limit: Int?, skip: Int?): String {
-        return "SELECT * FROM dbo.list where idBoard = $idBoard LIMIT $limit OFFSET $skip;"
-    }
-
-    fun checkListInBoard(idList: Int, idBoard: Int): String {
-        return "SELECT * FROM dbo.list where idBoard = $idBoard and idList = $idList;"
+    fun getListsOfBoard(idBoard: Int): String {
+        return "SELECT * FROM dbo.list where idBoard = $idBoard;"
     }
 
     fun deleteList(idList: Int, idBoard: Int): String {

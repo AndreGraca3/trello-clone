@@ -1,24 +1,22 @@
-package pt.isel.ls.server.data.dataPostGres.dataSQL
+package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
-import pt.isel.ls.server.data.dataInterfaces.UserBoardData
-import pt.isel.ls.server.data.dataPostGres.statements.BoardStatements
+import pt.isel.ls.server.data.dataInterfaces.models.UserBoardData
 import pt.isel.ls.server.data.dataPostGres.statements.UserBoardStatements
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.setup
+import java.sql.Connection
 
 class UserBoardDataSQL : UserBoardData {
 
-    override fun addUserToBoard(idUser: Int, idBoard: Int) {
-        val dataSource = setup()
+    override fun addUserToBoard(idUser: Int, idBoard: Int, con: Connection) {
         val insertStmt = UserBoardStatements.addUserToBoard(idUser, idBoard)
 
-        dataSource.connection.use {
-            it.autoCommit = false
+        con.autoCommit = false
 
-            it.prepareStatement(insertStmt).executeUpdate()
+        con.prepareStatement(insertStmt).executeUpdate()
 
-            it.autoCommit = true
-        }
+        con.autoCommit = true
+
     }
 
     override fun searchUserBoards(idUser: Int): List<Int> {
@@ -40,20 +38,13 @@ class UserBoardDataSQL : UserBoardData {
         return boardIds
     }
 
-    override fun checkUserInBoard(idUser: Int, idBoard: Int) {
-        val dataSource = setup()
+    override fun checkUserInBoard(idUser: Int, idBoard: Int, con: Connection) {
         val selectStmt = UserBoardStatements.checkUserInBoard(idUser, idBoard)
 
-        dataSource.connection.use {
-            it.autoCommit = false
+        val res = con.prepareStatement(selectStmt).executeQuery()
+        res.next()
 
-            val res = it.prepareStatement(selectStmt).executeQuery()
-            res.next()
-
-            if (res.row == 0) throw TrelloException.NotFound("Board")
-
-            it.autoCommit = true
-        }
+        if (res.row == 0) throw TrelloException.NotFound("Board")
     }
 
     override fun getIdUsersFromBoard(idBoard: Int): List<Int> {
@@ -106,7 +97,7 @@ class UserBoardDataSQL : UserBoardData {
 
             count = res.getInt("count")
 
-            it.autoCommit = false
+            it.autoCommit = true
         }
         return count
     }
