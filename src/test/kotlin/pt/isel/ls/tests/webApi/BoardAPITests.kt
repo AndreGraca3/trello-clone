@@ -6,11 +6,15 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
+import pt.isel.ls.server.data.dataMem.boards
+import pt.isel.ls.server.data.dataMem.usersBoards
 import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.BoardHTML
 import pt.isel.ls.server.utils.BoardIn
 import pt.isel.ls.server.utils.BoardOut
+import pt.isel.ls.server.utils.BoardWithLists
 import pt.isel.ls.server.utils.IDUser
+import pt.isel.ls.server.utils.TotalBoards
 import pt.isel.ls.server.utils.User
 import pt.isel.ls.tests.utils.app
 import pt.isel.ls.tests.utils.baseUrl
@@ -21,6 +25,7 @@ import pt.isel.ls.tests.utils.dataMem
 import pt.isel.ls.tests.utils.dataSetup
 import pt.isel.ls.tests.utils.dummyBoardDescription
 import pt.isel.ls.tests.utils.dummyBoardName
+import pt.isel.ls.tests.utils.executorTest
 import pt.isel.ls.tests.utils.invalidToken
 import pt.isel.ls.tests.utils.services
 import pt.isel.ls.tests.utils.user
@@ -68,7 +73,7 @@ class BoardAPITests {
 
         val msg = Json.decodeFromString<String>(response.bodyString())
 
-        assertTrue(dataMem.boardData.boards.isEmpty())
+        assertTrue(boards.isEmpty())
         assertEquals(Status.UNAUTHORIZED, response.status)
         assertEquals("Unauthorized Operation.", msg)
     }
@@ -80,7 +85,7 @@ class BoardAPITests {
                 .header("Authorization", "Bearer ${user.token}")
         )
 
-        assertTrue(dataMem.boardData.boards.isEmpty())
+        assertTrue(boards.isEmpty())
         assertEquals(Status.BAD_REQUEST, response.status)
     }
 
@@ -88,8 +93,11 @@ class BoardAPITests {
     fun `test get all boards while logged in`() {
         val boardsAmount = 3
         repeat(boardsAmount) {
-            val idBoard = dataMem.boardData.createBoard(user.idUser, dummyBoardName + it, dummyBoardDescription)
-            dataMem.userBoardData.addUserToBoard(user.idUser, idBoard)
+            id ->
+            executorTest.execute {
+                val idBoard = dataMem.boardData.createBoard(user.idUser, dummyBoardName + id, dummyBoardDescription, it)
+                dataMem.userBoardData.addUserToBoard(user.idUser, idBoard, it)
+            }
         }
 
         val response = app(
@@ -106,7 +114,7 @@ class BoardAPITests {
 
         assertEquals(boardsAmount, fetchedBoards.size)
         fetchedBoards.forEachIndexed { i, it ->
-            assertTrue(dataMem.userBoardData.usersBoards.any { it.idUser == user.idUser })
+            assertTrue(usersBoards.any { it.idUser == user.idUser })
             assertEquals(i + 1, it.idBoard)
             assertEquals(dummyBoardName + i, it.name)
         }
@@ -116,7 +124,9 @@ class BoardAPITests {
     @Test
     fun `test get all boards without being logged in`() {
         repeat(3) {
-            dataMem.boardData.createBoard(user.idUser, dummyBoardName + it, dummyBoardDescription)
+            executorTest.execute {
+                dataMem.boardData.createBoard(user.idUser, dummyBoardName + it, dummyBoardDescription, it)
+            }
         }
 
         val response = app(
@@ -134,7 +144,7 @@ class BoardAPITests {
                 .header("Authorization", user.token)
         )
 
-        val boards = Json.decodeFromString<List<Board>>(response.bodyString())
+        val boards = Json.decodeFromString<List<TotalBoards>>(response.bodyString())
 
         assertTrue(boards.isEmpty())
         assertEquals(Status.OK, response.status)
@@ -157,7 +167,7 @@ class BoardAPITests {
         val board = Json.decodeFromString<BoardHTML>(response.bodyString())
 
         assertEquals(boardId, board.idBoard)
-        assertTrue(dataMem.userBoardData.usersBoards.any { it.idUser == user.idUser })
+        assertTrue(usersBoards.any { it.idUser == user.idUser })
         assertEquals(Status.OK, response.status)
     }
 
@@ -208,7 +218,7 @@ class BoardAPITests {
             ).body(userId2)
         )
 
-        assertEquals(dataMem.userBoardData.usersBoards.last().idUser, user2.first)
+        assertEquals(usersBoards.last().idUser, user2.first)
         assertEquals(Status.OK, response.status)
     }
 
@@ -229,7 +239,7 @@ class BoardAPITests {
 
         val msg = Json.decodeFromString<String>(response.bodyString())
 
-        assertNotEquals(dataMem.userBoardData.usersBoards.last().idUser, user2.first)
+        assertNotEquals(usersBoards.last().idUser, user2.first)
         assertEquals(Status.UNAUTHORIZED, response.status)
         assertEquals("Unauthorized Operation.", msg)
     }
@@ -241,9 +251,11 @@ class BoardAPITests {
         val user3 = createUser("Pelegrini", "Pelegrini@gmail.com")
 
         val boardId = createBoard(user.idUser)
-        dataMem.userBoardData.addUserToBoard(user1.first, boardId)
-        dataMem.userBoardData.addUserToBoard(user2.first, boardId)
-        dataMem.userBoardData.addUserToBoard(user3.first, boardId)
+        executorTest.execute {
+            dataMem.userBoardData.addUserToBoard(user1.first, boardId, it)
+            dataMem.userBoardData.addUserToBoard(user2.first, boardId, it)
+            dataMem.userBoardData.addUserToBoard(user3.first, boardId, it)
+        }
 
         val response = app(
             Request(Method.GET, "$baseUrl/board/$boardId/allUsers")
@@ -296,9 +308,9 @@ class BoardAPITests {
                 .header("Authorization", user.token)
         )
 
-        val boards = Json.decodeFromString<List<Board>>(response.bodyString())
+        val boards = Json.decodeFromString<List<TotalBoards>>(response.bodyString())
 
-        assertEquals(dataMem.boardData.boards.subList(skip, skip + limit), boards)
+        assertEquals(boards.subList(skip, skip + limit), boards)
     }
 
     @Test
@@ -315,9 +327,9 @@ class BoardAPITests {
                 .header("Authorization", user.token)
         )
 
-        val boards = Json.decodeFromString<List<Board>>(response.bodyString())
+        val boards = Json.decodeFromString<List<BoardWithLists>>(response.bodyString())
 
-        assertEquals(dataMem.boardData.boards.subList(0, boards.size), boards)
+        assertEquals(boards.subList(0, boards.size), boards)
     }
 
     @Test
@@ -334,9 +346,9 @@ class BoardAPITests {
                 .header("Authorization", user.token)
         )
 
-        val boards = Json.decodeFromString<List<Board>>(response.bodyString())
+        val boards = Json.decodeFromString<List<TotalBoards>>(response.bodyString())
 
-        assertEquals(dataMem.boardData.boards.subList(0, boards.size), boards)
+        assertEquals(boards.subList(0, boards.size), boards)
     }
 
     @Test
@@ -358,7 +370,7 @@ class BoardAPITests {
 
         val users = Json.decodeFromString<List<User>>(response.bodyString())
 
-        assertEquals(dataMem.userData.users.subList(skip, skip + limit), users)
+        assertEquals(users.subList(skip, limit), users)
     }
 
     @Test
@@ -380,7 +392,7 @@ class BoardAPITests {
 
         val users = Json.decodeFromString<List<User>>(response.bodyString())
 
-        assertEquals(dataMem.userData.users.subList(0, users.size), users)
+        assertEquals(users.subList(0, users.size), users)
     }
 
     @Test
@@ -402,6 +414,6 @@ class BoardAPITests {
 
         val users = Json.decodeFromString<List<User>>(response.bodyString())
 
-        assertEquals(dataMem.userData.users.subList(0, users.size), users)
+        assertEquals(users.subList(0, users.size), users)
     }
 }

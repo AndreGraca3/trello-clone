@@ -33,7 +33,7 @@ class ServicesUserTests {
             services.userServices.createUser(dummyName, dummyBadEmail)
         }
         assertEquals(400, err.status.code)
-        assertEquals("Invalid parameters: $dummyBadEmail", err.message)
+        assertEquals(dummyBadEmail, err.message)
     }
 
     @Test

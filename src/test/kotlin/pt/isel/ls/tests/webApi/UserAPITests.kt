@@ -49,7 +49,7 @@ class UserAPITests {
         val msg = Json.decodeFromString<String>(response.bodyString())
 
         assertEquals(Status.BAD_REQUEST, response.status)
-        assertEquals("Invalid parameters: $dummyBadEmail", msg)
+        assertEquals("Invalid parameter: $dummyBadEmail", msg)
     }
 
     @Test

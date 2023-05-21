@@ -68,7 +68,7 @@ class ServicesListTests {
     fun `Get Lists of Board`() {
         val listsAmount = 2
         repeat(listsAmount) { createList(boardId, dummyBoardListName + it) }
-        val lists = services.listServices.getListsOfBoard(user.token, boardId, null, null)
+        val lists = services.listServices.getListsOfBoard(user.token, boardId)
         repeat(listsAmount) {
             assertEquals(lists[it], services.listServices.getList(user.token, boardId, it + 1))
         }
@@ -79,7 +79,7 @@ class ServicesListTests {
         val err = assertFailsWith<TrelloException.NotAuthorized> {
             services.listServices.createList(user.token, boardId, dummyBoardListName)
             services.listServices.createList(user.token, boardId, "List2")
-            services.listServices.getListsOfBoard(invalidToken, boardId, null, null)
+            services.listServices.getListsOfBoard(invalidToken, boardId)
         }
         assertEquals(401, err.status.code)
         assertEquals("Unauthorized Operation.", err.message)
@@ -88,7 +88,7 @@ class ServicesListTests {
     @Test
     fun `Delete List from Board`() {
         val listId = createList(boardId)
-        services.listServices.deleteList(user.token, boardId, listId)
+        services.listServices.deleteList(user.token, boardId, listId, null)
         assertFailsWith<TrelloException.NotFound> {
             services.listServices.getList(user.token, boardId, listId)
         }
@@ -98,7 +98,7 @@ class ServicesListTests {
     fun `Delete List from Board invalid token`() {
         val listId = createList(boardId)
         val err = assertFailsWith<TrelloException.NotAuthorized> {
-            services.listServices.deleteList(invalidToken, boardId, listId)
+            services.listServices.deleteList(invalidToken, boardId, listId, null)
         }
         assertEquals(401, err.status.code)
         assertEquals("Unauthorized Operation.", err.message)
@@ -107,10 +107,10 @@ class ServicesListTests {
     @Test
     fun `Delete non-existing List from Board`() {
         val err = assertFailsWith<TrelloException.NoContent> {
-            services.listServices.deleteList(user.token, boardId, invalidId)
+            services.listServices.deleteList(user.token, boardId, invalidId, null)
         }
         assertEquals(204, err.status.code)
-        assertEquals("List didn't exist.", err.message)
+        assertEquals("", err.message)
     }
 
     // IDEA: Update List

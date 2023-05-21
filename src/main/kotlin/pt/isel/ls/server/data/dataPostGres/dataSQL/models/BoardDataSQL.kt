@@ -2,6 +2,8 @@ package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
 import pt.isel.ls.server.data.dataInterfaces.models.BoardData
 import pt.isel.ls.server.data.dataPostGres.statements.BoardStatements
+import pt.isel.ls.server.exceptions.NOT_FOUND
+import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.BoardWithLists
 import java.sql.Connection
@@ -26,6 +28,8 @@ class BoardDataSQL : BoardData {
         val res = con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
+        if(res.row == 0) throw TrelloException.NotFound("Board $NOT_FOUND")
+
         return Board(idBoard, res.getString("name"), res.getString("description"))
     }
 
@@ -45,7 +49,6 @@ class BoardDataSQL : BoardData {
 
         while (res.next()) {
             if (res.row == 0) return emptyList()
-            /** Estamos a dar return antes de acabar a ligação!!! **/
             boards.add(
                 BoardWithLists(
                     res.getInt("idBoard"),

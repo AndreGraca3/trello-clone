@@ -6,9 +6,10 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
+import pt.isel.ls.server.data.dataMem.cards
+import pt.isel.ls.server.utils.BoardList
 import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.CardIn
-import pt.isel.ls.server.utils.CardOut
 import pt.isel.ls.server.utils.Changes
 import pt.isel.ls.server.utils.NewList
 import pt.isel.ls.tests.utils.app
@@ -22,6 +23,7 @@ import pt.isel.ls.tests.utils.dataSetup
 import pt.isel.ls.tests.utils.dummyBoardListName
 import pt.isel.ls.tests.utils.dummyCardDescription
 import pt.isel.ls.tests.utils.dummyCardName
+import pt.isel.ls.tests.utils.executorTest
 import pt.isel.ls.tests.utils.invalidToken
 import pt.isel.ls.tests.utils.listId
 import pt.isel.ls.tests.utils.services
@@ -40,14 +42,14 @@ class CardAPITests {
 
     @Test
     fun `test create card without endDate`() {
-        val cardIn = CardIn(dummyCardName, dummyCardDescription, null)
+        val cardIn = CardIn(dummyCardName, dummyCardDescription, null, listId)
 
         val requestBody = Json.encodeToString(cardIn)
 
         val response = app(
             Request(
                 Method.POST,
-                "$baseUrl/board/$boardId/list/$listId/card"
+                "$baseUrl/board/$boardId/card"
             ).header(
                 "Authorization",
                 "Bearer ${user.token}"
@@ -67,14 +69,14 @@ class CardAPITests {
 
     @Test
     fun `create card without being logged`() {
-        val cardIn = CardIn(dummyCardName, dummyCardDescription, null)
+        val cardIn = CardIn(dummyCardName, dummyCardDescription, null, listId)
 
         val requestBody = Json.encodeToString(cardIn)
 
         val response = app(
             Request(
                 Method.POST,
-                "$baseUrl/board/$boardId/list/$listId/card"
+                "$baseUrl/board/$boardId/card"
             ).body(
                 requestBody
             )
@@ -88,14 +90,14 @@ class CardAPITests {
         val response = app(
             Request(
                 Method.POST,
-                "$baseUrl/board/$boardId/list"
+                "$baseUrl/board/$boardId/card"
             ).header(
                 "Authorization",
                 "Bearer ${user.token}"
             )
         )
 
-        assertTrue(dataMem.cardData.cards.isEmpty())
+        assertTrue(cards.isEmpty())
         assertEquals(Status.BAD_REQUEST, response.status)
     }
 
@@ -106,7 +108,7 @@ class CardAPITests {
         val response = app(
             Request(
                 Method.GET,
-                "$baseUrl/board/$boardId/list/$listId/card/$idCard"
+                "$baseUrl/board/$boardId/card/$idCard"
             ).header(
                 "Authorization",
                 "Bearer ${user.token}"
@@ -116,7 +118,7 @@ class CardAPITests {
         assertEquals(Status.OK, response.status)
         assertEquals("application/json", response.header("content-type"))
 
-        val cardOut = Json.decodeFromString<CardOut>(response.bodyString())
+        val cardOut = Json.decodeFromString<Card>(response.bodyString())
         assertEquals(dummyCardName, cardOut.name)
         assertEquals(dummyCardDescription, cardOut.description)
     }
@@ -128,7 +130,7 @@ class CardAPITests {
         val response = app(
             Request(
                 Method.GET,
-                "$baseUrl/board/$boardId/list/$listId/card/$idCard"
+                "$baseUrl/board/$boardId/card/$idCard"
             )
         )
 
@@ -140,7 +142,7 @@ class CardAPITests {
         val response = app(
             Request(
                 Method.GET,
-                "$baseUrl/board/$boardId/list/$listId/card/$cardId"
+                "$baseUrl/board/$boardId/card/$cardId"
             ).header(
                 "Authorization",
                 "Bearer ${user.token}"
@@ -158,12 +160,12 @@ class CardAPITests {
         val idCard = createCard(listId, boardId, dummyCardName, dummyCardDescription)
         val idListDst = createList(boardId, dummyBoardListName + "2")
 
-        val requestBody = Json.encodeToString(NewList(idListDst, 1))
+        val requestBody = Json.encodeToString(NewList(idListDst, 1,2))
 
         val response = app(
             Request(
                 Method.PUT,
-                "$baseUrl/board/$boardId/list/$listId/card/$idCard"
+                "$baseUrl/board/$boardId/card/$idCard"
             ).header(
                 "Authorization",
                 "Bearer ${user.token}"
@@ -179,12 +181,12 @@ class CardAPITests {
         val idCard = createCard(listId, boardId, dummyCardName, dummyCardDescription)
         val idListDst = createList(boardId, dummyBoardListName + "2")
 
-        val requestBody = Json.encodeToString(NewList(idListDst, 0))
+        val requestBody = Json.encodeToString(NewList(idListDst, 0, 2))
 
         val response = app(
             Request(
                 Method.PUT,
-                "$baseUrl/board/$boardId/list/$listId/card/$idCard"
+                "$baseUrl/board/$boardId/card/$idCard"
             ).body(requestBody)
         )
 
@@ -201,15 +203,15 @@ class CardAPITests {
             if (i > 3) createCard(idListDst, boardId, "card$i", "this is a card$i.", null)
         }
 
-        assertEquals(3, dataMem.cardData.getCardsFromList(listId, boardId, 3, 0).size)
-        assertEquals(3, dataMem.cardData.getCardsFromList(idListDst, boardId, 3, 0).size)
+        assertEquals(3, executorTest.execute { dataMem.cardData.getCardsFromList(listId, boardId, it).size } as Int)
+        assertEquals(3, executorTest.execute { dataMem.cardData.getCardsFromList(idListDst, boardId, it).size } as Int)
 
-        val requestBody = Json.encodeToString(NewList(idListDst, 2))
+        val requestBody = Json.encodeToString(NewList(idListDst, 2, 2))
 
         val response = app(
             Request(
                 Method.PUT,
-                "$baseUrl/board/$boardId/list/$listId/card/$idCard"
+                "$baseUrl/board/$boardId/card/$idCard"
             ).header(
                 "Authorization",
                 "Bearer ${user.token}"
@@ -218,8 +220,13 @@ class CardAPITests {
 
         assertEquals(Status.OK, response.status)
 
-        val listSrc = dataMem.cardData.getCardsFromList(listId, boardId, 2, 0)
-        val listDst = dataMem.cardData.getCardsFromList(idListDst, boardId, 4, 0)
+        val listSrc = executorTest.execute {
+            dataMem.cardData.getCardsFromList(listId, boardId, it)
+        } as List<Card>
+
+        val listDst = executorTest.execute {
+            dataMem.cardData.getCardsFromList(idListDst, boardId, it)
+        } as List<Card>
 
         assertEquals(2, listSrc.size)
         assertEquals(4, listDst.size)
@@ -237,14 +244,14 @@ class CardAPITests {
             createCard(listId, boardId, "card$i", "this is a card$i.", null)
         }
 
-        assertEquals(6, dataMem.cardData.getCardsFromList(listId, boardId, 6, 0).size)
+        assertEquals(6, executorTest.execute { dataMem.cardData.getCardsFromList(listId, boardId, it).size } as Int)
 
-        val requestBody = Json.encodeToString(NewList(listId, 4))
+        val requestBody = Json.encodeToString(NewList(listId, listId, 2))
 
         val response = app(
             Request(
                 Method.PUT,
-                "$baseUrl/board/$boardId/list/$listId/card/$idCard"
+                "$baseUrl/board/$boardId/card/$idCard"
             ).header(
                 "Authorization",
                 "Bearer ${user.token}"
@@ -253,7 +260,7 @@ class CardAPITests {
 
         assertEquals(Status.OK, response.status)
 
-        val listSrc = dataMem.cardData.getCardsFromList(listId, boardId, 6, 0)
+        val listSrc = executorTest.execute { dataMem.cardData.getCardsFromList(listId, boardId, it) } as List<Card>
 
         assertEquals(6, listSrc.size)
 
@@ -261,90 +268,33 @@ class CardAPITests {
     }
 
     @Test
-    fun `get cards from list with valid pagination`() {
-        val skip = 2
-        val limit = 3
-
-        repeat(6) {
-            services.cardServices.createCard(user.token, boardId, listId, "card$it", "card$it", null)
-        }
-
-        val response = app(
-            Request(Method.GET, "$baseUrl/board/$boardId/list/$listId/card?skip=$skip&limit=$limit")
-                .header("Authorization", user.token)
-        )
-
-        val cards = Json.decodeFromString<List<Card>>(response.bodyString())
-
-        assertEquals(dataMem.cardData.cards.subList(skip, skip + limit), cards)
-    }
-
-    @Test
-    fun `get boards from user with invalid pagination negative numbers`() {
-        val skip = -2
-        val limit = -2
-
-        repeat(6) {
-            services.cardServices.createCard(user.token, boardId, listId, "card$it", "card$it", null)
-        }
-
-        val response = app(
-            Request(Method.GET, "$baseUrl/board/$boardId/list/$listId/card?skip=$skip&limit=$limit")
-                .header("Authorization", user.token)
-        )
-
-        val cards = Json.decodeFromString<List<Card>>(response.bodyString())
-
-        assertEquals(dataMem.cardData.cards.subList(0, cards.size), cards)
-    }
-
-    @Test
-    fun `get boards from user with invalid pagination bigger than size`() {
-        val skip = 10
-        val limit = 7
-
-        repeat(6) {
-            services.cardServices.createCard(user.token, boardId, listId, "card$it", "card$it", null)
-        }
-
-        val response = app(
-            Request(Method.GET, "$baseUrl/board/$boardId/list/$listId/card?skip=$skip&limit=$limit")
-                .header("Authorization", user.token)
-        )
-
-        val cards = Json.decodeFromString<List<Card>>(response.bodyString())
-
-        assertEquals(dataMem.cardData.cards.subList(0, cards.size), cards)
-    }
-
-    @Test
     fun `delete a card while logged in`() {
         val idCard = createCard(listId, boardId, dummyCardName, dummyCardDescription)
 
-        assertEquals(1, dataMem.cardData.cards.size)
+        assertEquals(1, cards.size)
 
         val response = app(
-            Request(Method.DELETE, "$baseUrl/board/$boardId/list/$listId/card/$idCard")
+            Request(Method.DELETE, "$baseUrl/board/$boardId/card/$idCard")
                 .header("Authorization", user.token)
         )
 
         assertEquals(Status.OK, response.status)
-        assertEquals(0, dataMem.cardData.cards.size)
+        assertEquals(0, cards.size)
     }
 
     @Test
     fun `delete a card without being logged in`() {
         val idCard = createCard(listId, boardId, dummyCardName, dummyCardDescription)
 
-        assertEquals(1, dataMem.cardData.cards.size)
+        assertEquals(1, cards.size)
 
         val response = app(
-            Request(Method.DELETE, "$baseUrl/board/$boardId/list/$listId/card/$idCard")
+            Request(Method.DELETE, "$baseUrl/board/$boardId/card/$idCard")
                 .header("Authorization", invalidToken)
         )
 
         assertEquals(Status.UNAUTHORIZED, response.status)
-        assertEquals(1, dataMem.cardData.cards.size)
+        assertEquals(1, cards.size)
     }
 
     @Test
@@ -353,31 +303,31 @@ class CardAPITests {
         val idCard = createCard(listId, boardId, dummyCardName, dummyCardDescription)
         val idList = createList(otherBoardId, dummyBoardListName)
 
-        assertEquals(1, dataMem.cardData.cards.size)
+        assertEquals(1, cards.size)
 
         val response = app(
-            Request(Method.DELETE, "$baseUrl/board/$otherBoardId/list/$idList/card/$idCard")
+            Request(Method.DELETE, "$baseUrl/board/$otherBoardId/card/$idCard")
                 .header("Authorization", user.token)
         )
 
         assertEquals(Status.NOT_FOUND, response.status)
 
-        assertEquals(1, dataMem.cardData.cards.size)
+        assertEquals(1, cards.size)
     }
 
     @Test
     fun `delete a non-existing card`() {
         val invalidCardId = 2000
         val idCard = createCard(listId, boardId, dummyCardName, dummyCardDescription)
-        assertEquals(1, dataMem.cardData.cards.size)
+        assertEquals(1, cards.size)
 
         val response = app(
-            Request(Method.DELETE, "$baseUrl/board/$boardId/list/$listId/card/$invalidCardId")
+            Request(Method.DELETE, "$baseUrl/board/$boardId/card/$invalidCardId")
                 .header("Authorization", user.token)
         )
 
         assertEquals(Status.NO_CONTENT, response.status)
-        assertEquals(1, dataMem.cardData.cards.size)
+        assertEquals(1, cards.size)
     }
 
     @Test
@@ -391,16 +341,16 @@ class CardAPITests {
         val requestBody = Json.encodeToString(Changes(archived, newDesc, newEndDate))
 
         val response = app(
-            Request(Method.PUT, "$baseUrl/board/$boardId/list/$listId/card/${idCard}/updateCard")
+            Request(Method.PUT, "$baseUrl/board/$boardId/card/${idCard}/update")
                 .header("Authorization", user.token)
                 .body(requestBody)
         )
 
-        val dataCard = dataMem.cardData.getCard(idCard, listId, boardId)
+        val dataCard = executorTest.execute { dataMem.cardData.getCard(idCard, boardId, it) } as Card
 
         assertEquals(Status.OK, response.status)
         assertEquals(archived, dataCard.archived)
         assertEquals(dummyCardDescription, dataCard.description)
-        assertEquals(newEndDate, dataCard.endDate)
+        assertEquals(null, dataCard.endDate)
     }
 }

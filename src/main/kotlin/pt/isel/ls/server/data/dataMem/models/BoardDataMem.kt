@@ -4,6 +4,8 @@ import pt.isel.ls.server.data.dataInterfaces.models.BoardData
 import pt.isel.ls.server.data.dataMem.boards
 import pt.isel.ls.server.data.dataMem.lists
 import pt.isel.ls.server.data.dataMem.usersBoards
+import pt.isel.ls.server.exceptions.ALREADY_EXISTS
+import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.BoardSQL
@@ -15,14 +17,14 @@ import java.sql.SQLException
 class BoardDataMem : BoardData {
 
     override fun createBoard(idUser: Int, name: String, description: String, con: Connection): Int {
-        if(boards.any { it.name == name }) throw SQLException("Board with that name already exists", "23505")
+        if(boards.any { it.name == name }) throw SQLException("Board $name $ALREADY_EXISTS", "23505")
         val newBoard = Board(getNextId(), name, description)
         boards.add(newBoard)
         return newBoard.idBoard
     }
 
     override fun getBoard(idBoard: Int, con: Connection): Board {
-        return boards.find { it.idBoard == idBoard } ?: throw TrelloException.NotFound("Board")
+        return boards.find { it.idBoard == idBoard } ?: throw TrelloException.NotFound("Board $NOT_FOUND")
     }
 
     override fun getBoardsFromUser(
@@ -33,7 +35,6 @@ class BoardDataMem : BoardData {
         numLists: Int?,
         con: Connection
     ): List<BoardWithLists> {
-        //return boards.filter { idBoards.contains(it.idBoard) }.subList(skip, skip + limit).map { BoardWithLists(it.idBoard, it.name, it.description, 0) }
         val max = usersBoards.filter { it.idUser == idUser }.size
         val paging = checkPaging(max, limit, skip)
         return usersBoards.filter { it.idUser == idUser }.subList(paging.first,paging.second)
