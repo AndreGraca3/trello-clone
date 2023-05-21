@@ -32,14 +32,14 @@ class UserBoardDataMem : UserBoardData {
     }
 
     override fun getBoardCountFromUser(idUser: Int, name: String, numLists: Int?): Int {
-        usersBoards.filter { it.idUser == idUser }.forEach { userBoard ->
-            return boards.filter { board ->
-                board.idBoard == userBoard.idBoard &&
-                        board.name == name &&
-                        lists.count { it.idBoard == board.idBoard } == numLists
-            }.size
-        }
-        return 0
+        val boards = boards.filter { it.name == name }
+            .map {
+                board -> lists.count { it.idBoard == board.idBoard }
+            }
+            .filter {
+                it == numLists
+            }
+        return boards.size
     }
 
     override fun getUserCountFromBoard(idBoard: Int): Int {
