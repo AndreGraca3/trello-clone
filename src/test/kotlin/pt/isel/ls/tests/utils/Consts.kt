@@ -2,6 +2,8 @@ package pt.isel.ls.tests.utils
 
 import org.http4k.routing.routes
 import pt.isel.ls.server.api.WebAPI
+import pt.isel.ls.server.data.dataInterfaces.DataExecutor
+import pt.isel.ls.server.data.dataMem.DataExecutorMem
 import pt.isel.ls.server.data.dataMem.DataMem
 import pt.isel.ls.server.routes.BoardRoutes
 import pt.isel.ls.server.routes.CardRoutes
@@ -37,7 +39,9 @@ const val baseUrl = "http://localhost:8080"
 /** modules **/
 val dataMem = DataMem()
 
-val services = Services(dataMem)
+val executorTest = DataExecutorMem<Any>()
+
+val services = Services(dataMem, executorTest)
 
 val webAPI = WebAPI(services)
 

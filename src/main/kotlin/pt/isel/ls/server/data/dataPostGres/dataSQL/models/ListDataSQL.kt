@@ -2,6 +2,7 @@ package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
 import pt.isel.ls.server.data.dataInterfaces.models.ListData
 import pt.isel.ls.server.data.dataPostGres.statements.ListStatement
+import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.BoardList
 import pt.isel.ls.server.utils.setup
@@ -25,7 +26,7 @@ class ListDataSQL : ListData {
         val res = con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
-        if (res.row == 0) throw TrelloException.NotFound("List")
+        if (res.row == 0) throw TrelloException.NotFound("List $NOT_FOUND")
 
         list = BoardList(
             res.getInt("idList"),

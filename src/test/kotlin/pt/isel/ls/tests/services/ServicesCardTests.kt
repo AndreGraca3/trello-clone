@@ -59,7 +59,7 @@ class ServicesCardTests {
             )
         }
         assertEquals(400, err.status.code)
-        assertEquals("Invalid parameters: 2023-03-14", err.message)
+        assertEquals("Invalid parameter: 2023-03-14", err.message)
     }
 
     @Test
@@ -95,7 +95,7 @@ class ServicesCardTests {
             services.cardServices.getCard(user.token, boardId, cardId)
         }
         assertEquals(404, err.status.code)
-        assertEquals("List not found.", err.message)
+        assertEquals("Card not found.", err.message)
     }
 
     @Test

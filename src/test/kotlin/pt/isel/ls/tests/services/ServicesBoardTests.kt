@@ -77,7 +77,6 @@ class ServicesBoardTests {
         val newBoardId = createBoard(user.idUser)
         services.boardServices.addUserToBoard(user.token, user2.first, newBoardId)
         val board = services.boardServices.getBoard(user.token, newBoardId)
-        val usersBoards = usersBoards
         assertEquals(usersBoards.first().idUser, user.idUser)
         assertEquals(usersBoards.last().idUser, user2.first)
         assertEquals(newBoardId, board.idBoard)

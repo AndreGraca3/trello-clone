@@ -2,6 +2,7 @@ package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
 import pt.isel.ls.server.data.dataInterfaces.models.CardData
 import pt.isel.ls.server.data.dataPostGres.statements.CardStatements
+import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.setup
@@ -59,7 +60,7 @@ class CardDataSQL : CardData {
         val res = con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
-        if (res.row == 0) throw TrelloException.NotFound("Card")
+        if (res.row == 0) throw TrelloException.NotFound("Card $NOT_FOUND")
 
         val idList = res.getInt("idList")
         val name = res.getString("name")
@@ -102,7 +103,7 @@ class CardDataSQL : CardData {
         val res = con.prepareStatement(deleteStmt).executeQuery()
         res.next()
 
-        if (res.row == 0) throw TrelloException.NoContent("card")
+        if (res.row == 0) throw TrelloException.NoContent()
 
         val idList = res.getInt("idList")
         if (idList != 0) {

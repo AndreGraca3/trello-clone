@@ -1,24 +1,31 @@
 package pt.isel.ls.tests.utils
 
+import pt.isel.ls.server.data.dataMem.boards
+import pt.isel.ls.server.data.dataMem.cards
+import pt.isel.ls.server.data.dataMem.lists
+import pt.isel.ls.server.data.dataMem.users
+import pt.isel.ls.server.data.dataMem.usersBoards
 import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.BoardList
 import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.User
 
 // Functions to create dummy components for tests
-fun createUser(name: String = dummyName, email: String = dummyEmail) = dataMem.userData.createUser(name, email)
+fun createUser(name: String = dummyName, email: String = dummyEmail) = executorTest.execute { dataMem.userData.createUser(name, email, it) } as Pair<Int, String>
 
 fun createBoard(
     idUser: Int,
     boardName: String = dummyBoardName,
     boardDescription: String = dummyBoardDescription
 ): Int {
-    val idBoard = dataMem.boardData.createBoard(idUser, boardName, boardDescription)
-    dataMem.userBoardData.addUserToBoard(idUser, idBoard)
-    return idBoard
+    return executorTest.execute {
+        val idBoard = dataMem.boardData.createBoard(idUser, boardName, boardDescription, it)
+        dataMem.userBoardData.addUserToBoard(idUser, idBoard, it)
+        idBoard
+    } as Int
 }
 
-fun createList(idBoard: Int, listName: String = dummyBoardListName) = dataMem.listData.createList(idBoard, listName)
+fun createList(idBoard: Int, listName: String = dummyBoardListName) = executorTest.execute { dataMem.listData.createList(idBoard, listName, it) } as Int
 
 fun createCard(
     idList: Int,
@@ -27,7 +34,9 @@ fun createCard(
     cardDescription: String = dummyCardDescription,
     endDate: String? = null
 ) =
-    dataMem.cardData.createCard(idList, idBoard, cardName, cardDescription, endDate)
+    executorTest.execute {
+        dataMem.cardData.createCard(idList, idBoard, cardName, cardDescription, endDate, it)
+    } as Int
 
 /** Empties data for every Test
  * and creates only necessary components **/
@@ -49,9 +58,9 @@ fun dataSetup(clazz: Class<*>) {
 }
 
 fun initialState() {
-    dataMem.userData.users.clear()
-    dataMem.userBoardData.usersBoards.clear()
-    dataMem.boardData.boards.clear()
-    dataMem.listData.lists.clear()
-    dataMem.cardData.cards.clear()
+    users.clear()
+    usersBoards.clear()
+    boards.clear()
+    lists.clear()
+    cards.clear()
 }

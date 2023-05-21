@@ -10,6 +10,7 @@ export function handlePath(path) {
         path = getQueryParams(path, res)
     }
 
+
     if (fixedPaths.find(it => it === path)) {
         res.path = path
         console.log(res) /** debug purposes. **/

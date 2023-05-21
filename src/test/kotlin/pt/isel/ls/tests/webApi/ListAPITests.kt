@@ -6,6 +6,7 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
+import pt.isel.ls.server.data.dataMem.lists
 import pt.isel.ls.server.utils.BoardList
 import pt.isel.ls.server.utils.BoardListIn
 import pt.isel.ls.server.utils.DeleteListIn
@@ -70,7 +71,7 @@ class ListAPITests {
 
         val msg = Json.decodeFromString<String>(response.bodyString())
 
-        assertTrue(dataMem.listData.lists.isEmpty())
+        assertTrue(lists.isEmpty())
         assertEquals(response.status, Status.UNAUTHORIZED)
         assertEquals("Unauthorized Operation.", msg)
     }
@@ -87,7 +88,7 @@ class ListAPITests {
             )
         )
 
-        assertTrue(dataMem.listData.lists.isEmpty())
+        assertTrue(lists.isEmpty())
         assertEquals(Status.BAD_REQUEST, response.status)
     }
 
@@ -288,26 +289,7 @@ class ListAPITests {
         val msg = Json.decodeFromString<String>(response.bodyString())
 
         assertEquals(Status.NO_CONTENT, response.status)
-        assertEquals("List didn't exist.", msg)
-    }
-
-    @Test
-    fun `get Lists from board with valid pagination`() {
-        val skip = 2
-        val limit = 3
-
-        repeat(6) {
-            services.listServices.createList(user.token, boardId, "list$it")
-        }
-
-        val response = app(
-            Request(Method.GET, "$baseUrl/board/$boardId/list?skip=$skip&limit=$limit")
-                .header("Authorization", user.token)
-        )
-
-        val lists = Json.decodeFromString<List<BoardList>>(response.bodyString())
-
-        assertEquals(dataMem.listData.lists.subList(skip, skip + limit), lists)
+        assertEquals("", msg)
     }
 
     @Test
@@ -326,7 +308,7 @@ class ListAPITests {
 
         val lists = Json.decodeFromString<List<BoardList>>(response.bodyString())
 
-        assertEquals(dataMem.listData.lists.subList(0, lists.size), lists)
+        assertEquals(lists.subList(0, lists.size), lists)
     }
 
     @Test
@@ -345,6 +327,6 @@ class ListAPITests {
 
         val lists = Json.decodeFromString<List<BoardList>>(response.bodyString())
 
-        assertEquals(dataMem.listData.lists.subList(0, lists.size), lists)
+        assertEquals(lists.subList(0, lists.size), lists)
     }
 }

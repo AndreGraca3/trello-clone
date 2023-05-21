@@ -12,10 +12,13 @@ class DataExecutorMem<R> : DataExecutor<R> {
         val con = ConnectionDB()
         try {
             return action(con)
-        } catch (e: SQLException) {
+        } catch (e: Exception) {
             println(e)
-            val trelloException = map[e.sqlState] ?: throw TrelloException.InternalError()
-            throw trelloException(e.localizedMessage)
+            if(e is SQLException) {
+                val trelloException = map[e.sqlState] ?: throw TrelloException.InternalError()
+                throw trelloException(e.localizedMessage)
+            }
+            else throw e as TrelloException
         }
     }
 }

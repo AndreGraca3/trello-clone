@@ -2,6 +2,7 @@ package pt.isel.ls.server.data.dataMem.models
 
 import pt.isel.ls.server.data.dataInterfaces.models.CardData
 import pt.isel.ls.server.data.dataMem.cards
+import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Card
 import java.sql.Connection
@@ -41,7 +42,7 @@ class CardDataMem : CardData {
 
     override fun getCard(idCard: Int, idBoard: Int, con: Connection): Card {
         return cards.find { it.idCard == idCard && it.idBoard == idBoard }
-            ?: throw TrelloException.NotFound("Card")
+            ?: throw TrelloException.NotFound("Card $NOT_FOUND")
     }
 
     override fun moveCard(
@@ -72,7 +73,7 @@ class CardDataMem : CardData {
         try {
             card = getCard(idCard, idBoard, con)
         } catch (ex: TrelloException) {
-            throw TrelloException.NoContent("card")
+            throw TrelloException.NoContent()
         }
         cards.remove(card)
         if (card.idList == null) return

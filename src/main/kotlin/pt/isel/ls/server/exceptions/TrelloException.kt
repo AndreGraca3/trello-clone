@@ -17,7 +17,7 @@ sealed class TrelloException(message: String, val status: Status) : Exception(me
 
     class AlreadyExists(msg: String) : TrelloException(msg, CONFLICT)
 
-    class NoContent(msg: String) : TrelloException(msg, NO_CONTENT)
+    class NoContent() : TrelloException("", NO_CONTENT)
 
     class InternalError() : TrelloException("Server Error", INTERNAL_SERVER_ERROR)
 }
@@ -25,3 +25,9 @@ sealed class TrelloException(message: String, val status: Status) : Exception(me
 val map: Map<String, (String) -> TrelloException> = mapOf(
     "23505" to { str -> TrelloException.AlreadyExists(str) }
 )
+
+const val NOT_FOUND = "not found."
+
+const val ALREADY_EXISTS = "already exists."
+
+const val INVAL_PARAM = "Invalid parameter:"

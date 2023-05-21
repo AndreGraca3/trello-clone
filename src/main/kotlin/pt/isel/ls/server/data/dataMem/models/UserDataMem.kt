@@ -3,6 +3,8 @@ package pt.isel.ls.server.data.dataMem.models
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
 import pt.isel.ls.server.data.dataMem.users
 import pt.isel.ls.server.data.dataMem.usersBoards
+import pt.isel.ls.server.exceptions.ALREADY_EXISTS
+import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.User
 import pt.isel.ls.server.utils.checkPaging
@@ -13,7 +15,8 @@ import java.util.*
 class UserDataMem : UserData {
 
     override fun createUser(name: String, email: String, con: Connection): Pair<Int, String> {
-        if(users.any { it.email == email || it.name == name }) throw SQLException("name or email invalid","23505")
+        if(users.any { it.email == email }) throw SQLException("$email $ALREADY_EXISTS","23505")
+        if(users.any { it.name == name }) throw SQLException("$name $ALREADY_EXISTS","23505")
         val token = UUID.randomUUID().toString()
         val newUser = User(getNextId(), email, name, token, "https://i.imgur.com/JGtwTBw.png")
         users.add(newUser)
@@ -25,7 +28,7 @@ class UserDataMem : UserData {
     }
 
     override fun getUser(idUser: Int, con: Connection): User {
-        return users.find { it.idUser == idUser } ?: throw TrelloException.NotFound("User")
+        return users.find { it.idUser == idUser } ?: throw TrelloException.NotFound("User $NOT_FOUND")
     }
 
     override fun getUsers(idBoard: Int, limit: Int?, skip: Int?, con: Connection): List<User> {
@@ -34,7 +37,6 @@ class UserDataMem : UserData {
         return users.filter { user ->
             usersBoards.filter { it.idBoard == idBoard }.map { it.idUser }.contains(user.idUser)
         }.subList(paging.first,paging.second)
-
     }
 
     override fun changeAvatar(token: String, avatar: String, con: Connection) {
