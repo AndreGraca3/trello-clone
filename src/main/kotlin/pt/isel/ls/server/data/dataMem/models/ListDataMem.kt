@@ -1,13 +1,13 @@
-package pt.isel.ls.server.data.dataMem
+package pt.isel.ls.server.data.dataMem.models
 
 import pt.isel.ls.server.data.dataInterfaces.models.ListData
+import pt.isel.ls.server.data.dataMem.lists
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.BoardList
 import java.sql.Connection
 
 class ListDataMem : ListData {
 
-    val lists = mutableListOf<BoardList>()
 
     override fun createList(idBoard: Int, name: String, con: Connection): Int {
         val newBoardList = BoardList(getNextId(), idBoard, name)
@@ -21,8 +21,7 @@ class ListDataMem : ListData {
     }
 
     override fun getListsOfBoard(idBoard: Int, con: Connection): List<BoardList> {
-        //return lists.filter { it.idBoard == idBoard }.subList(skip, skip + limit)
-        TODO("Not yet implemented.")
+        return lists.filter { it.idBoard == idBoard }
     }
 
     override fun deleteList(idList: Int, idBoard: Int, con: Connection) {

@@ -15,7 +15,7 @@ interface BoardData {
         limit: Int?,
         skip: Int?,
         name: String,
-        numLists: Int,
+        numLists: Int?,
         con: Connection
     ): List<BoardWithLists>
 }

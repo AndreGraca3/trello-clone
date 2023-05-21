@@ -1,16 +1,19 @@
-package pt.isel.ls.server.data.dataMem
+package pt.isel.ls.server.data.dataMem.models
 
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
+import pt.isel.ls.server.data.dataMem.users
+import pt.isel.ls.server.data.dataMem.usersBoards
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.User
+import pt.isel.ls.server.utils.checkPaging
 import java.sql.Connection
+import java.sql.SQLException
 import java.util.*
 
 class UserDataMem : UserData {
 
-    val users = mutableListOf<User>(User(1, "alberto.tremocos@gmail.com", "Jose", "token123", "https://live.staticflickr.com/65535/52841364369_13521f6ef1_m.jpg"))
-
     override fun createUser(name: String, email: String, con: Connection): Pair<Int, String> {
+        if(users.any { it.email == email || it.name == name }) throw SQLException("name or email invalid","23505")
         val token = UUID.randomUUID().toString()
         val newUser = User(getNextId(), email, name, token, "https://i.imgur.com/JGtwTBw.png")
         users.add(newUser)
@@ -26,8 +29,12 @@ class UserDataMem : UserData {
     }
 
     override fun getUsers(idBoard: Int, limit: Int?, skip: Int?, con: Connection): List<User> {
-        //return users.filter { idUsers.contains(it.idUser) }.subList(skip, skip + limit)
-        TODO("Not yet implemented!")
+        val max = usersBoards.filter { it.idBoard == idBoard }.size
+        val paging = checkPaging(max, limit, skip)
+        return users.filter { user ->
+            usersBoards.filter { it.idBoard == idBoard }.map { it.idUser }.contains(user.idUser)
+        }.subList(paging.first,paging.second)
+
     }
 
     override fun changeAvatar(token: String, avatar: String, con: Connection) {

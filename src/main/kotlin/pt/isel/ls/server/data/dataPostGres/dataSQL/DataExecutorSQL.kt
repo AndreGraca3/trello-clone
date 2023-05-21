@@ -15,10 +15,13 @@ class DataExecutorSQL<R> : DataExecutor<R> {
                 con.autoCommit = false
                 action(con).also { con.autoCommit = true }
             }
-        } catch (e: SQLException) {
+        } catch (e: Exception) {
             println(e)
-            val trelloException = map[e.sqlState] ?: throw TrelloException.InternalError()
-            throw trelloException(e.localizedMessage)
+            if(e is SQLException) {
+                val trelloException = map[e.sqlState] ?: throw TrelloException.InternalError()
+                throw trelloException(e.localizedMessage)
+            }
+            else throw e as TrelloException
         }
     }
 }

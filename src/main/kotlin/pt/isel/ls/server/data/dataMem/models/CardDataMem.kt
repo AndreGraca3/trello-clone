@@ -1,6 +1,7 @@
-package pt.isel.ls.server.data.dataMem
+package pt.isel.ls.server.data.dataMem.models
 
 import pt.isel.ls.server.data.dataInterfaces.models.CardData
+import pt.isel.ls.server.data.dataMem.cards
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Card
 import java.sql.Connection
@@ -9,7 +10,6 @@ import java.time.format.DateTimeFormatter
 
 class CardDataMem : CardData {
 
-    val cards = mutableListOf<Card>()
 
     override fun createCard(
         idList: Int,
@@ -36,8 +36,7 @@ class CardDataMem : CardData {
     }
 
     override fun getCardsFromList(idList: Int, idBoard: Int, con: Connection): List<Card> {
-        //return cards.filter { it.idList == idList && it.idBoard == idBoard }.subList(skip, skip + limit).sortedBy { it.idx }
-        TODO("Not yet implemented.")
+        return cards.filter { it.idList == idList && it.idBoard == idBoard }.sortedBy { it.idx }
     }
 
     override fun getCard(idCard: Int, idBoard: Int, con: Connection): Card {
@@ -79,11 +78,16 @@ class CardDataMem : CardData {
     }
 
     override fun deleteCards(idList: Int, con: Connection) {
-        TODO("Not yet implemented")
+        val filtered = cards.filter { it.idList == idList }
+        cards.removeAll(filtered)
     }
 
     override fun archiveCards(idList: Int, con: Connection) {
-        TODO("Not yet implemented")
+        val filtered = cards.filter { it.idList == idList }
+        filtered.forEach {
+            it.archived = true
+            it.idList = null
+        }
     }
 
     override fun getNextIdx(idList: Int, con: Connection): Int {
