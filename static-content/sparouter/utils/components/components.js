@@ -1,5 +1,6 @@
 import {mainContent} from "../storage.js"
 import {addOrChangeQuery} from "../../handlers/handlePath.js";
+import {getNewBoardsPath} from "../auxs/utils.js";
 
 
 export function createElement(tagName, innerText, className, id, ...children) {
@@ -42,18 +43,24 @@ export function createRows(items, itemsPerRow) {
     return container
 }
 
-export function createSearchBar() {
+export function createSearchBar(nameSearch, numLists) {
+
     const searchBar = createElement("input", null, "mr-sm-2")
     searchBar.classList.add("searchBar")
     searchBar.placeholder = "Search Board's Name"
+    if(nameSearch != null) searchBar.value = nameSearch
 
     const selector = createElement("select", null, "search-selector")
     selector.addEventListener("change", () => {
         const selectedValue = selector.value
         if (selectedValue === "name") {
             searchBar.placeholder = "Search Board's Name"
+            if(nameSearch != null) searchBar.value = nameSearch
+            else searchBar.value = ""
         } else if (selectedValue === "numLists") {
             searchBar.placeholder = "Search Lists Num."
+            if(numLists != null) searchBar.value = numLists
+            else searchBar.value = ""
         }
     })
 
@@ -75,4 +82,41 @@ export function createSearchBar() {
 
     return createElement("div", null, "search-selector-container", null,
         selector, searchBar)
+}
+
+export function createPaginationButtons(skip, limit, totalBoards, nameSearch, numLists) {
+
+    const prevBtn = createElement("button", "Previous", "btn-secondary")
+    prevBtn.classList.add("btn", "prev-pagination")
+    prevBtn.disabled = skip === 0
+    prevBtn.addEventListener("click", () => {
+        skip -= limit
+        document.location = getNewBoardsPath(skip, limit, nameSearch, numLists)
+    })
+
+    const nextBtn = createElement("button", "Next", "btn-secondary")
+    nextBtn.classList.add("btn", "next-pagination")
+    nextBtn.disabled = skip >= totalBoards - limit
+    nextBtn.addEventListener("click", () => {
+        skip += limit
+        document.location = getNewBoardsPath(skip, limit, nameSearch, numLists)
+    })
+
+    const indices = []
+    const currentPage = Math.floor(skip / limit) + 1
+
+    for (let i = 1; i <= Math.ceil(totalBoards / limit); i++) {
+        const a = createElement("a", i, "page-link")
+        a.href = getNewBoardsPath((i-1)*limit, limit, nameSearch, numLists)
+
+        const li = createElement("li", null, "page-item", null, a)
+        if(i === currentPage) li.classList.add("active")
+
+        indices.push(li)
+    }
+
+    return createElement("nav", null, "pagination-buttons", null,
+        createElement("ul", null, "pagination", null,
+            prevBtn, ...indices, nextBtn)
+    )
 }

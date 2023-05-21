@@ -99,10 +99,16 @@ class CardDataMem : CardData {
         return cards.count { it.idBoard == idBoard && it.idList == idList }
     }
 
-    override fun updateCard(card: Card, archived: Boolean, description: String, endDate: String?, con: Connection) {
-        card.archived = archived
-        card.description = description
-        card.endDate = endDate
+    override fun getArchivedCards(idBoard: Int, con: Connection): List<Card> {
+        return cards.filter { it.idBoard == idBoard && it.idList == null }
+    }
+
+    override fun updateCard(card: Card, archived: Boolean, idList: Int?, description: String, endDate: String?, con: Connection) {
+        val found = cards.find { it.idCard == card.idCard } ?: return
+        found.archived = archived
+        found.description = description
+        found.endDate = endDate
+        found.idList = idList
     }
 
     private fun getNextId(): Int {

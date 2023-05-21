@@ -1,7 +1,7 @@
-import {darkerColor, fetchReq} from "../utils/auxs/utils.js";
+import {darkerColor, fetchReq, getNewBoardsPath} from "../utils/auxs/utils.js";
 import {LIMIT_INITIAL_VALUE, mainContent, MAX_BOARDS_DISPLAY, PAGINATION_CONTROL_VALUES} from "../utils/storage.js";
-import {createElement, createRows, createSearchBar} from "../utils/components/components.js";
-import {createHTMLBoard, createHTMLList, createPaginationButtons} from "../utils/components/modelComponents.js";
+import {createElement, createRows, createSearchBar, createPaginationButtons} from "../utils/components/components.js";
+import {createHTMLBoard, createHTMLList} from "../utils/components/modelComponents.js";
 import {archivedDropdown, usersDropdown} from "../utils/dropdowns/modelDropdowns.js";
 import {boardFunc} from "../utils/listenerHandlers/boardFuncs.js";
 import {getBoardColor, visitBoard} from "../utils/auxs/modelAuxs.js";
@@ -15,18 +15,20 @@ async function getBoards(args) {
     createElement("h1", "My Boards")
 
     const res =
-        await fetchReq(`board?skip=${args.skip}&limit=${args.limit}${args.name!=null ? `&name=${args.name}` : ''}${args.numLists != null ? `&numLists=${args.numLists}` : ''}`,
+        await fetchReq(`board?skip=${args.skip}&limit=${args.limit}${args.name != null ? `&name=${args.name}` : ''}${args.numLists != null ? `&numLists=${args.numLists}` : ''}`,
             "GET")
 
     const boards = res.boards
 
-    // Prevent from going off range
+    // Fix skip and limit values
     if (!args.skip) args.skip = 0
     if (!args.limit) args.limit = LIMIT_INITIAL_VALUE
     if (args.skip < 0) args.skip = Math.max(0, args.skip)
     if (args.skip > res.totalBoards) args.skip = Math.min(res.totalBoards - args.limit + 1, args.skip)
-    document.location =
-        `#boards?skip=${args.skip}&limit=${args.limit}${args.name!=null ? `&name=${args.name}` : ''}${args.numLists!= null? `&numLists=${args.numLists}` : '' }`
+    args.skip = parseInt(args.skip)
+    args.limit = parseInt(args.limit)
+
+    document.location = getNewBoardsPath(args.skip, args.limit, args.name, args.numLists)
 
     const boardCards = boards.map(board =>
         createHTMLBoard(board.name, board.description, board.numLists, () =>
@@ -42,14 +44,14 @@ async function getBoards(args) {
     const options = PAGINATION_CONTROL_VALUES.map(it => createElement("option", it))
     const select = createElement("select", null, null, null, ...options)
     select.value = args.limit
-    select.addEventListener("change", (ev) => document.location = `#boards?skip=${args.skip}&limit=${ev.target.value}`)
-
-    const searchBar = createSearchBar()
+    select.addEventListener("change", (ev) =>
+        document.location = getNewBoardsPath(args.skip, ev.target.value, args.name, args.numLists)
+    )
 
     createElement("div", null, "paginationContainer", null,
         createElement("div", "Boards per Page: ", "pagination-control", null, select),
-        createPaginationButtons(args.skip, args.limit, res.totalBoards, args.name),
-        searchBar
+        createPaginationButtons(args.skip, args.limit, res.totalBoards, args.name, args.numLists),
+        createSearchBar(args.name, args.numLists)
     )
 
     // Boards

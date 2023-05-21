@@ -91,6 +91,11 @@ class CardDataSQL : CardData {
         con.prepareStatement(updateStmtCard).executeUpdate()
     }
 
+    override fun decreaseIdx(idList: Int, idx: Int, con: Connection) {
+        val updateStmt = CardStatements.decreaseIdx(idList, idx)
+        con.prepareStatement(updateStmt).executeUpdate()
+    }
+
     override fun deleteCard(idCard: Int, idBoard: Int, con: Connection) {
         val deleteStmt = CardStatements.deleteCard(idCard, idBoard)
 
@@ -114,8 +119,15 @@ class CardDataSQL : CardData {
         con.prepareStatement(updateStmt).executeUpdate()
     }
 
-    override fun archiveCards(idList: Int, con: Connection) {
-        val updateStmt = CardStatements.archiveCards(idList)
+    override fun archiveCard(idBoard: Int, idList: Int, idCard: Int, idx: Int, con: Connection) {
+        val updateStmt = CardStatements.archiveCard(idBoard, idCard)
+        con.prepareStatement(updateStmt).executeUpdate()
+        val decreaseIdxStmt = CardStatements.decreaseIdx(idList, idx)
+        con.prepareStatement(decreaseIdxStmt).executeUpdate()
+    }
+
+    override fun archiveCards(idBoard: Int, idList: Int, con: Connection) {
+        val updateStmt = CardStatements.archiveCards(idBoard, idList)
         con.prepareStatement(updateStmt).executeUpdate()
     }
 
@@ -137,17 +149,35 @@ class CardDataSQL : CardData {
         return res.getInt("count")
     }
 
-    override fun updateCard(
-        card: Card,
-        archived: Boolean,
-        description: String,
-        endDate: String?,
-        con: Connection
-    ) {
+    override fun getArchivedCards(idBoard: Int, con: Connection): List<Card> {
+        val selectStmt = CardStatements.getArchivedCards(idBoard)
+        val cards = mutableListOf<Card>()
+
+        val res = con.prepareStatement(selectStmt).executeQuery()
+
+        while (res.next()) {
+            if (res.row == 0) return emptyList() // test if this works both in here and in BoardSQL
+            cards.add(
+                Card(
+                    res.getInt("idCard"),
+                    res.getInt("idList"),
+                    res.getInt("idBoard"),
+                    res.getString("name"),
+                    res.getString("description"),
+                    res.getString("startDate"),
+                    res.getString("endDate"),
+                    res.getBoolean("archived"),
+                    res.getInt("idx")
+                )
+            )
+        }
+        return cards
+    }
+
+    override fun updateCard(card: Card, description: String?, endDate: String?, con: Connection) {
         val updateStmt = CardStatements.updateCard(
             card.idCard,
             card.idBoard,
-            archived,
             description,
             endDate
         )

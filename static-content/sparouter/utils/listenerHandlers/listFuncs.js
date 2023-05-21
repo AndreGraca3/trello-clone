@@ -37,12 +37,26 @@ export async function deleteList(list) {
 
     const card = listToDelete.querySelector(".card-container")
 
-    if(!card) {
-        await fetchReq(`board/${list.idBoard}/list/${list.idList}`, "DELETE")
-
+    const deleteHandler = () => {
         const board = document.querySelector("#boardContainer")
         board.removeChild(listToDelete)
+        $('#listModal').modal('hide')
+    }
+
+    if(!card) {
+        await fetchReq(`board/${list.idBoard}/list/${list.idList}`, "DELETE")
+        deleteHandler()
     } else {
         $('#listModal').modal('show')
+
+        document.querySelector('#listDeleteButton').addEventListener("click", async () => {
+            await fetchReq(`board/${list.idBoard}/list/${list.idList}?action=delete`, "DELETE")
+            deleteHandler()
+        })
+
+        document.querySelector('#listArchiveButton').addEventListener("click", async () => {
+            await fetchReq(`board/${list.idBoard}/list/${list.idList}?action=archive`, "DELETE")
+            deleteHandler()
+        })
     }
 }

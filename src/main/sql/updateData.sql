@@ -1,0 +1,1 @@
+UPDATE dbo.card SET idList = null, archived = true WHERE idList = 19;

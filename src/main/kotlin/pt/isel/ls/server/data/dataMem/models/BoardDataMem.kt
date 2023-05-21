@@ -6,7 +6,6 @@ import pt.isel.ls.server.data.dataMem.lists
 import pt.isel.ls.server.data.dataMem.usersBoards
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Board
-import pt.isel.ls.server.utils.BoardSQL
 import pt.isel.ls.server.utils.BoardWithLists
 import pt.isel.ls.server.utils.checkPaging
 import java.sql.Connection

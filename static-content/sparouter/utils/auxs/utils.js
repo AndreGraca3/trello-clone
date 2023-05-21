@@ -32,3 +32,7 @@ export async function fetchReq(path, method, body) {
     if (!rsp.ok) throw content
     return content
 }
+
+export function getNewBoardsPath(skip, limit, nameSearch, numLists) {
+    return `#boards?skip=${skip}&limit=${limit}${nameSearch != null && nameSearch !== "" ? `&name=${nameSearch}` : ''}${numLists != null && numLists !== "" ? `&numLists=${numLists}` : ''}`
+}
