@@ -1,6 +1,6 @@
 # LS Project Phase 2
 ## Introduction
-This document presents the design and implementation aspects of the LS Project's first phase. <br>
+This document presents the design and implementation aspects of the LS Project. <br>
 The system is designed to manage information related to Trello Boards and their elements, such as boards, lists and cards.<br>
 
 This application aims to provide a task management system. <br>
@@ -15,18 +15,18 @@ The application also provides an Open-API specification that documents the API e
 The following diagram shows the Entity-Relationship model for the system's information management.
 
 
-<img src="../images/EA_Model.jpg" alt="Entity-Relationship Model" style="width:800px;height:145px;">
+<img src="../images/EA_Model.jpg" alt="Entity-Relationship Model" style="width:800px;height:300px;">
 
 We highlight the following aspects of the conceptual model:
 
-__Boards__ have a title, description, and creation date.\
-__Lists__ belong to a board and have a title and position.\
-__Cards__ can or not belong to a list and have a title, description, position, and due date.
+__Boards__ have a title and description.\
+__Lists__ belong to a board and have a title.\
+__Cards__ can or not belong to a list and have a title, description, position, start date and due date.
 The conceptual model has the following restrictions:
 
 - A board can have multiple lists.
 - A list can have multiple cards.
-- A card can belong to only one list.
+- A card can belong to only one list or none.
 
 <img src="../images/C_Model.jpg" alt="Conceptual Model" style="width:335px;height:155px;">
 
@@ -75,7 +75,8 @@ The request parameters are validated in the endpoint handler functions, using th
 Connections to the database are created, used, and disposed of by the PGSimpleDataSource class. <br>
 
 The connection management is integrated with transaction scopes. <br>
-Each data method executes in a SQL script, which is created and committed or rolled back by the DataSQL class.
+Each service method executes its logic in only one connection to the database, meaning if something
+during the transaction fails, the SQL rollbacks the database.
 
 ### Data Access
 The dataSQL class is responsible for data access. It provides helper functions for executing SQL statements and mapping the results to domain objects.
@@ -102,9 +103,9 @@ Otherwise, it calls the `getToken` method to extract the request's token and pas
 <img src="../images/HandlerFunction_Diagram.jpg" alt="Handler Function Diagram" style="width:290px;height:350px;">
 
 
-To handle specific error situations, the API uses the TrelloException class, which defines custom exceptions with associated HTTP status codes and error messages. This class is a sealed class that extends the base Exception class and includes four subclasses: NotAuthorized, NotFound, IllegalArgument, and AlreadyExists.
+To handle specific error situations, the API uses the TrelloException class, which defines custom exceptions with associated HTTP status codes and error messages. This class is a sealed class that extends the base Exception class and includes six subclasses: NotAuthorized, NotFound, IllegalArgument, AlreadyExists, NoContent and InternalServerError.
 
-Each of these subclasses is designed to handle a specific error scenario. For example, the NotAuthorized subclass handles unauthorized operations (eg.: missing token) and returns an error message indicating that the requested operation is not authorized. Similarly, the NotFound subclass returns an error message indicating that the requested object is not found, while the IllegalArgument subclass returns an error message indicating that the parameters supplied are invalid. The AlreadyExists subclass, on the other hand, returns an error message indicating that the requested object already exists.
+Each of these subclasses is designed to handle a specific error scenario. For example, the NotAuthorized subclass handles unauthorized operations (eg.: missing token) and returns an error message indicating that the requested operation is not authorized. Similarly, the NotFound subclass returns an error message indicating that the requested object is not found, while the IllegalArgument subclass returns an error message indicating that the parameters supplied are invalid. The AlreadyExists subclass, on the other hand, returns an error message indicating that the requested object already exists. The NoContent subclass, indicates whether the delete operation, has deleted an object. The InternalServerError is used when is thrown an error the handler isn't ready to handle.  
 
 By utilizing the TrelloException class, the API can effectively handle a wide range of error situations while providing clear and concise error messages to users. This approach helps to improve the user experience by providing helpful feedback and reducing confusion when errors occur.
 
@@ -125,9 +126,10 @@ To implement paging in a Web API GET operation, the server must be able to deter
 We have implemented a checkPaging function to calculate the subsequence to return, given the paging parameters and the total number of items in the sequence.
 
 ```kotlin
-fun checkPaging(max: Int, limit: Int?, skip: Int?) : Pair<Int,Int> {
-    val skipped = if(skip == null || skip < 0) 0 else min(skip,max)
-    val limited = if(limit == null || limit < 0) max else min(skip!! + limit, max)
+fun checkPaging(max: Int, limit: Int?, skip: Int?): Pair<Int, Int> {
+    val skipped = if (skip == null || skip < 0) 0 else min(skip, max)
+    var limited = if (limit == null || limit < 0 || skipped + limit > max) max - skipped else limit
+    if (skipped > limited) limited = skipped
     return Pair(skipped, limited)
 }
 ```
@@ -180,7 +182,7 @@ It initializes the Router and Handlers, listens for events such as the page load
 In short, the App is the glue that holds the different components of the SPA together, making it work as a cohesive whole.
 
 Next image shows each HTML views can be accessed depending on your current view: 
-<img src="../images/Single_Page_Application.jpg" alt="Interfaces Diagram" style="width:550px;height:400px;"> 
+<img src="../images/Single_Page_Application.jpg" alt="Interfaces Diagram" style="width:800px;height:400px;"> 
 
 We decided to make Boards and Lists accessible in the same view, just like original Trello website
 and make every able to jump to home view.
@@ -190,7 +192,7 @@ In summary, the __Router__, __Handlers__, and __App__ work together to create a 
 #### App Features
 
 ##### Search Feature
-The App Search Feature is a search bar that allows users to search for boards and lists by name and number of lists. <br>
+The App Search Feature is a search bar that allows users to search for boards by name and/or number of lists. <br>
 This implementation that we have developed features a dropdown which displays the possible options of the filters to be
 applied to the search. <br>
 
@@ -211,7 +213,7 @@ The Card can be moved to a different list by clicking on the card and dragging i
 
 ##### Pagination Buttons Feature
 
-The Pagination Buttons Feature is a feature that allows users to navigate between pages of boards and lists. <br>
+The Pagination Buttons Feature is a feature that allows users to navigate between pages of boards. <br>
 The buttons are displayed at the top of the page and can be used to go to the previous or next page. <br>
 There are also indexes of the pages displayed in the middle of the previous and next buttons. <br>
 When clicking a certain index card it shows the content of that page. <br>
