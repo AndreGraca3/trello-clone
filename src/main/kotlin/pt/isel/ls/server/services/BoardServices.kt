@@ -54,7 +54,6 @@ class BoardServices(
 
     fun getBoardsFromUser(token: String, limit: Int?, skip: Int?, name: String?, numLists: Int?): TotalBoards {
         val name = name ?: ""
-        val numLists = numLists ?: 0
 
         return dataExecutor.execute {
             val idUser = userData.getUser(token, it).idUser

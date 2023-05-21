@@ -12,7 +12,7 @@ object BoardStatements {
                 "WHERE idboard = $idBoard;"
     }
 
-    fun getBoardsFromUser(idUser: Int, limit: Int?, skip: Int?, name: String, numLists: Int): String {
+    fun getBoardsFromUser(idUser: Int, limit: Int?, skip: Int?, name: String, numLists: Int?): String {
         return "SELECT b.idboard, b.name, b.description, COUNT(l.idlist) AS numLists\n" +
                 "FROM dbo.board b\n" +
                 "INNER JOIN dbo.user_board u ON u.idboard = b.idboard\n" +

@@ -39,7 +39,7 @@ class BoardDataSQL : BoardData {
     ): List<BoardWithLists> {
 
         val boards = mutableListOf<BoardWithLists>()
-        val selectStmt = BoardStatements.getBoardsFromUser(idUser, limit, skip, name, numLists!!)
+        val selectStmt = BoardStatements.getBoardsFromUser(idUser, limit, skip, name, numLists)
 
         val res = con.prepareStatement(selectStmt).executeQuery()
 

@@ -12,7 +12,7 @@ interface UserBoardData {
 
     fun getIdUsersFromBoard(idBoard: Int): List<Int>
 
-    fun getBoardCountFromUser(idUser: Int, name: String, numLists: Int): Int
+    fun getBoardCountFromUser(idUser: Int, name: String, numLists: Int?): Int
 
     fun getUserCountFromBoard(idBoard: Int): Int
 }
