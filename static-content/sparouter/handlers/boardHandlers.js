@@ -45,7 +45,7 @@ async function getBoards(args) {
     const select = createElement("select", null, null, null, ...options)
     select.value = args.limit
     select.addEventListener("change", (ev) =>
-        document.location = getNewBoardsPath(args.skip, ev.target.value, args.name, args.numLists)
+        document.location = getNewBoardsPath(0, ev.target.value, args.name, args.numLists)
     )
 
     createElement("div", null, "paginationContainer", null,

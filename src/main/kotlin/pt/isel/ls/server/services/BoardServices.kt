@@ -14,7 +14,7 @@ class BoardServices(
     private val userBoardData: UserBoardData,
     private val listData: ListData,
     private val cardData: CardData,
-    private val dataExecutor: DataExecutor<Any>
+    private val dataExecutor: DataExecutor
 ) {
 
     fun createBoard(token: String, name: String, description: String): Int {
@@ -26,7 +26,7 @@ class BoardServices(
             boardData.createBoard(idUser, name, description, con).also {
                 userBoardData.addUserToBoard(idUser, it, con)
             }
-        } as Int
+        }
     }
 
     fun getBoard(token: String, idBoard: Int): BoardDetailed {
@@ -48,7 +48,7 @@ class BoardServices(
             val archivedCards = cardData.getArchivedCards(idBoard, con)
 
             BoardDetailed(idBoard, board.name, board.description, detailedLists, archivedCards)
-        } as BoardDetailed
+        }
     }
 
     fun getBoardsFromUser(token: String, limit: Int?, skip: Int?, name: String?, numLists: Int?): TotalBoards {
@@ -66,7 +66,7 @@ class BoardServices(
                 it
             )
             TotalBoards(count, boards)
-        } as TotalBoards
+        }
     }
 
     fun addUserToBoard(token: String, idNewUser: Int, idBoard: Int) {
@@ -75,7 +75,7 @@ class BoardServices(
             userData.getUser(idNewUser, it) // check if user to add exists
             userBoardData.checkUserInBoard(idUser, idBoard, it)
             userBoardData.addUserToBoard(idNewUser, idBoard, it)
-        } as Unit
+        }
     }
 
     fun getUsersFromBoard(token: String, idBoard: Int, limit: Int?, skip: Int?): List<User> {
@@ -88,6 +88,6 @@ class BoardServices(
                 if (skip != null && skip < 0) null else skip,
                 it
             )
-        } as List<User>
+        }
     }
 }

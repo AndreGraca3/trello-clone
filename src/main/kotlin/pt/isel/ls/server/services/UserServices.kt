@@ -7,7 +7,7 @@ import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.User
 import pt.isel.ls.server.utils.isValidString
 
-class UserServices(private val userData: UserData, private val dataExecutor: DataExecutor<Any>) {
+class UserServices(private val userData: UserData, private val dataExecutor: DataExecutor) {
 
     fun createUser(name: String, email: String): Pair<Int, String> {
         isValidString(name, "name")
@@ -16,11 +16,11 @@ class UserServices(private val userData: UserData, private val dataExecutor: Dat
 
         return dataExecutor.execute {
             userData.createUser(name, email, it)
-        } as Pair<Int, String>
+        }
     }
 
     fun getUser(token: String): User {
-        return dataExecutor.execute { userData.getUser(token, it) } as User
+        return dataExecutor.execute { userData.getUser(token, it) }
     }
 
     fun changeAvatar(token: String, avatar: String) {
@@ -28,6 +28,6 @@ class UserServices(private val userData: UserData, private val dataExecutor: Dat
         return dataExecutor.execute {
             userData.getUser(token, it)
             userData.changeAvatar(token, avatar, it) // verify if this throws a SQLException in some situation.
-        } as Unit
+        }
     }
 }

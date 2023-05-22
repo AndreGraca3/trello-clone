@@ -4,7 +4,8 @@ import {moveToArchivedContainer} from "../auxs/modelAuxs.js";
 
 export async function createList(boardContainer, board) {
     const input = document.createElement("input")
-    boardContainer.insertBefore(input, boardContainer.querySelector('.create-list-button'))
+    const createListButton = boardContainer.querySelector('.create-list-button')
+    boardContainer.insertBefore(input, createListButton)
     boardContainer.scrollLeft = boardContainer.scrollWidth
     input.focus()
     const handleAddList = async () => {
@@ -12,7 +13,7 @@ export async function createList(boardContainer, board) {
             boardContainer.removeChild(input)
             return
         }
-        await addList(boardContainer, input, board)
+        await addList(boardContainer, input, board, createListButton)
     }
     input.addEventListener("focusout", handleAddList)
     input.addEventListener("keydown", (event) => {
@@ -22,15 +23,15 @@ export async function createList(boardContainer, board) {
     })
 }
 
-async function addList(boardContainer, input, board) {
+async function addList(boardContainer, input, board, createListButton) {
     const list = {
         name: input.value
     }
+    input.remove()
     const idList = await fetchReq(`board/${board.idBoard}/list`, "POST", list)
     list.idBoard = board.idBoard
     list.idList = idList
-    boardContainer.insertBefore(createHTMLList(list), input)
-    input.remove()
+    boardContainer.insertBefore(createHTMLList(list), createListButton)
 }
 
 export async function deleteList(list) {

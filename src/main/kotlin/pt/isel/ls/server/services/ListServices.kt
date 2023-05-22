@@ -14,7 +14,7 @@ class ListServices(
     private val userBoardData: UserBoardData,
     private val listData: ListData,
     private val cardData: CardData,
-    private val dataExecutor: DataExecutor<Any>
+    private val dataExecutor: DataExecutor
 ) {
 
     fun createList(token: String, idBoard: Int, name: String): Int {
@@ -24,7 +24,7 @@ class ListServices(
             val idUser = userData.getUser(token, it).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, it)
             listData.createList(idBoard, name, it)
-        } as Int
+        }
     }
 
     fun getList(token: String, idBoard: Int, idList: Int): BoardList {
@@ -32,7 +32,7 @@ class ListServices(
             val idUser = userData.getUser(token, it).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, it)
             listData.getList(idList, idBoard, it)
-        } as BoardList
+        }
     }
 
     fun getCardsFromList(token: String, idBoard: Int, idList: Int, limit: Int?, skip: Int?): List<Card> {
@@ -41,7 +41,7 @@ class ListServices(
             userBoardData.checkUserInBoard(idUser, idBoard, it)
             listData.getList(idList, idBoard, it)
             cardData.getCardsFromList(idList,idBoard,it)
-        } as List<Card>
+        }
     }
 
     fun getListsOfBoard(token: String, idBoard: Int): List<BoardList> {
@@ -49,7 +49,7 @@ class ListServices(
             val idUser = userData.getUser(token, it).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, it)
             listData.getListsOfBoard(idBoard, it)
-        } as List<BoardList>
+        }
     }
 
     fun deleteList(token: String, idBoard: Int, idList: Int, action: String?) {
@@ -61,6 +61,6 @@ class ListServices(
                 "archive" -> cardData.archiveCards(idBoard, idList, it)
             }
             listData.deleteList(idList, idBoard, it)
-        } as Unit
+        }
     }
 }

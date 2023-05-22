@@ -15,7 +15,7 @@ class CardServices(
     private val userBoardData: UserBoardData,
     private val listData: ListData,
     private val cardData: CardData,
-    private val dataExecutor: DataExecutor<Any>
+    private val dataExecutor: DataExecutor
 ) {
 
     fun createCard(
@@ -35,7 +35,7 @@ class CardServices(
             listData.getList(idList, idBoard, it)
             if (endDate != null) checkEndDate(endDate)
             cardData.createCard(idList, idBoard, name, description, endDate, it)
-        } as Int
+        }
     }
 
     fun getCard(token: String, idBoard: Int, idCard: Int): Card {
@@ -43,7 +43,7 @@ class CardServices(
             val idUser = userData.getUser(token, it).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, it)
             cardData.getCard(idCard, idBoard, it)
-        } as Card
+        }
     }
 
     fun moveCard(token: String, idBoard: Int, idListNow: Int, idListDst: Int, idCard: Int, idxDst: Int) {
@@ -55,7 +55,7 @@ class CardServices(
             val card = cardData.getCard(idCard, idBoard, it)
             if (idxDst !in 1..cardData.getNextIdx(idListDst, it)) throw TrelloException.IllegalArgument("idx")
             cardData.moveCard(idCard, idBoard, idListNow, idListDst, card.idx, idxDst, it)
-        } as Unit
+        }
     }
 
     fun deleteCard(token: String, idBoard: Int, idCard: Int) {
@@ -63,7 +63,7 @@ class CardServices(
             val idUser = userData.getUser(token, it).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, it)
             cardData.deleteCard(idCard, idBoard, it)
-        } as Unit
+        }
     }
 
     fun updateCard(token: String, idBoard: Int, idCard: Int, description: String, endDate: String, idList: Int?, archived: Boolean) {
@@ -74,6 +74,6 @@ class CardServices(
             val newDesc = if (description == "") card.description else description
             val newEndDate = if (endDate == "") null else endDate
             cardData.updateCard(card, newDesc, newEndDate, idList, archived, it)
-        } as Unit
+        }
     }
 }

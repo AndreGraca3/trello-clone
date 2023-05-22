@@ -7,8 +7,8 @@ import pt.isel.ls.server.utils.setup
 import java.sql.Connection
 import java.sql.SQLException
 
-class DataExecutorSQL<R> : DataExecutor<R> {
-    override fun execute(action: (Connection) -> R): R {
+class DataExecutorSQL : DataExecutor {
+    override fun <R> execute(action: (Connection) -> R): R {
         val dataSource = setup()
         try {
             return dataSource.connection.use { con ->

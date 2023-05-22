@@ -21,7 +21,7 @@ fun main() {
     // val data = DataMem()
     // val executor = DataExecutorMem<Any>()
     val data = DataSQL()
-    val executor = DataExecutorSQL<Any>()
+    val executor = DataExecutorSQL()
     val services = Services(data, executor)
     val webAPI = WebAPI(services)
 

@@ -7,8 +7,8 @@ import pt.isel.ls.server.exceptions.map
 import java.sql.Connection
 import java.sql.SQLException
 
-class DataExecutorMem<R> : DataExecutor<R> {
-    override fun execute(action: (Connection) -> R): R {
+class DataExecutorMem : DataExecutor {
+    override fun <R> execute(action: (Connection) -> R): R {
         val con = ConnectionDummy()
         try {
             return action(con)
