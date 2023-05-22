@@ -24,7 +24,7 @@ class CardAPI(private val services: CardServices) {
     @Auth
     fun getCard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
-        //val idList = getPathParam(request, "idList")
+        // val idList = getPathParam(request, "idList")
         val idCard = getPathParam(request, "idCard")
         val card = services.getCard(token, idBoard, idCard)
         return createRsp(
@@ -46,7 +46,7 @@ class CardAPI(private val services: CardServices) {
     @Auth
     fun moveCard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
-        //val idListNow = getPathParam(request, "idList")
+        // val idListNow = getPathParam(request, "idList")
         val params = Json.decodeFromString<NewList>(request.bodyString())
         val idCard = getPathParam(request, "idCard")
         return createRsp(
@@ -58,7 +58,7 @@ class CardAPI(private val services: CardServices) {
     @Auth
     fun deleteCard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
-        //val idList = getPathParam(request, "idList")
+        // val idList = getPathParam(request, "idList")
         val idCard = getPathParam(request, "idCard")
         return createRsp(Status.OK, services.deleteCard(token, idBoard, idCard))
     }

@@ -40,7 +40,7 @@ class ListServices(
             val idUser = userData.getUser(token, it).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, it)
             listData.getList(idList, idBoard, it)
-            cardData.getCardsFromList(idList,idBoard,it)
+            cardData.getCardsFromList(idList, idBoard, it)
         } as List<Card>
     }
 
@@ -56,7 +56,7 @@ class ListServices(
         return dataExecutor.execute {
             val idUser = userData.getUser(token, it).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, it)
-            when(action){
+            when (action) {
                 "delete" -> cardData.deleteCards(idList, it)
                 "archive" -> cardData.archiveCards(idBoard, idList, it)
             }

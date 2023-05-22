@@ -5,7 +5,6 @@ import pt.isel.ls.server.data.dataPostGres.statements.CardStatements
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Card
-import pt.isel.ls.server.utils.setup
 import java.sql.Connection
 
 class CardDataSQL : CardData {

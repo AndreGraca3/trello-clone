@@ -8,20 +8,20 @@ object BoardStatements {
 
     fun getBoardCMD(idBoard: Int): String {
         return "SELECT name, description\n" +
-                "FROM dbo.board\n" +
-                "WHERE idboard = $idBoard;"
+            "FROM dbo.board\n" +
+            "WHERE idboard = $idBoard;"
     }
 
     fun getBoardsFromUser(idUser: Int, limit: Int?, skip: Int?, name: String, numLists: Int?): String {
         return "SELECT b.idboard, b.name, b.description, COUNT(l.idlist) AS numLists\n" +
-                "FROM dbo.board b\n" +
-                "INNER JOIN dbo.user_board u ON u.idboard = b.idboard\n" +
-                "LEFT OUTER JOIN dbo.list l ON l.idboard = b.idboard\n" +
-                "WHERE u.iduser = $idUser AND b.name LIKE '%$name%'\n" +
-                "GROUP BY b.idboard, b.name, b.description\n" +
-                "HAVING COUNT(l.idlist) = coalesce($numLists,count(l.idlist))\n" +
-                "ORDER BY b.idboard ASC\n" +
-                "LIMIT $limit OFFSET $skip;"
+            "FROM dbo.board b\n" +
+            "INNER JOIN dbo.user_board u ON u.idboard = b.idboard\n" +
+            "LEFT OUTER JOIN dbo.list l ON l.idboard = b.idboard\n" +
+            "WHERE u.iduser = $idUser AND b.name LIKE '%$name%'\n" +
+            "GROUP BY b.idboard, b.name, b.description\n" +
+            "HAVING COUNT(l.idlist) = coalesce($numLists,count(l.idlist))\n" +
+            "ORDER BY b.idboard ASC\n" +
+            "LIMIT $limit OFFSET $skip;"
     }
 
     fun checkUserInBoard(idUser: Int, idBoard: Int): String {

@@ -1,6 +1,5 @@
 package pt.isel.ls.server.data.dataPostGres.statements
 
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -21,9 +20,9 @@ object CardStatements {
         archived: Boolean = false
     ): String {
         return "INSERT INTO dbo.card (name, description, idList, idBoard, startDate, endDate, archived, idx) " +
-                "VALUES ('$name', '$description', $idList, $idBoard, '${
-                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
-                }', $endDate, $archived, $idx) RETURNING idCard;"
+            "VALUES ('$name', '$description', $idList, $idBoard, '${
+            LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
+            }', $endDate, $archived, $idx) RETURNING idCard;"
     }
 
     fun getCardsFromListCMD(idList: Int, idBoard: Int): String {
@@ -31,13 +30,13 @@ object CardStatements {
     }
 
     fun getCardCMD(idCard: Int, idBoard: Int): String {
-        //return "SELECT * FROM dbo.card WHERE idCard = $idCard and idList = $idList and idBoard = $idBoard;"
+        // return "SELECT * FROM dbo.card WHERE idCard = $idCard and idList = $idList and idBoard = $idBoard;"
         return "SELECT * FROM dbo.card WHERE idCard = $idCard and idBoard = $idBoard;"
     }
 
     fun moveCardCMD(idCard: Int, idListNow: Int, idBoard: Int, idListDst: Int, idxDst: Int): String {
         return "UPDATE dbo.card SET idList = $idListDst, idx = $idxDst " +
-                "WHERE idCard = $idCard and idList = $idListNow and idBoard = $idBoard;"
+            "WHERE idCard = $idCard and idList = $idListNow and idBoard = $idBoard;"
     }
 
     fun deleteCard(idCard: Int, idBoard: Int): String {
@@ -78,9 +77,9 @@ object CardStatements {
 
     fun updateCard(idCard: Int, idBoard: Int, description: String?, endDate: String?, idList: Int?, archived: Boolean): String {
         return "UPDATE dbo.card " +
-                "SET description = ${if (description != null) "'$description'" else null}, " +
-                "endDate = ${if (endDate != null) "'$endDate'" else null}, " +
-                "idList = $idList, archived = $archived " +
-                "where idCard = $idCard and idBoard = $idBoard;"
+            "SET description = ${if (description != null) "'$description'" else null}, " +
+            "endDate = ${if (endDate != null) "'$endDate'" else null}, " +
+            "idList = $idList, archived = $archived " +
+            "where idCard = $idCard and idBoard = $idBoard;"
     }
 }

@@ -4,7 +4,6 @@ import pt.isel.ls.server.data.dataInterfaces.models.UserData
 import pt.isel.ls.server.data.dataPostGres.statements.UserStatements
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.User
-import pt.isel.ls.server.utils.setup
 import java.sql.Connection
 import java.util.*
 

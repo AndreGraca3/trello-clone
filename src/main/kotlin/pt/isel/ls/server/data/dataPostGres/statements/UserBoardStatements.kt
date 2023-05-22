@@ -20,14 +20,14 @@ object UserBoardStatements {
 
     fun getBoardCountFromUser(idUser: Int, name: String, numLists: Int?): String {
         return "SELECT COUNT(*) AS count\n" +
-                "FROM (SELECT DISTINCT b.idBoard\n" +
-                "FROM dbo.board b\n" +
-                "INNER JOIN dbo.user_board ub ON ub.idBoard = b.idBoard\n" +
-                "LEFT JOIN dbo.list l ON l.idBoard = b.idBoard\n" +
-                "WHERE ub.idUser = $idUser AND b.name LIKE '%$name%'\n" +
-                "GROUP BY b.idBoard\n" +
-                "HAVING COUNT(l.idList) = coalesce($numLists,count(l.idList))\n" +
-                ") AS subquery;"
+            "FROM (SELECT DISTINCT b.idBoard\n" +
+            "FROM dbo.board b\n" +
+            "INNER JOIN dbo.user_board ub ON ub.idBoard = b.idBoard\n" +
+            "LEFT JOIN dbo.list l ON l.idBoard = b.idBoard\n" +
+            "WHERE ub.idUser = $idUser AND b.name LIKE '%$name%'\n" +
+            "GROUP BY b.idBoard\n" +
+            "HAVING COUNT(l.idList) = coalesce($numLists,count(l.idList))\n" +
+            ") AS subquery;"
     }
 
     fun getUserCountFromBoard(idBoard: Int): String {

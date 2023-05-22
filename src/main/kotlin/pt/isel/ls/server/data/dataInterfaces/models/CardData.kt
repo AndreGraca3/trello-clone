@@ -2,7 +2,6 @@ package pt.isel.ls.server.data.dataInterfaces.models
 
 import pt.isel.ls.server.utils.Card
 import java.sql.Connection
-import java.time.LocalDateTime
 import java.util.*
 
 interface CardData {

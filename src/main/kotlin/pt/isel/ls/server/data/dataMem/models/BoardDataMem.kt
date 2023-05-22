@@ -18,7 +18,7 @@ class BoardDataMem : BoardData {
 
     override fun createBoard(idUser: Int, name: String, description: String, con: Connection): Int {
         if (name.length > 20) throw SQLException("$INVAL_PARAM name is too long.", "22001")
-        if(boards.any { it.name == name }) throw SQLException("Board $name $ALREADY_EXISTS", "23505")
+        if (boards.any { it.name == name }) throw SQLException("Board $name $ALREADY_EXISTS", "23505")
         val newBoard = Board(getNextId(), name, description)
         boards.add(newBoard)
         return newBoard.idBoard
@@ -38,7 +38,7 @@ class BoardDataMem : BoardData {
     ): List<BoardWithLists> {
         val max = usersBoards.filter { it.idUser == idUser }.size
         val paging = checkPaging(max, limit, skip)
-        val filtered = usersBoards.filter { it.idUser == idUser }.subList(paging.first,paging.second)
+        val filtered = usersBoards.filter { it.idUser == idUser }.subList(paging.first, paging.second)
             .map {
                 BoardWithLists(
                     it.idBoard,
