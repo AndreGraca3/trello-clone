@@ -13,10 +13,8 @@ export async function createBoard() {
     document.querySelector('.toast-body').innerText = "Board Created Successfully!"
     $('.toast').toast('show')
 
-    setTimeout(() => {
-        hideCreateBoardModal()
-        document.location = `#board/${res.idBoard}`
-    }, 1000)
+    hideCreateBoardModal()
+    document.location = `#board/${res.idBoard}`
 }
 
 export function showCreateBoardModal() {
