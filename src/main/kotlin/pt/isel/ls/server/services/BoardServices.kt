@@ -6,7 +6,11 @@ import pt.isel.ls.server.data.dataInterfaces.models.CardData
 import pt.isel.ls.server.data.dataInterfaces.models.ListData
 import pt.isel.ls.server.data.dataInterfaces.models.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
-import pt.isel.ls.server.utils.*
+import pt.isel.ls.server.utils.BoardDetailed
+import pt.isel.ls.server.utils.ListDetailed
+import pt.isel.ls.server.utils.TotalBoards
+import pt.isel.ls.server.utils.User
+import pt.isel.ls.server.utils.isValidString
 
 class BoardServices(
     private val userData: UserData,

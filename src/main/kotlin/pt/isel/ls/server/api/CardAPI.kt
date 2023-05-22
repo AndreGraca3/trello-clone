@@ -7,7 +7,10 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.services.CardServices
-import pt.isel.ls.server.utils.*
+import pt.isel.ls.server.utils.Card
+import pt.isel.ls.server.utils.CardIn
+import pt.isel.ls.server.utils.Changes
+import pt.isel.ls.server.utils.NewList
 
 class CardAPI(private val services: CardServices) {
 
@@ -70,7 +73,15 @@ class CardAPI(private val services: CardServices) {
         val changes = Json.decodeFromString<Changes>(request.bodyString())
         return createRsp(
             Status.OK,
-            services.updateCard(token, idBoard, idCard, changes.description, changes.endDate, changes.idList, changes.archived)
+            services.updateCard(
+                token,
+                idBoard,
+                idCard,
+                changes.description,
+                changes.endDate,
+                changes.idList,
+                changes.archived
+            )
         )
     }
 }
