@@ -119,7 +119,8 @@ async function saveCard(card) {
     const Changes = {
         archived: card.archived,
         description: newDescription,
-        endDate: newEndDate
+        endDate: newEndDate,
+        idList: card.idList
     }
 
     await fetchReq(`board/${card.idBoard}/card/${card.idCard}/update`, "PUT", Changes)

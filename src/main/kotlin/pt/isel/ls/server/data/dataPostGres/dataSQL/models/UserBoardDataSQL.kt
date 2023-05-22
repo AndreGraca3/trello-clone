@@ -16,7 +16,6 @@ class UserBoardDataSQL : UserBoardData {
         con.prepareStatement(insertStmt).executeUpdate()
 
         con.autoCommit = true
-
     }
 
     override fun searchUserBoards(idUser: Int): List<Int> {

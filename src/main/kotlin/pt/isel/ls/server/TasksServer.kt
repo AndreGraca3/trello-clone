@@ -6,8 +6,6 @@ import org.http4k.routing.singlePageApp
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import pt.isel.ls.server.api.WebAPI
-import pt.isel.ls.server.data.dataMem.DataExecutorMem
-import pt.isel.ls.server.data.dataMem.DataMem
 import pt.isel.ls.server.data.dataPostGres.dataSQL.DataExecutorSQL
 import pt.isel.ls.server.data.dataPostGres.dataSQL.DataSQL
 import pt.isel.ls.server.routes.BoardRoutes

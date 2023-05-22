@@ -23,12 +23,12 @@ object UserStatements {
     }
 
     fun getUsersFromBoard(idBoard: Int, limit: Int?, skip: Int?): String {
-        //val idUsersString = idUsers.toString().replace("[", "(").replace("]", ")")
-        //return "SELECT * from dbo.user where idUser IN $idUsersString LIMIT $limit OFFSET $skip;"
+        // val idUsersString = idUsers.toString().replace("[", "(").replace("]", ")")
+        // return "SELECT * from dbo.user where idUser IN $idUsersString LIMIT $limit OFFSET $skip;"
         return "SELECT u.iduser, u2.name, u2.email, u2.token, u2.avatar FROM dbo.user_board u\n" +
-                "inner join dbo.user u2 on u2.iduser = u.iduser\n" +
-                "where u.idboard = $idBoard\n"+
-                "LIMIT $limit OFFSET $skip;"
+            "inner join dbo.user u2 on u2.iduser = u.iduser\n" +
+            "where u.idboard = $idBoard\n" +
+            "LIMIT $limit OFFSET $skip;"
     }
 
     fun changeAvatarCMD(token: String, avatar: String): String {

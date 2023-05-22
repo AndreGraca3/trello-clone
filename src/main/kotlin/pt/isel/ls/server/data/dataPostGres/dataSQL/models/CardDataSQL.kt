@@ -5,7 +5,6 @@ import pt.isel.ls.server.data.dataPostGres.statements.CardStatements
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Card
-import pt.isel.ls.server.utils.setup
 import java.sql.Connection
 
 class CardDataSQL : CardData {
@@ -154,7 +153,7 @@ class CardDataSQL : CardData {
             cards.add(
                 Card(
                     res.getInt("idCard"),
-                    res.getInt("idList"),
+                    if (res.getInt("idList") == 0) null else res.getInt("idList"),
                     res.getInt("idBoard"),
                     res.getString("name"),
                     res.getString("description"),

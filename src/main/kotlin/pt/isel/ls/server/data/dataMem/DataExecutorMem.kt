@@ -14,12 +14,13 @@ class DataExecutorMem : DataExecutor {
             return action(con)
         } catch (e: Exception) {
             println(e)
-            if(e is SQLException) {
+            if (e is SQLException) {
                 println(e.sqlState)
                 val trelloException = map[e.sqlState] ?: throw TrelloException.InternalError()
                 throw trelloException(e.localizedMessage)
+            } else {
+                throw e as TrelloException
             }
-            else throw e as TrelloException
         }
     }
 }

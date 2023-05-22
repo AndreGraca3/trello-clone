@@ -1,8 +1,11 @@
 package pt.isel.ls.server.data.dataPostGres.dataSQL
 
 import pt.isel.ls.server.data.dataInterfaces.Data
-import pt.isel.ls.server.data.dataPostGres.dataSQL.models.*
-import pt.isel.ls.server.utils.setup
+import pt.isel.ls.server.data.dataPostGres.dataSQL.models.BoardDataSQL
+import pt.isel.ls.server.data.dataPostGres.dataSQL.models.CardDataSQL
+import pt.isel.ls.server.data.dataPostGres.dataSQL.models.ListDataSQL
+import pt.isel.ls.server.data.dataPostGres.dataSQL.models.UserBoardDataSQL
+import pt.isel.ls.server.data.dataPostGres.dataSQL.models.UserDataSQL
 
 class DataSQL : Data {
     override val userData = UserDataSQL()

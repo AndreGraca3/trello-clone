@@ -7,7 +7,10 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.services.CardServices
-import pt.isel.ls.server.utils.*
+import pt.isel.ls.server.utils.Card
+import pt.isel.ls.server.utils.CardIn
+import pt.isel.ls.server.utils.Changes
+import pt.isel.ls.server.utils.NewList
 
 class CardAPI(private val services: CardServices) {
 
@@ -24,7 +27,7 @@ class CardAPI(private val services: CardServices) {
     @Auth
     fun getCard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
-        //val idList = getPathParam(request, "idList")
+        // val idList = getPathParam(request, "idList")
         val idCard = getPathParam(request, "idCard")
         val card = services.getCard(token, idBoard, idCard)
         return createRsp(
@@ -46,7 +49,7 @@ class CardAPI(private val services: CardServices) {
     @Auth
     fun moveCard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
-        //val idListNow = getPathParam(request, "idList")
+        // val idListNow = getPathParam(request, "idList")
         val params = Json.decodeFromString<NewList>(request.bodyString())
         val idCard = getPathParam(request, "idCard")
         return createRsp(
@@ -58,7 +61,7 @@ class CardAPI(private val services: CardServices) {
     @Auth
     fun deleteCard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
-        //val idList = getPathParam(request, "idList")
+        // val idList = getPathParam(request, "idList")
         val idCard = getPathParam(request, "idCard")
         return createRsp(Status.OK, services.deleteCard(token, idBoard, idCard))
     }
@@ -70,7 +73,15 @@ class CardAPI(private val services: CardServices) {
         val changes = Json.decodeFromString<Changes>(request.bodyString())
         return createRsp(
             Status.OK,
-            services.updateCard(token, idBoard, idCard, changes.description, changes.endDate, changes.idList, changes.archived)
+            services.updateCard(
+                token,
+                idBoard,
+                idCard,
+                changes.description,
+                changes.endDate,
+                changes.idList,
+                changes.archived
+            )
         )
     }
 }

@@ -14,7 +14,6 @@ import pt.isel.ls.tests.utils.app
 import pt.isel.ls.tests.utils.baseUrl
 import pt.isel.ls.tests.utils.boardId
 import pt.isel.ls.tests.utils.createList
-import pt.isel.ls.tests.utils.dataMem
 import pt.isel.ls.tests.utils.dataSetup
 import pt.isel.ls.tests.utils.dummyBoardListName
 import pt.isel.ls.tests.utils.invalidId

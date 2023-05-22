@@ -17,8 +17,8 @@ class UserDataMem : UserData {
 
     override fun createUser(name: String, email: String, con: Connection): Pair<Int, String> {
         if (name.length > 20) throw SQLException("$INVAL_PARAM name is too long.", "22001")
-        if(users.any { it.email == email }) throw SQLException("$email $ALREADY_EXISTS","23505")
-        if(users.any { it.name == name }) throw SQLException("$name $ALREADY_EXISTS","23505")
+        if (users.any { it.email == email }) throw SQLException("$email $ALREADY_EXISTS", "23505")
+        if (users.any { it.name == name }) throw SQLException("$name $ALREADY_EXISTS", "23505")
         val token = UUID.randomUUID().toString()
         val newUser = User(getNextId(), email, name, token, "https://i.imgur.com/JGtwTBw.png")
         users.add(newUser)
@@ -38,7 +38,7 @@ class UserDataMem : UserData {
         val paging = checkPaging(max, limit, skip)
         return users.filter { user ->
             usersBoards.filter { it.idBoard == idBoard }.map { it.idUser }.contains(user.idUser)
-        }.subList(paging.first,paging.second)
+        }.subList(paging.first, paging.second)
     }
 
     override fun changeAvatar(token: String, avatar: String, con: Connection) {

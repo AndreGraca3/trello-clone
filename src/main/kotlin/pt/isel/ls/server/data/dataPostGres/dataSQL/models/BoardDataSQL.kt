@@ -28,7 +28,7 @@ class BoardDataSQL : BoardData {
         val res = con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
-        if(res.row == 0) throw TrelloException.NotFound("Board $NOT_FOUND")
+        if (res.row == 0) throw TrelloException.NotFound("Board $NOT_FOUND")
 
         return Board(idBoard, res.getString("name"), res.getString("description"))
     }
@@ -41,7 +41,6 @@ class BoardDataSQL : BoardData {
         numLists: Int?,
         con: Connection
     ): List<BoardWithLists> {
-
         val boards = mutableListOf<BoardWithLists>()
         val selectStmt = BoardStatements.getBoardsFromUser(idUser, limit, skip, name, numLists)
 

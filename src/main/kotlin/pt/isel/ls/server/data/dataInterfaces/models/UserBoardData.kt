@@ -6,13 +6,13 @@ interface UserBoardData {
 
     fun addUserToBoard(idUser: Int, idBoard: Int, con: Connection)
 
-    fun searchUserBoards(idUser: Int): List<Int>
+    fun searchUserBoards(idUser: Int): List<Int> // can be deleted, it's not being used.
 
     fun checkUserInBoard(idUser: Int, idBoard: Int, con: Connection)
 
-    fun getIdUsersFromBoard(idBoard: Int): List<Int>
+    fun getIdUsersFromBoard(idBoard: Int): List<Int> // can be deleted, it's not being used.
 
     fun getBoardCountFromUser(idUser: Int, name: String, numLists: Int?): Int
 
-    fun getUserCountFromBoard(idBoard: Int): Int
+    fun getUserCountFromBoard(idBoard: Int): Int // can be deleted, it's not being used.
 }

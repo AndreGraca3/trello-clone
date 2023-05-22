@@ -11,7 +11,6 @@ import java.sql.SQLException
 
 class ListDataMem : ListData {
 
-
     override fun createList(idBoard: Int, name: String, con: Connection): Int {
         if (name.length > 20) throw SQLException("$INVAL_PARAM name is too long.", "22001")
         val newBoardList = BoardList(getNextId(), idBoard, name)
