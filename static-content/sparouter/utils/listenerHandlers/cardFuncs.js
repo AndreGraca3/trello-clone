@@ -5,6 +5,8 @@ import {moveToArchivedContainer} from "../auxs/modelAuxs.js";
 
 export const cardFunc = async (card) => {
 
+    console.log(card)
+
     const fetchedCard = await fetchReq(`board/${card.idBoard}/card/${card.idCard}`,"GET")
 
     document.querySelector("#CardTitleModal").innerText = fetchedCard.name
@@ -112,6 +114,8 @@ async function deleteCard(card) {
 }
 
 async function saveCard(card) {
+
+    console.log(card)
     const newEndDate = document.querySelector("#endDateTime").value.replace("T", " ")
 
     const newDescription = document.querySelector("#Description-textBox").value

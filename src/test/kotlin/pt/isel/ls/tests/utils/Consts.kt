@@ -2,8 +2,9 @@ package pt.isel.ls.tests.utils
 
 import org.http4k.routing.routes
 import pt.isel.ls.server.api.WebAPI
-import pt.isel.ls.server.data.dataMem.DataExecutorMem
 import pt.isel.ls.server.data.dataMem.DataMem
+import pt.isel.ls.server.data.transactionManager.executor.DataExecutor
+import pt.isel.ls.server.data.transactionManager.factory.TransactionContextFactoryMem
 import pt.isel.ls.server.routes.BoardRoutes
 import pt.isel.ls.server.routes.CardRoutes
 import pt.isel.ls.server.routes.ListRoutes
@@ -38,7 +39,8 @@ const val baseUrl = "http://localhost:8080"
 /** modules **/
 val dataMem = DataMem()
 
-val executorTest = DataExecutorMem<Any>()
+val contextTest = TransactionContextFactoryMem()
+val executorTest = DataExecutor(contextTest)
 
 val services = Services(dataMem, executorTest)
 

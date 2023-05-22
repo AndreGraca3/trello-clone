@@ -1,12 +1,12 @@
 package pt.isel.ls.server.data.dataMem.models
 
+import pt.isel.ls.server.data.transactionManager.transaction.ITransactionContext
 import pt.isel.ls.server.data.dataInterfaces.models.CardData
 import pt.isel.ls.server.data.dataMem.cards
 import pt.isel.ls.server.exceptions.INVAL_PARAM
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Card
-import java.sql.Connection
 import java.sql.SQLException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -19,7 +19,7 @@ class CardDataMem : CardData {
         name: String,
         description: String?,
         endDate: String?,
-        con: Connection
+        ctx: ITransactionContext
     ): Int {
         if (name.length > 20) throw SQLException("$INVAL_PARAM name is too long.", "22001")
         val newCard =
@@ -32,17 +32,17 @@ class CardDataMem : CardData {
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")),
                 endDate,
                 false,
-                getNextIdx(idList, con)
+                getNextIdx(idList, ctx)
             )
         cards.add(newCard)
         return newCard.idCard
     }
 
-    override fun getCardsFromList(idList: Int, idBoard: Int, con: Connection): List<Card> {
+    override fun getCardsFromList(idList: Int, idBoard: Int, ctx: ITransactionContext): List<Card> {
         return cards.filter { it.idList == idList && it.idBoard == idBoard }.sortedBy { it.idx }
     }
 
-    override fun getCard(idCard: Int, idBoard: Int, con: Connection): Card {
+    override fun getCard(idCard: Int, idBoard: Int, ctx: ITransactionContext): Card {
         return cards.find { it.idCard == idCard && it.idBoard == idBoard }
             ?: throw TrelloException.NotFound("Card $NOT_FOUND")
     }
@@ -54,9 +54,9 @@ class CardDataMem : CardData {
         idListDst: Int,
         idx: Int,
         idxDst: Int,
-        con: Connection
+        ctx: ITransactionContext
     ) {
-        val card = getCard(idCard, idBoard, con)
+        val card = getCard(idCard, idBoard, ctx)
         val cardIdx = card.idx
         cards.forEach {
             if (it.idList == card.idList && it.idx >= cardIdx) it.idx--
@@ -66,14 +66,14 @@ class CardDataMem : CardData {
         card.idx = idxDst
     }
 
-    override fun decreaseIdx(idList: Int, idx: Int, con: Connection) {
+    override fun decreaseIdx(idList: Int, idx: Int, ctx: ITransactionContext) {
         cards.forEach { if (it.idList == idList && it.idx >= idx) it.idx-- }
     }
 
-    override fun deleteCard(idCard: Int, idBoard: Int, con: Connection) {
+    override fun deleteCard(idCard: Int, idBoard: Int, ctx: ITransactionContext) {
         val card: Card
         try {
-            card = getCard(idCard, idBoard, con)
+            card = getCard(idCard, idBoard, ctx)
         } catch (ex: TrelloException) {
             throw TrelloException.NoContent()
         }
@@ -84,12 +84,12 @@ class CardDataMem : CardData {
         }
     }
 
-    override fun deleteCards(idList: Int, con: Connection) {
+    override fun deleteCards(idList: Int, ctx: ITransactionContext) {
         val filtered = cards.filter { it.idList == idList }
         cards.removeAll(filtered)
     }
 
-    override fun archiveCards(idBoard: Int, idList: Int, con: Connection) {
+    override fun archiveCards(idBoard: Int, idList: Int, ctx: ITransactionContext) {
         val filtered = cards.filter { it.idList == idList && it.idBoard == idBoard }
         filtered.forEach {
             it.archived = true
@@ -97,16 +97,16 @@ class CardDataMem : CardData {
         }
     }
 
-    override fun getNextIdx(idList: Int, con: Connection): Int {
+    override fun getNextIdx(idList: Int, ctx: ITransactionContext): Int {
         val filtered = cards.filter { it.idList == idList }.sortedBy { it.idx }
         return if (filtered.isEmpty()) 1 else filtered.last().idx + 1
     }
 
-    override fun getCardCount(idBoard: Int, idList: Int, con: Connection): Int {
+    override fun getCardCount(idBoard: Int, idList: Int, ctx: ITransactionContext): Int {
         return cards.count { it.idBoard == idBoard && it.idList == idList }
     }
 
-    override fun getArchivedCards(idBoard: Int, con: Connection): List<Card> {
+    override fun getArchivedCards(idBoard: Int, ctx: ITransactionContext): List<Card> {
         return cards.filter { it.idBoard == idBoard && it.idList == null }
     }
 
@@ -116,7 +116,7 @@ class CardDataMem : CardData {
         endDate: String?,
         idList: Int?,
         archived: Boolean,
-        con: Connection
+        ctx: ITransactionContext
     ) {
         val found = cards.find { it.idCard == card.idCard } ?: return
         found.archived = archived

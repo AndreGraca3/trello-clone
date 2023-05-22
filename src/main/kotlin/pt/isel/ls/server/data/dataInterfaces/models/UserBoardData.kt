@@ -1,14 +1,14 @@
 package pt.isel.ls.server.data.dataInterfaces.models
 
-import java.sql.Connection
+import pt.isel.ls.server.data.transactionManager.transaction.ITransactionContext
 
 interface UserBoardData {
 
-    fun addUserToBoard(idUser: Int, idBoard: Int, con: Connection)
+    fun addUserToBoard(idUser: Int, idBoard: Int, ctx: ITransactionContext)
 
     fun searchUserBoards(idUser: Int): List<Int> // can be deleted, it's not being used.
 
-    fun checkUserInBoard(idUser: Int, idBoard: Int, con: Connection)
+    fun checkUserInBoard(idUser: Int, idBoard: Int, ctx: ITransactionContext)
 
     fun getIdUsersFromBoard(idBoard: Int): List<Int> // can be deleted, it's not being used.
 

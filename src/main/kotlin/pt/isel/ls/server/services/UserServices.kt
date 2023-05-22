@@ -1,6 +1,6 @@
 package pt.isel.ls.server.services
 
-import pt.isel.ls.server.data.dataInterfaces.DataExecutor
+import pt.isel.ls.server.data.transactionManager.executor.DataExecutor
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
 import pt.isel.ls.server.exceptions.INVAL_PARAM
 import pt.isel.ls.server.exceptions.TrelloException

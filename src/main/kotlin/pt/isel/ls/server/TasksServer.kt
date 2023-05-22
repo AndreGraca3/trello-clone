@@ -6,7 +6,8 @@ import org.http4k.routing.singlePageApp
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import pt.isel.ls.server.api.WebAPI
-import pt.isel.ls.server.data.dataPostGres.dataSQL.DataExecutorSQL
+import pt.isel.ls.server.data.transactionManager.executor.DataExecutor
+import pt.isel.ls.server.data.transactionManager.factory.TransactionContextFactorySQL
 import pt.isel.ls.server.data.dataPostGres.dataSQL.DataSQL
 import pt.isel.ls.server.routes.BoardRoutes
 import pt.isel.ls.server.routes.CardRoutes
@@ -17,9 +18,11 @@ import pt.isel.ls.server.utils.logger
 
 fun main() {
     // val data = DataMem()
-    // val executor = DataExecutorMem<Any>()
+    // val factory = TransactionContextFactoryMem()
+    // val executor = DataExecutorMem()
     val data = DataSQL()
-    val executor = DataExecutorSQL()
+    val factory = TransactionContextFactorySQL()
+    val executor = DataExecutor(factory)
     val services = Services(data, executor)
     val webAPI = WebAPI(services)
 

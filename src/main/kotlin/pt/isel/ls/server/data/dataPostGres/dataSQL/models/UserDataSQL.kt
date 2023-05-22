@@ -1,20 +1,21 @@
 package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
+import pt.isel.ls.server.data.transactionManager.transaction.ITransactionContext
+import pt.isel.ls.server.data.transactionManager.transaction.SQLTransaction
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
 import pt.isel.ls.server.data.dataPostGres.statements.UserStatements
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.User
-import java.sql.Connection
 import java.util.*
 
 class UserDataSQL : UserData {
 
-    override fun createUser(name: String, email: String, con: Connection): Pair<Int, String> {
+    override fun createUser(name: String, email: String, ctx: ITransactionContext): Pair<Int, String> {
         val token = UUID.randomUUID().toString()
         val insertStmt = UserStatements.createUserCMD(email, name, token)
         val userId: Int
 
-        val res = con.prepareStatement(insertStmt).executeQuery()
+        val res = (ctx as SQLTransaction).con.prepareStatement(insertStmt).executeQuery()
         res.next()
 
         userId = res.getInt("idUser")
@@ -22,14 +23,14 @@ class UserDataSQL : UserData {
         return Pair(userId, token)
     }
 
-    override fun getUser(token: String, con: Connection): User {
+    override fun getUser(token: String, ctx: ITransactionContext): User {
         val selectStmt = UserStatements.getUserCMD(token)
         val idUser: Int
         lateinit var email: String
         lateinit var name: String
         val avatar: String
 
-        val res = con.prepareStatement(selectStmt).executeQuery()
+        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
         if (res.row == 0) throw TrelloException.NotFound("User")
@@ -42,14 +43,14 @@ class UserDataSQL : UserData {
         return User(idUser, email, name, token, avatar)
     }
 
-    override fun getUser(idUser: Int, con: Connection): User {
+    override fun getUser(idUser: Int, ctx: ITransactionContext): User {
         val selectStmt = UserStatements.getUserCMD(idUser)
         lateinit var email: String
         lateinit var name: String
         lateinit var token: String
         lateinit var avatar: String
 
-        val res = con.prepareStatement(selectStmt).executeQuery()
+        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
         if (res.row == 0) throw TrelloException.NotFound("User")
@@ -62,11 +63,11 @@ class UserDataSQL : UserData {
         return User(idUser, email, name, token, avatar)
     }
 
-    override fun getUsers(idBoard: Int, limit: Int?, skip: Int?, con: Connection): List<User> {
+    override fun getUsers(idBoard: Int, limit: Int?, skip: Int?, ctx: ITransactionContext): List<User> {
         val selectStmt = UserStatements.getUsersFromBoard(idBoard, limit, skip)
         val userList = mutableListOf<User>()
 
-        val res = con.prepareStatement(selectStmt).executeQuery()
+        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
 
         while (res.next()) {
             val user = User(
@@ -82,8 +83,8 @@ class UserDataSQL : UserData {
         return userList
     }
 
-    override fun changeAvatar(token: String, avatar: String, con: Connection) {
+    override fun changeAvatar(token: String, avatar: String, ctx: ITransactionContext) {
         val updateStmt = UserStatements.changeAvatarCMD(token, avatar)
-        con.prepareStatement(updateStmt).executeUpdate()
+        (ctx as SQLTransaction).con.prepareStatement(updateStmt).executeUpdate()
     }
 }

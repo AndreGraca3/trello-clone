@@ -1,7 +1,7 @@
 package pt.isel.ls.server.services
 
 import pt.isel.ls.server.data.dataInterfaces.Data
-import pt.isel.ls.server.data.dataInterfaces.DataExecutor
+import pt.isel.ls.server.data.transactionManager.executor.DataExecutor
 
 class Services(data: Data, dataExecutor: DataExecutor) {
     val userServices = UserServices(data.userData, dataExecutor)

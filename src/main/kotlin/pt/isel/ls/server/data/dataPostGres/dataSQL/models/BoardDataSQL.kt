@@ -1,20 +1,21 @@
 package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
+import pt.isel.ls.server.data.transactionManager.transaction.ITransactionContext
+import pt.isel.ls.server.data.transactionManager.transaction.SQLTransaction
 import pt.isel.ls.server.data.dataInterfaces.models.BoardData
 import pt.isel.ls.server.data.dataPostGres.statements.BoardStatements
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Board
 import pt.isel.ls.server.utils.BoardWithLists
-import java.sql.Connection
 
 class BoardDataSQL : BoardData {
 
-    override fun createBoard(idUser: Int, name: String, description: String, con: Connection): Int {
+    override fun createBoard(idUser: Int, name: String, description: String, ctx: ITransactionContext): Int {
         val insertStmtBoard = BoardStatements.createBoardCMD(name, description)
         val idBoard: Int
 
-        val res = con.prepareStatement(insertStmtBoard).executeQuery()
+        val res = (ctx as SQLTransaction).con.prepareStatement(insertStmtBoard).executeQuery()
         res.next()
 
         idBoard = res.getInt("idBoard")
@@ -22,10 +23,10 @@ class BoardDataSQL : BoardData {
         return idBoard
     }
 
-    override fun getBoard(idBoard: Int, con: Connection): Board {
+    override fun getBoard(idBoard: Int, ctx: ITransactionContext): Board {
         val selectStmt = BoardStatements.getBoardCMD(idBoard)
 
-        val res = con.prepareStatement(selectStmt).executeQuery()
+        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
         if (res.row == 0) throw TrelloException.NotFound("Board $NOT_FOUND")
@@ -39,12 +40,12 @@ class BoardDataSQL : BoardData {
         skip: Int?,
         name: String,
         numLists: Int?,
-        con: Connection
+        ctx: ITransactionContext
     ): List<BoardWithLists> {
         val boards = mutableListOf<BoardWithLists>()
         val selectStmt = BoardStatements.getBoardsFromUser(idUser, limit, skip, name, numLists)
 
-        val res = con.prepareStatement(selectStmt).executeQuery()
+        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
 
         while (res.next()) {
             if (res.row == 0) return emptyList()

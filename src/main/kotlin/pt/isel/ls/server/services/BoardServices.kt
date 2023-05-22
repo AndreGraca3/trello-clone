@@ -1,6 +1,6 @@
 package pt.isel.ls.server.services
 
-import pt.isel.ls.server.data.dataInterfaces.DataExecutor
+import pt.isel.ls.server.data.transactionManager.executor.DataExecutor
 import pt.isel.ls.server.data.dataInterfaces.models.BoardData
 import pt.isel.ls.server.data.dataInterfaces.models.CardData
 import pt.isel.ls.server.data.dataInterfaces.models.ListData

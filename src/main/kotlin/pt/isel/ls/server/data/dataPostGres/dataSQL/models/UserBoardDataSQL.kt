@@ -1,21 +1,17 @@
 package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
+import pt.isel.ls.server.data.transactionManager.transaction.ITransactionContext
+import pt.isel.ls.server.data.transactionManager.transaction.SQLTransaction
 import pt.isel.ls.server.data.dataInterfaces.models.UserBoardData
 import pt.isel.ls.server.data.dataPostGres.statements.UserBoardStatements
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.setup
-import java.sql.Connection
 
 class UserBoardDataSQL : UserBoardData {
 
-    override fun addUserToBoard(idUser: Int, idBoard: Int, con: Connection) {
+    override fun addUserToBoard(idUser: Int, idBoard: Int, ctx: ITransactionContext) {
         val insertStmt = UserBoardStatements.addUserToBoard(idUser, idBoard)
-
-        con.autoCommit = false
-
-        con.prepareStatement(insertStmt).executeUpdate()
-
-        con.autoCommit = true
+        (ctx as SQLTransaction).con.prepareStatement(insertStmt).executeUpdate()
     }
 
     override fun searchUserBoards(idUser: Int): List<Int> {
@@ -37,10 +33,10 @@ class UserBoardDataSQL : UserBoardData {
         return boardIds
     }
 
-    override fun checkUserInBoard(idUser: Int, idBoard: Int, con: Connection) {
+    override fun checkUserInBoard(idUser: Int, idBoard: Int, ctx: ITransactionContext) {
         val selectStmt = UserBoardStatements.checkUserInBoard(idUser, idBoard)
 
-        val res = con.prepareStatement(selectStmt).executeQuery()
+        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
         if (res.row == 0) throw TrelloException.NotFound("Board")
