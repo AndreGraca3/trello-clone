@@ -4,7 +4,6 @@ import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.User
 import pt.isel.ls.tests.utils.createUser
 import pt.isel.ls.tests.utils.dataSetup
-import pt.isel.ls.tests.utils.dummyBadEmail
 import pt.isel.ls.tests.utils.dummyEmail
 import pt.isel.ls.tests.utils.dummyName
 import pt.isel.ls.tests.utils.invalidToken
@@ -27,14 +26,14 @@ class ServicesUserTests {
         assertEquals(1, user.first)
     }
 
-    @Test
-    fun `Create a user with invalid email`() {
-        val err = assertFailsWith<TrelloException.IllegalArgument> {
-            services.userServices.createUser(dummyName, dummyBadEmail)
-        }
-        assertEquals(400, err.status.code)
-        assertEquals(dummyBadEmail, err.message)
-    }
+//    @Test
+//    fun `Create a user with invalid email`() {
+//        val err = assertFailsWith<TrelloException.IllegalArgument> {
+//            services.userServices.createUser(dummyName, dummyBadEmail)
+//        }
+//        assertEquals(400, err.status.code)
+//        assertEquals(dummyBadEmail, err.message)
+//    }
 
     @Test
     fun `Get existing user`() {

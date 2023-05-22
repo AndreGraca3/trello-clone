@@ -11,7 +11,6 @@ import java.sql.Connection
 
 class UserBoardDataMem : UserBoardData {
 
-
     override fun addUserToBoard(idUser: Int, idBoard: Int, con: Connection) {
         usersBoards.add(UserBoard(idUser, idBoard))
     }
@@ -34,7 +33,7 @@ class UserBoardDataMem : UserBoardData {
     /** returns total of boards available with applied filters **/
     override fun getBoardCountFromUser(idUser: Int, name: String, numLists: Int?): Int {
         val boards = boards.filter { it.name.contains(name) }
-        val counts = boards.map { b ->  Pair(b.idBoard, lists.count { it.idBoard == b.idBoard }) }
+        val counts = boards.map { b -> Pair(b.idBoard, lists.count { it.idBoard == b.idBoard }) }
         return counts.count { it.second == (numLists ?: it.second) }
     }
 

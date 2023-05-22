@@ -5,7 +5,6 @@ import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Board
 import pt.isel.ls.tests.utils.createBoard
 import pt.isel.ls.tests.utils.createUser
-import pt.isel.ls.tests.utils.dataMem
 import pt.isel.ls.tests.utils.dataSetup
 import pt.isel.ls.tests.utils.dummyBoardDescription
 import pt.isel.ls.tests.utils.dummyBoardName

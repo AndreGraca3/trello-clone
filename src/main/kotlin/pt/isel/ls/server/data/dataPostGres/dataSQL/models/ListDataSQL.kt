@@ -5,7 +5,6 @@ import pt.isel.ls.server.data.dataPostGres.statements.ListStatement
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.BoardList
-import pt.isel.ls.server.utils.setup
 import java.sql.Connection
 
 class ListDataSQL : ListData {

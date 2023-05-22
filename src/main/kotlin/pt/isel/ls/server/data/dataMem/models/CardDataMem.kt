@@ -13,7 +13,6 @@ import java.time.format.DateTimeFormatter
 
 class CardDataMem : CardData {
 
-
     override fun createCard(
         idList: Int,
         idBoard: Int,
@@ -91,7 +90,7 @@ class CardDataMem : CardData {
     }
 
     override fun archiveCards(idBoard: Int, idList: Int, con: Connection) {
-        val filtered = cards.filter { it.idList == idList && it.idBoard == idBoard}
+        val filtered = cards.filter { it.idList == idList && it.idBoard == idBoard }
         filtered.forEach {
             it.archived = true
             it.idList = null
