@@ -40,7 +40,7 @@ interface CardData {
 
     fun getNextIdx(idList: Int, con: Connection): Int
 
-    fun getCardCount(idBoard: Int, idList: Int, con: Connection): Int
+    fun getCardCount(idBoard: Int, idList: Int, con: Connection): Int // can be deleted, it's not being used.
 
     fun getArchivedCards(idBoard: Int, con: Connection): List<Card>
 

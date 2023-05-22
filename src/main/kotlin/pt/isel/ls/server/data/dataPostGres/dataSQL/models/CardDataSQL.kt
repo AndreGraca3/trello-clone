@@ -154,7 +154,7 @@ class CardDataSQL : CardData {
             cards.add(
                 Card(
                     res.getInt("idCard"),
-                    res.getInt("idList"),
+                    if(res.getInt("idList") == 0) null else res.getInt("idList"),
                     res.getInt("idBoard"),
                     res.getString("name"),
                     res.getString("description"),

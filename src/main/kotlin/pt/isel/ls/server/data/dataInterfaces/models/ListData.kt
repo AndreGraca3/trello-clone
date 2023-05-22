@@ -13,5 +13,5 @@ interface ListData {
 
     fun deleteList(idList: Int, idBoard: Int, con: Connection)
 
-    fun getListCount(idBoard: Int, con: Connection): Int
+    fun getListCount(idBoard: Int, con: Connection): Int // can be deleted, it's not being used.
 }
