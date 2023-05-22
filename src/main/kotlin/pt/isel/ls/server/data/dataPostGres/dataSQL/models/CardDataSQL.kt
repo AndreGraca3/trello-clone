@@ -186,6 +186,8 @@ class CardDataSQL : CardData {
         )
 
         con.prepareStatement(updateStmt).executeUpdate()
+        if (idList != null) return
         val decreaseStmt = CardStatements.decreaseIdx(card.idList, card.idx)
+        con.prepareStatement(decreaseStmt).executeUpdate()
     }
 }

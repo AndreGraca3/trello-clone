@@ -18,6 +18,7 @@ class DataExecutorSQL<R> : DataExecutor<R> {
         } catch (e: Exception) {
             println(e)
             if(e is SQLException) {
+                println(e.sqlState)
                 val trelloException = map[e.sqlState] ?: throw TrelloException.InternalError()
                 throw trelloException(e.localizedMessage)
             }

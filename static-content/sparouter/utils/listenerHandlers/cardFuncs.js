@@ -1,6 +1,7 @@
 import {fetchReq} from "../auxs/utils.js";
 import {createHTMLCard} from "../components/modelComponents.js";
 import {createElement} from "../components/components.js";
+import {moveToArchivedContainer} from "../auxs/modelAuxs.js";
 
 export const cardFunc = async (card) => {
 
@@ -71,15 +72,7 @@ async function archiveCard(card) {
     if(!card.archived) {
         // move to archived
         list.removeChild(cardToMove)
-
-        const newArchived = createElement("li", null, "dropdown-item",
-            `Card${card.idCard}`,
-            createElement("span", "📋 " + card.name)
-        )
-        newArchived.addEventListener("click", async () => cardFunc(card))
-        newArchived.classList.add("clickable")
-
-        archivedContainer.appendChild(newArchived)
+        moveToArchivedContainer(card, archivedContainer)
     } else {
         // return to origin TODO: check if list exits if i want to unarchive
         archivedContainer.removeChild(cardToMove)

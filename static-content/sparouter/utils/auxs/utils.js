@@ -29,7 +29,12 @@ export async function fetchReq(path, method, body) {
     const rsp = await fetch(BASE_URL + path, options)
     const content = await rsp.json()
 
-    if (!rsp.ok) throw content
+    if (!rsp.ok) {
+        console.log()
+        document.querySelector('.toast-body').innerText = content
+        $('.toast').toast('show')
+        throw content
+    }
     return content
 }
 

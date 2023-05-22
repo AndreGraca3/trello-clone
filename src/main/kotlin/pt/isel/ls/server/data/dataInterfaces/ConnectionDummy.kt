@@ -4,7 +4,7 @@ import java.sql.*
 import java.util.*
 import java.util.concurrent.Executor
 
-class ConnectionDB: Connection {
+class ConnectionDummy: Connection {
     override fun <T : Any?> unwrap(iface: Class<T>?): T {
         TODO("Not yet implemented")
     }

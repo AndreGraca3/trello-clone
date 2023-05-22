@@ -23,7 +23,8 @@ sealed class TrelloException(message: String, val status: Status) : Exception(me
 }
 
 val map: Map<String, (String) -> TrelloException> = mapOf(
-    "23505" to { str -> TrelloException.AlreadyExists(str) }
+    "23505" to { str -> TrelloException.AlreadyExists(str) },
+    "22001" to { str -> TrelloException.IllegalArgument(str) }
 )
 
 const val NOT_FOUND = "not found."

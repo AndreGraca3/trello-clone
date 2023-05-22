@@ -4,6 +4,7 @@ import pt.isel.ls.server.data.dataInterfaces.models.UserData
 import pt.isel.ls.server.data.dataMem.users
 import pt.isel.ls.server.data.dataMem.usersBoards
 import pt.isel.ls.server.exceptions.ALREADY_EXISTS
+import pt.isel.ls.server.exceptions.INVAL_PARAM
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.User
@@ -15,6 +16,7 @@ import java.util.*
 class UserDataMem : UserData {
 
     override fun createUser(name: String, email: String, con: Connection): Pair<Int, String> {
+        if (name.length > 20) throw SQLException("$INVAL_PARAM name is too long.", "22001")
         if(users.any { it.email == email }) throw SQLException("$email $ALREADY_EXISTS","23505")
         if(users.any { it.name == name }) throw SQLException("$name $ALREADY_EXISTS","23505")
         val token = UUID.randomUUID().toString()

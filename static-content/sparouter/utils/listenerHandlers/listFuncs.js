@@ -1,5 +1,6 @@
 import {fetchReq} from "../auxs/utils.js";
 import {createHTMLList} from "../components/modelComponents.js";
+import {moveToArchivedContainer} from "../auxs/modelAuxs.js";
 
 export async function createList(boardContainer, board) {
     const input = document.createElement("input")
@@ -49,14 +50,25 @@ export async function deleteList(list) {
     } else {
         $('#listModal').modal('show')
 
-        document.querySelector('#listDeleteButton').addEventListener("click", async () => {
+        document.querySelector('#listDeleteButton').onclick = async () => {
             await fetchReq(`board/${list.idBoard}/list/${list.idList}?action=delete`, "DELETE")
             deleteHandler()
-        })
+        }
 
-        document.querySelector('#listArchiveButton').addEventListener("click", async () => {
+        document.querySelector('#listArchiveButton').onclick = async () => {
             await fetchReq(`board/${list.idBoard}/list/${list.idList}?action=archive`, "DELETE")
+            // move them visually
+            const archivedContainer = document.querySelector(`#dropdownMenu-archived`)
+            const listContainer = document.querySelector(`#list${list.idList}`)
+            listContainer.childNodes.forEach((c) => {
+                const archCard = {
+                    idBoard: list.idBoard,
+                    idCard: c.dataset.idCard,
+                    name: c.innerText,
+                }
+                moveToArchivedContainer(archCard, archivedContainer)
+            })
             deleteHandler()
-        })
+        }
     }
 }

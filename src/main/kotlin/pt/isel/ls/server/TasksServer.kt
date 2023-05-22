@@ -6,6 +6,7 @@ import org.http4k.routing.singlePageApp
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import pt.isel.ls.server.api.WebAPI
+import pt.isel.ls.server.data.dataMem.DataExecutorMem
 import pt.isel.ls.server.data.dataMem.DataMem
 import pt.isel.ls.server.data.dataPostGres.dataSQL.DataExecutorSQL
 import pt.isel.ls.server.data.dataPostGres.dataSQL.DataSQL
@@ -17,9 +18,11 @@ import pt.isel.ls.server.services.Services
 import pt.isel.ls.server.utils.logger
 
 fun main() {
-    val data = DataMem()
-    // val data = DataSQL()
-    val services = Services(data, DataExecutorSQL())
+    // val data = DataMem()
+    // val executor = DataExecutorMem<Any>()
+    val data = DataSQL()
+    val executor = DataExecutorSQL<Any>()
+    val services = Services(data, executor)
     val webAPI = WebAPI(services)
 
     val app = routes(

@@ -1,5 +1,7 @@
 import {BASE_URL, MAX_RECENT_BOARDS, RECENT_BOARDS} from "../storage.js";
 import {randomColor} from "./utils.js";
+import {createElement} from "../components/components.js";
+import {cardFunc} from "../listenerHandlers/cardFuncs.js";
 
 export async function getUserAvatar(token) {
     if (!token) return 'https://i.imgur.com/JGtwTBw.png'
@@ -36,4 +38,15 @@ export function getNextCard(container, y) {
         if (offset < 0 && offset > closest.offset) return {offset: offset, element: card}
         else return closest
     }, {offset: Number.NEGATIVE_INFINITY}).element
+}
+
+export function moveToArchivedContainer(card, archivedContainer) {
+    const newArchived = createElement("li", null, "dropdown-item",
+        `Card${card.idCard}`,
+        createElement("span", "📋 " + card.name)
+    )
+    newArchived.addEventListener("click", async () => cardFunc(card))
+    newArchived.classList.add("clickable")
+
+    archivedContainer.appendChild(newArchived)
 }

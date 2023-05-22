@@ -100,16 +100,16 @@
             </div>
         </div>
     </div>
-    <div aria-live="polite" aria-atomic="true">
-        <div class="toast" style="position: absolute; top: 0; right: 0;">
-            <div class="toast-header">
-                <img src="https://cdn-icons-png.flaticon.com/512/6124/6124991.png" class="rounded mr-2" style="width: 20px; margin-right: 5px">
-                <strong class="mr-auto">OurTrello</strong>
-                <small style="margin-left: 10px">Just Now</small>
-            </div>
-            <div class="toast-body"></div>
-        </div>
+</div>
+
+<div class="toast">
+    <div class="toast-header">
+        <img src="https://cdn-icons-png.flaticon.com/512/6124/6124991.png" class="rounded mr-2"
+             style="width: 20px; margin-right: 5px">
+        <strong class="mr-auto">OurTrello</strong>
+        <small style="margin-left: 10px">Just Now</small>
     </div>
+    <div class="toast-body"></div>
 </div>
 
 <div style="height: 90vh" class="default-bg" id="mainContent"></div>
@@ -120,13 +120,13 @@
     import {user} from "./sparouter/utils/storage.js"
     import {
         createBoard,
-        hideCreateBoardButton,
-        showCreateBoardButton
+        hideCreateBoardModal,
+        showCreateBoardModal
     } from "./sparouter/utils/listenerHandlers/boardFuncs.js";
     import {getUserAvatar} from "./sparouter/utils/auxs/modelAuxs.js";
 
-    $('.showCreateBoardModal').click(showCreateBoardButton);
-    $('.closeModal').click(hideCreateBoardButton);
+    $('.showCreateBoardModal').click(showCreateBoardModal);
+    $('.closeModal').click(hideCreateBoardModal);
     $('.createBoardButtonModal').click(createBoard);
 
     const img = $('.avatar-icon')[0]
