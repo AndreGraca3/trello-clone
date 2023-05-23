@@ -280,7 +280,7 @@ class BoardAPITests {
 
     @Test
     fun `get boards from user with valid pagination`() {
-        val skip = 2
+        val skip = 0
         val limit = 3
 
         repeat(6) {

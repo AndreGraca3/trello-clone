@@ -58,9 +58,9 @@ export function createHTMLList(list) {
     })
 
     listCards.addEventListener("dragleave", (event) => {
-        const dragging = document.querySelector('.dragging')
+        const dragging = document.querySelector('.dragging') // falta saber o idx
         if (!listCards.contains(event.relatedTarget)) {
-            const origin = document.getElementById(`list${dragging.dataset.idList}`)
+            const origin = document.getElementById(`list${dragging.dataset.idList}`) // search do idx anterior e colocá-lo à frente (ter em conta que pode estar vazia)
             // TODO: back to original idx
             origin.appendChild(dragging)
         }
