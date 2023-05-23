@@ -1,6 +1,6 @@
-package pt.isel.ls.server.data.transactionManager.transaction
+package pt.isel.ls.server.data.transactionManager.transactions
 
-class MemTransaction : ITransactionContext {
+class MemTransaction : TransactionCtx {
 
     override fun init() {
         // Do nothing...

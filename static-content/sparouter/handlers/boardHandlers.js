@@ -1,5 +1,5 @@
-import {darkerColor, fetchReq, getNewBoardsPath} from "../utils/auxs/utils.js";
-import {LIMIT_INITIAL_VALUE, mainContent, MAX_BOARDS_DISPLAY, PAGINATION_CONTROL_VALUES} from "../utils/storage.js";
+import {darkerColor, fetchReq, getLimitSelectorOptions, getNewBoardsPath} from "../utils/auxs/utils.js";
+import {LIMIT_INITIAL_VALUE, mainContent, MAX_BOARDS_DISPLAY} from "../utils/storage.js";
 import {createElement, createRows, createSearchBar, createPaginationButtons} from "../utils/components/components.js";
 import {createHTMLBoard, createHTMLList} from "../utils/components/modelComponents.js";
 import {archivedDropdown, usersDropdown} from "../utils/dropdowns/modelDropdowns.js";
@@ -36,12 +36,9 @@ async function getBoards(args) {
     )
 
     // Pagination limit selector
-    if (!PAGINATION_CONTROL_VALUES.includes(args.limit)) {
-        PAGINATION_CONTROL_VALUES.push(args.limit)
-        PAGINATION_CONTROL_VALUES.sort((a, b) => a - b)
-    }
+    const limitOptions = getLimitSelectorOptions(MAX_BOARDS_DISPLAY, 5, args.limit)
 
-    const options = PAGINATION_CONTROL_VALUES.map(it => createElement("option", it))
+    const options = limitOptions.map(it => createElement("option", it))
     const select = createElement("select", null, null, null, ...options)
     select.value = args.limit
     select.addEventListener("change", (ev) =>

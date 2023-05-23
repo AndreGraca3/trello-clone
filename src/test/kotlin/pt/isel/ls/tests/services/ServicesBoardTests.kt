@@ -119,7 +119,7 @@ class ServicesBoardTests {
         val user2 = createUser(dummyName + 2, dummyEmail + 2)
         val newBoardId = createBoard(user.idUser)
         services.boardServices.addUserToBoard(user.token, user2.first, newBoardId)
-        val users = services.boardServices.getUsersFromBoard(user.token, newBoardId, null, null)
+        val users = services.boardServices.getUsersFromBoard(user.token, newBoardId)
         assertEquals(2, users.size)
         assertEquals(user.idUser, users.first().idUser)
         assertEquals(user2.first, users.last().idUser)
@@ -131,7 +131,7 @@ class ServicesBoardTests {
             val user2 = createUser(dummyName + 2, dummyEmail + 2)
             val newBoardId = createBoard(user.idUser)
             services.boardServices.addUserToBoard(user.token, user2.first, newBoardId)
-            services.boardServices.getUsersFromBoard(invalidToken, newBoardId, null, null)
+            services.boardServices.getUsersFromBoard(invalidToken, newBoardId)
         }
         assertEquals(401, err.status.code)
         assertEquals("Unauthorized Operation.", err.message)
@@ -140,7 +140,7 @@ class ServicesBoardTests {
     @Test
     fun `Get Users from invalid Board`() {
         val err = assertFailsWith<TrelloException.NotFound> {
-            services.boardServices.getUsersFromBoard(user.token, invalidId, null, null)
+            services.boardServices.getUsersFromBoard(user.token, invalidId)
         }
         assertEquals(404, err.status.code)
         assertEquals("Board not found.", err.message)

@@ -1,6 +1,6 @@
 package pt.isel.ls.server.data.dataMem.models
 
-import pt.isel.ls.server.data.transactionManager.transaction.ITransactionContext
+import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
 import pt.isel.ls.server.data.dataInterfaces.models.BoardData
 import pt.isel.ls.server.data.dataMem.boards
 import pt.isel.ls.server.data.dataMem.lists
@@ -16,7 +16,7 @@ import java.sql.SQLException
 
 class BoardDataMem : BoardData {
 
-    override fun createBoard(idUser: Int, name: String, description: String, ctx: ITransactionContext): Int {
+    override fun createBoard(idUser: Int, name: String, description: String, ctx: TransactionCtx): Int {
         if (name.length > 20) throw SQLException("$INVAL_PARAM name is too long.", "22001")
         if (boards.any { it.name == name }) throw SQLException("Board $name $ALREADY_EXISTS", "23505")
         val newBoard = Board(getNextId(), name, description)
@@ -24,7 +24,7 @@ class BoardDataMem : BoardData {
         return newBoard.idBoard
     }
 
-    override fun getBoard(idBoard: Int, ctx: ITransactionContext): Board {
+    override fun getBoard(idBoard: Int, ctx: TransactionCtx): Board {
         return boards.find { it.idBoard == idBoard } ?: throw TrelloException.NotFound("Board $NOT_FOUND")
     }
 
@@ -34,7 +34,7 @@ class BoardDataMem : BoardData {
         skip: Int?,
         name: String,
         numLists: Int?,
-        ctx: ITransactionContext
+        ctx: TransactionCtx
     ): List<BoardWithLists> {
         val max = usersBoards.filter { it.idUser == idUser }.size
         val paging = checkPaging(max, limit, skip)

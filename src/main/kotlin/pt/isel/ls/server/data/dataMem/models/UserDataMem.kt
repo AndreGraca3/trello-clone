@@ -1,7 +1,7 @@
 package pt.isel.ls.server.data.dataMem.models
 
-import pt.isel.ls.server.data.transactionManager.transaction.ITransactionContext
-import pt.isel.ls.server.data.transactionManager.transaction.MemTransaction
+import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
+import pt.isel.ls.server.data.transactionManager.transactions.MemTransaction
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
 import pt.isel.ls.server.data.dataMem.users
 import pt.isel.ls.server.data.dataMem.usersBoards
@@ -16,7 +16,7 @@ import java.util.*
 
 class UserDataMem : UserData {
 
-    override fun createUser(name: String, email: String, ctx: ITransactionContext): Pair<Int, String> {
+    override fun createUser(name: String, email: String, ctx: TransactionCtx): Pair<Int, String> {
         if (name.length > 20) throw SQLException("$INVAL_PARAM name is too long.", "22001")
         if (users.any { it.email == email }) throw SQLException("$email $ALREADY_EXISTS", "23505")
         if (users.any { it.name == name }) throw SQLException("$name $ALREADY_EXISTS", "23505")
@@ -26,23 +26,21 @@ class UserDataMem : UserData {
         return Pair(newUser.idUser, token)
     }
 
-    override fun getUser(token: String, ctx: ITransactionContext): User {
+    override fun getUser(token: String, ctx: TransactionCtx): User {
         return users.find { it.token == token } ?: throw TrelloException.NotAuthorized()
     }
 
-    override fun getUser(idUser: Int, ctx: ITransactionContext): User {
+    override fun getUser(idUser: Int, ctx: TransactionCtx): User {
         return users.find { it.idUser == idUser } ?: throw TrelloException.NotFound("User $NOT_FOUND")
     }
 
-    override fun getUsers(idBoard: Int, limit: Int?, skip: Int?, ctx: ITransactionContext): List<User> {
-        val max = usersBoards.filter { it.idBoard == idBoard }.size
-        val paging = checkPaging(max, limit, skip)
+    override fun getUsers(idBoard: Int, ctx: TransactionCtx): List<User> {
         return users.filter { user ->
             usersBoards.filter { it.idBoard == idBoard }.map { it.idUser }.contains(user.idUser)
-        }.subList(paging.first, paging.second)
+        }
     }
 
-    override fun changeAvatar(token: String, avatar: String, ctx: ITransactionContext) {
+    override fun changeAvatar(token: String, avatar: String, ctx: TransactionCtx) {
         val user = getUser(token, (ctx as MemTransaction))
         users[users.indexOf(user)] = user.copy(avatar = avatar)
     }

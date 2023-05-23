@@ -22,13 +22,10 @@ object UserStatements {
         return "SELECT * FROM dbo.user WHERE email = '$email';"
     }
 
-    fun getUsersFromBoard(idBoard: Int, limit: Int?, skip: Int?): String {
-        // val idUsersString = idUsers.toString().replace("[", "(").replace("]", ")")
-        // return "SELECT * from dbo.user where idUser IN $idUsersString LIMIT $limit OFFSET $skip;"
+    fun getUsersFromBoard(idBoard: Int): String {
         return "SELECT u.iduser, u2.name, u2.email, u2.token, u2.avatar FROM dbo.user_board u\n" +
             "inner join dbo.user u2 on u2.iduser = u.iduser\n" +
-            "where u.idboard = $idBoard\n" +
-            "LIMIT $limit OFFSET $skip;"
+            "where u.idboard = $idBoard;"
     }
 
     fun changeAvatarCMD(token: String, avatar: String): String {

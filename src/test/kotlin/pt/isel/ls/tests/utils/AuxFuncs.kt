@@ -11,7 +11,8 @@ import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.User
 
 // Functions to create dummy components for tests
-fun createUser(name: String = dummyName, email: String = dummyEmail) = executorTest.execute { dataMem.userData.createUser(name, email, it) } as Pair<Int, String>
+fun createUser(name: String = dummyName, email: String = dummyEmail) =
+    executorTest.execute { dataMem.userData.createUser(name, email, it) }
 
 fun createBoard(
     idUser: Int,
@@ -22,10 +23,11 @@ fun createBoard(
         val idBoard = dataMem.boardData.createBoard(idUser, boardName, boardDescription, it)
         dataMem.userBoardData.addUserToBoard(idUser, idBoard, it)
         idBoard
-    } as Int
+    }
 }
 
-fun createList(idBoard: Int, listName: String = dummyBoardListName) = executorTest.execute { dataMem.listData.createList(idBoard, listName, it) } as Int
+fun createList(idBoard: Int, listName: String = dummyBoardListName) =
+    executorTest.execute { dataMem.listData.createList(idBoard, listName, it) }
 
 fun createCard(
     idList: Int,
@@ -36,7 +38,7 @@ fun createCard(
 ) =
     executorTest.execute {
         dataMem.cardData.createCard(idList, idBoard, cardName, cardDescription, endDate, it)
-    } as Int
+    }
 
 /** Empties data for every Test
  * and creates only necessary components **/

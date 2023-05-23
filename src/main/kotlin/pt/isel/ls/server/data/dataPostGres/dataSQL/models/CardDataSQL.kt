@@ -1,7 +1,7 @@
 package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
-import pt.isel.ls.server.data.transactionManager.transaction.ITransactionContext
-import pt.isel.ls.server.data.transactionManager.transaction.SQLTransaction
+import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
+import pt.isel.ls.server.data.transactionManager.transactions.SQLTransaction
 import pt.isel.ls.server.data.dataInterfaces.models.CardData
 import pt.isel.ls.server.data.dataPostGres.statements.CardStatements
 import pt.isel.ls.server.exceptions.NOT_FOUND
@@ -16,7 +16,7 @@ class CardDataSQL : CardData {
         name: String,
         description: String?,
         endDate: String?,
-        ctx: ITransactionContext
+        ctx: TransactionCtx
     ): Int {
         val insertStmt =
             CardStatements.createCardCMD(idList, idBoard, name, description, endDate, getNextIdx(idList, ctx))
@@ -29,7 +29,7 @@ class CardDataSQL : CardData {
         return idCard
     }
 
-    override fun getCardsFromList(idList: Int, idBoard: Int, ctx: ITransactionContext): List<Card> {
+    override fun getCardsFromList(idList: Int, idBoard: Int, ctx: TransactionCtx): List<Card> {
         val selectStmt = CardStatements.getCardsFromListCMD(idList, idBoard)
         val cards = mutableListOf<Card>()
 
@@ -54,7 +54,7 @@ class CardDataSQL : CardData {
         return cards.sortedBy { it.idx }
     }
 
-    override fun getCard(idCard: Int, idBoard: Int, ctx: ITransactionContext): Card {
+    override fun getCard(idCard: Int, idBoard: Int, ctx: TransactionCtx): Card {
         val selectStmt = CardStatements.getCardCMD(idCard, idBoard)
 
         val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
@@ -79,7 +79,7 @@ class CardDataSQL : CardData {
         idListDst: Int,
         idx: Int,
         idxDst: Int,
-        ctx: ITransactionContext
+        ctx: TransactionCtx
     ) {
         val updateStmtCard = CardStatements.moveCardCMD(idCard, idList, idBoard, idListDst, idxDst)
 
@@ -94,12 +94,12 @@ class CardDataSQL : CardData {
         con.prepareStatement(updateStmtCard).executeUpdate()
     }
 
-    override fun decreaseIdx(idList: Int, idx: Int, ctx: ITransactionContext) {
+    override fun decreaseIdx(idList: Int, idx: Int, ctx: TransactionCtx) {
         val updateStmt = CardStatements.decreaseIdx(idList, idx)
         (ctx as SQLTransaction).con.prepareStatement(updateStmt).executeUpdate()
     }
 
-    override fun deleteCard(idCard: Int, idBoard: Int, ctx: ITransactionContext) {
+    override fun deleteCard(idCard: Int, idBoard: Int, ctx: TransactionCtx) {
         val deleteStmt = CardStatements.deleteCard(idCard, idBoard)
 
         val res = (ctx as SQLTransaction).con.prepareStatement(deleteStmt).executeQuery()
@@ -117,17 +117,17 @@ class CardDataSQL : CardData {
         }
     }
 
-    override fun deleteCards(idList: Int, ctx: ITransactionContext) {
+    override fun deleteCards(idList: Int, ctx: TransactionCtx) {
         val updateStmt = CardStatements.deleteCards(idList)
         (ctx as SQLTransaction).con.prepareStatement(updateStmt).executeUpdate()
     }
 
-    override fun archiveCards(idBoard: Int, idList: Int, ctx: ITransactionContext) {
+    override fun archiveCards(idBoard: Int, idList: Int, ctx: TransactionCtx) {
         val updateStmt = CardStatements.archiveCards(idBoard, idList)
         (ctx as SQLTransaction).con.prepareStatement(updateStmt).executeUpdate()
     }
 
-    override fun getNextIdx(idList: Int, ctx: ITransactionContext): Int {
+    override fun getNextIdx(idList: Int, ctx: TransactionCtx): Int {
         val selectStmt = CardStatements.getNextIdx(idList)
 
         val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
@@ -136,7 +136,7 @@ class CardDataSQL : CardData {
         return if (res.getInt("max") == 0) 1 else res.getInt("max") + 1
     }
 
-    override fun getCardCount(idBoard: Int, idList: Int, ctx: ITransactionContext): Int {
+    override fun getCardCount(idBoard: Int, idList: Int, ctx: TransactionCtx): Int {
         val selectStmt = CardStatements.getCardCount(idBoard, idList)
 
         val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
@@ -145,7 +145,7 @@ class CardDataSQL : CardData {
         return res.getInt("count")
     }
 
-    override fun getArchivedCards(idBoard: Int, ctx: ITransactionContext): List<Card> {
+    override fun getArchivedCards(idBoard: Int, ctx: TransactionCtx): List<Card> {
         val selectStmt = CardStatements.getArchivedCards(idBoard)
         val cards = mutableListOf<Card>()
 
@@ -176,7 +176,7 @@ class CardDataSQL : CardData {
         endDate: String?,
         idList: Int?,
         archived: Boolean,
-        ctx: ITransactionContext
+        ctx: TransactionCtx
     ) {
         val updateStmt = CardStatements.updateCard(
             card.idCard,

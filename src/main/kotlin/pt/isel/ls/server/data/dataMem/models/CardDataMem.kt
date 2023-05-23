@@ -1,6 +1,6 @@
 package pt.isel.ls.server.data.dataMem.models
 
-import pt.isel.ls.server.data.transactionManager.transaction.ITransactionContext
+import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
 import pt.isel.ls.server.data.dataInterfaces.models.CardData
 import pt.isel.ls.server.data.dataMem.cards
 import pt.isel.ls.server.exceptions.INVAL_PARAM
@@ -19,7 +19,7 @@ class CardDataMem : CardData {
         name: String,
         description: String?,
         endDate: String?,
-        ctx: ITransactionContext
+        ctx: TransactionCtx
     ): Int {
         if (name.length > 20) throw SQLException("$INVAL_PARAM name is too long.", "22001")
         val newCard =
@@ -38,11 +38,11 @@ class CardDataMem : CardData {
         return newCard.idCard
     }
 
-    override fun getCardsFromList(idList: Int, idBoard: Int, ctx: ITransactionContext): List<Card> {
+    override fun getCardsFromList(idList: Int, idBoard: Int, ctx: TransactionCtx): List<Card> {
         return cards.filter { it.idList == idList && it.idBoard == idBoard }.sortedBy { it.idx }
     }
 
-    override fun getCard(idCard: Int, idBoard: Int, ctx: ITransactionContext): Card {
+    override fun getCard(idCard: Int, idBoard: Int, ctx: TransactionCtx): Card {
         return cards.find { it.idCard == idCard && it.idBoard == idBoard }
             ?: throw TrelloException.NotFound("Card $NOT_FOUND")
     }
@@ -54,7 +54,7 @@ class CardDataMem : CardData {
         idListDst: Int,
         idx: Int,
         idxDst: Int,
-        ctx: ITransactionContext
+        ctx: TransactionCtx
     ) {
         val card = getCard(idCard, idBoard, ctx)
         val cardIdx = card.idx
@@ -66,11 +66,11 @@ class CardDataMem : CardData {
         card.idx = idxDst
     }
 
-    override fun decreaseIdx(idList: Int, idx: Int, ctx: ITransactionContext) {
+    override fun decreaseIdx(idList: Int, idx: Int, ctx: TransactionCtx) {
         cards.forEach { if (it.idList == idList && it.idx >= idx) it.idx-- }
     }
 
-    override fun deleteCard(idCard: Int, idBoard: Int, ctx: ITransactionContext) {
+    override fun deleteCard(idCard: Int, idBoard: Int, ctx: TransactionCtx) {
         val card: Card
         try {
             card = getCard(idCard, idBoard, ctx)
@@ -84,12 +84,12 @@ class CardDataMem : CardData {
         }
     }
 
-    override fun deleteCards(idList: Int, ctx: ITransactionContext) {
+    override fun deleteCards(idList: Int, ctx: TransactionCtx) {
         val filtered = cards.filter { it.idList == idList }
         cards.removeAll(filtered)
     }
 
-    override fun archiveCards(idBoard: Int, idList: Int, ctx: ITransactionContext) {
+    override fun archiveCards(idBoard: Int, idList: Int, ctx: TransactionCtx) {
         val filtered = cards.filter { it.idList == idList && it.idBoard == idBoard }
         filtered.forEach {
             it.archived = true
@@ -97,16 +97,16 @@ class CardDataMem : CardData {
         }
     }
 
-    override fun getNextIdx(idList: Int, ctx: ITransactionContext): Int {
+    override fun getNextIdx(idList: Int, ctx: TransactionCtx): Int {
         val filtered = cards.filter { it.idList == idList }.sortedBy { it.idx }
         return if (filtered.isEmpty()) 1 else filtered.last().idx + 1
     }
 
-    override fun getCardCount(idBoard: Int, idList: Int, ctx: ITransactionContext): Int {
+    override fun getCardCount(idBoard: Int, idList: Int, ctx: TransactionCtx): Int {
         return cards.count { it.idBoard == idBoard && it.idList == idList }
     }
 
-    override fun getArchivedCards(idBoard: Int, ctx: ITransactionContext): List<Card> {
+    override fun getArchivedCards(idBoard: Int, ctx: TransactionCtx): List<Card> {
         return cards.filter { it.idBoard == idBoard && it.idList == null }
     }
 
@@ -116,7 +116,7 @@ class CardDataMem : CardData {
         endDate: String?,
         idList: Int?,
         archived: Boolean,
-        ctx: ITransactionContext
+        ctx: TransactionCtx
     ) {
         val found = cards.find { it.idCard == card.idCard } ?: return
         found.archived = archived

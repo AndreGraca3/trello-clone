@@ -1,7 +1,7 @@
 package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
-import pt.isel.ls.server.data.transactionManager.transaction.ITransactionContext
-import pt.isel.ls.server.data.transactionManager.transaction.SQLTransaction
+import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
+import pt.isel.ls.server.data.transactionManager.transactions.SQLTransaction
 import pt.isel.ls.server.data.dataInterfaces.models.BoardData
 import pt.isel.ls.server.data.dataPostGres.statements.BoardStatements
 import pt.isel.ls.server.exceptions.NOT_FOUND
@@ -11,7 +11,7 @@ import pt.isel.ls.server.utils.BoardWithLists
 
 class BoardDataSQL : BoardData {
 
-    override fun createBoard(idUser: Int, name: String, description: String, ctx: ITransactionContext): Int {
+    override fun createBoard(idUser: Int, name: String, description: String, ctx: TransactionCtx): Int {
         val insertStmtBoard = BoardStatements.createBoardCMD(name, description)
         val idBoard: Int
 
@@ -23,7 +23,7 @@ class BoardDataSQL : BoardData {
         return idBoard
     }
 
-    override fun getBoard(idBoard: Int, ctx: ITransactionContext): Board {
+    override fun getBoard(idBoard: Int, ctx: TransactionCtx): Board {
         val selectStmt = BoardStatements.getBoardCMD(idBoard)
 
         val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
@@ -40,7 +40,7 @@ class BoardDataSQL : BoardData {
         skip: Int?,
         name: String,
         numLists: Int?,
-        ctx: ITransactionContext
+        ctx: TransactionCtx
     ): List<BoardWithLists> {
         val boards = mutableListOf<BoardWithLists>()
         val selectStmt = BoardStatements.getBoardsFromUser(idUser, limit, skip, name, numLists)

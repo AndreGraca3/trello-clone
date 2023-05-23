@@ -49,7 +49,7 @@
                                 Create
                             </button>
                         </li>
-                        <li><a class="dropdown-item" href="#boards?skip=0&limit=3">🗂️ My Boards</a></li>
+                        <li><a class="dropdown-item getBoards-button">🗂️ My Boards</a></li>
                     </ul>
                 </li>
             </ul>
@@ -117,7 +117,7 @@
 <script src="./sparouter/index.js" type="module"></script>
 <script type="module">
 
-    import {user} from "./sparouter/utils/storage.js"
+    import {user, MAX_BOARDS_DISPLAY} from "./sparouter/utils/storage.js"
     import {
         createBoard,
         hideCreateBoardModal,
@@ -131,7 +131,7 @@
 
     const img = $('.avatar-icon')[0]
     img.src = await getUserAvatar(user.token)
-
+    document.querySelector('.getBoards-button').href = `#boards?skip=0&limit=${MAX_BOARDS_DISPLAY}`
 </script>
 </body>
 </html>

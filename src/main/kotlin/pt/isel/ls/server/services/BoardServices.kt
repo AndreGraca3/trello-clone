@@ -60,7 +60,7 @@ class BoardServices(
 
         return dataExecutor.execute {
             val idUser = userData.getUser(token, it).idUser
-            val count = userBoardData.getBoardCountFromUser(idUser, name, numLists)
+            val count = userBoardData.getBoardCountFromUser(idUser, name, numLists, it)
             val boards = boardData.getBoardsFromUser(
                 idUser,
                 if (limit != null && limit < 0) null else limit,
@@ -82,14 +82,12 @@ class BoardServices(
         }
     }
 
-    fun getUsersFromBoard(token: String, idBoard: Int, limit: Int?, skip: Int?): List<User> {
+    fun getUsersFromBoard(token: String, idBoard: Int): List<User> {
         return dataExecutor.execute {
             val idUser = userData.getUser(token, it).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, it)
             userData.getUsers(
                 idBoard,
-                if (limit != null && limit < 0) null else limit,
-                if (skip != null && skip < 0) null else skip,
                 it
             )
         }

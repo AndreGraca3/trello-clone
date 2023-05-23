@@ -1,14 +1,12 @@
 package pt.isel.ls.server.data.transactionManager.executor
 
-import pt.isel.ls.server.data.transactionManager.transaction.ITransactionContext
-import pt.isel.ls.server.data.transactionManager.factory.ITransactionContextFactory
+import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.exceptions.map
 import java.sql.SQLException
 
-class DataExecutor(private val transactionFactory: ITransactionContextFactory) {
-     fun <R> execute(action: (ITransactionContext) -> R): R {
-         val tr = transactionFactory.createTransaction()
+class DataExecutor(private val tr: TransactionCtx) {
+     fun <R> execute(action: (TransactionCtx) -> R): R {
          try {
             tr.init()
             val res = action(tr)

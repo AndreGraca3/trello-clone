@@ -1,6 +1,6 @@
 package pt.isel.ls.server.data.dataInterfaces.models
 
-import pt.isel.ls.server.data.transactionManager.transaction.ITransactionContext
+import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
 import pt.isel.ls.server.utils.Card
 
 interface CardData {
@@ -11,12 +11,12 @@ interface CardData {
         name: String,
         description: String? = null,
         endDate: String? = null,
-        ctx: ITransactionContext
+        ctx: TransactionCtx
     ): Int
 
-    fun getCardsFromList(idList: Int, idBoard: Int, ctx: ITransactionContext): List<Card>
+    fun getCardsFromList(idList: Int, idBoard: Int, ctx: TransactionCtx): List<Card>
 
-    fun getCard(idCard: Int, idBoard: Int, ctx: ITransactionContext): Card
+    fun getCard(idCard: Int, idBoard: Int, ctx: TransactionCtx): Card
 
     fun moveCard(
         idCard: Int,
@@ -25,22 +25,22 @@ interface CardData {
         idListDst: Int,
         idx: Int,
         idxDst: Int,
-        ctx: ITransactionContext
+        ctx: TransactionCtx
     )
 
-    fun decreaseIdx(idList: Int, idx: Int, ctx: ITransactionContext)
+    fun decreaseIdx(idList: Int, idx: Int, ctx: TransactionCtx)
 
-    fun deleteCard(idCard: Int, idBoard: Int, ctx: ITransactionContext)
+    fun deleteCard(idCard: Int, idBoard: Int, ctx: TransactionCtx)
 
-    fun deleteCards(idList: Int, ctx: ITransactionContext)
+    fun deleteCards(idList: Int, ctx: TransactionCtx)
 
-    fun archiveCards(idBoard: Int, idList: Int, ctx: ITransactionContext)
+    fun archiveCards(idBoard: Int, idList: Int, ctx: TransactionCtx)
 
-    fun getNextIdx(idList: Int, ctx: ITransactionContext): Int
+    fun getNextIdx(idList: Int, ctx: TransactionCtx): Int
 
-    fun getCardCount(idBoard: Int, idList: Int, ctx: ITransactionContext): Int // can be deleted, it's not being used.
+    fun getCardCount(idBoard: Int, idList: Int, ctx: TransactionCtx): Int // can be deleted, it's not being used.
 
-    fun getArchivedCards(idBoard: Int, ctx: ITransactionContext): List<Card>
+    fun getArchivedCards(idBoard: Int, ctx: TransactionCtx): List<Card>
 
-    fun updateCard(card: Card, description: String?, endDate: String?, idList: Int?, archived: Boolean, ctx: ITransactionContext)
+    fun updateCard(card: Card, description: String?, endDate: String?, idList: Int?, archived: Boolean, ctx: TransactionCtx)
 }

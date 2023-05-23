@@ -45,8 +45,6 @@ class BoardAPI(private val services: BoardServices) {
     @Auth
     fun getUsersFromBoard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
-        val limit = getQueryParam(request, "limit")?.toIntOrNull()
-        val skip = getQueryParam(request, "skip")?.toIntOrNull()
-        return createRsp(OK, services.getUsersFromBoard(token, idBoard, limit, skip))
+        return createRsp(OK, services.getUsersFromBoard(token, idBoard))
     }
 }

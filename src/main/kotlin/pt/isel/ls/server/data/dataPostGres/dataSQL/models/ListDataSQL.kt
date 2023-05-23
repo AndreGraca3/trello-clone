@@ -1,7 +1,7 @@
 package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
-import pt.isel.ls.server.data.transactionManager.transaction.ITransactionContext
-import pt.isel.ls.server.data.transactionManager.transaction.SQLTransaction
+import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
+import pt.isel.ls.server.data.transactionManager.transactions.SQLTransaction
 import pt.isel.ls.server.data.dataInterfaces.models.ListData
 import pt.isel.ls.server.data.dataPostGres.statements.ListStatement
 import pt.isel.ls.server.exceptions.NOT_FOUND
@@ -10,7 +10,7 @@ import pt.isel.ls.server.utils.BoardList
 
 class ListDataSQL : ListData {
 
-    override fun createList(idBoard: Int, name: String, ctx: ITransactionContext): Int {
+    override fun createList(idBoard: Int, name: String, ctx: TransactionCtx): Int {
         val insertStmt = ListStatement.createListCMD(idBoard, name)
 
         val res = (ctx as SQLTransaction).con.prepareStatement(insertStmt).executeQuery()
@@ -19,7 +19,7 @@ class ListDataSQL : ListData {
         return res.getInt("idList")
     }
 
-    override fun getList(idList: Int, idBoard: Int, ctx: ITransactionContext): BoardList {
+    override fun getList(idList: Int, idBoard: Int, ctx: TransactionCtx): BoardList {
         val selectStmt = ListStatement.getListCMD(idList, idBoard)
         lateinit var list: BoardList
 
@@ -37,7 +37,7 @@ class ListDataSQL : ListData {
         return list
     }
 
-    override fun getListsOfBoard(idBoard: Int, ctx: ITransactionContext): List<BoardList> {
+    override fun getListsOfBoard(idBoard: Int, ctx: TransactionCtx): List<BoardList> {
         val selectStmt = ListStatement.getListsOfBoard(idBoard)
         val lists = mutableListOf<BoardList>()
 
@@ -56,12 +56,12 @@ class ListDataSQL : ListData {
         return lists
     }
 
-    override fun deleteList(idList: Int, idBoard: Int, ctx: ITransactionContext) {
+    override fun deleteList(idList: Int, idBoard: Int, ctx: TransactionCtx) {
         val deleteStmt = ListStatement.deleteList(idList, idBoard)
         (ctx as SQLTransaction).con.prepareStatement(deleteStmt).executeUpdate()
     }
 
-    override fun getListCount(idBoard: Int, ctx: ITransactionContext): Int {
+    override fun getListCount(idBoard: Int, ctx: TransactionCtx): Int {
         val selectStmt = ListStatement.getListCount(idBoard)
 
         val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()

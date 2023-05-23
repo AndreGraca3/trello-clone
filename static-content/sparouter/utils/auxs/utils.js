@@ -41,3 +41,11 @@ export async function fetchReq(path, method, body) {
 export function getNewBoardsPath(skip, limit, nameSearch, numLists) {
     return `#boards?skip=${skip}&limit=${limit}${nameSearch != null && nameSearch !== "" ? `&name=${nameSearch}` : ''}${numLists != null && numLists !== "" ? `&numLists=${numLists}` : ''}`
 }
+
+export function getLimitSelectorOptions(maxDisplay, size, limit) {
+    const limitOptions = Array.from({length: size}, (_, i) => (i + 1) * maxDisplay)
+    if (!limit || limitOptions.includes(limit)) return limitOptions
+    limitOptions.push(limit)
+    limitOptions.sort((a, b) => a - b)
+    return limitOptions
+}

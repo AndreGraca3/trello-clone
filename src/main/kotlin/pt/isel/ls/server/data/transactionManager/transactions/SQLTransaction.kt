@@ -1,9 +1,9 @@
-package pt.isel.ls.server.data.transactionManager.transaction
+package pt.isel.ls.server.data.transactionManager.transactions
 
 import pt.isel.ls.server.utils.setup
 import java.sql.Connection
 
-class SQLTransaction: ITransactionContext {
+class SQLTransaction: TransactionCtx {
     val con: Connection = setup().connection
 
     override fun init() {

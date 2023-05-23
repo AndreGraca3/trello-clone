@@ -30,7 +30,6 @@ val users = mutableListOf<User>(
     )
 )
 val boards = mutableListOf<Board>()
+val usersBoards = mutableListOf<UserBoard>()
 val lists = mutableListOf<BoardList>()
 val cards = mutableListOf<Card>()
-
-val usersBoards = mutableListOf<UserBoard>()

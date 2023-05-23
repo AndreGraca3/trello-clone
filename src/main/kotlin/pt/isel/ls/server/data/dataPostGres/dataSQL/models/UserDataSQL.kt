@@ -1,7 +1,7 @@
 package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
-import pt.isel.ls.server.data.transactionManager.transaction.ITransactionContext
-import pt.isel.ls.server.data.transactionManager.transaction.SQLTransaction
+import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
+import pt.isel.ls.server.data.transactionManager.transactions.SQLTransaction
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
 import pt.isel.ls.server.data.dataPostGres.statements.UserStatements
 import pt.isel.ls.server.exceptions.TrelloException
@@ -10,7 +10,7 @@ import java.util.*
 
 class UserDataSQL : UserData {
 
-    override fun createUser(name: String, email: String, ctx: ITransactionContext): Pair<Int, String> {
+    override fun createUser(name: String, email: String, ctx: TransactionCtx): Pair<Int, String> {
         val token = UUID.randomUUID().toString()
         val insertStmt = UserStatements.createUserCMD(email, name, token)
         val userId: Int
@@ -23,7 +23,7 @@ class UserDataSQL : UserData {
         return Pair(userId, token)
     }
 
-    override fun getUser(token: String, ctx: ITransactionContext): User {
+    override fun getUser(token: String, ctx: TransactionCtx): User {
         val selectStmt = UserStatements.getUserCMD(token)
         val idUser: Int
         lateinit var email: String
@@ -43,7 +43,7 @@ class UserDataSQL : UserData {
         return User(idUser, email, name, token, avatar)
     }
 
-    override fun getUser(idUser: Int, ctx: ITransactionContext): User {
+    override fun getUser(idUser: Int, ctx: TransactionCtx): User {
         val selectStmt = UserStatements.getUserCMD(idUser)
         lateinit var email: String
         lateinit var name: String
@@ -63,8 +63,8 @@ class UserDataSQL : UserData {
         return User(idUser, email, name, token, avatar)
     }
 
-    override fun getUsers(idBoard: Int, limit: Int?, skip: Int?, ctx: ITransactionContext): List<User> {
-        val selectStmt = UserStatements.getUsersFromBoard(idBoard, limit, skip)
+    override fun getUsers(idBoard: Int, ctx: TransactionCtx): List<User> {
+        val selectStmt = UserStatements.getUsersFromBoard(idBoard)
         val userList = mutableListOf<User>()
 
         val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
@@ -83,7 +83,7 @@ class UserDataSQL : UserData {
         return userList
     }
 
-    override fun changeAvatar(token: String, avatar: String, ctx: ITransactionContext) {
+    override fun changeAvatar(token: String, avatar: String, ctx: TransactionCtx) {
         val updateStmt = UserStatements.changeAvatarCMD(token, avatar)
         (ctx as SQLTransaction).con.prepareStatement(updateStmt).executeUpdate()
     }
