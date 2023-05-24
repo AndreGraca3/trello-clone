@@ -29,7 +29,7 @@ fun setup(): PGSimpleDataSource {
 
 fun checkPaging(max: Int, limit: Int?, skip: Int?): Pair<Int, Int> {
     val skipped = if (skip == null || skip < 0) 0 else min(skip, max)
-    var limited = if (limit == null || limit < 0 || skipped + limit > max) max - skipped else limit
+    var limited = if (limit == null || limit < 0 || skipped + limit > max) max else skipped + limit
     if (skipped > limited) limited = skipped
     return Pair(skipped, limited)
 }

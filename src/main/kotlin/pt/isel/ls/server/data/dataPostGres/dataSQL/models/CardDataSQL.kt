@@ -43,7 +43,7 @@ class CardDataSQL : CardData {
                     res.getInt("idList"),
                     res.getInt("idBoard"),
                     res.getString("name"),
-                    res.getString("description"),
+                    if(res.getString("description") == "null") null else res.getString("description"),
                     res.getString("startDate"),
                     res.getString("endDate"),
                     res.getBoolean("archived"),

@@ -5,19 +5,20 @@ import {moveToArchivedContainer} from "../auxs/modelAuxs.js";
 
 export const cardFunc = async (card) => {
 
-    console.log(card)
-
     const fetchedCard = await fetchReq(`board/${card.idBoard}/card/${card.idCard}`,"GET")
+
+    console.log(fetchedCard)
 
     document.querySelector("#CardTitleModal").innerText = fetchedCard.name
     document.querySelector("#CardStartDateModal").innerText = fetchedCard.startDate
 
     if(fetchedCard.description !== null) {
-        document.querySelector("#CardDescModal").innerText = fetchedCard.description
-    }
+        document.querySelector("#Description-textBox").value = fetchedCard.description
+    } else document.querySelector("#Description-textBox").value = ""
+
     if(fetchedCard.endDate !== null) {
         document.querySelector("#endDateTime").value = fetchedCard.endDate.replace(" ", "T")
-    }
+    }else document.querySelector("#endDateTime").value = ""
 
     document.querySelector("#cardSaveButton").onclick = async () => saveCard(fetchedCard)
     document.querySelector("#cardArchiveButton").onclick = async () => archiveCard(fetchedCard)
@@ -118,7 +119,9 @@ async function saveCard(card) {
     console.log(card)
     const newEndDate = document.querySelector("#endDateTime").value.replace("T", " ")
 
-    const newDescription = document.querySelector("#Description-textBox").value
+    let newDescription = document.querySelector("#Description-textBox").value
+
+    if(newDescription === "") newDescription = null
 
     const Changes = {
         archived: card.archived,

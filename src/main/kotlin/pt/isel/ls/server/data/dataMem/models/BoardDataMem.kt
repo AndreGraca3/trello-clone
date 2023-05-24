@@ -39,7 +39,7 @@ class BoardDataMem : BoardData {
         val max = usersBoards.filter { it.idUser == idUser }.size
         val paging = checkPaging(max, limit, skip)
         val filtered = usersBoards.filter { it.idUser == idUser }.subList(paging.first, paging.second)
-            .map {
+        val mapped = filtered.map {
                 BoardWithLists(
                     it.idBoard,
                     boards.find { board -> board.idBoard == it.idBoard }!!.name,
@@ -47,7 +47,7 @@ class BoardDataMem : BoardData {
                     lists.count { list -> list.idBoard == it.idBoard }
                 )
             }
-        return filtered.filter { b -> b.numLists == (numLists ?: b.numLists) && b.name.contains(name) }
+        return mapped.filter { b -> b.numLists == (numLists ?: b.numLists) && b.name.contains(name) }
     }
 
     private fun getNextId(): Int {

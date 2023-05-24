@@ -69,7 +69,7 @@ data class CardIn(
 @Serializable
 data class Changes(
     val archived: Boolean,
-    val description: String,
+    val description: String?,
     val endDate: String,
     val idList: Int?
 )

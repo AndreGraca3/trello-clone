@@ -282,8 +282,9 @@ class BoardAPITests {
     fun `get boards from user with valid pagination`() {
         val skip = 2
         val limit = 3
+        val nrBoards = 6
 
-        repeat(6) {
+        repeat(nrBoards) {
             services.boardServices.createBoard(user.token, "board$it", "description$it")
         }
 
@@ -294,7 +295,10 @@ class BoardAPITests {
 
         val fetchedBoards = Json.decodeFromString<TotalBoards>(response.bodyString())
 
-        assertEquals(3, fetchedBoards.boards.size)
+        println(fetchedBoards)
+
+        assertEquals(limit, fetchedBoards.boards.size)
+        assertEquals(nrBoards, fetchedBoards.totalBoards)
     }
 
     @Test
