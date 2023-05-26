@@ -10,12 +10,12 @@ import java.util.*
 
 class UserDataSQL : UserData {
 
-    override fun createUser(name: String, email: String, ctx: TransactionCtx): Pair<Int, String> {
+    override fun createUser(name: String, email: String, hashedPassword: String, urlAvatar: String, ctx: TransactionCtx): Pair<Int, String> {
         val token = UUID.randomUUID().toString()
-        val insertStmt = UserStatements.createUserCMD(email, name, token)
+        val insertStmt = UserStatements.createUserCMD(email, name, token, hashedPassword, urlAvatar )
         val userId: Int
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(insertStmt).executeQuery()
+        val res = ctx.con.prepareStatement(insertStmt).executeQuery()
         res.next()
 
         userId = res.getInt("idUser")
@@ -28,9 +28,10 @@ class UserDataSQL : UserData {
         val idUser: Int
         lateinit var email: String
         lateinit var name: String
+        lateinit var password : String
         val avatar: String
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
         if (res.row == 0) throw TrelloException.NotFound("User")
@@ -38,9 +39,10 @@ class UserDataSQL : UserData {
         idUser = res.getInt("idUser")
         email = res.getString("email")
         name = res.getString("name")
+        password = res.getString("password")
         avatar = res.getString("avatar")
 
-        return User(idUser, email, name, token, avatar)
+        return User(idUser, email, name, token, password, avatar)
     }
 
     override fun getUser(idUser: Int, ctx: TransactionCtx): User {
@@ -48,9 +50,10 @@ class UserDataSQL : UserData {
         lateinit var email: String
         lateinit var name: String
         lateinit var token: String
+        lateinit var password: String
         lateinit var avatar: String
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
         if (res.row == 0) throw TrelloException.NotFound("User")
@@ -58,16 +61,17 @@ class UserDataSQL : UserData {
         email = res.getString("email")
         name = res.getString("name")
         token = res.getString("token")
+        password = res.getString("password")
         avatar = res.getString("avatar")
 
-        return User(idUser, email, name, token, avatar)
+        return User(idUser, email, name, token, password, avatar)
     }
 
     override fun getUsers(idBoard: Int, ctx: TransactionCtx): List<User> {
         val selectStmt = UserStatements.getUsersFromBoard(idBoard)
         val userList = mutableListOf<User>()
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
 
         while (res.next()) {
             val user = User(
@@ -75,6 +79,7 @@ class UserDataSQL : UserData {
                 res.getString("email"),
                 res.getString("name"),
                 res.getString("token"),
+                res.getString("password"),
                 res.getString("avatar")
             )
             userList.add(user)
@@ -85,6 +90,20 @@ class UserDataSQL : UserData {
 
     override fun changeAvatar(token: String, avatar: String, ctx: TransactionCtx) {
         val updateStmt = UserStatements.changeAvatarCMD(token, avatar)
-        (ctx as SQLTransaction).con.prepareStatement(updateStmt).executeUpdate()
+        ctx.con.prepareStatement(updateStmt).executeUpdate()
+    }
+
+    override fun login(email: String, hashedPassword: String, ctx: TransactionCtx): String {
+        val selectStmt = UserStatements.loginCMD(email, hashedPassword)
+        lateinit var token: String
+
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
+        res.next()
+
+        if (res.row == 0) throw TrelloException.NotFound("User")
+
+        token = res.getString("token")
+
+        return token
     }
 }

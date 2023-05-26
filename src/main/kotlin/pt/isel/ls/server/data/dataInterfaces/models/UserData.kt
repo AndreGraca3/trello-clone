@@ -5,7 +5,7 @@ import pt.isel.ls.server.utils.User
 
 interface UserData {
 
-    fun createUser(name: String, email: String, ctx: TransactionCtx): Pair<Int, String>
+    fun createUser(name: String, email: String, hashedPassword: String, urlAvatar: String, ctx: TransactionCtx): Pair<Int, String>
 
     fun getUser(token: String, ctx: TransactionCtx): User
 
@@ -14,4 +14,6 @@ interface UserData {
     fun getUsers(idBoard: Int, ctx: TransactionCtx): List<User>
 
     fun changeAvatar(token: String, avatar: String, ctx: TransactionCtx)
+
+    fun login(email: String, hashedPassword: String, ctx: TransactionCtx) : String
 }

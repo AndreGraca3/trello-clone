@@ -10,13 +10,14 @@ import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.services.UserServices
 import pt.isel.ls.server.utils.Avatar
 import pt.isel.ls.server.utils.UserIn
+import pt.isel.ls.server.utils.UserLogin
 import pt.isel.ls.server.utils.UserOut
 
 class UserAPI(private val services: UserServices) {
 
     fun createUser(request: Request): Response {
         val newUser = Json.decodeFromString<UserIn>(request.bodyString())
-        val createdUser = services.createUser(newUser.name, newUser.email)
+        val createdUser = services.createUser(newUser.name, newUser.email, newUser.password, newUser.urlAvatar)
         return createRsp(CREATED, UserOut(createdUser.first, createdUser.second))
     }
 
@@ -32,5 +33,11 @@ class UserAPI(private val services: UserServices) {
         val avatar = Json.decodeFromString<Avatar>(request.bodyString())
         services.changeAvatar(token, avatar.imgUrl)
         return createRsp(OK, Unit)
+    }
+
+    fun login(request: Request): Response {
+        val user = Json.decodeFromString<UserLogin>(request.bodyString())
+        val token = services.login(user.email, user.password)
+        return createRsp(OK, token)
     }
 }

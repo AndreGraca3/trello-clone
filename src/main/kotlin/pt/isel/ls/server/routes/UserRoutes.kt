@@ -13,7 +13,8 @@ class UserRoutes(private val webApi: UserAPI) {
         return routes(
             "user" bind Method.POST to { request: Request -> handleRequest(request, webApi::createUser) },
             "user" bind Method.GET to { request: Request -> handleRequest(request, webApi::getUser) },
-            "user/avatar" bind Method.PUT to { request: Request -> handleRequest(request, webApi::changeAvatar) }
+            "user/avatar" bind Method.PUT to { request: Request -> handleRequest(request, webApi::changeAvatar) },
+            "user/login" bind Method.POST to { request: Request -> handleRequest(request, webApi::login) }
         )
     }
 }

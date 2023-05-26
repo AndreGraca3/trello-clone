@@ -1,7 +1,8 @@
-import { fetchReq } from "../utils/auxs/utils.js"
-import { changeUserAvatar } from "../utils/listenerHandlers/userFuncs.js";
-import {BASE_URL, user} from "../utils/storage.js";
+import {fetchReq} from "../utils/auxs/utils.js"
+import {changeUserAvatar, createUser, loginUser} from "../utils/listenerHandlers/userFuncs.js";
+import {BASE_URL, mainContent, user} from "../utils/storage.js";
 import {createElement} from "../utils/components/components.js";
+import {getUserAvatar} from "../utils/auxs/modelAuxs.js";
 
 
 async function getUser(args, token) {
@@ -12,9 +13,10 @@ async function getUser(args, token) {
 
     const img = createElement("img", null, "avatar")
     img.classList.add("avatarImg")
+    //img.src = "https://i.imgur.com/6VBx3io.png"; //TODO: change to user avatar
     img.src = user.avatar
     img.addEventListener("click", async () => {
-        await changeUserAvatar(token);
+        await changeUserAvatar(sessionStorage.getItem("token"));
     });
 
     createElement("div", null, "text-center", null,
@@ -24,111 +26,121 @@ async function getUser(args, token) {
     )
 }
 
-function getSignup(mainContent) {   // Whats this compared to below function?
+async function getSignup() {
+    document.title = "OurTrello | Signup";
 
-    const signupBox = document.createElement("div");
-    signupBox.classList.add("signup-box");
-    /** Refazer isto no futuro! **/
-    signupBox.innerHTML = `
-    <h2 style="text-align:center;">User Creation</h2>
-    <form id="signup-form" style="display: flex; flex-direction: column; align-items: center;">
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name">
+    createElement("h1", "Sign Up in OurTrello", "text-center");
 
-      <label for="email">Email:</label>
-      <input type="text" id="email" name="email" required>
+    const formContainer = createElement("div", null, "form-container");
 
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password">
+    const form = createElement("form", null, "signup-form");
 
-      <input type="submit" value="Sign Up">
-    </form>
-  `;
-    mainContent.replaceChildren(signupBox);
+    const inputs = {};
 
-    const form = document.getElementById("signup-form");
-    form.addEventListener("submit", (event) => {
-        event.preventDefault(); // prevent form from submitting and refreshing the page
-        const formData = new FormData(form);
-        const name = formData.get("name");
-        const email = formData.get("email");
-        const password = formData.get("password");
-        createUser(name, email, password);
+    const nameRow = createRow("Name:", "form-input", "nameInput", inputs);
+    form.appendChild(nameRow);
+
+    const emailRow = createRow("Email:", "form-input", "emailInput", inputs);
+    form.appendChild(emailRow);
+
+    const passwordRow = createRow("Password:", "form-input", "passwordInput", inputs);
+    passwordRow.querySelector("input").type = "password";
+    const confirmPasswordRow = createRow("Confirm Password:", "form-input", "confirmPasswordInput", inputs);
+    confirmPasswordRow.querySelector("input").type = "password";
+    form.appendChild(passwordRow);
+    form.appendChild(confirmPasswordRow);
+
+    const logo = createElement("img", null, "avatar");
+    logo.classList.add("avatarImg");
+    logo.src = "https://i.imgur.com/6VBx3io.png"; //TODO: change to user avatar
+    logo.style.height = "150px";
+    logo.style.width = "150px"
+
+    logo.addEventListener("click", async () => {
+        await changeUserAvatar();
     });
-}
+    form.appendChild(logo);
 
-function createUser(name, email, password) {
-    const data = {name, email};
-    fetch(BASE_URL + "user", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(data),
-    })
-        .then((res) => res.json())
-        .then((response) => {
-            const {id, token} = response;
-            console.log(`New user created with ID ${id} and token ${token}`);
+    const submit = createElement("button", "Submit", "btn-secondary");
+    submit.style.marginTop = "175px";
 
-            // redirect to the user's page after successful sign-up
-            window.location.hash = "#user";
-            getUser(document.getElementById("mainContent"), token);
-        })
-        .catch((err) => {
-            console.error("Error creating user:", err);
-        });
-}
+    submit.addEventListener("click", async () => {
 
-function getLogin(mainContent) {
-    document.title = "OurTrello | Login"
+        const name = inputs["nameInput"].value;
+        const email = inputs["emailInput"].value;
+        const password = inputs["passwordInput"].value;
+        const confirmPassword = inputs["confirmPasswordInput"].value;
 
-    const loginBox = document.createElement("div");
-    loginBox.classList.add("login-box");
-    loginBox.innerHTML = `
-    <h2 style="text-align:center;">Login</h2>
-    <form id="login-form" style="display:flex;flex-direction:column;align-items:center;">
-      <label for="email">Email:</label>
-      <input type="text" id="email" name="email">
-
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password">
-
-      <input type="submit" value="Log In" style="margin-top: 1rem;">
-    </form>
-  `;
-    mainContent.replaceChildren(loginBox);
-
-    const loginForm = document.getElementById("login-form");
-    loginForm.addEventListener("submit", async (event) => {
-        //event.preventDefault();
-        TODO("Implement login functionality")
-        const formData = new FormData(loginForm);
-        const email = formData.get("email");
-        const password = formData.get("password");
-
-        // Send a request to the server to authenticate the user
-        const response = await fetch(BASE_URL + "user", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({email, password}),
-        });
-
-        if (response.ok) {
-            // Authentication successful, redirect to the #user page
-            window.location.href = "#user";
-        } else {
-            // Authentication failed, show an error message
-            const errorBox = document.createElement("div");
-            errorBox.textContent = "Incorrect email or password";
-            loginForm.appendChild(errorBox);
+        if (password !== confirmPassword) {
+            alert("Passwords don't match");
+            return;
         }
+        await createUser(name, email, password, logo.src)
     });
+
+    formContainer.appendChild(form);
+    formContainer.appendChild(submit);
+    mainContent.appendChild(formContainer);
+}
+
+async function getLogin() {
+    document.title = "OurTrello | Login";
+
+    createElement("h1", "Log In to OurTrello", "text-center");
+
+    const formContainer = createElement("div", null, "form-container");
+
+    const form = createElement("form", null, "login-form");
+
+    const inputs = {};
+
+    const emailRow = createRow("Email:", "form-input", "emailInput", inputs);
+    form.appendChild(emailRow);
+
+    const passwordRow = createRow("Password:", "form-input", "passwordInput", inputs);
+    passwordRow.querySelector("input").type = "password";
+    form.appendChild(passwordRow);
+
+    const submit = createElement("button", "Log In", "btn-primary");
+    submit.style.marginTop = "20px"
+
+    submit.addEventListener("click", async () => {
+        const email = inputs["emailInput"].value;
+        const password = inputs["passwordInput"].value;
+
+        await loginUser(email, password);
+    });
+
+    formContainer.appendChild(form);
+    formContainer.appendChild(submit);
+
+    mainContent.appendChild(formContainer);
+}
+
+async function logout() {
+    sessionStorage.setItem('token', null)
+    document.querySelectorAll(".avatarImg").forEach(e => e.src = "https://i.imgur.com/6VBx3io.png")
+    //showLogoutModal()
+    document.querySelector('#user-option').style.display = "none"
+    document.querySelector('#logout-option').style.display = "none"
+    document.location = "#home"
+}
+function createRow(labelText, inputClassName, inputName, inputs) {
+    const row = createElement("div", null, "form-row");
+    const label = createElement("label", labelText, "form-label");
+    label.style.width = "140px"; // Set a fixed width for the labels
+    label.style.marginTop = "10px";
+    const input = createElement("input", null, inputClassName);
+    input.name = inputName; // Set the name attribute of the input element
+    inputs[inputName] = input; // Store the input element reference in the object
+    row.appendChild(label);
+    row.appendChild(input);
+    return row;
 }
 
 export default {
+    logout,
     getUser,
     getSignup,
-    createUser,
     getLogin
 }

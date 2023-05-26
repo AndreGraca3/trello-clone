@@ -4,6 +4,7 @@ import org.postgresql.ds.PGSimpleDataSource
 import org.slf4j.LoggerFactory
 import pt.isel.ls.server.exceptions.INVAL_PARAM
 import pt.isel.ls.server.exceptions.TrelloException
+import java.security.MessageDigest
 import java.time.LocalDate
 import kotlin.math.min
 
@@ -32,4 +33,22 @@ fun checkPaging(max: Int, limit: Int?, skip: Int?): Pair<Int, Int> {
     var limited = if (limit == null || limit < 0 || skipped + limit > max) max else skipped + limit
     if (skipped > limited) limited = skipped
     return Pair(skipped, limited)
+}
+
+fun hashPassword(password: String): String {
+    val messageDigest = MessageDigest.getInstance("SHA-256") // Choose the hash algorithm you want to use, such as SHA-256
+
+    val hashedBytes = messageDigest.digest(password.toByteArray())
+    val stringBuilder = StringBuilder()
+
+    for (hashedByte in hashedBytes) {
+        val hex = String.format("%02x", hashedByte)
+        stringBuilder.append(hex)
+    }
+
+    return stringBuilder.toString()
+}
+
+fun isValidAvatar(urlAvatar: String?) : String {
+    return urlAvatar ?: "https://i.imgur.com/1qZ0QZB.png"
 }

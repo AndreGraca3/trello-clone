@@ -19,10 +19,10 @@ import pt.isel.ls.server.services.Services
 import pt.isel.ls.server.utils.logger
 
 fun main() {
-    val data = DataMem()
-    val executor = DataExecutor(MemTransaction())
-    // val data = DataSQL()
-    // val executor = DataExecutor(SQLTransaction())
+    //val data = DataMem()
+    //val executor = DataExecutor(MemTransaction())
+    val data = DataSQL()
+    val executor = DataExecutor(SQLTransaction())
     val services = Services(data, executor)
     val webAPI = WebAPI(services)
 

@@ -14,11 +14,13 @@ export function darkerColor(color) {
 }
 
 export async function fetchReq(path, method, body) {
+    const token = sessionStorage.getItem('token')
+    //const token = user.token
     const options = {
         method,
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${user.token}`
+            "Authorization": `Bearer ${token}`
         }
     }
 
@@ -49,3 +51,4 @@ export function getLimitSelectorOptions(maxDisplay, size, limit) {
     limitOptions.sort((a, b) => a - b)
     return limitOptions
 }
+

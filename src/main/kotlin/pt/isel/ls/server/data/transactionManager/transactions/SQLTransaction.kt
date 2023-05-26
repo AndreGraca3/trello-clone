@@ -4,7 +4,7 @@ import pt.isel.ls.server.utils.setup
 import java.sql.Connection
 
 class SQLTransaction: TransactionCtx {
-    val con: Connection = setup().connection
+    override val con: Connection = setup().connection
 
     override fun init() {
         con.autoCommit = false

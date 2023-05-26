@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 // Model Classes
 @Serializable
-data class User(val idUser: Int, val email: String, val name: String, val token: String, var avatar: String)
+data class User(val idUser: Int, val email: String, val name: String, val token: String, val hashedPassword: String, var avatar: String)
 
 data class UserBoard(val idUser: Int, val idBoard: Int)
 
@@ -38,10 +38,13 @@ data class Avatar(val imgUrl: String)
 data class NewList(val idListNow: Int, val idListDst: Int, val cix: Int)
 
 @Serializable
-data class UserIn(val name: String, val email: String)
+data class UserIn(val name: String, val email: String, val password: String, val urlAvatar: String?)
 
 @Serializable
 data class UserOut(val idUser: Int, val token: String)
+
+@Serializable
+data class UserLogin(val email: String, val password: String)
 
 @Serializable
 data class BoardIn(val name: String, val description: String)

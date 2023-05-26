@@ -16,6 +16,7 @@ create table "user" (
     idUser serial primary key,
     email varchar(320) unique,
     name varchar(20),
+    password TEXT,
     token varchar(36) unique,
     avatar TEXT
 );

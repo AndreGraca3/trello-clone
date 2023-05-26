@@ -1,6 +1,9 @@
 package pt.isel.ls.server.data.transactionManager.transactions
 
-class MemTransaction : TransactionCtx {
+import java.sql.Connection
+
+class MemTransaction() : TransactionCtx {
+    override val con: Connection get() = throw UnsupportedOperationException("Memory transaction does not have a connection.")
 
     override fun init() {
         // Do nothing...

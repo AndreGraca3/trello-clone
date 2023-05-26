@@ -11,8 +11,8 @@ import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.User
 
 // Functions to create dummy components for tests
-fun createUser(name: String = dummyName, email: String = dummyEmail) =
-    executorTest.execute { dataMem.userData.createUser(name, email, it) }
+fun createUser(name: String = dummyName, email: String = dummyEmail, hashedPassword : String = dummyPassword, avatar: String = dummyAvatar) =
+    executorTest.execute { dataMem.userData.createUser(name, email,hashedPassword, avatar, it) }
 
 fun createBoard(
     idUser: Int,
@@ -47,7 +47,7 @@ fun dataSetup(clazz: Class<*>) {
     if (clazz.simpleName == User::class.simpleName) return
 
     val userPair = createUser()
-    user = User(userPair.first, dummyEmail, dummyName, userPair.second, "")
+    user = User(userPair.first, dummyEmail, dummyName, userPair.second, dummyPassword, dummyAvatar)
     if (clazz.simpleName == Board::class.simpleName) return
 
     boardId = createBoard(user.idUser)

@@ -1,5 +1,5 @@
 
-INSERT INTO dbo.user (email, name, token, avatar) VALUES ('jose.tremocos@gmail.com', 'Jose', 'token123', 'https://live.staticflickr.com/65535/52841364369_13521f6ef1_m.jpg');
+INSERT INTO dbo.user (email, name, token, password, avatar) VALUES ('jose.tremocos@gmail.com', 'Jose', 'token123', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8','https://live.staticflickr.com/65535/52841364369_13521f6ef1_m.jpg');
 commit;
 
 insert into user_board(iduser, idboard) values (3,1);

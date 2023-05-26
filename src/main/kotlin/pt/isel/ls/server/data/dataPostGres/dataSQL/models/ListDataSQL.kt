@@ -13,7 +13,7 @@ class ListDataSQL : ListData {
     override fun createList(idBoard: Int, name: String, ctx: TransactionCtx): Int {
         val insertStmt = ListStatement.createListCMD(idBoard, name)
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(insertStmt).executeQuery()
+        val res = ctx.con.prepareStatement(insertStmt).executeQuery()
         res.next()
 
         return res.getInt("idList")
@@ -23,7 +23,7 @@ class ListDataSQL : ListData {
         val selectStmt = ListStatement.getListCMD(idList, idBoard)
         lateinit var list: BoardList
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
         if (res.row == 0) throw TrelloException.NotFound("List $NOT_FOUND")
@@ -41,7 +41,7 @@ class ListDataSQL : ListData {
         val selectStmt = ListStatement.getListsOfBoard(idBoard)
         val lists = mutableListOf<BoardList>()
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
 
         while (res.next()) {
             if (res.row == 0) return emptyList()
@@ -58,13 +58,13 @@ class ListDataSQL : ListData {
 
     override fun deleteList(idList: Int, idBoard: Int, ctx: TransactionCtx) {
         val deleteStmt = ListStatement.deleteList(idList, idBoard)
-        (ctx as SQLTransaction).con.prepareStatement(deleteStmt).executeUpdate()
+        ctx.con.prepareStatement(deleteStmt).executeUpdate()
     }
 
     override fun getListCount(idBoard: Int, ctx: TransactionCtx): Int {
         val selectStmt = ListStatement.getListCount(idBoard)
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
         return res.getInt("count")

@@ -10,18 +10,17 @@ import pt.isel.ls.server.exceptions.INVAL_PARAM
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.User
-import pt.isel.ls.server.utils.checkPaging
 import java.sql.SQLException
 import java.util.*
 
 class UserDataMem : UserData {
 
-    override fun createUser(name: String, email: String, ctx: TransactionCtx): Pair<Int, String> {
+    override fun createUser(name: String, email: String, hashedPassword: String, urlAvatar: String, ctx: TransactionCtx): Pair<Int, String> {
         if (name.length > 20) throw SQLException("$INVAL_PARAM name is too long.", "22001")
         if (users.any { it.email == email }) throw SQLException("$email $ALREADY_EXISTS", "23505")
         if (users.any { it.name == name }) throw SQLException("$name $ALREADY_EXISTS", "23505")
         val token = UUID.randomUUID().toString()
-        val newUser = User(getNextId(), email, name, token, "https://i.imgur.com/JGtwTBw.png")
+        val newUser = User(getNextId(), email, name, token, hashedPassword, urlAvatar)
         users.add(newUser)
         return Pair(newUser.idUser, token)
     }
@@ -43,6 +42,11 @@ class UserDataMem : UserData {
     override fun changeAvatar(token: String, avatar: String, ctx: TransactionCtx) {
         val user = getUser(token, (ctx as MemTransaction))
         users[users.indexOf(user)] = user.copy(avatar = avatar)
+    }
+
+    override fun login(email: String, hashedPassword: String, ctx: TransactionCtx) : String {
+        val user = users.find { it.email == email && it.hashedPassword == hashedPassword } ?: throw TrelloException.NotFound("User $NOT_FOUND")
+        return user.token
     }
 
     private fun getNextId(): Int {

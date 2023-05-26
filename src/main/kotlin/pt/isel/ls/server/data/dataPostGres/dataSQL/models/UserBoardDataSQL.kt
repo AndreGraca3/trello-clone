@@ -10,14 +10,14 @@ class UserBoardDataSQL : UserBoardData {
 
     override fun addUserToBoard(idUser: Int, idBoard: Int, ctx: TransactionCtx) {
         val insertStmt = UserBoardStatements.addUserToBoard(idUser, idBoard)
-        (ctx as SQLTransaction).con.prepareStatement(insertStmt).executeUpdate()
+        ctx.con.prepareStatement(insertStmt).executeUpdate()
     }
 
     override fun searchUserBoards(idUser: Int, ctx: TransactionCtx): List<Int> {
         val selectStmt = UserBoardStatements.getBoardIdsFromUser(idUser)
         val boardIds = mutableListOf<Int>()
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
 
         while (res.next()) {
             boardIds.add(res.getInt("idBoard"))
@@ -29,7 +29,7 @@ class UserBoardDataSQL : UserBoardData {
     override fun checkUserInBoard(idUser: Int, idBoard: Int, ctx: TransactionCtx) {
         val selectStmt = UserBoardStatements.checkUserInBoard(idUser, idBoard)
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
         if (res.row == 0) throw TrelloException.NotFound("Board")
@@ -39,7 +39,7 @@ class UserBoardDataSQL : UserBoardData {
         val selectStmt = UserBoardStatements.getIdUsersFromBoard(idBoard)
         val userIds = mutableListOf<Int>()
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
 
         while (res.next()) {
             userIds.add(res.getInt("idUser"))
@@ -52,7 +52,7 @@ class UserBoardDataSQL : UserBoardData {
         val selectStmt = UserBoardStatements.getBoardCountFromUser(idUser, name, numLists)
         var count: Int
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
         count = res.getInt("count")
@@ -64,7 +64,7 @@ class UserBoardDataSQL : UserBoardData {
         val selectStmt = UserBoardStatements.getUserCountFromBoard(idBoard)
         var count: Int
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
         count = res.getInt("count")

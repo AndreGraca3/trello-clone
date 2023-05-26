@@ -18,6 +18,8 @@ const val invalidId = 1904
 /** User Dummies **/
 const val dummyName = "Alberto"
 const val dummyEmail = "alberto.tremocos@gmail.com"
+const val dummyPassword = "PASSWORD"
+const val dummyAvatar = "https://i.imgur.com/JGtwTBw.png"
 val dummyBadEmail = dummyEmail.replace("@", "")
 
 /** Board Dummies **/
@@ -46,7 +48,7 @@ val services = Services(dataMem, executorTest)
 val webAPI = WebAPI(services)
 
 /** tests initial components **/
-var user = User(0, dummyEmail, dummyName, "4143809c-511a-4dc0-a3cf-a270eb2388c0", "")
+var user = User(0, dummyEmail, dummyName, "4143809c-511a-4dc0-a3cf-a270eb2388c0", dummyPassword, dummyAvatar)
 var boardId = 0
 var listId = 0
 var cardId = 0

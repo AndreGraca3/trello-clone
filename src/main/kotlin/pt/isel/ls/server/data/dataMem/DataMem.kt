@@ -26,6 +26,7 @@ val users = mutableListOf<User>(
         "alberto.tremocos@gmail.com",
         "Jose",
         "token123",
+        "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
         "https://live.staticflickr.com/65535/52841364369_13521f6ef1_m.jpg"
     )
 )

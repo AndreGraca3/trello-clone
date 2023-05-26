@@ -13,10 +13,12 @@ async function loadHandler() {
     router.addRouteHandler("home", defaultHandlers.getHome)
     router.addRouteHandler("user", userHandlers.getUser)
     router.addRouteHandler("login", userHandlers.getLogin)
+    router.addRouteHandler("logout", userHandlers.logout)
     router.addRouteHandler("signup", userHandlers.getSignup)
     router.addRouteHandler("boards", boardHandlers.getBoards)
     router.addRouteHandler("board/:idBoard", boardHandlers.getBoard)
     router.addRouteHandler("user/avatar", userHandlers.changeUserAvatar)
+
 
     await hashChangeHandler()
 }
