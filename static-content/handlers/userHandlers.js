@@ -1,55 +1,53 @@
 import {changeUserAvatar, createUser, loginUser} from "../HTML/DSL/listeners/userFuncs.js";
-import {createElement} from "../HTML/components/components.js";
+import {button, createElement, div, form, h1, img, input, label, p} from "../HTML/components/components.js";
 import {mainContent} from "../config/storage.js";
-import {fetchReq} from "../utils/utils.js";
+import userData from "../data/userData.js";
 
 async function getUser(args, token) {
 
     document.title = "OurTrello | User";
 
-    const user = await fetchReq("user", "GET");
+    const user = await userData.getUser()
 
-    const img = createElement("img", null, "avatar")
-    img.classList.add("avatarImg")
+    const imgHtml = img(null, ["avatar", "avatarImg"])
     //img.src = "https://i.imgur.com/6VBx3io.png"; //TODO: change to user avatar
-    img.src = user.avatar
-    img.addEventListener("click", async () => {
+    imgHtml.src = user.avatar
+    imgHtml.addEventListener("click", async () => {
         await changeUserAvatar(sessionStorage.getItem("token"));
     });
 
-    createElement("div", null, "text-center", null,
-        img,
-        createElement("p", `${user.name}`),
-        createElement("p", `${user.email}`)
+    div(null, ["text-center"], null,
+        imgHtml,
+        p(`${user.name}`),
+        p(`${user.email}`)
     )
 }
 
 async function getSignup() {
     document.title = "OurTrello | Signup";
 
-    createElement("h1", "Sign Up in OurTrello", "text-center");
+    h1("Sign Up in OurTrello", ["text-center"]);
 
-    const formContainer = createElement("div", null, "form-container");
+    const formContainer = div( null, ["form-container"]);
 
-    const form = createElement("form", null, "signup-form");
+    const formHtml = form(null, ["signup-form"]);
 
     const inputs = {};
 
     const nameRow = createRow("Name:", "form-input", "nameInput", inputs);
-    form.appendChild(nameRow);
+    formHtml.appendChild(nameRow);
 
     const emailRow = createRow("Email:", "form-input", "emailInput", inputs);
-    form.appendChild(emailRow);
+    formHtml.appendChild(emailRow);
 
     const passwordRow = createRow("Password:", "form-input", "passwordInput", inputs);
     passwordRow.querySelector("input").type = "password";
     const confirmPasswordRow = createRow("Confirm Password:", "form-input", "confirmPasswordInput", inputs);
     confirmPasswordRow.querySelector("input").type = "password";
-    form.appendChild(passwordRow);
-    form.appendChild(confirmPasswordRow);
+    formHtml.appendChild(passwordRow);
+    formHtml.appendChild(confirmPasswordRow);
 
-    const logo = createElement("img", null, "avatar");
-    logo.classList.add("avatarImg");
+    const logo = img(null, ["avatar", "avatarImg"]);
     logo.src = "https://i.imgur.com/6VBx3io.png"; //TODO: change to user avatar
     logo.style.height = "150px";
     logo.style.width = "150px"
@@ -57,9 +55,9 @@ async function getSignup() {
     logo.addEventListener("click", async () => {
         await changeUserAvatar();
     });
-    form.appendChild(logo);
+    formHtml.appendChild(logo);
 
-    const submit = createElement("button", "Submit", "btn-secondary");
+    const submit = button("Submit", ["btn-secondary"]);
     submit.style.marginTop = "175px";
 
     submit.addEventListener("click", async () => {
@@ -76,7 +74,7 @@ async function getSignup() {
         await createUser(name, email, password, logo.src)
     });
 
-    formContainer.appendChild(form);
+    formContainer.appendChild(formHtml);
     formContainer.appendChild(submit);
     mainContent.appendChild(formContainer);
 }
@@ -84,22 +82,22 @@ async function getSignup() {
 async function getLogin() {
     document.title = "OurTrello | Login";
 
-    createElement("h1", "Log In to OurTrello", "text-center");
+    h1("Log In to OurTrello", ["text-center"]);
 
-    const formContainer = createElement("div", null, "form-container");
+    const formContainer = div( null, ["form-container"]);
 
-    const form = createElement("form", null, "login-form");
+    const formHtml = form(null, ["login-form"]);
 
     const inputs = {};
 
     const emailRow = createRow("Email:", "form-input", "emailInput", inputs);
-    form.appendChild(emailRow);
+    formHtml.appendChild(emailRow);
 
     const passwordRow = createRow("Password:", "form-input", "passwordInput", inputs);
     passwordRow.querySelector("input").type = "password";
-    form.appendChild(passwordRow);
+    formHtml.appendChild(passwordRow);
 
-    const submit = createElement("button", "Log In", "btn-primary");
+    const submit = button("Log In", ["btn-primary"]);
     submit.style.marginTop = "20px"
 
     submit.addEventListener("click", async () => {
@@ -109,7 +107,7 @@ async function getLogin() {
         await loginUser(email, password);
     });
 
-    formContainer.appendChild(form);
+    formContainer.appendChild(formHtml);
     formContainer.appendChild(submit);
 
     mainContent.appendChild(formContainer);
@@ -124,15 +122,15 @@ async function logout() {
     document.location = "#home"
 }
 function createRow(labelText, inputClassName, inputName, inputs) {
-    const row = createElement("div", null, "form-row");
-    const label = createElement("label", labelText, "form-label");
-    label.style.width = "140px"; // Set a fixed width for the labels
-    label.style.marginTop = "10px";
-    const input = createElement("input", null, inputClassName);
-    input.name = inputName; // Set the name attribute of the input element
-    inputs[inputName] = input; // Store the input element reference in the object
-    row.appendChild(label);
-    row.appendChild(input);
+    const row = div( null, ["form-row"]);
+    const labelHtml = label(labelText, ["form-label"]);
+    labelHtml.style.width = "140px"; // Set a fixed width for the labels
+    labelHtml.style.marginTop = "10px";
+    const inputHtml = input(null, [inputClassName]);
+    inputHtml.name = inputName; // Set the name attribute of the input element
+    inputs[inputName] = inputHtml; // Store the input element reference in the object
+    row.appendChild(labelHtml);
+    row.appendChild(inputHtml);
     return row;
 }
 

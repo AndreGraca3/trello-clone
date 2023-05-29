@@ -1,12 +1,13 @@
 import {fetchReq} from "../../../utils/utils.js";
-import {createElement} from "../../components/components.js";
+import {createElement, input} from "../../components/components.js";
 import {createHTMLCard} from "../components/modelComponents.js";
 import {moveToArchivedContainer} from "../modelAuxs.js";
+import cardData from "../../../data/cardData.js";
 
 
 export const cardFunc = async (card) => {
 
-    const fetchedCard = await fetchReq(`board/${card.idBoard}/card/${card.idCard}`,"GET")
+    const fetchedCard = await cardData.getCard(card.idBoard, card.idCard)
 
     console.log(fetchedCard)
 
@@ -29,22 +30,22 @@ export const cardFunc = async (card) => {
 }
 
 export async function createCard(listCards, list) {
-    const input = createElement("input")
-    listCards.appendChild(input)
+    const inputHtml = input()
+    listCards.appendChild(inputHtml)
     listCards.scrollTop = listCards.scrollHeight
-    input.focus()
+    inputHtml.focus()
     const handleAddCard = async () => {
-        if(input.value.trim() === ""){
-            listCards.removeChild(input)
+        if(inputHtml.value.trim() === ""){
+            listCards.removeChild(inputHtml)
             return
         }
-        await addCard(listCards, input, list)
+        await addCard(listCards, inputHtml, list)
     }
 
-    input.addEventListener("focusout", handleAddCard)
-    input.addEventListener("keydown", (event) => {
+    inputHtml.addEventListener("focusout", handleAddCard)
+    inputHtml.addEventListener("keydown", (event) => {
         if(event.key !== "Enter" || event.repeat) return
-        input.removeEventListener("focusout", handleAddCard)
+        inputHtml.removeEventListener("focusout", handleAddCard)
         handleAddCard()
     })
 }
@@ -56,8 +57,9 @@ async function addCard(listCards, input, list) {
         description: null,
         endDate: null
     }
+
     input.remove()
-    const cardId = await fetchReq(`board/${list.idBoard}/card`, "POST", card)
+    const cardId = await cardData.createCard(list.idBoard, card.idList, card.name)
 
     card.idList = list.idList
     card.idBoard = list.idBoard
@@ -88,19 +90,12 @@ async function archiveCard(card) {
 
     const newDescription = document.querySelector("#Description-textBox").value
 
-    const body = {
-        archived: !card.archived,
-        description: newDescription,
-        endDate: newEndDate,
-        idList: null
-    }
-
-    await fetchReq(`board/${card.idBoard}/card/${card.idCard}/update`, "PUT", body)
+    await cardData.updateCard(card.idBoard, card.idCard, !card.archived, newDescription, newEndDate, null)
     $('#cardModal').modal('hide')
 }
 
 async function deleteCard(card) {
-    await fetchReq(`board/${card.idBoard}/card/${card.idCard}`, "DELETE")
+    await cardData.deleteCard(card.idBoard, card.idCard)
 
     const cardToDelete = document.querySelector(`#Card${card.idCard}`)
 
@@ -124,13 +119,6 @@ async function saveCard(card) {
 
     if(newDescription === "") newDescription = null
 
-    const Changes = {
-        archived: card.archived,
-        description: newDescription,
-        endDate: newEndDate,
-        idList: card.idList
-    }
-
-    await fetchReq(`board/${card.idBoard}/card/${card.idCard}/update`, "PUT", Changes)
+    await cardData.updateCard(card.idBoard, card.idCard, card.archived, newDescription, newEndDate, card.idList)
     $('#cardModal').modal('hide')
 }

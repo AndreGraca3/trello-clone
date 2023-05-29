@@ -1,19 +1,21 @@
 import {fetchReq} from "../../../utils/utils.js";
+import {input} from "../../components/components.js";
+import userData from "../../../data/userData.js";
 
 export async function changeUserAvatar() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
+    const inputHtml = input();
+    inputHtml.type = 'file';
+    inputHtml.accept = 'image/*';
 
-    input.addEventListener('change', () => {
-        const file = input.files[0]
+    inputHtml.addEventListener('change', () => {
+        const file = inputHtml.files[0]
         if (!file) return
 
         const reader = new FileReader()
         reader.onload = async () => {
             const imgUrl = reader.result
-            if(sessionStorage.getItem("token") !== "null") {
-                await fetchReq("user/avatar", "PUT", {imgUrl})
+            if (sessionStorage.getItem("token") !== "null") {
+                await userData.changeAvatar(imgUrl)
                 document.querySelectorAll('.avatarImg').forEach(a => a.src = imgUrl)
             }
             document.querySelector('.avatar').src = imgUrl
@@ -21,20 +23,12 @@ export async function changeUserAvatar() {
         reader.readAsDataURL(file)
     })
 
-    input.click()
+    inputHtml.click()
 }
 
 export async function createUser(name, email, password, urlAvatar) {
-    const res = await fetchReq(
-        "user",
-        "POST",
-        {
-            name: name,
-            email: email,
-            password: password,
-            urlAvatar: urlAvatar
-        }
-    )
+    const res = await userData.createUser(name, email, password, urlAvatar)
+
     if (res !== null) {
         sessionStorage.setItem("token", res.token)
         //console.log(res);
@@ -42,8 +36,7 @@ export async function createUser(name, email, password, urlAvatar) {
         document.querySelector('#user-option').style.display = "block"
         document.querySelector('#logout-option').style.display = "block"
         document.location = "#user";
-    }
-    else {
+    } else {
         document.querySelector('.toast-body').innerText = "Error creating user!"
         $('.toast').toast('show')
     }
@@ -51,15 +44,9 @@ export async function createUser(name, email, password, urlAvatar) {
 }
 
 export async function loginUser(email, password) {
-    const res = await fetchReq(
-        "user/login",
-        "POST",
-        {
-            email: email,
-            password: password
-        }
-    )
-    if(res !== null) {
+    const res = await userData.login(email, password)
+
+    if (res !== null) {
         document.querySelectorAll('.avatarImg').forEach(a => a.src = res.avatar)
         sessionStorage.setItem("token", res)
         document.querySelector('#user-option').style.display = "block"
@@ -72,7 +59,6 @@ export async function loginUser(email, password) {
     }
 
 }
-
 
 
 // export async function createUser() {

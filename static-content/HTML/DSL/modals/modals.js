@@ -1,31 +1,28 @@
-import {createElement} from "../../components/components.js";
+import {button, createElement, div, h5, input, textarea} from "../../components/components.js";
 import {mainContent} from "../../../config/storage.js";
 
 
 export function listModalHTML() {
 
-    const modalHeader = createElement("div", null, "modal-header", null,
-        createElement("h5", "⚠️ Warning", "modal-cardTitle", "listTitleModal")
+    const modalHeader = div(null, ["modal-header"], null,
+        h5("⚠️ Warning", ["modal-cardTitle"], "listTitleModal")
     )
 
-    const modalBody = createElement("div", null, "modal-body", null,
-        createElement("div", "You are about to delete a list with cards, what do you want to do?")
+    const modalBody = div(null, ["modal-body"], null,
+        div("You are about to delete a list with cards, what do you want to do?")
     )
 
-    const archiveCardsButton = createElement("button", "Archive cards", "btn-success", "listArchiveButton")
-    archiveCardsButton.classList.add("btn")
+    const archiveCardsButton = button("Archive cards", ["btn-success", "btn"], "listArchiveButton")
 
-    const deleteButton = createElement("button", "Delete Cards", "btn-danger", "listDeleteButton")
-    deleteButton.classList.add("btn")
-    deleteButton.innerText = "Delete Cards"
+    const deleteButton = button("Delete Cards", ["btn-danger", "btn"], "listDeleteButton")
 
-    const modalFooter = createElement("div", null, "modal-footer", null,
+    const modalFooter = div(null, ["modal-footer"], null,
         archiveCardsButton, deleteButton
     )
 
-    const modal = createElement("div", null, "modal", "listModal",
-        createElement("div", null, "modal-dialog", null,
-            createElement("div", null, "modal-content", null,
+    const modal = div(null, ["modal"], "listModal",
+        div(null, ["modal-dialog"], null,
+            div(null, ["modal-content"], null,
                 modalHeader, modalBody, modalFooter)
         )
     )
@@ -36,46 +33,42 @@ export function listModalHTML() {
 
 export function cardModalHTML() {
 
-    const modalDescription = createElement("div", null, "modal-cardDesc", "CardDescModal")
-    modalDescription.classList.add("hide")
+    const modalDescription = div(null, ["modal-cardDesc", "hide"], "CardDescModal")
 
-    const modalHeader = createElement("div", null, "modal-header", null,
-        createElement("h5", null, "modal-cardTitle", "CardTitleModal"),
-        createElement("h5", null, "modal-cardStartDate", "CardStartDateModal"),
+    const modalHeader = div(null, ["modal-header"], null,
+        h5(null, ["modal-cardTitle"], "CardTitleModal"),
+        h5(null, ["modal-cardStartDate"], "CardStartDateModal"),
         modalDescription
     )
 
-    const time = createElement("input", null, null, "endDateTime")
+    const time = input(null, [], "endDateTime")
     time.type = "datetime-local"
 
-    const description = createElement("div", "Description :", "col-form-label", null,
-        createElement("textarea", null, "form-control", "Description-textBox")
+    const description = div("Description :", ["col-form-label"], null,
+        textarea(null, ["form-control"], "Description-textBox")
     )
 
-    const modalBody = createElement("div", null, "modal-body", null,
-        createElement("div", "End Date: ", "modal-body-endDate", null, time),
+    const modalBody = div(null, ["modal-body"], null,
+        div("End Date: ", ["modal-body-endDate"], null, time),
         description
     )
 
-    const saveButton = createElement("button", "Save", "btn-success", "cardSaveButton")
-    saveButton.classList.add("btn")
+    const saveButton = button("Save", ["btn-success", "btn"], "cardSaveButton")
 
-    const archiveButton = createElement("button", "Archive", "btn-primary", "cardArchiveButton")
-    archiveButton.classList.add("btn")
+    const archiveButton = button("Archive", ["btn-primary", "btn"], "cardArchiveButton")
 
-    const deleteButton = createElement("button", "Delete", "btn-danger", "cardDeleteButton")
-    deleteButton.classList.add("btn")
+    const deleteButton = button("Delete", ["btn-danger", "btn"], "cardDeleteButton")
 
-    const modalFooter = createElement("div", null, "modal-footer", null,
+    const modalFooter = div(null, ["modal-footer"], null,
         saveButton, archiveButton, deleteButton
     )
 
-    const modalContent = createElement("div", null, "modal-content", null,
+    const modalContent = div(null, ["modal-content"], null,
         modalHeader, modalBody, modalFooter
     )
 
-    const modal = createElement("div", null,"modal", "cardModal",
-        createElement("div", null, "modal-dialog", null, modalContent)
+    const modal = div(null,["modal"], "cardModal",
+        div(null, ["modal-dialog"], null, modalContent)
     )
     modal.classList.add("fade")
 

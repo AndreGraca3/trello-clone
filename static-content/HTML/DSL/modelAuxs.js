@@ -1,5 +1,5 @@
 import {MAX_RECENT_BOARDS, RECENT_BOARDS} from "../../config/storage.js";
-import {createElement} from "../components/components.js";
+import {createElement, li, span} from "../components/components.js";
 import {cardFunc} from "./listeners/cardFuncs.js";
 
 export function getBoardColor(idBoard) {
@@ -27,12 +27,11 @@ export function getNextCard(container, y) {
 }
 
 export function moveToArchivedContainer(card, archivedContainer) {
-    const newArchived = createElement("li", null, "dropdown-item",
+    const newArchived = li(null, ["dropdown-item", "clickable"],
         `Card${card.idCard}`,
-        createElement("span", "📋 " + card.name)
+        span("📋 " + card.name)
     )
     newArchived.addEventListener("click", async () => cardFunc(card))
-    newArchived.classList.add("clickable")
 
     archivedContainer.appendChild(newArchived)
 }

@@ -1,29 +1,32 @@
 import {boardFunc} from "../HTML/DSL/listeners/boardFuncs.js";
 import {createList} from "../HTML/DSL/listeners/listFuncs.js";
-import {fetchReq} from "../utils/utils.js";
 import {LIMIT_INITIAL_VALUE, mainContent, MAX_BOARDS_DISPLAY} from "../config/storage.js";
-import {
-    createElement
-} from "../HTML/components/components.js";
+import {button, createElement, div, h1, select} from "../HTML/components/components.js";
 import {
     createHTMLBoard,
     createHTMLList,
-    createPaginationButtons, createRows,
+    createPaginationButtons,
+    createRows,
     createSearchBar
 } from "../HTML/DSL/components/modelComponents.js";
-import {getBoardColor, getLimitSelectorOptions, getNewBoardsPath, visitBoard} from "../HTML/DSL/modelAuxs.js";
+import {
+    darkerColor,
+    getBoardColor,
+    getLimitSelectorOptions,
+    getNewBoardsPath,
+    visitBoard
+} from "../HTML/DSL/modelAuxs.js";
 import {archivedDropdown, usersDropdown} from "../HTML/DSL/dropdowns/modelDropdowns.js";
 import {cardModalHTML, listModalHTML} from "../HTML/DSL/modals/modals.js";
+import boardData from "../data/boardData.js";
 
 
 async function getBoards(args) {
     document.title = "OurTrello | Boards"
 
-    createElement("h1", "My Boards")
+    h1("My Boards")
 
-    const res =
-        await fetchReq(`board?skip=${args.skip}&limit=${args.limit}${args.name != null ? `&name=${args.name}` : ''}${args.numLists != null ? `&numLists=${args.numLists}` : ''}`,
-            "GET")
+    const res = await boardData.getBoards(args.skip, args.limit, args.name, args.numLists)
 
     const boards = res.boards
 
@@ -46,14 +49,14 @@ async function getBoards(args) {
     const limitOptions = getLimitSelectorOptions(MAX_BOARDS_DISPLAY, 5, args.limit)
 
     const options = limitOptions.map(it => createElement("option", it))
-    const select = createElement("select", null, null, null, ...options)
-    select.value = args.limit
-    select.addEventListener("change", (ev) =>
+    const selectHtml = select(null, [], null, ...options)
+    selectHtml.value = args.limit
+    selectHtml.addEventListener("change", (ev) =>
         document.location = getNewBoardsPath(0, ev.target.value, args.name, args.numLists)
     )
 
-    createElement("div", null, "paginationContainer", null,
-        createElement("div", "Boards per Page: ", "pagination-control", null, select),
+    div(null, ["paginationContainer"], null,
+        div("Boards per Page: ", ["pagination-control"], null, selectHtml),
         createPaginationButtons(args.skip, args.limit, res.totalBoards, args.name, args.numLists),
         createSearchBar(args.name, args.numLists)
     )
@@ -69,23 +72,23 @@ async function getBoard(args) {
     const color = getBoardColor(id)
     mainContent.style.background = `linear-gradient(135deg, ${darkerColor(color)}, ${color})`
 
-    const board = await fetchReq(`board/${id}`, "GET")
+    const board = await boardData.getBoard(id)
     document.title = `OurTrello | ${board.name}`
     visitBoard(board)
 
-    createElement("div", null, "board-header", null,
-        createElement("h1", board.description, "board-desc"),
-        createElement("div", null, "board-buttons", null,
+    div(null, ["board-header"], null,
+        h1(board.description, ["board-desc"]),
+        div(null, ["board-buttons"], null,
             await usersDropdown(board.idBoard),
             await archivedDropdown(board)
         )
     )
 
     const listCards = board.lists.map(list => createHTMLList(list))
-    const createListButton = createElement("button", "Add new List", "create-list-button")
+    const createListButton = button("Add new List", ["create-list-button"])
     createListButton.addEventListener("click", () => createList(boardContainer, board))
 
-    const boardContainer = createElement("div", null, "board", "boardContainer",
+    const boardContainer = div(null, ["board"], "boardContainer",
         ...listCards,
         createListButton
     )

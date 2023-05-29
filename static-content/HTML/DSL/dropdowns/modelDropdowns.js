@@ -1,56 +1,49 @@
-import {createElement} from "../../components/components.js";
-import {fetchReq} from "../../../utils/utils.js";
+import {button, div, img, li, span, ul} from "../../components/components.js";
 import {cardFunc} from "../listeners/cardFuncs.js";
+import userData from "../../../data/userData.js";
 
 export async function usersDropdown(idBoard) {
 
-    const button = createElement("button", "🙋‍♂️ Users", "dropdown-users", "DropdownBtn")
-    button.classList.add("btn", "btn-secondary", "dropdown-toggle")
-    button.setAttribute("data-bs-toggle", "dropdown")
+    const buttonHtml = button("🙋‍♂️ Users", ["dropdown-users", "btn", "btn-secondary", "dropdown-toggle"], "DropdownBtn")
+    buttonHtml.setAttribute("data-bs-toggle", "dropdown")
 
-    const ul = createElement("ul", null, "dropdown-menu-dark")
-    ul.classList.add("dropdown-menu", "dropdown-menu-scrollable")
+    const ulHtml = ul(null, ["dropdown-menu-dark", "dropdown-menu", "dropdown-menu-scrollable"])
 
-    const users = await fetchReq(`board/${idBoard}/allUsers`, "GET")
+    const users = await userData.getAllUsers(idBoard)
 
     users.forEach(user => {
-            const img = createElement("img", null, "dropdown-item-avatar")
-            img.src = user.avatar
+            const imgHtml = img(null, ["dropdown-item-avatar"])
+            imgHtml.src = user.avatar
 
-            const li = createElement("li", null, "dropdown-item-user", null, img,
-                createElement("span", user.name)
+            const liHtml = li(null, ["dropdown-item-user"], null, imgHtml,
+                span(user.name)
             )
-            ul.appendChild(li)
+            ulHtml.appendChild(liHtml)
         }
     )
 
-    return createElement("div", null, "dropdown", null, button, ul)
+    return div(null, ["dropdown"], null, buttonHtml, ulHtml)
 }
 
 export async function archivedDropdown(board) { // html board
 
-    const button = createElement("button", "📎 Archived", "dropdown-archived", "DropdownBtn")
-    button.classList.add("btn", "btn-primary", "dropdown-toggle", "dropdown-menu-scrollable")
-    button.setAttribute("data-bs-toggle", "dropdown")
+    const buttonHtml = button("📎 Archived", ["dropdown-archived", "btn", "btn-primary", "dropdown-toggle", "dropdown-menu-scrollable"], "DropdownBtn")
+    buttonHtml.setAttribute("data-bs-toggle", "dropdown")
 
-    const ul = createElement("ul", null, "dropdown-menu-dark", "dropdownMenu-archived")
-    ul.classList.add("dropdown-menu", "dropdown-menu-scrollable")
+    const ulHtml = ul(null, ["dropdown-menu-dark", "dropdown-menu", "dropdown-menu-scrollable"], "dropdownMenu-archived")
 
     board.archivedCards.forEach(
         card => {
             if (card.archived) {
-                const li = createElement("li", null, "dropdown-item",
+                const liHtml = li(null, ["dropdown-item", "clickable"],
                     `Card${card.idCard}`,
-                    createElement("span", "📋 " + card.name)
+                    span("📋 " + card.name)
                 )
-                li.addEventListener("click", async () => cardFunc(card))
-                li.classList.add("clickable")
-                ul.appendChild(li)
+                liHtml.addEventListener("click", async () => cardFunc(card))
+                ulHtml.appendChild(liHtml)
             }
         }
     )
 
-    const divDrop = createElement("div", null, "dropdown", null, button, ul)
-    divDrop.classList.add("dropdown-archived")
-    return divDrop
+    return div(null, ["dropdown", "dropdown-archived"], null, buttonHtml, ulHtml)
 }

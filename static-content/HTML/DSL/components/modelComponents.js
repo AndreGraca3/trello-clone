@@ -1,21 +1,20 @@
-import {createElement} from "../../components/components.js";
+import {a, button, div, h5, input, li, nav, option, p1, p2, select, ul} from "../../components/components.js";
 import {deleteList} from "../listeners/listFuncs.js";
 import {cardFunc, createCard} from "../listeners/cardFuncs.js";
 import {addOrChangeQuery, darkerColor, getNewBoardsPath, getNextCard} from "../modelAuxs.js";
-import {fetchReq} from "../../../utils/utils.js";
+import cardData from "../../../data/cardData.js";
 
 export function createHTMLBoard(title, description, numList, clickableFunc, color, size) {
 
-    const cardTitle = createElement("h5", title, "boardBox-title")
-    const cardText = createElement("p1", description, "boardBox-text")
-    const numListText = createElement("p2", numList, "boardBox-numLists")
+    const cardTitle = h5(title, ["boardBox-title"])
+    const cardText = p1(description, ["boardBox-text"])
+    const numListText = p2(numList, ["boardBox-numLists"])
 
-    const cardBody = createElement("div", null, "boardBox-body", null,
+    const cardBody = div(null, ["boardBox-body"], null,
         cardTitle, cardText, numListText
     )
 
-    const card = createElement("div", null, "boardBox", null, cardBody)
-    card.classList.add("clickable")
+    const card = div(null, ["boardBox", "clickable"], null, cardBody)
     card.style.background = `linear-gradient(135deg, ${darkerColor(color)}, ${color})`
 
     if (clickableFunc) card.addEventListener("click", clickableFunc)
@@ -32,13 +31,12 @@ export function createHTMLBoard(title, description, numList, clickableFunc, colo
 }
 
 export function createHTMLList(list) {
-    const listHeader = createElement("div", list.name, "list-header")
+    const listHeader = div(list.name, ["list-header"])
 
-    const deleteButton = createElement("button", "🗑️", "listDeleteButton")
-    deleteButton.classList.add("btn")
+    const deleteButton = button("🗑️", ["listDeleteButton", "btn"])
     deleteButton.addEventListener("click", async () => deleteList(list))
 
-    const listCards = createElement("div", null, "list-cards", `list${list.idList}`)
+    const listCards = div(null, ["list-cards"], `list${list.idList}`)
 
     if (list.cards) {
         list.cards.forEach((card) => {
@@ -78,32 +76,26 @@ export function createHTMLList(list) {
         }
         console.log(`Moved Card ${card.dataset.idCard} from list ${card.dataset.idList} to list ${idList} and cix ${cix}`)
 
-        const body = {
-            idListNow: card.dataset.idList,
-            idListDst: idList,
-            cix
-        }
-
-        await fetchReq(`board/${list.idBoard}/card/${card.dataset.idCard}`, "PUT", body)
+        await cardData.moveCard(list.idBoard, card.dataset.idCard, card.dataset.idList, idList, cix)
 
         card.dataset.idList = idList
         card.dataset.idx = cix
     })
 
-    const newCardButton = createElement("button", "Add Card", "newCard")
+    const newCardButton = button("Add Card", ["newCard"])
     newCardButton.addEventListener("click", async () => {
         await createCard(listCards, list)
     })
 
-    return createElement("div", null, "list-container", `List${list.idList}`,
+    return div(null, ["list-container"], `List${list.idList}`,
         listHeader, deleteButton, listCards, newCardButton
     )
 }
 
 export function createHTMLCard(card, clickableFunc) {
 
-    const cardContainer = createElement("button", null, "card-container", `Card${card.idCard}`,
-        createElement("div", card.name, "card-content")
+    const cardContainer = button(null, ["card-container"], `Card${card.idCard}`,
+        div(card.name, ["card-content"])
     )
 
     cardContainer.draggable = true;
@@ -125,15 +117,15 @@ export function createHTMLCard(card, clickableFunc) {
 }
 
 export function createRows(items, itemsPerRow) {
-    const container = createElement("div", null, "boardBox-container")
+    const container = div(null, ["boardBox-container"])
 
-    let row = createElement("div", null, "boardBox-row")
+    let row = div(null, ["boardBox-row"])
 
     items.forEach((item, i) => {
         row.appendChild(item)
         if ((i + 1) % itemsPerRow === 0) {
             container.appendChild(row)
-            row = createElement("div", null, "boardBox-row")
+            row = div(null, ["boardBox-row"])
         }
     })
 
@@ -146,12 +138,11 @@ export function createRows(items, itemsPerRow) {
 
 export function createSearchBar(nameSearch, numLists) {
 
-    const searchBar = createElement("input", null, "mr-sm-2")
-    searchBar.classList.add("searchBar")
+    const searchBar = input(null, ["mr-sm-2", "searchBar"])
     searchBar.placeholder = "Search Board's Name"
     if (nameSearch != null) searchBar.value = nameSearch
 
-    const selector = createElement("select", null, "search-selector")
+    const selector = select(null, ["search-selector"])
     selector.addEventListener("change", () => {
         const selectedValue = selector.value
         if (selectedValue === "name") {
@@ -165,9 +156,9 @@ export function createSearchBar(nameSearch, numLists) {
         }
     })
 
-    const nameOption = createElement("option", "🔠")
+    const nameOption = option("🔠")
     nameOption.value = "name"
-    const numListsOption = createElement("option", "🔢")
+    const numListsOption = option("🔢")
     numListsOption.value = "numLists"
 
     selector.add(nameOption)
@@ -181,22 +172,20 @@ export function createSearchBar(nameSearch, numLists) {
         }
     })
 
-    return createElement("div", null, "search-selector-container", null,
+    return div(null, ["search-selector-container"], null,
         selector, searchBar)
 }
 
 export function createPaginationButtons(skip, limit, totalBoards, nameSearch, numLists) {
 
-    const prevBtn = createElement("button", "Previous", "btn-secondary")
-    prevBtn.classList.add("btn", "prev-pagination")
+    const prevBtn = button("Previous", ["btn-secondary", "btn", "prev-pagination"])
     prevBtn.disabled = skip === 0
     prevBtn.addEventListener("click", () => {
         skip -= limit
         window.history.pushState(null, "", getNewBoardsPath(skip, limit, nameSearch, numLists))
     })
 
-    const nextBtn = createElement("button", "Next", "btn-secondary")
-    nextBtn.classList.add("btn", "next-pagination")
+    const nextBtn = button("Next", ["btn-secondary", "btn", "next-pagination"])
     nextBtn.disabled = skip >= totalBoards - limit
     nextBtn.addEventListener("click", () => {
         skip += limit
@@ -207,17 +196,17 @@ export function createPaginationButtons(skip, limit, totalBoards, nameSearch, nu
     const currentPage = Math.floor(skip / limit) + 1
 
     for (let i = 1; i <= Math.ceil(totalBoards / limit); i++) {
-        const a = createElement("a", i, "page-link")
-        a.href = getNewBoardsPath((i - 1) * limit, limit, nameSearch, numLists)
+        const anchor = a(i, ["page-link"])
+        anchor.href = getNewBoardsPath((i - 1) * limit, limit, nameSearch, numLists)
 
-        const li = createElement("li", null, "page-item", null, a)
-        if (i === currentPage) li.classList.add("active")
+        const liHtml = li(null, ["page-item"], null, anchor)
+        if (i === currentPage) liHtml.classList.add("active")
 
-        indices.push(li)
+        indices.push(liHtml)
     }
 
-    return createElement("nav", null, "pagination-buttons", null,
-        createElement("ul", null, "pagination", null,
+    return nav(null, ["pagination-buttons"], null,
+        ul(null, ["pagination"], null,
             prevBtn, ...indices, nextBtn)
     )
 }

@@ -18,6 +18,10 @@ async function getUser() {
     return await fetchReq("user", "GET");
 }
 
+async function getAllUsers(idBoard) {
+    return await fetchReq(`board/${idBoard}/allUsers`, "GET")
+}
+
 async function login(email, password) {
     return await fetchReq(
         "user/login",
@@ -42,6 +46,7 @@ export async function getUserAvatar(token) {
 export default {
     createUser,
     getUser,
+    getAllUsers,
     login,
     changeAvatar,
     getUserAvatar
