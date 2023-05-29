@@ -7,6 +7,7 @@ import org.http4k.core.Response
 import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.OK
 import pt.isel.ls.server.annotations.Auth
+import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.services.UserServices
 import pt.isel.ls.server.utils.Avatar
 import pt.isel.ls.server.utils.UserIn

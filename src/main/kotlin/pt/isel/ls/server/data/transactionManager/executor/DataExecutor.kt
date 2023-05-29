@@ -13,12 +13,10 @@ class DataExecutor(private val tr: TransactionCtx) {
             tr.commit()
             return res
         } catch (e: Exception) {
-            println(e)
             tr.rollback()
             if (e is SQLException) {
-                println(e.sqlState)
                 val trelloException = map[e.sqlState] ?: throw TrelloException.InternalError()
-                throw trelloException(e.localizedMessage)
+                throw trelloException(e.localizedMessage.substringAfter("Detail: Key "))
             } else {
                 throw e as TrelloException
             }

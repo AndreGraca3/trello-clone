@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>OurTrello</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/6124/6124991.png">
-    <link rel="stylesheet" type="text/css" href="./sparouter/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="./css/styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
@@ -115,16 +115,13 @@
 
 <div style="height: 90vh" class="default-bg" id="mainContent"></div>
 
-<script src="./sparouter/index.js" type="module"></script>
+<script src="./index.js" type="module"></script>
 <script type="module">
 
-    import {user, MAX_BOARDS_DISPLAY} from "./sparouter/utils/storage.js"
-    import {
-        createBoard,
-        hideCreateBoardModal,
-        showCreateBoardModal
-    } from "./sparouter/utils/listenerHandlers/boardFuncs.js";
-    import {getUserAvatar} from "./sparouter/utils/auxs/modelAuxs.js";
+
+    import {createBoard, hideCreateBoardModal, showCreateBoardModal} from "./HTML/DSL/listeners/boardFuncs.js";
+    import {MAX_BOARDS_DISPLAY} from "./config/storage.js";
+    import {getUserAvatar} from "./data/userData.js";
 
     $('.showCreateBoardModal').click(showCreateBoardModal);
     $('.closeModal').click(hideCreateBoardModal);

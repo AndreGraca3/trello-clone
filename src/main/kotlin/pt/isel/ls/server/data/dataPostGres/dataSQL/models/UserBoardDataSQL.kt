@@ -4,6 +4,7 @@ import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
 import pt.isel.ls.server.data.transactionManager.transactions.SQLTransaction
 import pt.isel.ls.server.data.dataInterfaces.models.UserBoardData
 import pt.isel.ls.server.data.dataPostGres.statements.UserBoardStatements
+import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 
 class UserBoardDataSQL : UserBoardData {
@@ -32,7 +33,7 @@ class UserBoardDataSQL : UserBoardData {
         val res = ctx.con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
-        if (res.row == 0) throw TrelloException.NotFound("Board")
+        if (res.row == 0) throw TrelloException.NotFound("Board $NOT_FOUND")
     }
 
     override fun getIdUsersFromBoard(idBoard: Int, ctx: TransactionCtx): List<Int> {

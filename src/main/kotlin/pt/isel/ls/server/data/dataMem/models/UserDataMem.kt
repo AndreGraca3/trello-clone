@@ -45,7 +45,7 @@ class UserDataMem : UserData {
     }
 
     override fun login(email: String, hashedPassword: String, ctx: TransactionCtx) : String {
-        val user = users.find { it.email == email && it.hashedPassword == hashedPassword } ?: throw TrelloException.NotFound("User $NOT_FOUND")
+        val user = users.find { it.email == email && it.hashedPassword == hashedPassword } ?: throw TrelloException.NotAuthorized()
         return user.token
     }
 

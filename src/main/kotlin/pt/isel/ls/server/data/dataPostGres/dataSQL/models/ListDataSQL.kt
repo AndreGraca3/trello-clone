@@ -58,7 +58,9 @@ class ListDataSQL : ListData {
 
     override fun deleteList(idList: Int, idBoard: Int, ctx: TransactionCtx) {
         val deleteStmt = ListStatement.deleteList(idList, idBoard)
-        ctx.con.prepareStatement(deleteStmt).executeUpdate()
+        val res = ctx.con.prepareStatement(deleteStmt).executeQuery()
+        res.next()
+        if(res.row == 0) throw TrelloException.NoContent()
     }
 
     override fun getListCount(idBoard: Int, ctx: TransactionCtx): Int {

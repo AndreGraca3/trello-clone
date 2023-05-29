@@ -7,6 +7,7 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.routing.path
 import pt.isel.ls.server.annotations.Auth
+import pt.isel.ls.server.exceptions.INVAL_PARAM
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.logger
 import java.lang.reflect.InvocationTargetException
@@ -21,7 +22,7 @@ fun getToken(request: Request): String {
 }
 
 fun getPathParam(request: Request, name: String): Int {
-    return request.path(name)?.toIntOrNull() ?: throw TrelloException.IllegalArgument(name)
+    return request.path(name)?.toIntOrNull() ?: throw TrelloException.IllegalArgument(INVAL_PARAM + name)
 }
 
 fun getQueryParam(request: Request, name: String): String? {

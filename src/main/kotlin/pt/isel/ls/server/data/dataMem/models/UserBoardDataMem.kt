@@ -8,10 +8,12 @@ import pt.isel.ls.server.data.dataMem.usersBoards
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.UserBoard
+import java.sql.SQLException
 
 class UserBoardDataMem : UserBoardData {
 
     override fun addUserToBoard(idUser: Int, idBoard: Int, ctx: TransactionCtx) {
+        if(usersBoards.contains(UserBoard(idUser, idBoard))) throw SQLException("already added.","23505")
         usersBoards.add(UserBoard(idUser, idBoard))
     }
 

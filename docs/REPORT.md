@@ -15,7 +15,7 @@ The application also provides an Open-API specification that documents the API e
 The following diagram shows the Entity-Relationship model for the system's information management.
 
 
-<img src="../images/EA_Model.jpg" alt="Entity-Relationship Model" style="width:800px;height:300px;">
+<img src="images/EA_Model.jpg" alt="Entity-Relationship Model" style="width:800px;height:300px;">
 
 We highlight the following aspects of the conceptual model:
 
@@ -28,7 +28,7 @@ The conceptual model has the following restrictions:
 - A list can have multiple cards.
 - A card can belong to only one list or none.
 
-<img src="../images/C_Model.jpg" alt="Conceptual Model" style="width:335px;height:155px;">
+<img src="images/C_Model.jpg" alt="Conceptual Model" style="width:335px;height:155px;">
 
 ### Physical Model
 The physical model of the database is available in the [SQL script](../src/main/sql/createTable.sql) with the schema definition.
@@ -86,7 +86,7 @@ SQL statements that are used for querying the data related to a board, list, or 
 ### Module's division
 The module's division, was made so each module is independent, reused and have easier maintenance throughout whole the project. 
 
-<img src="../images/ModulesDivision.jpg" alt="Modules Division" style="width:450px;height:450px;">
+<img src="images/ModulesDivision.jpg" alt="Modules Division" style="width:450px;height:450px;">
 
 The division was made in a way where each entity in your conceptual module has its own routes in server, Api, services logic and storage.
 This makes bugs in your app easier to find and fix, as well not mix the services logic behind each entity.
@@ -94,13 +94,13 @@ This makes bugs in your app easier to find and fix, as well not mix the services
 ### Request and Error Handling
 Every API method utilizes the HandleRequest function in [API](../src/main/kotlin/pt/isel/ls/server/api/AuxWebApi.kt) to handle requests and produce possible errors in an efficient and effective manner. When a required parameter is missing from a request, the HandleRequest function detects the error and returns an error message with the appropriate 400 status code, indicating that a parameter is missing.
 
-<img src="../images/Request.jpg" alt="Request Diagram" style="width:400px;height:250px;">
+<img src="images/Request.jpg" alt="Request Diagram" style="width:400px;height:250px;">
 
 
 This function checks if the handler method received as a parameter has the `Auth` annotation which symbolizes that the operation requires the user to be authenticated to be completed. If this isn't the case it simply calls the handler function to process the request.
 Otherwise, it calls the `getToken` method to extract the request's token and pass it to the handler function.
 
-<img src="../images/HandlerFunction_Diagram.jpg" alt="Handler Function Diagram" style="width:290px;height:350px;">
+<img src="images/HandlerFunction_Diagram.jpg" alt="Handler Function Diagram" style="width:290px;height:350px;">
 
 
 To handle specific error situations, the API uses the TrelloException class, which defines custom exceptions with associated HTTP status codes and error messages. This class is a sealed class that extends the base Exception class and includes six subclasses: NotAuthorized, NotFound, IllegalArgument, AlreadyExists, NoContent and InternalServerError.
@@ -113,7 +113,7 @@ By utilizing the TrelloException class, the API can effectively handle a wide ra
 To enable flexibility in our project and accommodate for possible changes in the future, we have opted to use multiple interfaces for different modules. This approach allows us, or future developers, to inject different dependencies with different implementations as needed. For instance, in the Services module, we can receive data through the Data interface, which can be implemented in various ways - data can be stored in memory or in a database, depending on the implementation of this module. 
 This way, we can easily swap out dependencies without having to modify the codebase.
 
-<img src="../images/Interfaces_Diagram.jpg" alt="Interfaces Diagram" style="width:750px;height:550px;">
+<img src="images/Interfaces_Diagram.jpg" alt="Interfaces Diagram" style="width:750px;height:550px;">
 
 ### Pagination
 

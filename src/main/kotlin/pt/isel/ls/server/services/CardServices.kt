@@ -5,6 +5,7 @@ import pt.isel.ls.server.data.dataInterfaces.models.CardData
 import pt.isel.ls.server.data.dataInterfaces.models.ListData
 import pt.isel.ls.server.data.dataInterfaces.models.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
+import pt.isel.ls.server.exceptions.INVAL_PARAM
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.Card
 import pt.isel.ls.server.utils.checkEndDate
@@ -53,7 +54,7 @@ class CardServices(
             listData.getList(idListNow, idBoard, it)
             listData.getList(idListDst, idBoard, it)
             val card = cardData.getCard(idCard, idBoard, it)
-            if (idxDst !in 1..cardData.getNextIdx(idListDst, it)) throw TrelloException.IllegalArgument("idx")
+            if (idxDst !in 1..cardData.getNextIdx(idListDst, it)) throw TrelloException.IllegalArgument("$INVAL_PARAM idx")
             cardData.moveCard(idCard, idBoard, idListNow, idListDst, card.idx, idxDst, it)
         }
     }

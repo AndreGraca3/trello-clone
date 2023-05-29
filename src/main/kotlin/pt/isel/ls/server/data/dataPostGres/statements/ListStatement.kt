@@ -19,7 +19,7 @@ object ListStatement {
     }
 
     fun deleteList(idList: Int, idBoard: Int): String {
-        return "DELETE FROM dbo.list where idList = $idList and idBoard = $idBoard;"
+        return "DELETE FROM dbo.list where idList = $idList and idBoard = $idBoard RETURNING name;"
     }
 
     fun getListCount(idBoard: Int): String {

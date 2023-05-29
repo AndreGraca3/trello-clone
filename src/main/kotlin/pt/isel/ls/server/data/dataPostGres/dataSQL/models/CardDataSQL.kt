@@ -187,7 +187,7 @@ class CardDataSQL : CardData {
             archived
         )
 
-        val con = (ctx as SQLTransaction).con
+        val con = ctx.con
         con.prepareStatement(updateStmt).executeUpdate()
         if (idList != null) return
         val decreaseStmt = CardStatements.decreaseIdx(card.idList, card.idx)

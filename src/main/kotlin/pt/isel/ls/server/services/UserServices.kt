@@ -14,7 +14,7 @@ class UserServices(private val userData: UserData, private val dataExecutor: Dat
     fun createUser(name: String, email: String, password: String, urlAvatar: String?): Pair<Int, String> {
         isValidString(name, "name")
         isValidString(email, "email")
-        if (!Regex("@").containsMatchIn(email)) throw TrelloException.IllegalArgument("$INVAL_PARAM $email")
+        if (!Regex("@").containsMatchIn(email)) throw TrelloException.IllegalArgument("$INVAL_PARAM email")
 
         return dataExecutor.execute {
             userData.createUser(name, email, hashPassword(password), isValidAvatar(urlAvatar), it)
@@ -34,6 +34,7 @@ class UserServices(private val userData: UserData, private val dataExecutor: Dat
 
     fun login(email: String, password: String): String {
         isValidString(email, "email")
+        if (!Regex("@").containsMatchIn(email)) throw TrelloException.IllegalArgument("$INVAL_PARAM email")
         isValidString(password, "password")
         return dataExecutor.execute {
             userData.login(email, hashPassword(password), it)

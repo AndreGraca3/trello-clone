@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 import pt.isel.ls.server.exceptions.INVAL_PARAM
 import pt.isel.ls.server.exceptions.TrelloException
 import java.security.MessageDigest
+import java.security.SecureRandom
 import java.time.LocalDate
 import kotlin.math.min
 
@@ -36,9 +37,13 @@ fun checkPaging(max: Int, limit: Int?, skip: Int?): Pair<Int, Int> {
 }
 
 fun hashPassword(password: String): String {
+    val salt = generateSalt()
+
+    val saltedPassword = password + "123"
+
     val messageDigest = MessageDigest.getInstance("SHA-256") // Choose the hash algorithm you want to use, such as SHA-256
 
-    val hashedBytes = messageDigest.digest(password.toByteArray())
+    val hashedBytes = messageDigest.digest(saltedPassword.toByteArray())
     val stringBuilder = StringBuilder()
 
     for (hashedByte in hashedBytes) {
@@ -48,6 +53,14 @@ fun hashPassword(password: String): String {
 
     return stringBuilder.toString()
 }
+
+fun generateSalt(): String {
+    val random = SecureRandom()
+    val saltBytes = ByteArray(16)
+    random.nextBytes(saltBytes)
+    return saltBytes.joinToString("") { "%02x".format(it) }
+}
+
 
 fun isValidAvatar(urlAvatar: String?) : String {
     return urlAvatar ?: "https://i.imgur.com/1qZ0QZB.png"

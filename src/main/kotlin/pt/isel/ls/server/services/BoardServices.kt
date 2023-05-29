@@ -78,7 +78,7 @@ class BoardServices(
             val idUser = userData.getUser(token, it).idUser
             userData.getUser(idNewUser, it) // check if user to add exists
             userBoardData.checkUserInBoard(idUser, idBoard, it)
-            userBoardData.addUserToBoard(idNewUser, idBoard, it)
+            kotlin.runCatching { userBoardData.addUserToBoard(idNewUser, idBoard, it) }
         }
     }
 
