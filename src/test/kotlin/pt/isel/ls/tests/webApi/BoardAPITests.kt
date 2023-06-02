@@ -6,12 +6,12 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
+import pt.isel.ls.server.*
 import kotlin.test.Test
 import kotlin.test.BeforeTest
 import pt.isel.ls.server.data.dataMem.boards
 import pt.isel.ls.server.data.dataMem.users
 import pt.isel.ls.server.data.dataMem.usersBoards
-import pt.isel.ls.server.utils.*
 import pt.isel.ls.tests.utils.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -343,7 +343,7 @@ class BoardAPITests {
         val idBoard = services.boardServices.createBoard(user.token, "board1", "description1")
 
         repeat(6) {
-            val newUser = services.userServices.createUser("user$it", "$it@gmail.com")
+            val newUser = services.userServices.createUser("user$it", "$it@gmail.com", "pass", null)
             services.boardServices.addUserToBoard(user.token, newUser.first, idBoard)
         }
 
@@ -365,7 +365,7 @@ class BoardAPITests {
         val idBoard = services.boardServices.createBoard(user.token, "board1", "description1")
 
         repeat(6) {
-            val newUser = services.userServices.createUser("user$it", "$it@gmail.com")
+            val newUser = services.userServices.createUser("user$it", "$it@gmail.com", "pass", null)
             services.boardServices.addUserToBoard(user.token, newUser.first, idBoard)
         }
 
@@ -387,7 +387,7 @@ class BoardAPITests {
         val idBoard = services.boardServices.createBoard(user.token, "board1", "description1")
 
         repeat(6) {
-            val newUser = services.userServices.createUser("user$it", "$it@gmail.com")
+            val newUser = services.userServices.createUser("user$it", "$it@gmail.com", "pass", null)
             services.boardServices.addUserToBoard(user.token, newUser.first, idBoard)
         }
 

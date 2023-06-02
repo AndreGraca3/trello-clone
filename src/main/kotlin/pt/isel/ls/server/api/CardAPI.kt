@@ -7,10 +7,10 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.services.CardServices
-import pt.isel.ls.server.utils.Card
-import pt.isel.ls.server.utils.CardIn
-import pt.isel.ls.server.utils.Changes
-import pt.isel.ls.server.utils.NewList
+import pt.isel.ls.server.Card
+import pt.isel.ls.server.CardIn
+import pt.isel.ls.server.Changes
+import pt.isel.ls.server.NewList
 
 class CardAPI(private val services: CardServices) {
 

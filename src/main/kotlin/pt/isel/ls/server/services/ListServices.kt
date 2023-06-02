@@ -5,9 +5,9 @@ import pt.isel.ls.server.data.dataInterfaces.models.CardData
 import pt.isel.ls.server.data.dataInterfaces.models.ListData
 import pt.isel.ls.server.data.dataInterfaces.models.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
-import pt.isel.ls.server.utils.BoardList
-import pt.isel.ls.server.utils.Card
-import pt.isel.ls.server.utils.isValidString
+import pt.isel.ls.server.BoardList
+import pt.isel.ls.server.Card
+import pt.isel.ls.server.utils.validateString
 
 class ListServices(
     private val userData: UserData,
@@ -18,7 +18,7 @@ class ListServices(
 ) {
 
     fun createList(token: String, idBoard: Int, name: String): Int {
-        isValidString(name, "name")
+        validateString(name, "name")
 
         return dataExecutor.execute {
             val idUser = userData.getUser(token, it).idUser

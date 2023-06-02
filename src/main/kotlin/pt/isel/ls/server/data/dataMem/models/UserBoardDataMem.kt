@@ -7,7 +7,7 @@ import pt.isel.ls.server.data.dataMem.lists
 import pt.isel.ls.server.data.dataMem.usersBoards
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.utils.UserBoard
+import pt.isel.ls.server.UserBoard
 import java.sql.SQLException
 
 class UserBoardDataMem : UserBoardData {

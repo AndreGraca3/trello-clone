@@ -8,10 +8,6 @@ drop table if exists user_board;
 drop table if exists board;
 drop table if exists "user";
 
-truncate table board cascade ;
-truncate table user_board cascade ;
-
-
 create table "user" (
     idUser serial primary key,
     email varchar(320) unique,
@@ -24,7 +20,9 @@ create table "user" (
 create table board (
     idBoard serial primary key,
     name varchar(20) unique,
-    description varchar(400)
+    description varchar(400),
+    primaryColor varchar(20),
+    secondaryColor varchar(20)
 );
 
 create table user_board (

@@ -1,12 +1,11 @@
 package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
 import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
-import pt.isel.ls.server.data.transactionManager.transactions.SQLTransaction
 import pt.isel.ls.server.data.dataInterfaces.models.ListData
 import pt.isel.ls.server.data.dataPostGres.statements.ListStatement
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.utils.BoardList
+import pt.isel.ls.server.BoardList
 
 class ListDataSQL : ListData {
 

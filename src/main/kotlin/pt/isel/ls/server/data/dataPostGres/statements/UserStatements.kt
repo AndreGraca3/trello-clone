@@ -6,7 +6,7 @@ object UserStatements {
         return "SELECT COUNT(idUser) FROM dbo.user;"
     }
 
-    fun createUserCMD(email: String, name: String, token: String, password: String, avatar: String): String {
+    fun createUserCMD(email: String, name: String, token: String, password: String, avatar: String?): String {
         return "INSERT INTO dbo.user (email, name, token, password, avatar) VALUES ('$email', '$name', '$token', '$password', '$avatar') returning idUser;"
     }
 

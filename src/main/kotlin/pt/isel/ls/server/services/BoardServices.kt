@@ -6,11 +6,11 @@ import pt.isel.ls.server.data.dataInterfaces.models.CardData
 import pt.isel.ls.server.data.dataInterfaces.models.ListData
 import pt.isel.ls.server.data.dataInterfaces.models.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
-import pt.isel.ls.server.utils.BoardDetailed
-import pt.isel.ls.server.utils.ListDetailed
-import pt.isel.ls.server.utils.TotalBoards
-import pt.isel.ls.server.utils.User
-import pt.isel.ls.server.utils.isValidString
+import pt.isel.ls.server.BoardDetailed
+import pt.isel.ls.server.ListDetailed
+import pt.isel.ls.server.TotalBoards
+import pt.isel.ls.server.User
+import pt.isel.ls.server.utils.validateString
 
 class BoardServices(
     private val userData: UserData,
@@ -22,8 +22,8 @@ class BoardServices(
 ) {
 
     fun createBoard(token: String, name: String, description: String): Int {
-        isValidString(name, "name")
-        isValidString(description, "description")
+        validateString(name, "name")
+        validateString(description, "description")
 
         return dataExecutor.execute { con ->
             val idUser = userData.getUser(token, con).idUser
@@ -51,7 +51,15 @@ class BoardServices(
 
             val archivedCards = cardData.getArchivedCards(idBoard, con)
 
-            BoardDetailed(idBoard, board.name, board.description, detailedLists, archivedCards)
+            BoardDetailed(
+                idBoard,
+                board.name,
+                board.description,
+                board.primaryColor,
+                board.secondaryColor,
+                detailedLists,
+                archivedCards
+            )
         }
     }
 

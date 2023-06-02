@@ -1,17 +1,15 @@
 package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
 import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
-import pt.isel.ls.server.data.transactionManager.transactions.SQLTransaction
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
 import pt.isel.ls.server.data.dataPostGres.statements.UserStatements
-import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.utils.User
+import pt.isel.ls.server.User
 import java.util.*
 
 class UserDataSQL : UserData {
 
-    override fun createUser(name: String, email: String, hashedPassword: String, urlAvatar: String, ctx: TransactionCtx): Pair<Int, String> {
+    override fun createUser(name: String, email: String, hashedPassword: String, urlAvatar: String?, ctx: TransactionCtx): Pair<Int, String> {
         val token = UUID.randomUUID().toString()
         val insertStmt = UserStatements.createUserCMD(email, name, token, hashedPassword, urlAvatar )
         val userId: Int

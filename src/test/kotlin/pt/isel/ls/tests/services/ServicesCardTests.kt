@@ -1,7 +1,7 @@
 package pt.isel.ls.tests.services
 
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.utils.Card
+import pt.isel.ls.server.Card
 import pt.isel.ls.tests.utils.boardId
 import pt.isel.ls.tests.utils.cardId
 import pt.isel.ls.tests.utils.dataSetup

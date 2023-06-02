@@ -1,11 +1,11 @@
 package pt.isel.ls.server.data.dataInterfaces.models
 
 import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
-import pt.isel.ls.server.utils.User
+import pt.isel.ls.server.User
 
 interface UserData {
 
-    fun createUser(name: String, email: String, hashedPassword: String, urlAvatar: String, ctx: TransactionCtx): Pair<Int, String>
+    fun createUser(name: String, email: String, hashedPassword: String, urlAvatar: String?, ctx: TransactionCtx): Pair<Int, String>
 
     fun getUser(token: String, ctx: TransactionCtx): User
 

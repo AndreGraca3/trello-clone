@@ -18,7 +18,7 @@
     align-items: center;
     margin: auto;
     opacity: 0;
-    animation: fadeIn 0.8s ease-in;
+    animation: fadeIn 0.5s ease-in;
     animation-fill-mode: forwards;
 }
 
@@ -31,12 +31,13 @@
     }
 }
 
-.boardBox-row {
+.item-row {
     display: flex;
     margin-bottom: 3rem;
 }
 
 .boardBox {
+    transition: filter 0.2s ease, box-shadow 0.3s ease;
     display: inline-block;
     margin: 15px;
     padding: 20px;
@@ -44,7 +45,11 @@
     align-content: center;
     border: 15px groove white;
     width: 200px;
-    transition: filter 0.3s ease;
+}
+
+.boardBox:hover {
+    filter: brightness(50%);
+    box-shadow: 0px 0px 30px white;
 }
 
 .boardBox-body {
@@ -53,10 +58,6 @@
     white-space: nowrap;
     width: 120px;
     height: 75px;
-}
-
-.boardBox:hover {
-    filter: brightness(50%);
 }
 
 .boardBox-title {
@@ -410,6 +411,7 @@
 
 .avatar {
     margin-top: 2rem;
+    margin-bottom: 10px;
     object-fit: cover;
     width: 300px;
     height: 300px;
@@ -452,6 +454,8 @@
 
 .paginationContainer {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 50px;
     animation-name: slideIn;
     animation-duration: 0.3s;
@@ -462,9 +466,12 @@
 .pagination-buttons {
     display: flex;
     justify-content: center;
-    align-items: center;
-    margin-left: auto;
-    margin-right: auto;
+}
+
+.pagination-indices {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .prev-pagination {
@@ -475,14 +482,14 @@
     margin-left: 5px;
 }
 
-.pagination-control {
+.pagination-limit {
     margin-bottom: 10px;
     margin-left: 20px;
-    position: absolute;
     color: white;
+    position: relative;
 }
 
-.pagination-control select {
+.pagination-limit select {
     width: fit-content;
     padding: 8px 22px;
     border: 1px solid #ccc;
@@ -496,7 +503,7 @@
     -webkit-appearance: none;
 }
 
-.pagination-control select::before {
+.pagination-limit select::before {
     content: "";
     position: absolute;
     top: 0;
@@ -509,22 +516,22 @@
     transform: translateX(100%);
 }
 
-.pagination-control select:hover {
+.pagination-limit select:hover {
     background-color: #e8e8e8;
 }
 
-.pagination-control select:focus {
+.pagination-limit select:focus {
     outline: none;
     color: black;
     box-shadow: 0 0 4px #888;
 }
 
-.pagination-control select option {
+.pagination-limit select option {
     background-color: #333333;
     color: white;
 }
 
-.pagination-control::after {
+.pagination-limit::after {
     content: "";
     position: absolute;
     top: 50%;
@@ -539,8 +546,8 @@
     transition: transform 0.5s cubic-bezier(0.5, 0, 0, 1);
 }
 
-.pagination-control:hover::after,
-.pagination-control:focus::after {
+.pagination-limit:hover::after,
+.pagination-limit:focus::after {
     transform: translateY(-50%) rotate(-180deg);
 }
 
@@ -556,11 +563,11 @@
 }
 
 .bg-error {
-    background-image: url("https://i.imgur.com/6DdhZTP.gif");
+    background-image: url("../resources/gifs/error-background.gif");
     opacity: 0.5;
     background-position: center top;
     width: 100vw;
-    height: 50vh;
+    height: 60vh;
 }
 
 .toast-container {
@@ -568,8 +575,7 @@
 }
 
 .hide {
-    display: none;
-    text-align: center;
+    display: none; !important;
 }
 
 /* Width and Height */
@@ -600,9 +606,52 @@
     z-index: 1;
 }
 
+.btn-close {
+    position: absolute;
+    right: 5%;
+}
+
 .form-container {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 50px;
+}
+
+.signUp-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: ease-in;
+    animation-duration: 1s;
+    animation-name: fadeIn;
+}
+
+.logo-title {
+    padding-top: 15px;
+    width: 300px;
+}
+
+.sign-form-container {
+    margin-top: 30px;
+    padding: 50px;
+    box-shadow: 0px 0px 50px rgba(255, 255, 255, 0.5);
+}
+
+.sign-prop-container {
+    margin-bottom: 10px;
+}
+
+.name-label,
+.password-label,
+.email-label {
+    color: white;
+}
+
+.sign-title {
+    font-size: 30px;
+}
+
+.submit-signup {
+    margin-top: 10px;
 }

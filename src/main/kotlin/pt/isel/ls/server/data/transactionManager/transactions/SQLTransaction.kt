@@ -1,6 +1,6 @@
 package pt.isel.ls.server.data.transactionManager.transactions
 
-import pt.isel.ls.server.utils.setup
+import org.postgresql.ds.PGSimpleDataSource
 import java.sql.Connection
 
 class SQLTransaction: TransactionCtx {
@@ -16,5 +16,12 @@ class SQLTransaction: TransactionCtx {
 
     override fun rollback() {
         con.rollback()
+    }
+
+    private fun setup(): PGSimpleDataSource {
+        val dataSource = PGSimpleDataSource()
+        val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL")
+        dataSource.setURL(jdbcDatabaseURL)
+        return dataSource
     }
 }

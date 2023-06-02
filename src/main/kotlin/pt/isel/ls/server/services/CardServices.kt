@@ -7,9 +7,9 @@ import pt.isel.ls.server.data.dataInterfaces.models.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
 import pt.isel.ls.server.exceptions.INVAL_PARAM
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.utils.Card
+import pt.isel.ls.server.Card
 import pt.isel.ls.server.utils.checkEndDate
-import pt.isel.ls.server.utils.isValidString
+import pt.isel.ls.server.utils.validateString
 
 class CardServices(
     private val userData: UserData,
@@ -27,14 +27,15 @@ class CardServices(
         description: String?,
         endDate: String?
     ): Int {
-        isValidString(name, "name")
-        if (description != null) isValidString(description, "description")
+        validateString(name, "name")
+        if (description != null) validateString(description, "description")
 
         return dataExecutor.execute {
             val idUser = userData.getUser(token, it).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, it)
             listData.getList(idList, idBoard, it)
-            if (endDate != null) checkEndDate(endDate)
+            if (endDate != null && !checkEndDate(endDate))
+                throw TrelloException.IllegalArgument("$INVAL_PARAM $endDate")
             cardData.createCard(idList, idBoard, name, description, endDate, it)
         }
     }
@@ -54,7 +55,11 @@ class CardServices(
             listData.getList(idListNow, idBoard, it)
             listData.getList(idListDst, idBoard, it)
             val card = cardData.getCard(idCard, idBoard, it)
-            if (idxDst !in 1..cardData.getNextIdx(idListDst, it)) throw TrelloException.IllegalArgument("$INVAL_PARAM idx")
+            if (idxDst !in 1..cardData.getNextIdx(
+                    idListDst,
+                    it
+                )
+            ) throw TrelloException.IllegalArgument("$INVAL_PARAM idx")
             cardData.moveCard(idCard, idBoard, idListNow, idListDst, card.idx, idxDst, it)
         }
     }
@@ -67,7 +72,15 @@ class CardServices(
         }
     }
 
-    fun updateCard(token: String, idBoard: Int, idCard: Int, description: String?, endDate: String, idList: Int?, archived: Boolean) {
+    fun updateCard(
+        token: String,
+        idBoard: Int,
+        idCard: Int,
+        description: String?,
+        endDate: String,
+        idList: Int?,
+        archived: Boolean
+    ) {
         return dataExecutor.execute {
             val idUser = userData.getUser(token, it).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, it)

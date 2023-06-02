@@ -1,4 +1,5 @@
-import {fetchReq} from "../utils/utils.js";
+import {fetchReq} from "../utils.js";
+import {MAX_RECENT_BOARDS} from "../config.js";
 
 
 async function createBoard(boardName, boardDesc) {
@@ -14,7 +15,22 @@ async function getBoards(skip, limit, name, numLists) {
         "GET")
 }
 
+export let RECENT_BOARDS = []
+
+function clearRecentBoards() {
+    RECENT_BOARDS = []
+}
+
+function visitBoard(board) {
+    const idx = RECENT_BOARDS.indexOf(RECENT_BOARDS.find(it => it.idBoard === board.idBoard))
+    if (idx !== -1) RECENT_BOARDS.splice(idx, 1)
+    if (RECENT_BOARDS.length === MAX_RECENT_BOARDS) RECENT_BOARDS.pop()
+    RECENT_BOARDS.unshift(board)
+}
+
 export default {
+    clearRecentBoards,
+    visitBoard,
     createBoard,
     getBoard,
     getBoards

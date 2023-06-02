@@ -8,7 +8,7 @@ import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.OK
 import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.services.ListServices
-import pt.isel.ls.server.utils.BoardListIn
+import pt.isel.ls.server.BoardListIn
 
 class ListAPI(private val services: ListServices) {
 

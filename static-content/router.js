@@ -10,7 +10,7 @@ function addRouteHandler(pathTemplate, handler) {
 function getRouteHandler(path) {
     let res = {args: {}, handler: null}
 
-    if (checkQuery(path)) {
+    if (path.includes("?")) {
         path = getQueryParams(path, res)
     }
 
@@ -38,18 +38,7 @@ function getRouteHandler(path) {
             }
         }
     }
-}
-
-function checkQuery(path) {
-    return (path.includes("?") &&
-        (
-            path.includes("limit")
-            || path.includes("skip")
-            || path.includes("action")
-            || path.includes("name")
-            || path.includes("numLists")
-        )
-    )
+    return {handler: notFoundRouteHandler}
 }
 
 function getQueryParams(path, res) {

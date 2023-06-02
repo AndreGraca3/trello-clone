@@ -5,10 +5,10 @@ import pt.isel.ls.server.data.dataMem.cards
 import pt.isel.ls.server.data.dataMem.lists
 import pt.isel.ls.server.data.dataMem.users
 import pt.isel.ls.server.data.dataMem.usersBoards
-import pt.isel.ls.server.utils.Board
-import pt.isel.ls.server.utils.BoardList
-import pt.isel.ls.server.utils.Card
-import pt.isel.ls.server.utils.User
+import pt.isel.ls.server.Board
+import pt.isel.ls.server.BoardList
+import pt.isel.ls.server.Card
+import pt.isel.ls.server.User
 
 // Functions to create dummy components for tests
 fun createUser(name: String = dummyName, email: String = dummyEmail, hashedPassword : String = dummyPassword, avatar: String = dummyAvatar) =

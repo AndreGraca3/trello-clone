@@ -1,23 +1,21 @@
 import router from "./router.js"
-import defaultHandlers from "./handlers/defaultHandlers.js"
-import userHandlers from "./handlers/userHandlers.js";
-import boardHandlers from "./handlers/boardHandlers.js";
-import {mainContent, user} from "./config/storage.js";
+import defaultHandlers from "./site/handlers/defaultHandlers.js"
+import userHandlers from "./site/handlers/userHandlers.js";
+import boardHandlers from "./site/handlers/boardHandlers.js";
+import {mainContent} from "./config.js";
+import {handleError} from "./errors/errors.js";
 
 window.addEventListener('load', loadHandler)
 window.addEventListener('hashchange', hashChangeHandler)
+window.addEventListener('unhandledrejection', e => handleError(e.reason))
 
 async function loadHandler() {
-    router.addRouteHandler("error", defaultHandlers.getErrorPage)
     router.addRouteHandler("home", defaultHandlers.getHome)
     router.addRouteHandler("user", userHandlers.getUser)
     router.addRouteHandler("login", userHandlers.getLogin)
-    router.addRouteHandler("logout", userHandlers.logout)
     router.addRouteHandler("signup", userHandlers.getSignup)
     router.addRouteHandler("boards", boardHandlers.getBoards)
     router.addRouteHandler("board/:idBoard", boardHandlers.getBoard)
-    router.addRouteHandler("user/avatar", userHandlers.changeUserAvatar)
-
 
     await hashChangeHandler()
 }
@@ -28,12 +26,8 @@ async function hashChangeHandler() {
 
     let path = window.location.hash.slice(1)
 
-    const obj = router.getRouteHandler(path) // ,obj.args
+    const obj = router.getRouteHandler(path)
+    document.title = `OurTrello | ${obj.handler.name.slice(3)}`
 
-    try {
-        await obj.handler(obj.args, user.token)
-    } catch (e) {
-        defaultHandlers.getErrorPage(e)
-        throw e
-    }
+    await obj.handler(obj.args, sessionStorage.getItem("token"))
 }

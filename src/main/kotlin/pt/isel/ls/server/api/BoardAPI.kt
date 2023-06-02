@@ -8,9 +8,9 @@ import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.OK
 import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.services.BoardServices
-import pt.isel.ls.server.utils.BoardIn
-import pt.isel.ls.server.utils.BoardOut
-import pt.isel.ls.server.utils.IDUser
+import pt.isel.ls.server.BoardIn
+import pt.isel.ls.server.BoardOut
+import pt.isel.ls.server.IDUser
 
 class BoardAPI(private val services: BoardServices) {
 

@@ -1,4 +1,4 @@
-import {fetchReq} from "../utils/utils.js";
+import {fetchReq} from "../utils.js";
 
 
 async function createList(idBoard, name) {

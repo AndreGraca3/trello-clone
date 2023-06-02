@@ -2,4 +2,5 @@ TRUNCATE dbo.card CASCADE;
 TRUNCATE dbo.list CASCADE;
 TRUNCATE dbo.user_board CASCADE;
 TRUNCATE dbo.board CASCADE;
+TRUNCATE dbo.user CASCADE;
 

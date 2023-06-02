@@ -1,5 +1,5 @@
-import {fetchReq} from "../utils/utils.js";
-import {BASE_URL} from "../config/storage.js";
+import {fetchReq} from "../utils.js";
+import {BASE_URL} from "../config.js";
 
 async function createUser(name, email, password, urlAvatar) {
     return await fetchReq(
@@ -9,13 +9,13 @@ async function createUser(name, email, password, urlAvatar) {
             name: name,
             email: email,
             password: password,
-            urlAvatar: urlAvatar
+            avatar: urlAvatar
         }
     )
 }
 
-async function getUser() {
-    return await fetchReq("user", "GET");
+async function getUser(token) {
+    return await fetchReq("user", "GET", null)
 }
 
 async function getAllUsers(idBoard) {
@@ -37,10 +37,12 @@ async function changeAvatar(imgUrl) {
     return await fetchReq("user/avatar", "PUT", {imgUrl})
 }
 
-export async function getUserAvatar(token) {
-    if(token == null) return 'https://i.imgur.com/JGtwTBw.png'
-    const user = await getUser()
-    return `${user.avatar ?? 'https://i.imgur.com/JGtwTBw.png'}`
+async function getUserAvatar() {
+    const token = sessionStorage.getItem("token")
+    const noUserIcon = "../resources/images/user-unknown-icon.png"
+    if(!token) return noUserIcon
+    const user = await getUser(token)
+    return `${user.avatar === "null" ? noUserIcon : user.avatar}`
 }
 
 export default {

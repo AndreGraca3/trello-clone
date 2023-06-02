@@ -9,10 +9,10 @@ import pt.isel.ls.server.exceptions.ALREADY_EXISTS
 import pt.isel.ls.server.exceptions.INVAL_PARAM
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.utils.Board
-import pt.isel.ls.server.utils.BoardWithLists
-import pt.isel.ls.server.utils.checkPaging
+import pt.isel.ls.server.Board
+import pt.isel.ls.server.BoardWithLists
 import java.sql.SQLException
+import kotlin.math.min
 
 class BoardDataMem : BoardData {
 
@@ -40,17 +40,27 @@ class BoardDataMem : BoardData {
         val paging = checkPaging(max, limit, skip)
         val filtered = usersBoards.filter { it.idUser == idUser }.subList(paging.first, paging.second)
         val mapped = filtered.map {
-                BoardWithLists(
-                    it.idBoard,
-                    boards.find { board -> board.idBoard == it.idBoard }!!.name,
-                    boards.find { board -> board.idBoard == it.idBoard }!!.description,
-                    lists.count { list -> list.idBoard == it.idBoard }
-                )
-            }
+            val board = getBoard(it.idBoard, ctx)
+            BoardWithLists(
+                it.idBoard,
+                board.name,
+                board.description,
+                board.primaryColor,
+                board.secondaryColor,
+                lists.count { list -> list.idBoard == it.idBoard }
+            )
+        }
         return mapped.filter { b -> b.numLists == (numLists ?: b.numLists) && b.name.contains(name) }
     }
 
     private fun getNextId(): Int {
         return if (boards.isEmpty()) 1 else boards.last().idBoard + 1
+    }
+
+    private fun checkPaging(max: Int, limit: Int?, skip: Int?): Pair<Int, Int> {
+        val skipped = if (skip == null || skip < 0) 0 else min(skip, max)
+        var limited = if (limit == null || limit < 0 || skipped + limit > max) max else skipped + limit
+        if (skipped > limited) limited = skipped
+        return Pair(skipped, limited)
     }
 }

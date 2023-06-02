@@ -7,18 +7,17 @@ import org.http4k.core.Response
 import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.OK
 import pt.isel.ls.server.annotations.Auth
-import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.services.UserServices
-import pt.isel.ls.server.utils.Avatar
-import pt.isel.ls.server.utils.UserIn
-import pt.isel.ls.server.utils.UserLogin
-import pt.isel.ls.server.utils.UserOut
+import pt.isel.ls.server.Avatar
+import pt.isel.ls.server.UserIn
+import pt.isel.ls.server.UserLogin
+import pt.isel.ls.server.UserOut
 
 class UserAPI(private val services: UserServices) {
 
     fun createUser(request: Request): Response {
         val newUser = Json.decodeFromString<UserIn>(request.bodyString())
-        val createdUser = services.createUser(newUser.name, newUser.email, newUser.password, newUser.urlAvatar)
+        val createdUser = services.createUser(newUser.name, newUser.email, newUser.password, newUser.avatar)
         return createRsp(CREATED, UserOut(createdUser.first, createdUser.second))
     }
 

@@ -1,7 +1,7 @@
 package pt.isel.ls.tests.services
 
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.utils.User
+import pt.isel.ls.server.User
 import pt.isel.ls.tests.utils.*
 import kotlin.test.BeforeTest
 import kotlin.test.Test

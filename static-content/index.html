@@ -37,7 +37,7 @@
                 </a>
             </div>
             <ul class="navbar-nav">
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown boards-nav loggedIn-option">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
                         Boards
@@ -64,10 +64,12 @@
                  href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 
             <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li id="user-option" style="display: none;"><a class="dropdown-item" href="#user">👤 Account</a></li>
-                <li><a class="dropdown-item" href="#signup">📝 Sign Up</a></li>
-                <li><a class="dropdown-item" href="#login">🔑 Log in</a></li>
-                <li id="logout-option" style="display: none;"><a class="dropdown-item" href="#logout">❌ Log out</a></li>
+                <li class="loggedIn-option" style="display: none;"><a class="dropdown-item" href="#user">👤
+                    Account</a></li>
+                <li class="loggedOut-option"><a class="dropdown-item" href="#signup">📝 Sign Up</a></li>
+                <li class="loggedOut-option"><a class="dropdown-item" href="#login">🔑 Log in</a></li>
+                <li class="loggedIn-option clickable" id="logout-option" style="display: none;"><a class="dropdown-item">❌ Log
+                    out</a></li>
             </ul>
         </div>
     </div>
@@ -103,12 +105,15 @@
     </div>
 </div>
 
-<div class="toast hide">
+<div class="toast hide" data-bs-delay="3000">
     <div class="toast-header">
         <img src="https://cdn-icons-png.flaticon.com/512/6124/6124991.png" class="rounded mr-2"
              style="width: 20px; margin-right: 5px">
         <strong class="mr-auto">OurTrello</strong>
-        <small style="margin-left: 10px">Just Now</small>
+        <div>
+            <small style="margin-left: 10px">Just Now</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
     </div>
     <div class="toast-body"></div>
 </div>
@@ -118,30 +123,20 @@
 <script src="./index.js" type="module"></script>
 <script type="module">
 
-
-    import {createBoard, hideCreateBoardModal, showCreateBoardModal} from "./HTML/DSL/listeners/boardFuncs.js";
-    import {MAX_BOARDS_DISPLAY} from "./config/storage.js";
-    import {getUserAvatar} from "./data/userData.js";
+    import {createBoard, hideCreateBoardModal, showCreateBoardModal} from "./html/dsl/listeners/boardFuncs.js";
+    import {MAX_BOARDS_DISPLAY} from "./config.js";
+    import userData from "../../data/userData.js";
+    import {updateUIElements, logout} from "./html/dsl/listeners/userFuncs.js";
 
     $('.showCreateBoardModal').click(showCreateBoardModal);
     $('.closeModal').click(hideCreateBoardModal);
     $('.createBoardButtonModal').click(createBoard);
 
     const img = $('.avatar-icon')[0]
-    img.src = await getUserAvatar(sessionStorage.getItem('token'))
+    img.src = await userData.getUserAvatar()
     document.querySelector('.getBoards-button').href = `#boards?skip=0&limit=${MAX_BOARDS_DISPLAY}`
-
-    const logoutOption = document.querySelector('#logout-option'); // Select the Logout option
-    const accountOption = document.querySelector('#user-option'); // Select the Account option
-    const token = sessionStorage.getItem('token');
-    if (token !== "null") {
-        logoutOption.style.display = 'block'; // Show Logout option
-        accountOption.style.display = 'block'; // Show Account option
-    } else {
-        logoutOption.style.display = "none"; // Hide Logout option
-        accountOption.style.display = 'none'; // Hide Account option
-    }
-
+    document.querySelector('#logout-option').onclick = () => logout()
+    updateUIElements()
 </script>
 </body>
 </html>

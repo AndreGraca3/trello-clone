@@ -9,13 +9,13 @@ import pt.isel.ls.server.exceptions.ALREADY_EXISTS
 import pt.isel.ls.server.exceptions.INVAL_PARAM
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.utils.User
+import pt.isel.ls.server.User
 import java.sql.SQLException
 import java.util.*
 
 class UserDataMem : UserData {
 
-    override fun createUser(name: String, email: String, hashedPassword: String, urlAvatar: String, ctx: TransactionCtx): Pair<Int, String> {
+    override fun createUser(name: String, email: String, hashedPassword: String, urlAvatar: String?, ctx: TransactionCtx): Pair<Int, String> {
         if (name.length > 20) throw SQLException("$INVAL_PARAM name is too long.", "22001")
         if (users.any { it.email == email }) throw SQLException("$email $ALREADY_EXISTS", "23505")
         if (users.any { it.name == name }) throw SQLException("$name $ALREADY_EXISTS", "23505")

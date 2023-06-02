@@ -6,21 +6,19 @@ import pt.isel.ls.server.data.dataInterfaces.models.BoardData
 import pt.isel.ls.server.data.dataPostGres.statements.BoardStatements
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.utils.Board
-import pt.isel.ls.server.utils.BoardWithLists
+import pt.isel.ls.server.Board
+import pt.isel.ls.server.BoardWithLists
+import pt.isel.ls.server.utils.randomColor
 
 class BoardDataSQL : BoardData {
 
     override fun createBoard(idUser: Int, name: String, description: String, ctx: TransactionCtx): Int {
-        val insertStmtBoard = BoardStatements.createBoardCMD(name, description)
-        val idBoard: Int
+        val insertStmtBoard = BoardStatements.createBoardCMD(name, description, randomColor(), randomColor())
 
         val res = (ctx as SQLTransaction).con.prepareStatement(insertStmtBoard).executeQuery()
         res.next()
 
-        idBoard = res.getInt("idBoard")
-
-        return idBoard
+        return res.getInt("idBoard")
     }
 
     override fun getBoard(idBoard: Int, ctx: TransactionCtx): Board {
@@ -31,7 +29,13 @@ class BoardDataSQL : BoardData {
 
         if (res.row == 0) throw TrelloException.NotFound("Board $NOT_FOUND")
 
-        return Board(idBoard, res.getString("name"), res.getString("description"))
+        return Board(
+            idBoard,
+            res.getString("name"),
+            res.getString("description"),
+            res.getString("primaryColor"),
+            res.getString("secondaryColor")
+        )
     }
 
     override fun getBoardsFromUser(
@@ -54,6 +58,8 @@ class BoardDataSQL : BoardData {
                     res.getInt("idBoard"),
                     res.getString("name"),
                     res.getString("description"),
+                    res.getString("primaryColor"),
+                    res.getString("secondaryColor"),
                     res.getInt("numLists")
                 )
             )

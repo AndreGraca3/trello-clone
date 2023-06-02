@@ -2,7 +2,7 @@ package pt.isel.ls.tests.services
 
 import pt.isel.ls.server.data.dataMem.usersBoards
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.utils.Board
+import pt.isel.ls.server.Board
 import pt.isel.ls.tests.utils.createBoard
 import pt.isel.ls.tests.utils.createUser
 import pt.isel.ls.tests.utils.dataSetup
