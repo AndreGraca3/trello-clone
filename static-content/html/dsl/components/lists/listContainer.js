@@ -1,11 +1,11 @@
-import {a, button, div, input, li, nav, option, select, ul} from "../../components/elements.js";
-import {deleteList} from "../listeners/listFuncs.js";
-import {cardFunc, createCard} from "../listeners/cardFuncs.js";
-import {addOrChangeQuery, updateBoardsPath, getNextCard} from "../modelAuxs.js";
-import cardData from "../../../data/cardData.js";
+import {button, div} from "../../../common/components/elements.js";
+import {deleteList} from "../../listeners/listFuncs.js";
+import {cardFunc, createCard} from "../../listeners/cardFuncs.js";
+import {getNextCard} from "../../modelAuxs.js";
+import cardData from "../../../../data/cardData.js";
+import cardContainer from "../cards/cardContainer.js";
 
-
-export function listContainer(list) {
+export default function listContainer(list) {
     const listHeader = div(list.name, ["list-header"])
 
     const deleteButton = button("🗑️", ["listDeleteButton", "btn"])
@@ -31,13 +31,18 @@ export function listContainer(list) {
     })
 
     listCards.addEventListener("dragleave", (event) => {
-        const dragging = document.querySelector('.dragging') // falta saber o idx
+        const dragging = document.querySelector('.dragging')
         if (!listCards.contains(event.relatedTarget)) {
-            const origin = document.getElementById(`list${dragging.dataset.idList}`) // search do idx anterior e colocá-lo à frente (ter em conta que pode estar vazia)
-            // TODO: back to original idx
-            origin.appendChild(dragging)
+            const origin = document.getElementById(`list${dragging.dataset.idList}`)
+            const childrenArray = [...origin.children]
+            const afterOrigin = childrenArray.find(it => parseInt(it.dataset.idx) === parseInt(dragging.dataset.idx) + 1)
+            if (afterOrigin) {
+                origin.insertBefore(dragging, afterOrigin)
+            } else {
+                origin.appendChild(dragging)
+            }
         }
-    });
+    })
 
     listCards.addEventListener("drop", async (event) => {
         const card = document.querySelector('.dragging')
@@ -65,28 +70,4 @@ export function listContainer(list) {
     return div(null, ["list-container"], `List${list.idList}`,
         listHeader, deleteButton, listCards, newCardButton
     )
-}
-
-export function cardContainer(card, clickableFunc) {
-
-    const cardContainer = button(null, ["card-container"], `Card${card.idCard}`,
-        div(card.name, ["card-content"])
-    )
-
-    cardContainer.draggable = true;
-    cardContainer.addEventListener("dragstart", () => {
-        cardContainer.classList.add("dragging")
-    })
-    cardContainer.addEventListener("dragend", () => {
-        cardContainer.classList.remove("dragging")
-    })
-    cardContainer.dataset.idCard = card.idCard
-    cardContainer.dataset.idList = card.idList
-    cardContainer.dataset.idx = card.idx
-
-    if (clickableFunc) cardContainer.addEventListener("click", clickableFunc)
-
-    cardContainer.classList.add("list-group-item", "list-group-item-action")
-
-    return cardContainer
 }

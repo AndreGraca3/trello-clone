@@ -1,7 +1,7 @@
 import {mainContent, MAX_RECENT_BOARDS} from "../../config.js";
-import {div, h1} from "../../html/components/elements.js";
+import {div, h1} from "../../html/common/components/elements.js";
 import {boardFunc} from "../../html/dsl/listeners/boardFuncs.js";
-import {coloredContainer, createRows} from "../../html/components/containers.js";
+import {coloredContainer, createRows} from "../../html/common/components/containers.js";
 import {RECENT_BOARDS} from "../../data/boardData.js";
 
 

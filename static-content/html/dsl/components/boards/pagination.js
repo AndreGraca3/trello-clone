@@ -1,17 +1,20 @@
-import {a, button, createElement, div, input, li, nav, option, select, ul} from "../../components/elements.js";
-import {addOrChangeQuery, getLimitSelectorOptions, updateBoardsPath} from "../modelAuxs.js";
-import boardData from "../../../data/boardData.js";
-import boardViews from "../views/boardViews.js";
-import {LIMIT_INITIAL_VALUE, MAX_BOARDS_DISPLAY, SKIP_INITIAL_VALUE} from "../../../config.js";
+import {a, button, createElement, div, input, li, nav, option, select, ul} from "../../../common/components/elements.js";
+import {getLimitSelectorOptions, updateBoardsPath} from "../../modelAuxs.js";
+import boardData from "../../../../data/boardData.js";
+import boardViews from "../../../../site/views/boardViews.js";
+import {LIMIT_INITIAL_VALUE, MAX_BOARDS_DISPLAY, SKIP_INITIAL_VALUE} from "../../../../config.js";
+import router from "../../../../router.js";
 
 class Pagination {
-    constructor(container, skip, limit, totalBoards, nameSearch, numLists) {
+    constructor(container, skip, limit, totalBoards) {
         this.container = container
         this.skip = skip || SKIP_INITIAL_VALUE
         this.limit = limit || LIMIT_INITIAL_VALUE
         this.totalBoards = totalBoards
-        this.nameSearch = nameSearch
-        this.numLists = numLists
+        const queryParams = {args: {}, handler: null}
+        router.getQueryParams(document.location.hash, queryParams)
+        this.nameSearch = queryParams.args["name"]
+        this.numLists = queryParams.args["numLists"]
         this.currPage = Math.floor(this.skip / this.limit) + 1
         this.indices = []
 
@@ -33,6 +36,7 @@ class Pagination {
         this.nextBtn.disabled = this.skip >= this.totalBoards - this.limit
         this.updateIndices()
         this.fetchAndRenderBoards()
+        updateBoardsPath(this.skip, this.limit, this.nameSearch, this.numLists, this.totalBoards)
     }
 
     updateIndices() {
@@ -68,7 +72,7 @@ class Pagination {
         )
     }
 
-    createPaginationButtons(boardsContainer) {
+    createPaginationButtons() {
         this.prevBtn = button("Previous", ["btn-secondary", "btn", "prev-pagination"])
         this.nextBtn = button("Next", ["btn-secondary", "btn", "next-pagination"])
 
@@ -90,7 +94,7 @@ class Pagination {
                 div(null, ["pagination-indices"], null, ...this.indices),
                 this.nextBtn)
         )
-        this.updatePage(1)
+        this.updatePage(this.currPage)
         return buttons
     }
 
@@ -123,53 +127,6 @@ class Pagination {
             ["pagination-limit"],
             null,
             selectHtml
-        )
-    }
-
-    createSearchBar() {
-        const searchBar = input(null, ["mr-sm-2", "searchBar"])
-        searchBar.placeholder = "Search Board's Name"
-        if (this.nameSearch != null) searchBar.value = this.nameSearch
-
-        const selector = select(null, ["search-selector"])
-        selector.addEventListener("change", () => {
-            const selectedValue = selector.value
-            if (selectedValue === "name") {
-                searchBar.placeholder = "Search Board's Name"
-                searchBar.type = "text"
-                if (this.nameSearch != null) searchBar.value = this.nameSearch
-                else searchBar.value = ""
-            } else if (selectedValue === "numLists") {
-                searchBar.placeholder = "Search Lists Num."
-                searchBar.type = "number"
-                if (this.numLists != null) searchBar.value = this.numLists
-                else searchBar.value = ""
-            }
-        })
-
-        const nameOption = option("🔠")
-        nameOption.value = "name"
-        const numListsOption = option("🔢")
-        numListsOption.value = "numLists"
-
-        selector.add(nameOption)
-        selector.add(numListsOption)
-
-        searchBar.addEventListener("keyup", (ev) => {
-            if (ev.key === "Enter") {
-                const selectedValue = selector.value
-                if (selectedValue === "name" || selectedValue === "numLists") {
-                    addOrChangeQuery(selectedValue, searchBar.value)
-                }
-            }
-        })
-
-        return div(
-            null,
-            ["search-selector-container"],
-            null,
-            selector,
-            searchBar
         )
     }
 }

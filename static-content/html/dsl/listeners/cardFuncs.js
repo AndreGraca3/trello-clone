@@ -1,8 +1,8 @@
 import {fetchReq} from "../../../utils.js";
-import {createElement, input} from "../../components/elements.js";
-import {cardContainer} from "../components/modelComponents.js";
+import {createElement, input} from "../../common/components/elements.js";
 import {moveToArchivedContainer} from "../modelAuxs.js";
 import cardData from "../../../data/cardData.js";
+import cardContainer from "../components/cards/cardContainer.js";
 
 
 export const cardFunc = async (card) => {

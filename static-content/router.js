@@ -58,9 +58,9 @@ function getQueryParams(path, res) {
     return path.replace(queryString, "")
 }
 
-const router = {
-    addRouteHandler,
-    getRouteHandler
-}
 
-export default router
+export default {
+    addRouteHandler,
+    getRouteHandler,
+    getQueryParams
+}

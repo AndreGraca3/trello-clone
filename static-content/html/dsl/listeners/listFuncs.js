@@ -1,9 +1,8 @@
-import {listContainer} from "../components/modelComponents.js";
-import {fetchReq} from "../../../utils.js";
 import {moveToArchivedContainer} from "../modelAuxs.js";
-import {input} from "../../components/elements.js";
+import {input} from "../../common/components/elements.js";
 import listData from "../../../data/listData.js";
 import cardData from "../../../data/cardData.js";
+import listContainer from "../components/lists/listContainer.js";
 
 
 export async function createList(boardContainer, board) {

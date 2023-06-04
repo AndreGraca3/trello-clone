@@ -1,4 +1,4 @@
-import {li, span} from "../components/elements.js";
+import {li, span} from "../common/components/elements.js";
 import {cardFunc} from "./listeners/cardFuncs.js";
 
 

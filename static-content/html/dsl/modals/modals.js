@@ -1,4 +1,4 @@
-import {button, createElement, div, h5, input, textarea} from "../../components/elements.js";
+import {button, createElement, div, h5, input, textarea} from "../../common/components/elements.js";
 import {mainContent} from "../../../config.js";
 
 

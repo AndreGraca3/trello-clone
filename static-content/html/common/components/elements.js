@@ -1,13 +1,14 @@
-import {mainContent} from "../../config.js"
+import {mainContent} from "../../../config.js"
 
 export function createElement(tagName, innerText, classArr, id, ...children) {
-    const element = document.createElement(tagName);
+    const element = document.createElement(tagName)
 
-    if (classArr != null) classArr.forEach(it => element.classList.add(it))
+    if (classArr != null) classArr.forEach(c => element.classList.add(c))
     if (id != null) element.id = id
     if (innerText != null) element.innerText = innerText
 
     children.forEach(child => {
+        if(!child) return
         if (typeof child === "string") {
             const textNode = document.createTextNode(child)
             element.appendChild(textNode)
@@ -48,8 +49,10 @@ export function span(innerText, classArr, id, ...children) {
     return createElement("span", innerText, classArr, id, ...children)
 }
 
-export function input(innerText, classArr, id, ...children) {
-    return createElement("input", innerText, classArr, id, ...children)
+export function input(innerText, classArr, id, placeholder, ...children) {
+    const inp = createElement("input", innerText, classArr, id, ...children)
+    if(placeholder) inp.placeholder = placeholder
+    return inp
 }
 
 export function option(innerText, classArr, id, ...children) {

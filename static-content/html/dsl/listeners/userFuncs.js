@@ -1,4 +1,4 @@
-import {input} from "../../components/elements.js";
+import {input} from "../../common/components/elements.js";
 import userData from "../../../data/userData.js";
 import boardData from "../../../data/boardData.js";
 

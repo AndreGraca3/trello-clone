@@ -28,20 +28,16 @@ export function coloredContainer(title, description, numList, clickableFunc, pri
 
 export function createRows(items, itemsPerRow) {
     const container = div(null, ["boardBox-container"])
-
-    let row = div(null, ["item-row"])
+    let row = null
 
     items.forEach((item, i) => {
-        row.appendChild(item)
-        if ((i + 1) % itemsPerRow === 0) {
-            container.appendChild(row)
+        if (i % itemsPerRow === 0) {
             row = div(null, ["item-row"])
+            container.appendChild(row)
         }
+
+        row.appendChild(item)
     })
 
-    // add any remaining cards to container
-    if (row.children.length > 0) {
-        container.appendChild(row)
-    }
     return container
 }
