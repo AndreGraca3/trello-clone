@@ -1,14 +1,13 @@
 import {button, div, h1} from "../../html/common/components/elements.js";
 import {mainContent, MAX_BOARDS_DISPLAY} from "../../config.js";
 import {coloredContainer, createRows} from "../../html/common/components/containers.js";
-import {boardFunc} from "../../html/dsl/listeners/boardFuncs.js";
+import {boardFunc, updateBoardsPath} from "../../html/dsl/listeners/boardFuncs.js";
 import Pagination from "../../html/dsl/components/boards/pagination.js";
 import createSearchBar from "../../html/dsl/components/boards/searchBar.js";
 import {archivedDropdown, usersDropdown} from "../../html/dsl/dropdowns/modelDropdowns.js";
 import listContainer from "../../html/dsl/components/lists/listContainer.js";
 import {createList} from "../../html/dsl/listeners/listFuncs.js";
 import {cardModalHTML, listModalHTML} from "../../html/dsl/modals/modals.js";
-import {updateBoardsPath} from "../../html/dsl/modelAuxs.js";
 
 
 function boardsPageView(boards, totalBoards, skip, limit, name, numLists) {

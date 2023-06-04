@@ -58,9 +58,16 @@ function getQueryParams(path, res) {
     return path.replace(queryString, "")
 }
 
+function addOrChangeQuery(query, value) {
+    const hash = document.location.hash.split('?')
+    const params = new URLSearchParams(hash[1])
+    params.set(query, value)
+    document.location.hash = hash[0] + '?' + params.toString()
+}
 
 export default {
     addRouteHandler,
     getRouteHandler,
-    getQueryParams
+    getQueryParams,
+    addOrChangeQuery
 }

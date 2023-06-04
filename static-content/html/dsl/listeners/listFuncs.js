@@ -1,8 +1,8 @@
-import {moveToArchivedContainer} from "../modelAuxs.js";
 import {input} from "../../common/components/elements.js";
 import listData from "../../../data/listData.js";
 import cardData from "../../../data/cardData.js";
 import listContainer from "../components/lists/listContainer.js";
+import cardFuncs from "./cardFuncs.js";
 
 
 export async function createList(boardContainer, board) {
@@ -70,7 +70,7 @@ export async function deleteList(list) {
                     idCard: c.dataset.idCard,
                     name: c.innerText,
                 }
-                moveToArchivedContainer(archCard, archivedContainer)
+                cardFuncs.moveToArchivedContainer(archCard, archivedContainer)
             })
             deleteHandler()
         }

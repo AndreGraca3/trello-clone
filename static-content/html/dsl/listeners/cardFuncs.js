@@ -1,11 +1,9 @@
-import {fetchReq} from "../../../utils.js";
-import {createElement, input} from "../../common/components/elements.js";
-import {moveToArchivedContainer} from "../modelAuxs.js";
+import {input, li, span} from "../../common/components/elements.js";
 import cardData from "../../../data/cardData.js";
 import cardContainer from "../components/cards/cardContainer.js";
 
 
-export const cardFunc = async (card) => {
+const cardFunc = async (card) => {
 
     const fetchedCard = await cardData.getCard(card.idBoard, card.idCard)
 
@@ -27,7 +25,7 @@ export const cardFunc = async (card) => {
     $('#cardModal').modal('show')
 }
 
-export async function createCard(listCards, list) {
+async function createCard(listCards, list) {
     const inputHtml = input()
     listCards.appendChild(inputHtml)
     listCards.scrollTop = listCards.scrollHeight
@@ -78,7 +76,8 @@ async function archiveCard(card) {
         list.removeChild(cardToMove)
         moveToArchivedContainer(card, archivedContainer)
     } else {
-        // return to origin TODO: check if list exits if i want to unarchive
+        // return to origin
+        // TODO: check if list exits if i want to unarchive
         archivedContainer.removeChild(cardToMove)
         const DeArchivedCard = cardContainer(card, async () => cardFunc(card))
         list.appendChild(DeArchivedCard)
@@ -120,7 +119,7 @@ async function saveCard(card) {
     $('#cardModal').modal('hide')
 }
 
-export function updateIdxs(srcList, dstList, idxSrc, idxDst) {
+function updateIdxs(srcList, dstList, idxSrc, idxDst) {
     Array.from(srcList.childNodes).forEach(card => {
         if(card.dataset.idx >= idxSrc) card.dataset.idx--
     })
@@ -128,4 +127,33 @@ export function updateIdxs(srcList, dstList, idxSrc, idxDst) {
     Array.from(dstList.childNodes).forEach(card => {
         if(card.dataset.idx >= idxDst) card.dataset.idx++
     })
+}
+
+function getNextCard(container, y) {
+    const draggableElements = Array.from(container.querySelectorAll('.card-container:not(.dragging)'))
+
+    return draggableElements.reduce((closest, card) => {
+        const box = card.getBoundingClientRect()
+        const offset = y - box.top - box.height / 2
+        if (offset < 0 && offset > closest.offset) return {offset: offset, element: card}
+        else return closest
+    }, {offset: Number.NEGATIVE_INFINITY}).element
+}
+
+function moveToArchivedContainer(card, archivedContainer) {
+    const newArchived = li(null, ["dropdown-item", "clickable"],
+        `Card${card.idCard}`,
+        span("📋 " + card.name)
+    )
+    newArchived.addEventListener("click", async () => cardFuncs.cardFunc(card))
+
+    archivedContainer.appendChild(newArchived)
+}
+
+export default {
+    cardFunc,
+    createCard,
+    updateIdxs,
+    getNextCard,
+    moveToArchivedContainer
 }

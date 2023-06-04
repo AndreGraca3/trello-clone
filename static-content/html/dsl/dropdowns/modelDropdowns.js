@@ -1,6 +1,6 @@
 import {button, div, img, li, span, ul} from "../../common/components/elements.js";
-import {cardFunc} from "../listeners/cardFuncs.js";
-import userData from "../../../data/userData.js";
+import cardFuncs from "../listeners/cardFuncs.js";
+
 
 export function usersDropdown(users) {
 
@@ -36,7 +36,7 @@ export function archivedDropdown(cards) { // html board
                 `Card${card.idCard}`,
                 span("📋 " + card.name)
             )
-            liHtml.addEventListener("click", async () => cardFunc(card))
+            liHtml.addEventListener("click", async () => cardFuncs.cardFunc(card))
             ulHtml.appendChild(liHtml)
         }
     )

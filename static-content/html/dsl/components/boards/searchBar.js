@@ -1,5 +1,5 @@
 import {div, input, option, select} from "../../../common/components/elements.js";
-import {addOrChangeQuery} from "../../modelAuxs.js";
+import router from "../../../../router.js";
 
 export default function createSearchBar(nameSearch, numLists) {
     const searchBar = input(null, ["mr-sm-2", "searchBar"], null, "Search Board's Name")
@@ -33,7 +33,7 @@ export default function createSearchBar(nameSearch, numLists) {
         if (ev.key === "Enter") {
             const selectedValue = selector.value
             if (selectedValue === "name" || selectedValue === "numLists") {
-                addOrChangeQuery(selectedValue, searchBar.value)
+                router.addOrChangeQuery(selectedValue, searchBar.value)
             }
         }
     })

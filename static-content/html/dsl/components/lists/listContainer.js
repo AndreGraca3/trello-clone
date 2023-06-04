@@ -1,8 +1,9 @@
 import {button, div} from "../../../common/components/elements.js";
 import {deleteList} from "../../listeners/listFuncs.js";
-import {cardFunc, createCard} from "../../listeners/cardFuncs.js";
 import cardContainer from "../cards/cardContainer.js";
 import draggingFuncs from "../../listeners/draggingFuncs.js";
+import cardFuncs from "../../listeners/cardFuncs.js";
+
 
 export default function listContainer(list) {
     const listHeader = div(list.name, ["list-header"])
@@ -15,7 +16,7 @@ export default function listContainer(list) {
     if (list.cards) {
         list.cards.forEach((card) => {
             if (!card.archived) {
-                const cardElement = cardContainer(card, () => cardFunc(card));
+                const cardElement = cardContainer(card, () => cardFuncs.cardFunc(card));
                 listCards.appendChild(cardElement);
             }
         })
@@ -29,7 +30,7 @@ export default function listContainer(list) {
 
     const newCardButton = button("Add Card", ["newCard"])
     newCardButton.addEventListener("click", async () => {
-        await createCard(listCards, list)
+        await cardFuncs.createCard(listCards, list)
     })
 
     return div(null, ["list-container"], `List${list.idList}`,

@@ -1,5 +1,4 @@
-import {a, button, createElement, div, input, li, nav, option, select, ul} from "../../../common/components/elements.js";
-import {getLimitSelectorOptions, updateBoardsPath} from "../../modelAuxs.js";
+import {a, button, createElement, div, li, nav, option, select, ul} from "../../../common/components/elements.js";
 import boardData from "../../../../data/boardData.js";
 import boardViews from "../../../../site/views/boardViews.js";
 import {
@@ -9,6 +8,7 @@ import {
     SKIP_INITIAL_VALUE
 } from "../../../../config.js";
 import router from "../../../../router.js";
+import {updateBoardsPath} from "../../listeners/boardFuncs.js";
 
 class Pagination {
     constructor(container, skip, limit, totalBoards) {
@@ -132,6 +132,14 @@ class Pagination {
             selectHtml
         )
     }
+}
+
+function getLimitSelectorOptions(maxDisplay, size, limit) {
+    const limitOptions = Array.from({length: size}, (_, i) => (i + 1) * maxDisplay)
+    if (!limit || limitOptions.includes(limit)) return limitOptions
+    limitOptions.push(limit)
+    limitOptions.sort((a, b) => a - b)
+    return limitOptions
 }
 
 export default Pagination
