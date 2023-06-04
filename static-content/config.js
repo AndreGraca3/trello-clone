@@ -6,5 +6,6 @@ export const MAX_BOARDS_DISPLAY = 3
 
 export const SKIP_INITIAL_VALUE = 0
 export const LIMIT_INITIAL_VALUE = 3
+export const MAX_LIMIT_OPTIONS_SIZE = 5
 
 export const mainContent = document.getElementById("mainContent")

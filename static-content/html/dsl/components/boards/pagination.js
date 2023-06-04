@@ -2,7 +2,12 @@ import {a, button, createElement, div, input, li, nav, option, select, ul} from 
 import {getLimitSelectorOptions, updateBoardsPath} from "../../modelAuxs.js";
 import boardData from "../../../../data/boardData.js";
 import boardViews from "../../../../site/views/boardViews.js";
-import {LIMIT_INITIAL_VALUE, MAX_BOARDS_DISPLAY, SKIP_INITIAL_VALUE} from "../../../../config.js";
+import {
+    LIMIT_INITIAL_VALUE,
+    MAX_BOARDS_DISPLAY,
+    MAX_LIMIT_OPTIONS_SIZE,
+    SKIP_INITIAL_VALUE
+} from "../../../../config.js";
 import router from "../../../../router.js";
 
 class Pagination {
@@ -17,8 +22,34 @@ class Pagination {
         this.numLists = queryParams.args["numLists"]
         this.currPage = Math.floor(this.skip / this.limit) + 1
         this.indices = []
+        this.maxPages = Math.max(1, Math.ceil(totalBoards / this.limit))
 
-        for (let i = 1; i <= Math.ceil(totalBoards / this.limit); i++) {
+        this.generateIndices()
+    }
+
+    updatePage(pageNumber) {
+        if (this.indices.length >= this.currPage) this.indices[this.currPage - 1].classList.remove("active")
+        this.currPage = pageNumber
+        this.skip = (pageNumber - 1) * this.limit
+        this.prevBtn.disabled = this.currPage === 1
+        this.nextBtn.disabled = this.currPage === this.maxPages
+        this.updateIndices()
+        this.fetchAndRenderBoards()
+        updateBoardsPath(this.skip, this.limit, this.nameSearch, this.numLists, this.totalBoards)
+    }
+
+    updateIndices() {
+        this.indices = []
+
+        this.generateIndices()
+
+        if (this.indices.length >= this.currPage) this.indices[this.currPage - 1].classList.add("active")
+
+        document.querySelector('.pagination-indices').replaceChildren(...this.indices)
+    }
+
+    generateIndices() {
+        for (let i = 1; i <= this.maxPages; i++) {
             const anchor = a(i, ["page-link"])
             const idx = li(null, ["page-item", "clickable"], null, anchor)
             idx.addEventListener("click", async () => {
@@ -26,35 +57,6 @@ class Pagination {
             })
             this.indices.push(idx)
         }
-    }
-
-    updatePage(pageNumber) {
-        if (this.indices.length !== 0) this.indices[this.currPage - 1].classList.remove("active")
-        this.currPage = pageNumber
-        this.skip = (pageNumber - 1) * this.limit
-        this.prevBtn.disabled = this.currPage === 1
-        this.nextBtn.disabled = this.skip >= this.totalBoards - this.limit
-        this.updateIndices()
-        this.fetchAndRenderBoards()
-        updateBoardsPath(this.skip, this.limit, this.nameSearch, this.numLists, this.totalBoards)
-    }
-
-    updateIndices() {
-        const totalPages = Math.ceil(this.totalBoards / this.limit)
-        this.indices = []
-        // Generate new indices elements based on the new limit and total pages
-        for (let i = 1; i <= totalPages; i++) {
-            const anchor = a(i, ["page-link"])
-            const idx = li(null, ["page-item", "clickable"], null, anchor)
-            idx.addEventListener("click", async () => {
-                this.updatePage(i)
-            });
-            this.indices.push(idx)
-        }
-
-        if (this.indices.length !== 0) this.indices[this.currPage - 1].classList.add("active")
-
-        document.querySelector('.pagination-indices').replaceChildren(...this.indices)
     }
 
     async fetchAndRenderBoards() {
@@ -101,7 +103,7 @@ class Pagination {
     createLimitSelector() {
         const limitOptions = getLimitSelectorOptions(
             MAX_BOARDS_DISPLAY,
-            5,
+            MAX_LIMIT_OPTIONS_SIZE,
             this.limit
         )
         const options = limitOptions.map((option) => createElement("option", option))
@@ -111,8 +113,9 @@ class Pagination {
             this.limit = ev.target.value
             this.skip = 0
             this.currPage = 1
+            this.maxPages = Math.ceil(this.totalBoards / this.limit)
             this.fetchAndRenderBoards()
-            this.updateIndices()
+            this.updatePage(this.currPage)
             updateBoardsPath(
                 this.skip,
                 ev.target.value,

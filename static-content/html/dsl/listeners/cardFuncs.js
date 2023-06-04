@@ -9,8 +9,6 @@ export const cardFunc = async (card) => {
 
     const fetchedCard = await cardData.getCard(card.idBoard, card.idCard)
 
-    console.log(fetchedCard)
-
     document.querySelector("#CardTitleModal").innerText = fetchedCard.name
     document.querySelector("#CardStartDateModal").innerText = fetchedCard.startDate
 
@@ -112,7 +110,6 @@ async function deleteCard(card) {
 
 async function saveCard(card) {
 
-    console.log(card)
     const newEndDate = document.querySelector("#endDateTime").value.replace("T", " ")
 
     let newDescription = document.querySelector("#Description-textBox").value

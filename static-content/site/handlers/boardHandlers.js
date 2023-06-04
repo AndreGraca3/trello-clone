@@ -8,7 +8,9 @@ async function getBoards(args) {
 
     const res = await boardData.getBoards(args.skip, args.limit, args.name, args.numLists)
 
-    boardViews.boardsPageView(res.boards, res.totalBoards, args.skip ?? 0, args.limit ?? LIMIT_INITIAL_VALUE)
+    boardViews.boardsPageView(res.boards, res.totalBoards, args.skip ?? 0, args.limit ?? LIMIT_INITIAL_VALUE,
+        args.name, args.numLists
+    )
 }
 
 async function getBoard(args) {
