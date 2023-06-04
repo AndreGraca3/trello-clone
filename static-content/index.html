@@ -133,7 +133,7 @@
     $('.createBoardButtonModal').click(createBoard);
 
     const img = $('.avatar-icon')[0]
-    img.src = await userData.getUserAvatar()
+    img.src = await userData.getUserAvatar(sessionStorage.getItem("token"))
     document.querySelector('.getBoards-button').href = `#boards?skip=0&limit=${MAX_BOARDS_DISPLAY}`
     document.querySelector('#logout-option').onclick = () => logout()
     updateUIElements()

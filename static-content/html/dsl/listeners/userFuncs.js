@@ -1,29 +1,18 @@
-import {input} from "../../common/components/elements.js";
 import userData from "../../../data/userData.js";
 import boardData from "../../../data/boardData.js";
+import {fileInput} from "../../common/components/elements.js";
 
 export async function changeUserAvatar() {
-    const inputHtml = document.createElement("input")
-    inputHtml.type = 'file'
-    inputHtml.accept = 'image/*'
-
-    inputHtml.addEventListener('change', () => {
-        const file = inputHtml.files[0]
-        if (!file) return
-
-        const reader = new FileReader()
-        reader.onload = async () => {
-            const imgUrl = reader.result
-            if (sessionStorage.getItem("token")) {
-                await userData.changeAvatar(imgUrl)
-                document.querySelectorAll('.avatarImg').forEach(a => a.src = imgUrl)
-            }
-            document.querySelector('.avatar').src = imgUrl
+    const handler = async (reader) => {
+        const imgUrl = reader.result
+        if (sessionStorage.getItem("token")) {
+            await userData.changeAvatar(imgUrl)
+            document.querySelectorAll('.avatarImg').forEach(a => a.src = imgUrl)
         }
-        reader.readAsDataURL(file)
-    })
+        document.querySelector('.avatar').src = imgUrl
+    }
 
-    inputHtml.click()
+    fileInput(handler)
 }
 
 export async function createUser(name, email, password, urlAvatar) {
@@ -50,12 +39,13 @@ export function logout() {
 }
 
 export function updateUIElements() {
-    document.querySelectorAll(".avatarImg").forEach(async e => e.src = await userData.getUserAvatar())
+    const token = sessionStorage.getItem("token")
+    document.querySelectorAll(".avatarImg").forEach(async e =>
+        e.src = await userData.getUserAvatar(token)
+    )
 
     const loggedOutElems = document.querySelectorAll('.loggedOut-option')
     const loggedInElems = document.querySelectorAll('.loggedIn-option')
-
-    const token = sessionStorage.getItem('token')
 
     if (token) {
         loggedOutElems.forEach(e => e.style.display = "none")

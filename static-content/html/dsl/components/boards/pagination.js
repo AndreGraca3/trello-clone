@@ -29,7 +29,7 @@ class Pagination {
     }
 
     updatePage(pageNumber) {
-        this.indices[this.currPage - 1].classList.remove("active")
+        if (this.indices.length !== 0) this.indices[this.currPage - 1].classList.remove("active")
         this.currPage = pageNumber
         this.skip = (pageNumber - 1) * this.limit
         this.prevBtn.disabled = this.currPage === 1
@@ -52,7 +52,7 @@ class Pagination {
             this.indices.push(idx)
         }
 
-        this.indices[this.currPage - 1].classList.add("active")
+        if (this.indices.length !== 0) this.indices[this.currPage - 1].classList.add("active")
 
         document.querySelector('.pagination-indices').replaceChildren(...this.indices)
     }

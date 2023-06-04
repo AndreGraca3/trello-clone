@@ -409,6 +409,13 @@
     border-radius: 50%;
 }
 
+.avatar-signUp {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
 .avatar {
     margin-top: 2rem;
     margin-bottom: 10px;
@@ -416,6 +423,7 @@
     width: 300px;
     height: 300px;
     border-radius: 50%;
+    cursor: pointer;
 }
 
 .avatar:hover {

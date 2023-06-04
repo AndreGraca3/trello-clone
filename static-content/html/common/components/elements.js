@@ -102,3 +102,21 @@ export function nav(innerText, classArr, id, ...children) {
 export function small(innerText, classArr, id, ...children) {
     return createElement("small", innerText, classArr, id, ...children)
 }
+
+// Receives a handler for when a file is accepted from the user. The handler receives a reader object to read the file.
+export function fileInput(handler) {
+    const inputHtml = document.createElement("input")
+    inputHtml.type = 'file'
+    inputHtml.accept = 'image/*'
+
+    inputHtml.addEventListener('change', () => {
+        const file = inputHtml.files[0]
+        if (!file) return
+
+        const reader = new FileReader()
+        reader.onload = () => handler(reader)
+        reader.readAsDataURL(file)
+    })
+
+    inputHtml.click()
+}

@@ -15,11 +15,11 @@ async function createUser(name, email, password, urlAvatar) {
 }
 
 async function getUser(token) {
-    return await fetchReq("user", "GET", null)
+    return await fetchReq("user", "GET", null, token)
 }
 
-async function getAllUsers(idBoard) {
-    return await fetchReq(`board/${idBoard}/allUsers`, "GET")
+async function getAllUsers(idBoard, token) {
+    return await fetchReq(`board/${idBoard}/allUsers`, "GET", null, token)
 }
 
 async function login(email, password) {
@@ -34,11 +34,10 @@ async function login(email, password) {
 }
 
 async function changeAvatar(imgUrl) {
-    return await fetchReq("user/avatar", "PUT", {imgUrl})
+    return await fetchReq("user/avatar", "PUT", {imgUrl}, sessionStorage.getItem("token"))
 }
 
-async function getUserAvatar() {
-    const token = sessionStorage.getItem("token")
+async function getUserAvatar(token) {
     const noUserIcon = "../resources/images/user-unknown-icon.png"
     if(!token) return noUserIcon
     const user = await getUser(token)

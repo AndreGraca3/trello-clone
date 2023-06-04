@@ -122,3 +122,13 @@ async function saveCard(card) {
     await cardData.updateCard(card.idBoard, card.idCard, card.archived, newDescription, newEndDate, card.idList)
     $('#cardModal').modal('hide')
 }
+
+export function updateIdxs(srcList, dstList, idxSrc, idxDst) {
+    Array.from(srcList.childNodes).forEach(card => {
+        if(card.dataset.idx >= idxSrc) card.dataset.idx--
+    })
+
+    Array.from(dstList.childNodes).forEach(card => {
+        if(card.dataset.idx >= idxDst) card.dataset.idx++
+    })
+}

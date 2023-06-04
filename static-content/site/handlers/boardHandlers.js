@@ -14,7 +14,7 @@ async function getBoards(args) {
 async function getBoard(args) {
 
     const detailedBoard = await boardData.getBoard(args.idBoard)
-    const boardsUsers = await userData.getAllUsers(args.idBoard)
+    const boardsUsers = await userData.getAllUsers(args.idBoard, sessionStorage.getItem("token"))
 
     boardData.visitBoard(detailedBoard)
     boardViews.boardPageView(detailedBoard, boardsUsers)

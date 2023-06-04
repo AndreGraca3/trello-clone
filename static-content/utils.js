@@ -11,13 +11,13 @@ import {FetchError} from "./errors/errors.js";
  * @returns {Promise<any>} - A promise that resolves to the parsed JSON response.
  * @throws {any} - Throws an error if the response is not successful.
  */
-export async function fetchReq(path, method = "GET", body = undefined) {
+export async function fetchReq(path, method = "GET", body = undefined, token) {
     const headers = {
         "Content-Type": "application/json",
     }
 
-    const token = sessionStorage.getItem("token")
-    if (token) headers.Authorization = `Bearer ${token}`
+    const auth = token ?? sessionStorage.getItem("token")
+    headers.Authorization = `Bearer ${auth}`
 
     const options = {
         method,
