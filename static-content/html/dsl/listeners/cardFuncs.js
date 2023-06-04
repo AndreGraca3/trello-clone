@@ -145,7 +145,7 @@ function moveToArchivedContainer(card, archivedContainer) {
         `Card${card.idCard}`,
         span("📋 " + card.name)
     )
-    newArchived.addEventListener("click", async () => cardFuncs.cardFunc(card))
+    newArchived.addEventListener("click", async () => cardFunc(card))
 
     archivedContainer.appendChild(newArchived)
 }

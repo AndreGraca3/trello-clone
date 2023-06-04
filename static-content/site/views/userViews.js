@@ -36,7 +36,7 @@ function signUpLoginPageView(isSignUp) {
     const passContainer = div(null, ["form-group", "sign-prop-container"], null,
         label("Password", ["password-label"]),
         password,
-        isSignUp ? small("We'll never share your email with anyone else.", ["form-text", "text-muted"],
+        isSignUp ? small("We'll never share your password with anyone else.", ["form-text", "text-muted"],
             "emailHelp") : null
     )
 

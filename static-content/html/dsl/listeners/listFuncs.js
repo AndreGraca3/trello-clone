@@ -1,6 +1,5 @@
 import {input} from "../../common/components/elements.js";
 import listData from "../../../data/listData.js";
-import cardData from "../../../data/cardData.js";
 import listContainer from "../components/lists/listContainer.js";
 import cardFuncs from "./cardFuncs.js";
 
@@ -49,7 +48,7 @@ export async function deleteList(list) {
     }
 
     if(!card) {
-        await cardData.deleteCard(list.idBoard, list.idList)
+        await listData.deleteList(list.idBoard, list.idList)
         deleteHandler()
     } else {
         $('#listModal').modal('show')
