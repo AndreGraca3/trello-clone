@@ -22,13 +22,13 @@ class Pagination {
         this.numLists = queryParams.args["numLists"]
         this.currPage = Math.floor(this.skip / this.limit) + 1
         this.indices = []
-        this.maxPages = Math.max(1, Math.ceil(totalBoards / this.limit))
+        this.maxPages = Math.max(1, Math.ceil(totalBoards / this.limit)) // não devia ser max(0,...)
 
         this.generateIndices()
     }
 
     updatePage(pageNumber) {
-        if (this.indices.length >= this.currPage) this.indices[this.currPage - 1].classList.remove("active")
+        if (this.indices.length >= this.currPage) this.indices[this.currPage - 1].classList.remove("active") // mudar a cor do butão
         this.currPage = pageNumber
         this.skip = (pageNumber - 1) * this.limit
         this.prevBtn.disabled = this.currPage === 1
@@ -106,7 +106,7 @@ class Pagination {
             MAX_LIMIT_OPTIONS_SIZE,
             this.limit
         )
-        const options = limitOptions.map((option) => createElement("option", option))
+        const options = limitOptions.map((option) => createElement("option", option)) // substituir pelo createElementOption
         const selectHtml = select(null, [], "limit-selector", ...options)
         selectHtml.value = this.limit
         selectHtml.addEventListener("change", (ev) => {

@@ -22,7 +22,7 @@ class CardDataSQL : CardData {
             CardStatements.createCardCMD(idList, idBoard, name, description, endDate, getNextIdx(idList, ctx))
         var idCard: Int
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(insertStmt).executeQuery()
+        val res = ctx.con.prepareStatement(insertStmt).executeQuery()
         res.next()
 
         idCard = res.getInt("idCard")
@@ -33,7 +33,7 @@ class CardDataSQL : CardData {
         val selectStmt = CardStatements.getCardsFromListCMD(idList, idBoard)
         val cards = mutableListOf<Card>()
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
 
         while (res.next()) {
             if (res.row == 0) return emptyList() // test if this works both in here and in BoardSQL
@@ -57,7 +57,7 @@ class CardDataSQL : CardData {
     override fun getCard(idCard: Int, idBoard: Int, ctx: TransactionCtx): Card {
         val selectStmt = CardStatements.getCardCMD(idCard, idBoard)
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
         if (res.row == 0) throw TrelloException.NotFound("Card $NOT_FOUND")
@@ -83,7 +83,7 @@ class CardDataSQL : CardData {
     ) {
         val updateStmtCard = CardStatements.moveCardCMD(idCard, idList, idBoard, idListDst, idxDst)
 
-        val con = (ctx as SQLTransaction).con
+        val con = ctx.con
 
         val decreaseStmt = CardStatements.decreaseIdx(idList, idx)
         con.prepareStatement(decreaseStmt).executeUpdate()
@@ -96,13 +96,13 @@ class CardDataSQL : CardData {
 
     override fun decreaseIdx(idList: Int, idx: Int, ctx: TransactionCtx) {
         val updateStmt = CardStatements.decreaseIdx(idList, idx)
-        (ctx as SQLTransaction).con.prepareStatement(updateStmt).executeUpdate()
+        ctx.con.prepareStatement(updateStmt).executeUpdate()
     }
 
     override fun deleteCard(idCard: Int, idBoard: Int, ctx: TransactionCtx) {
         val deleteStmt = CardStatements.deleteCard(idCard, idBoard)
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(deleteStmt).executeQuery()
+        val res = ctx.con.prepareStatement(deleteStmt).executeQuery()
         res.next()
 
         if (res.row == 0) throw TrelloException.NoContent()
@@ -119,12 +119,12 @@ class CardDataSQL : CardData {
 
     override fun deleteCards(idList: Int, ctx: TransactionCtx) {
         val updateStmt = CardStatements.deleteCards(idList)
-        (ctx as SQLTransaction).con.prepareStatement(updateStmt).executeUpdate()
+        ctx.con.prepareStatement(updateStmt).executeUpdate()
     }
 
     override fun archiveCards(idBoard: Int, idList: Int, ctx: TransactionCtx) {
         val updateStmt = CardStatements.archiveCards(idBoard, idList)
-        (ctx as SQLTransaction).con.prepareStatement(updateStmt).executeUpdate()
+        ctx.con.prepareStatement(updateStmt).executeUpdate()
     }
 
     override fun getNextIdx(idList: Int, ctx: TransactionCtx): Int {
@@ -139,7 +139,7 @@ class CardDataSQL : CardData {
     override fun getCardCount(idBoard: Int, idList: Int, ctx: TransactionCtx): Int {
         val selectStmt = CardStatements.getCardCount(idBoard, idList)
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
         return res.getInt("count")
@@ -149,7 +149,7 @@ class CardDataSQL : CardData {
         val selectStmt = CardStatements.getArchivedCards(idBoard)
         val cards = mutableListOf<Card>()
 
-        val res = (ctx as SQLTransaction).con.prepareStatement(selectStmt).executeQuery()
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
 
         while (res.next()) {
             if (res.row == 0) return emptyList() // test if this works both in here and in BoardSQL

@@ -16,11 +16,16 @@ function boardsPageView(boards, totalBoards, skip, limit, name, numLists) {
 
     h1("My Boards")
 
-    document.location = updateBoardsPath(skip, limit, name, numLists, totalBoards)
+    const object = updateBoardsPath(skip, limit, name, numLists, totalBoards)
+    document.location = object.newPath
+    skip = object.skip
+    limit = object.limit
 
     const pagContainer = div(null, ["paginationContainer"])
 
     const boardsContainer = div(null, ["boardBox-container"])
+
+    console.log("skip " + skip)
 
     const pagination = new Pagination(boardsContainer, skip, limit, totalBoards)
 
