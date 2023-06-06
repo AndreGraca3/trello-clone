@@ -1,9 +1,8 @@
 package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
-import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
-import pt.isel.ls.server.data.transactionManager.transactions.SQLTransaction
 import pt.isel.ls.server.data.dataInterfaces.models.UserBoardData
 import pt.isel.ls.server.data.dataPostGres.statements.UserBoardStatements
+import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 
@@ -51,25 +50,19 @@ class UserBoardDataSQL : UserBoardData {
 
     override fun getBoardCountFromUser(idUser: Int, name: String, numLists: Int?, ctx: TransactionCtx): Int {
         val selectStmt = UserBoardStatements.getBoardCountFromUser(idUser, name, numLists)
-        var count: Int
 
         val res = ctx.con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
-        count = res.getInt("count")
-
-        return count
+        return res.getInt("count")
     }
 
     override fun getUserCountFromBoard(idBoard: Int, ctx: TransactionCtx): Int {
         val selectStmt = UserBoardStatements.getUserCountFromBoard(idBoard)
-        var count: Int
 
         val res = ctx.con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
-        count = res.getInt("count")
-
-        return count
+        return res.getInt("count")
     }
 }

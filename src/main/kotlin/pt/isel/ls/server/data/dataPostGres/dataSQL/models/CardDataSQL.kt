@@ -1,12 +1,12 @@
 package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
-import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
-import pt.isel.ls.server.data.transactionManager.transactions.SQLTransaction
+import pt.isel.ls.server.Card
 import pt.isel.ls.server.data.dataInterfaces.models.CardData
 import pt.isel.ls.server.data.dataPostGres.statements.CardStatements
+import pt.isel.ls.server.data.transactionManager.transactions.SQLTransaction
+import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.Card
 
 class CardDataSQL : CardData {
 
@@ -20,13 +20,11 @@ class CardDataSQL : CardData {
     ): Int {
         val insertStmt =
             CardStatements.createCardCMD(idList, idBoard, name, description, endDate, getNextIdx(idList, ctx))
-        var idCard: Int
 
         val res = ctx.con.prepareStatement(insertStmt).executeQuery()
         res.next()
 
-        idCard = res.getInt("idCard")
-        return idCard
+        return res.getInt("idCard")
     }
 
     override fun getCardsFromList(idList: Int, idBoard: Int, ctx: TransactionCtx): List<Card> {
@@ -43,7 +41,7 @@ class CardDataSQL : CardData {
                     res.getInt("idList"),
                     res.getInt("idBoard"),
                     res.getString("name"),
-                    if(res.getString("description") == "null") null else res.getString("description"),
+                    if (res.getString("description") == "null") null else res.getString("description"),
                     res.getString("startDate"),
                     res.getString("endDate"),
                     res.getBoolean("archived"),
@@ -62,14 +60,17 @@ class CardDataSQL : CardData {
 
         if (res.row == 0) throw TrelloException.NotFound("Card $NOT_FOUND")
 
-        val idList = if(res.getInt("idList") == 0) null else res.getInt("idList")
-        val name = res.getString("name")
-        val description = res.getString("description")
-        val startDate = res.getString("startDate")
-        val endDate = res.getString("endDate")
-        val archived = res.getBoolean("archived")
-        val idx = res.getInt("idx")
-        return Card(idCard, idList, idBoard, name, description, startDate, endDate, archived, idx)
+        return Card(
+            idCard,
+            if (res.getInt("idList") == 0) null else res.getInt("idList"),
+            idBoard,
+            res.getString("name"),
+            res.getString("description"),
+            res.getString("startDate"),
+            res.getString("endDate"),
+            res.getBoolean("archived"),
+            res.getInt("idx")
+        )
     }
 
     override fun moveCard(
