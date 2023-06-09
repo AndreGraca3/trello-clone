@@ -16,8 +16,8 @@ function boardsPageView(boards, totalBoards, skip, limit, name, numLists) {
 
     h1("My Boards")
 
-    const object = updateBoardsPath(skip, limit, name, numLists, totalBoards)
-    document.location = object.newPath
+    const object = updateBoardsPath(skip, limit, name, numLists, totalBoards) // if skip > 0 ...
+    //document.location = object.newPath this is not necessary...
     skip = object.skip
     limit = object.limit
 

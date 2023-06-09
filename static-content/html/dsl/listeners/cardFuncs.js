@@ -1,6 +1,7 @@
-import {input, li, span} from "../../common/components/elements.js";
+import {button, input, li, span} from "../../common/components/elements.js";
 import cardData from "../../../data/cardData.js";
 import cardContainer from "../components/cards/cardContainer.js";
+import {listDropdown} from "../dropdowns/modelDropdowns.js";
 
 
 const cardFunc = async (card) => {
@@ -10,16 +11,28 @@ const cardFunc = async (card) => {
     document.querySelector("#CardTitleModal").innerText = fetchedCard.name
     document.querySelector("#CardStartDateModal").innerText = fetchedCard.startDate
 
-    if(fetchedCard.description !== null) {
-        document.querySelector("#Description-textBox").value = fetchedCard.description
-    } else document.querySelector("#Description-textBox").value = ""
+    const descriptionBox = document.querySelector("#Description-textBox")
+    console.log(descriptionBox)
+    if (fetchedCard.description !== null) {
+        descriptionBox.value = fetchedCard.description
+    } else descriptionBox.value = ""
 
-    if(fetchedCard.endDate !== null) {
-        document.querySelector("#endDateTime").value = fetchedCard.endDate.replace(" ", "T")
-    }else document.querySelector("#endDateTime").value = ""
+    const endDateTime = document.querySelector("#endDateTime")
+    if (fetchedCard.endDate !== null) {
+        endDateTime.value = fetchedCard.endDate.replace(" ", "T")
+    } else endDateTime.value = ""
 
     document.querySelector("#cardSaveButton").onclick = async () => saveCard(fetchedCard)
-    document.querySelector("#cardArchiveButton").onclick = async () => archiveCard(fetchedCard)
+
+    const archiveButton = document.querySelector("#cardArchiveButton")
+    if (fetchedCard.idList == null) {
+        const lists = document.querySelectorAll(".list-container")
+        if (archiveButton) archiveButton.replaceWith(listDropdown(card, lists))
+    } else {
+        archiveButton.replaceWith(button("Archive", ["btn-primary", "btn"], "cardArchiveButton"))
+        document.querySelector("#cardArchiveButton").onclick = async () => archiveCard(fetchedCard)
+    }
+
     document.querySelector("#cardDeleteButton").onclick = async () => deleteCard(fetchedCard)
 
     $('#cardModal').modal('show')
@@ -31,7 +44,7 @@ async function createCard(listCards, list) {
     listCards.scrollTop = listCards.scrollHeight
     inputHtml.focus()
     const handleAddCard = async () => {
-        if(inputHtml.value.trim() === ""){
+        if (inputHtml.value.trim() === "") {
             listCards.removeChild(inputHtml)
             return
         }
@@ -40,7 +53,7 @@ async function createCard(listCards, list) {
 
     inputHtml.addEventListener("focusout", handleAddCard)
     inputHtml.addEventListener("keydown", (event) => {
-        if(event.key !== "Enter" || event.repeat) return
+        if (event.key !== "Enter" || event.repeat) return
         inputHtml.removeEventListener("focusout", handleAddCard)
         handleAddCard()
     })
@@ -60,27 +73,26 @@ async function addCard(listCards, input, list) {
     card.idList = list.idList
     card.idBoard = list.idBoard
     card.idCard = cardId
-    card.idx = listCards.lastChild? parseInt(listCards.lastChild.dataset.idx) + 1 : 1
+    card.idx = listCards.lastChild ? parseInt(listCards.lastChild.dataset.idx) + 1 : 1
     const cardElem = cardContainer(card)
-    cardElem.addEventListener("click", () => {cardFunc(card)})
+    cardElem.addEventListener("click", () => {
+        cardFunc(card)
+    })
     listCards.appendChild(cardElem)
 }
 
 async function archiveCard(card) {
-    const cardToMove = document.querySelector(`#Card${card.idCard}`)
+    console.log("click")
+
+    const cardToArchive = document.querySelector(`#Card${card.idCard}`)
     const list = document.querySelector(`#list${card.idList}`)
     const archivedContainer = document.querySelector(`#dropdownMenu-archived`)
 
-    if(!card.archived) {
+    if (!card.archived) {
         // move to archived
-        list.removeChild(cardToMove)
+        list.removeChild(cardToArchive)
         moveToArchivedContainer(card, archivedContainer)
-    } else {
-        // return to origin
-        // TODO: check if list exits if i want to unarchive
-        archivedContainer.removeChild(cardToMove)
-        const DeArchivedCard = cardContainer(card, async () => cardFunc(card))
-        list.appendChild(DeArchivedCard)
+        updateIdxs(list, null, card.idx)
     }
 
     let newEndDate = document.querySelector("#endDateTime").value.replace("T", " ")
@@ -91,12 +103,37 @@ async function archiveCard(card) {
     $('#cardModal').modal('hide')
 }
 
+async function deArchiveCard(card, idList) {
+    const cardToArchive = document.querySelector(`#Card${card.idCard}`)
+    const archivedContainer = document.querySelector(`#dropdownMenu-archived`)
+    let listDst = null
+    document.querySelectorAll(".list-cards").forEach(list => {
+            if (list.dataset.idList === idList) listDst = list
+        }
+    )
+
+    console.log(listDst)
+
+    let newEndDate = document.querySelector("#endDateTime").value.replace("T", " ")
+
+    const newDescription = document.querySelector("#Description-textBox").value
+
+    await cardData.updateCard(card.idBoard, card.idCard, !card.archived, newDescription, newEndDate, idList.replace("List", ""))
+
+    archivedContainer.removeChild(cardToArchive)
+    const deArchivedCard = cardContainer(card, async () => cardFunc(card))
+    deArchivedCard.dataset.idList = idList
+    deArchivedCard.dataset.idx = getLastIdx(listDst)
+    listDst.appendChild(deArchivedCard)
+    $('#cardModal').modal('hide')
+}
+
 async function deleteCard(card) {
     await cardData.deleteCard(card.idBoard, card.idCard)
 
     const cardToDelete = document.querySelector(`#Card${card.idCard}`)
 
-    if(!card.archived) {
+    if (!card.archived) {
         const list = document.querySelector(`#list${card.idList}`)
         list.removeChild(cardToDelete)
     } else {
@@ -113,7 +150,7 @@ async function saveCard(card) {
 
     let newDescription = document.querySelector("#Description-textBox").value
 
-    if(newDescription === "") newDescription = null
+    if (newDescription === "") newDescription = null
 
     await cardData.updateCard(card.idBoard, card.idCard, card.archived, newDescription, newEndDate, card.idList)
     $('#cardModal').modal('hide')
@@ -121,12 +158,14 @@ async function saveCard(card) {
 
 function updateIdxs(srcList, dstList, idxSrc, idxDst) {
     Array.from(srcList.childNodes).forEach(card => {
-        if(card.dataset.idx >= idxSrc) card.dataset.idx--
+        if (card.dataset.idx >= idxSrc) card.dataset.idx--
     })
 
-    Array.from(dstList.childNodes).forEach(card => {
-        if(card.dataset.idx >= idxDst) card.dataset.idx++
-    })
+    if (dstList) {
+        Array.from(dstList.childNodes).forEach(card => {
+            if (card.dataset.idx >= idxDst) card.dataset.idx++
+        })
+    }
 }
 
 function getNextCard(container, y) {
@@ -150,10 +189,16 @@ function moveToArchivedContainer(card, archivedContainer) {
     archivedContainer.appendChild(newArchived)
 }
 
+function getLastIdx(list) {
+    const lastCard = list.lastChild
+    return lastCard.dataset.idx + 1
+}
+
 export default {
     cardFunc,
     createCard,
     updateIdxs,
     getNextCard,
+    deArchiveCard,
     moveToArchivedContainer
 }

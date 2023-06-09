@@ -37,5 +37,5 @@ export function updateBoardsPath(skip, limit, nameSearch, numLists, totalBoards)
 
     const newPath = `#boards?skip=${skip}&limit=${limit}${nameSearch != null && nameSearch !== "" ? `&name=${nameSearch}` : ''}${numLists != null && numLists !== "" ? `&numLists=${numLists}` : ''}`
     window.history.pushState(null, "", newPath)
-    return {newPath, skip, limit}
+    return {skip, limit} // newPath,
 }

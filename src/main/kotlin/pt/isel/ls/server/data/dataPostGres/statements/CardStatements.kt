@@ -2,7 +2,6 @@ package pt.isel.ls.server.data.dataPostGres.statements
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 object CardStatements {
 
@@ -47,10 +46,6 @@ object CardStatements {
         return "DELETE FROM dbo.card WHERE idList = $idList;"
     }
 
-    fun archiveCard(idBoard: Int, idCard: Int): String {
-        return "UPDATE dbo.card SET idList = null, archived = true WHERE idList = $idCard and idBoard = $idBoard;"
-    }
-
     fun archiveCards(idBoard: Int, idList: Int): String {
         return "UPDATE dbo.card SET idList = null, archived = true WHERE idList = $idList and idBoard = $idBoard;"
     }
@@ -75,11 +70,11 @@ object CardStatements {
         return "UPDATE dbo.card SET idx = idx + 1 WHERE idList = $idList and idx >= $idx;"
     }
 
-    fun updateCard(idCard: Int, idBoard: Int, description: String?, endDate: String?, idList: Int?, archived: Boolean): String {
+    fun updateCard(idCard: Int, idBoard: Int, description: String?, endDate: String?, idList: Int?, archived: Boolean, idx: Int): String {
         return "UPDATE dbo.card " +
             "SET description = ${if (description != null) "'$description'" else null}, " +
             "endDate = ${if (endDate != null) "'$endDate'" else null}, " +
-            "idList = $idList, archived = $archived " +
+            "idList = $idList, archived = $archived, idx = $idx " +
             "where idCard = $idCard and idBoard = $idBoard;"
     }
 }

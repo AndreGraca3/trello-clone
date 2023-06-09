@@ -177,6 +177,7 @@ class CardDataSQL : CardData {
         endDate: String?,
         idList: Int?,
         archived: Boolean,
+        idx: Int,
         ctx: TransactionCtx
     ) {
         val updateStmt = CardStatements.updateCard(
@@ -185,7 +186,8 @@ class CardDataSQL : CardData {
             description,
             endDate,
             idList,
-            archived
+            archived,
+            idx
         )
 
         val con = ctx.con

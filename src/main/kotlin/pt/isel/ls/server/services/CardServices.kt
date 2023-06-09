@@ -85,8 +85,10 @@ class CardServices(
             val idUser = userData.getUser(token, it).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, it)
             val card = cardData.getCard(idCard, idBoard, it)
+            if(card.idList != null && idList != null && card.idList != idList) throw TrelloException.IllegalArgument("$INVAL_PARAM idList")
             val newEndDate = if (endDate == "") null else endDate
-            cardData.updateCard(card, description, newEndDate, idList, archived, it)
+            val idx = if(card.idList == null && idList != null) cardData.getNextIdx(idList, it) else card.idx
+            cardData.updateCard(card, description, newEndDate, idList, archived, idx, it)
         }
     }
 }

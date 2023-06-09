@@ -116,6 +116,7 @@ class CardDataMem : CardData {
         endDate: String?,
         idList: Int?,
         archived: Boolean,
+        idx: Int,
         ctx: TransactionCtx
     ) {
         val found = cards.find { it.idCard == card.idCard } ?: return
@@ -123,6 +124,7 @@ class CardDataMem : CardData {
         found.description = description
         found.endDate = endDate
         found.idList = idList
+        found.idx = idx
     }
 
     private fun getNextId(): Int {

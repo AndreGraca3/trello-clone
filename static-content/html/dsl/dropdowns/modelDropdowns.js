@@ -43,3 +43,22 @@ export function archivedDropdown(cards) { // html board
 
     return div(null, ["dropdown", "dropdown-archived"], null, buttonHtml, ulHtml)
 }
+
+export function listDropdown(card, lists) {
+
+    const DeArchive = button("De-archived", ["dropdown-toggle", "btn", "btn-primary", "dropdown-menu-scrollable"], "DropdownList")
+    DeArchive.setAttribute("data-bs-toggle", "dropdown")
+
+    const ulHtml = ul(null, ["dropdown-menu-dark", "dropdown-menu", "dropdown-menu-scrollable"], "dropdownMenu-lists")
+
+    lists.forEach(
+        list => {
+            const listName = list.querySelector(".list-header").innerText
+            const liHtml = li(listName, ["dropdown-item", "clickable"])
+            liHtml.addEventListener("click", async () => cardFuncs.deArchiveCard(card, list.id))
+            ulHtml.appendChild(liHtml)
+        }
+    )
+
+    return div(null, ["dropdown", "dropdown-archived"], "cardArchiveButton", DeArchive, ulHtml)
+}

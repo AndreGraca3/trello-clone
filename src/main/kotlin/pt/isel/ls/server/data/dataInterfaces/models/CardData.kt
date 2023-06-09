@@ -42,5 +42,5 @@ interface CardData {
 
     fun getArchivedCards(idBoard: Int, ctx: TransactionCtx): List<Card>
 
-    fun updateCard(card: Card, description: String?, endDate: String?, idList: Int?, archived: Boolean, ctx: TransactionCtx)
+    fun updateCard(card: Card, description: String?, endDate: String?, idList: Int?, archived: Boolean, idx: Int, ctx: TransactionCtx)
 }
