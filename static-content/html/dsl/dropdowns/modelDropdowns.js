@@ -46,7 +46,7 @@ export function archivedDropdown(cards) { // html board
 
 export function listDropdown(card, lists) {
 
-    const DeArchive = button("De-archived", ["dropdown-toggle", "btn", "btn-primary", "dropdown-menu-scrollable"], "DropdownList")
+    const DeArchive = button("De-archived", ["dropdown-toggle", "btn", "btn-primary"], "DropdownList")
     DeArchive.setAttribute("data-bs-toggle", "dropdown")
 
     const ulHtml = ul(null, ["dropdown-menu-dark", "dropdown-menu", "dropdown-menu-scrollable"], "dropdownMenu-lists")
