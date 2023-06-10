@@ -12,7 +12,6 @@ const cardFunc = async (card) => {
     document.querySelector("#CardStartDateModal").innerText = fetchedCard.startDate
 
     const descriptionBox = document.querySelector("#Description-textBox")
-    console.log(descriptionBox)
     if (fetchedCard.description !== null) {
         descriptionBox.value = fetchedCard.description
     } else descriptionBox.value = ""
@@ -27,7 +26,7 @@ const cardFunc = async (card) => {
     const archiveButton = document.querySelector("#cardArchiveButton")
     if (fetchedCard.idList == null) {
         const lists = document.querySelectorAll(".list-container")
-        if (archiveButton) archiveButton.replaceWith(listDropdown(card, lists))
+        if (archiveButton) archiveButton.replaceWith(listDropdown(fetchedCard, lists))
     } else {
         archiveButton.replaceWith(button("Archive", ["btn-primary", "btn"], "cardArchiveButton"))
         document.querySelector("#cardArchiveButton").onclick = async () => archiveCard(fetchedCard)
@@ -82,8 +81,6 @@ async function addCard(listCards, input, list) {
 }
 
 async function archiveCard(card) {
-    console.log("click")
-
     const cardToArchive = document.querySelector(`#Card${card.idCard}`)
     const list = document.querySelector(`#list${card.idList}`)
     const archivedContainer = document.querySelector(`#dropdownMenu-archived`)
@@ -104,27 +101,23 @@ async function archiveCard(card) {
 }
 
 async function deArchiveCard(card, idList) {
-    const cardToArchive = document.querySelector(`#Card${card.idCard}`)
+    const cardToDeArchive = document.querySelector(`#Card${card.idCard}`)
     const archivedContainer = document.querySelector(`#dropdownMenu-archived`)
-    let listDst = null
-    document.querySelectorAll(".list-cards").forEach(list => {
-            if (list.dataset.idList === idList) listDst = list
-        }
-    )
+    const list = document.querySelector(`.list-cards#${idList}`)
 
-    console.log(listDst)
-
-    let newEndDate = document.querySelector("#endDateTime").value.replace("T", " ")
+   let newEndDate = document.querySelector("#endDateTime").value.replace("T", " ")
 
     const newDescription = document.querySelector("#Description-textBox").value
 
-    await cardData.updateCard(card.idBoard, card.idCard, !card.archived, newDescription, newEndDate, idList.replace("List", ""))
+    const listId = idList.replace("list", "")
 
-    archivedContainer.removeChild(cardToArchive)
+    await cardData.updateCard(card.idBoard, card.idCard, !card.archived, newDescription, newEndDate, listId)
+
+    archivedContainer.removeChild(cardToDeArchive)
     const deArchivedCard = cardContainer(card, async () => cardFunc(card))
-    deArchivedCard.dataset.idList = idList
-    deArchivedCard.dataset.idx = getLastIdx(listDst)
-    listDst.appendChild(deArchivedCard)
+    deArchivedCard.dataset.idList = listId
+    deArchivedCard.dataset.idx = getLastIdx(list)
+    list.appendChild(deArchivedCard)
     $('#cardModal').modal('hide')
 }
 
@@ -136,6 +129,7 @@ async function deleteCard(card) {
     if (!card.archived) {
         const list = document.querySelector(`#list${card.idList}`)
         list.removeChild(cardToDelete)
+        updateIdxs(list, null, cardToDelete.dataset.idx, null)
     } else {
         const archivedContainer = document.querySelector(`#dropdownMenu-archived`)
         archivedContainer.removeChild(cardToDelete)
@@ -191,7 +185,8 @@ function moveToArchivedContainer(card, archivedContainer) {
 
 function getLastIdx(list) {
     const lastCard = list.lastChild
-    return lastCard.dataset.idx + 1
+    if(!lastCard) return 1
+    return parseInt(lastCard.dataset.idx) + 1
 }
 
 export default {

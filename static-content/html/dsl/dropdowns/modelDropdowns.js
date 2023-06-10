@@ -54,8 +54,9 @@ export function listDropdown(card, lists) {
     lists.forEach(
         list => {
             const listName = list.querySelector(".list-header").innerText
+            const listId = list.querySelector(".list-cards").id
             const liHtml = li(listName, ["dropdown-item", "clickable"])
-            liHtml.addEventListener("click", async () => cardFuncs.deArchiveCard(card, list.id))
+            liHtml.addEventListener("click", async () => cardFuncs.deArchiveCard(card, listId))
             ulHtml.appendChild(liHtml)
         }
     )

@@ -22,18 +22,15 @@ export function showCreateBoardModal() {
 }
 
 export function hideCreateBoardModal() {
+    $('#board-name').val("")
+    $('#board-description').val("")
     $('#createBoardModal').modal('hide')
 }
 
 // Changes browser URL. This doesn't fire the hashchange effect
 export function updateBoardsPath(skip, limit, nameSearch, numLists, totalBoards) {
-    // Fix skip and limit values
-    console.log("antes " + skip)
-
     if (skip < 0) skip = 0
     if (skip > totalBoards) skip = Math.max(totalBoards - limit + 1, 0)
-
-    console.log("depois " + skip)
 
     const newPath = `#boards?skip=${skip}&limit=${limit}${nameSearch != null && nameSearch !== "" ? `&name=${nameSearch}` : ''}${numLists != null && numLists !== "" ? `&numLists=${numLists}` : ''}`
     window.history.pushState(null, "", newPath)

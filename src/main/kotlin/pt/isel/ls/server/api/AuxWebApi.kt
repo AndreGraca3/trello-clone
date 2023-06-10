@@ -1,5 +1,6 @@
 package pt.isel.ls.server.api
 
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.http4k.core.Request
@@ -40,6 +41,17 @@ fun handleRequest(request: Request, handler: KFunction<Response>): Response {
         }
     } catch (e: Exception) {
         when (val cause = if (e is InvocationTargetException) e.targetException else e) {
+            is SerializationException -> {
+                println("Serialization")
+                println(cause.message)
+                val field = cause.message?.substringBefore(" for", "Invalid body.")
+                createRsp(Status.BAD_REQUEST, "$INVAL_PARAM $field")
+            }
+            /*is IllegalArgumentException -> {
+                println("IllegalArgument")
+                println(cause.message)
+                createRsp(Status.BAD_REQUEST, cause.message)
+            }*/
             is TrelloException -> createRsp(cause.status, cause.message)
             is SQLException -> {
                 println(cause.localizedMessage)

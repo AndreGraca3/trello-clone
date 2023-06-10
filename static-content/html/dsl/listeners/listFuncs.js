@@ -32,7 +32,7 @@ async function addList(boardContainer, input, board, createListButton) {
     input.remove()
     const idList = await listData.createList(board.idBoard, input.value)
     list.idBoard = board.idBoard
-    list.idList = idList
+    list.idList = idList // comment
     boardContainer.insertBefore(listContainer(list), createListButton)
 }
 

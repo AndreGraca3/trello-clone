@@ -19,7 +19,7 @@ object CardStatements {
         archived: Boolean = false
     ): String {
         return "INSERT INTO dbo.card (name, description, idList, idBoard, startDate, endDate, archived, idx) " +
-            "VALUES ('$name', '$description', $idList, $idBoard, '${
+            "VALUES ('$name', ${if (description != null) "'$description'" else null}, $idList, $idBoard, '${
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
             }', $endDate, $archived, $idx) RETURNING idCard;"
     }

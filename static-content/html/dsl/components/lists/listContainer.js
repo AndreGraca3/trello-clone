@@ -35,5 +35,5 @@ export default function listContainer(list) {
 
     return div(null, ["list-container"], `List${list.idList}`,
         listHeader, deleteButton, listCards, newCardButton
-    )
+    ) // `List${list.idList}` => null
 }
