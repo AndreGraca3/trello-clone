@@ -1,18 +1,35 @@
 package pt.isel.ls.tests.webApi
 
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
-import pt.isel.ls.server.*
-import kotlin.test.Test
-import kotlin.test.BeforeTest
+import pt.isel.ls.server.Board
+import pt.isel.ls.server.BoardDetailed
+import pt.isel.ls.server.BoardIn
+import pt.isel.ls.server.BoardOut
+import pt.isel.ls.server.EmailUser
+import pt.isel.ls.server.TotalBoards
+import pt.isel.ls.server.User
 import pt.isel.ls.server.data.dataMem.boards
 import pt.isel.ls.server.data.dataMem.users
 import pt.isel.ls.server.data.dataMem.usersBoards
-import pt.isel.ls.tests.utils.*
+import pt.isel.ls.tests.utils.app
+import pt.isel.ls.tests.utils.baseUrl
+import pt.isel.ls.tests.utils.boardId
+import pt.isel.ls.tests.utils.createBoard
+import pt.isel.ls.tests.utils.createUser
+import pt.isel.ls.tests.utils.dataMem
+import pt.isel.ls.tests.utils.dataSetup
+import pt.isel.ls.tests.utils.dummyBoardDescription
+import pt.isel.ls.tests.utils.dummyBoardName
+import pt.isel.ls.tests.utils.executorTest
+import pt.isel.ls.tests.utils.invalidToken
+import pt.isel.ls.tests.utils.services
+import pt.isel.ls.tests.utils.user
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
@@ -108,7 +125,7 @@ class BoardAPITests {
     @Test
     fun `test get all boards without being logged in`() {
         repeat(3) {
-            executorTest.execute {con ->
+            executorTest.execute { con ->
                 dataMem.boardData.createBoard(user.idUser, dummyBoardName + it, dummyBoardDescription, con)
             }
         }
@@ -190,7 +207,7 @@ class BoardAPITests {
         val dummyName2 = "Diogo"
         val dummyEmail2 = "Diogo@gmail.com"
         val user2 = createUser(dummyName2, dummyEmail2)
-        val userId2 = Json.encodeToString(EmailUser(user2.first))
+        val userId2 = Json.encodeToString(EmailUser(dummyEmail2))
 
         val response = app(
             Request(
@@ -213,7 +230,7 @@ class BoardAPITests {
         val dummyName2 = "Diogo"
         val dummyEmail2 = "Diogo@gmail.com"
         val user2 = createUser(dummyName2, dummyEmail2)
-        val userId2 = Json.encodeToString(EmailUser(user2.first))
+        val userId2 = Json.encodeToString(EmailUser(dummyEmail2))
 
         val response = app(
             Request(Method.PUT, "$baseUrl/board/$boardId")
@@ -343,8 +360,9 @@ class BoardAPITests {
         val idBoard = services.boardServices.createBoard(user.token, "board1", "description1")
 
         repeat(6) {
-            val newUser = services.userServices.createUser("user$it", "$it@gmail.com", "pass", null)
-            services.boardServices.addUserToBoard(user.token, newUser.first, idBoard)
+            val newEmail = "$it@gmail.com"
+            services.userServices.createUser("user$it", newEmail, "pass", null)
+            services.boardServices.addUserToBoard(user.token, newEmail, idBoard)
         }
 
         val response = app(
@@ -365,8 +383,9 @@ class BoardAPITests {
         val idBoard = services.boardServices.createBoard(user.token, "board1", "description1")
 
         repeat(6) {
-            val newUser = services.userServices.createUser("user$it", "$it@gmail.com", "pass", null)
-            services.boardServices.addUserToBoard(user.token, newUser.first, idBoard)
+            val newEmail = "$it@gmail.com"
+            services.userServices.createUser("user$it", newEmail, "pass", null)
+            services.boardServices.addUserToBoard(user.token, newEmail, idBoard)
         }
 
         val response = app(
@@ -387,8 +406,9 @@ class BoardAPITests {
         val idBoard = services.boardServices.createBoard(user.token, "board1", "description1")
 
         repeat(6) {
-            val newUser = services.userServices.createUser("user$it", "$it@gmail.com", "pass", null)
-            services.boardServices.addUserToBoard(user.token, newUser.first, idBoard)
+            val newEmail = "$it@gmail.com"
+            services.userServices.createUser("user$it", newEmail, "pass", null)
+            services.boardServices.addUserToBoard(user.token, newEmail, idBoard)
         }
 
         val response = app(

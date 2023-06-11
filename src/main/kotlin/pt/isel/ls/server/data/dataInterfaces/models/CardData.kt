@@ -1,7 +1,7 @@
 package pt.isel.ls.server.data.dataInterfaces.models
 
-import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
 import pt.isel.ls.server.Card
+import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
 
 interface CardData {
 

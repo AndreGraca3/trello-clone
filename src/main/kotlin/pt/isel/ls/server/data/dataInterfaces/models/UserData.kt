@@ -1,7 +1,7 @@
 package pt.isel.ls.server.data.dataInterfaces.models
 
-import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
 import pt.isel.ls.server.User
+import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
 
 interface UserData {
 
@@ -17,5 +17,5 @@ interface UserData {
 
     fun changeAvatar(token: String, avatar: String, ctx: TransactionCtx)
 
-    fun login(email: String, hashedPassword: String, ctx: TransactionCtx) : String
+    fun login(email: String, hashedPassword: String, ctx: TransactionCtx): String
 }

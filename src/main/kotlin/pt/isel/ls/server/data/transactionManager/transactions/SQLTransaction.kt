@@ -3,7 +3,7 @@ package pt.isel.ls.server.data.transactionManager.transactions
 import org.postgresql.ds.PGSimpleDataSource
 import java.sql.Connection
 
-class SQLTransaction: TransactionCtx {
+class SQLTransaction : TransactionCtx {
     override val con: Connection = setup().connection
 
     override fun init() {

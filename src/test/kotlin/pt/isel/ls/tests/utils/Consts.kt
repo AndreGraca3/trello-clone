@@ -1,6 +1,7 @@
 package pt.isel.ls.tests.utils
 
 import org.http4k.routing.routes
+import pt.isel.ls.server.User
 import pt.isel.ls.server.api.WebAPI
 import pt.isel.ls.server.data.dataMem.DataMem
 import pt.isel.ls.server.data.transactionManager.executor.DataExecutor
@@ -10,7 +11,6 @@ import pt.isel.ls.server.routes.CardRoutes
 import pt.isel.ls.server.routes.ListRoutes
 import pt.isel.ls.server.routes.UserRoutes
 import pt.isel.ls.server.services.Services
-import pt.isel.ls.server.User
 
 const val invalidToken = "INVALID_TOKEN"
 const val invalidId = 1904

@@ -6,8 +6,8 @@ import pt.isel.ls.server.exceptions.map
 import java.sql.SQLException
 
 class DataExecutor(private val tr: TransactionCtx) {
-     fun <R> execute(action: (TransactionCtx) -> R): R {
-         try {
+    fun <R> execute(action: (TransactionCtx) -> R): R {
+        try {
             tr.init()
             val res = action(tr)
             tr.commit()

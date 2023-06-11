@@ -10,7 +10,7 @@ import pt.isel.ls.server.exceptions.TrelloException
 
 class UserBoardDataSQL : UserBoardData {
 
-    override fun addUserToBoard(idUser: Int, idBoard: Int, ctx: TransactionCtx) : UserProfile{
+    override fun addUserToBoard(idUser: Int, idBoard: Int, ctx: TransactionCtx): UserProfile {
         val insertStmt = UserBoardStatements.addUserToBoard(idUser, idBoard)
         val selectStmt = UserStatements.getUserProfile(idUser)
         ctx.con.prepareStatement(insertStmt).executeUpdate()

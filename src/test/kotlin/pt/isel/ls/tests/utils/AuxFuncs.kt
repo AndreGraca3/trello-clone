@@ -1,18 +1,18 @@
 package pt.isel.ls.tests.utils
 
+import pt.isel.ls.server.Board
+import pt.isel.ls.server.BoardList
+import pt.isel.ls.server.Card
+import pt.isel.ls.server.User
 import pt.isel.ls.server.data.dataMem.boards
 import pt.isel.ls.server.data.dataMem.cards
 import pt.isel.ls.server.data.dataMem.lists
 import pt.isel.ls.server.data.dataMem.users
 import pt.isel.ls.server.data.dataMem.usersBoards
-import pt.isel.ls.server.Board
-import pt.isel.ls.server.BoardList
-import pt.isel.ls.server.Card
-import pt.isel.ls.server.User
 
 // Functions to create dummy components for tests
-fun createUser(name: String = dummyName, email: String = dummyEmail, hashedPassword : String = dummyPassword, avatar: String = dummyAvatar) =
-    executorTest.execute { dataMem.userData.createUser(name, email,hashedPassword, avatar, it) }
+fun createUser(name: String = dummyName, email: String = dummyEmail, hashedPassword: String = dummyPassword, avatar: String = dummyAvatar) =
+    executorTest.execute { dataMem.userData.createUser(name, email, hashedPassword, avatar, it) }
 
 fun createBoard(
     idUser: Int,

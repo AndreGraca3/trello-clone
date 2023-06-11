@@ -4,7 +4,6 @@ import java.security.MessageDigest
 import java.security.SecureRandom
 
 fun hashPassword(password: String): String {
-
     val messageDigest = MessageDigest.getInstance("SHA-256")
 
     val hashedBytes = messageDigest.digest(password.toByteArray())

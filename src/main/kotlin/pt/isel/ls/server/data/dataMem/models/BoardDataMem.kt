@@ -1,16 +1,16 @@
 package pt.isel.ls.server.data.dataMem.models
 
-import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
+import pt.isel.ls.server.Board
+import pt.isel.ls.server.BoardWithLists
 import pt.isel.ls.server.data.dataInterfaces.models.BoardData
 import pt.isel.ls.server.data.dataMem.boards
 import pt.isel.ls.server.data.dataMem.lists
 import pt.isel.ls.server.data.dataMem.usersBoards
+import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
 import pt.isel.ls.server.exceptions.ALREADY_EXISTS
 import pt.isel.ls.server.exceptions.INVAL_PARAM
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.Board
-import pt.isel.ls.server.BoardWithLists
 import java.sql.SQLException
 import kotlin.math.min
 

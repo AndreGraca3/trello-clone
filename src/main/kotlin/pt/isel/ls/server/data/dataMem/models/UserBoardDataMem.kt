@@ -1,23 +1,23 @@
 package pt.isel.ls.server.data.dataMem.models
 
-import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
+import pt.isel.ls.server.UserBoard
+import pt.isel.ls.server.UserProfile
 import pt.isel.ls.server.data.dataInterfaces.models.UserBoardData
 import pt.isel.ls.server.data.dataMem.boards
 import pt.isel.ls.server.data.dataMem.lists
+import pt.isel.ls.server.data.dataMem.users
 import pt.isel.ls.server.data.dataMem.usersBoards
+import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.UserBoard
-import pt.isel.ls.server.UserProfile
-import pt.isel.ls.server.data.dataMem.users
 import java.sql.SQLException
 
 class UserBoardDataMem : UserBoardData {
 
     override fun addUserToBoard(idUser: Int, idBoard: Int, ctx: TransactionCtx): UserProfile {
-        if(usersBoards.contains(UserBoard(idUser, idBoard))) throw SQLException("already added.","23505")
+        if (usersBoards.contains(UserBoard(idUser, idBoard))) throw SQLException("already added.", "23505")
         usersBoards.add(UserBoard(idUser, idBoard))
-        val user = users.find { it.idUser == idUser}
+        val user = users.find { it.idUser == idUser }
         return UserProfile(user!!.avatar, user.name)
     }
 

@@ -1,12 +1,12 @@
 package pt.isel.ls.server.services
 
-import pt.isel.ls.server.data.transactionManager.executor.DataExecutor
+import pt.isel.ls.server.BoardList
+import pt.isel.ls.server.Card
 import pt.isel.ls.server.data.dataInterfaces.models.CardData
 import pt.isel.ls.server.data.dataInterfaces.models.ListData
 import pt.isel.ls.server.data.dataInterfaces.models.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
-import pt.isel.ls.server.BoardList
-import pt.isel.ls.server.Card
+import pt.isel.ls.server.data.transactionManager.executor.DataExecutor
 import pt.isel.ls.server.utils.validateString
 
 class ListServices(
@@ -40,7 +40,7 @@ class ListServices(
             val idUser = userData.getUser(token, it).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, it)
             listData.getList(idList, idBoard, it)
-            cardData.getCardsFromList(idList,idBoard,it)
+            cardData.getCardsFromList(idList, idBoard, it)
         }
     }
 
@@ -56,7 +56,7 @@ class ListServices(
         return dataExecutor.execute {
             val idUser = userData.getUser(token, it).idUser
             userBoardData.checkUserInBoard(idUser, idBoard, it)
-            when(action){
+            when (action) {
                 "delete" -> cardData.deleteCards(idList, it)
                 "archive" -> cardData.archiveCards(idBoard, idList, it)
             }

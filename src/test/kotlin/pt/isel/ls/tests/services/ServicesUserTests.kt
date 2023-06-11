@@ -1,8 +1,16 @@
 package pt.isel.ls.tests.services
 
-import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.User
-import pt.isel.ls.tests.utils.*
+import pt.isel.ls.server.exceptions.TrelloException
+import pt.isel.ls.tests.utils.createUser
+import pt.isel.ls.tests.utils.dataSetup
+import pt.isel.ls.tests.utils.dummyAvatar
+import pt.isel.ls.tests.utils.dummyBadEmail
+import pt.isel.ls.tests.utils.dummyEmail
+import pt.isel.ls.tests.utils.dummyName
+import pt.isel.ls.tests.utils.dummyPassword
+import pt.isel.ls.tests.utils.invalidToken
+import pt.isel.ls.tests.utils.services
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,14 +25,14 @@ class ServicesUserTests {
 
     @Test
     fun `Create a valid user`() {
-        val user = services.userServices.createUser(dummyName, dummyEmail)
+        val user = services.userServices.createUser(dummyName, dummyEmail, dummyPassword, dummyAvatar)
         assertEquals(1, user.first)
     }
 
     @Test
     fun `Create a user with invalid email`() {
         val err = assertFailsWith<TrelloException.IllegalArgument> {
-            services.userServices.createUser(dummyName, dummyBadEmail)
+            services.userServices.createUser(dummyName, dummyBadEmail, dummyPassword, dummyAvatar)
         }
         assertEquals(400, err.status.code)
         assertEquals("Invalid parameter: " + dummyBadEmail, err.message)

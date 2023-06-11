@@ -6,10 +6,10 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
-import pt.isel.ls.server.data.dataMem.lists
 import pt.isel.ls.server.BoardList
 import pt.isel.ls.server.BoardListIn
 import pt.isel.ls.server.DeleteListIn
+import pt.isel.ls.server.data.dataMem.lists
 import pt.isel.ls.tests.utils.app
 import pt.isel.ls.tests.utils.baseUrl
 import pt.isel.ls.tests.utils.boardId

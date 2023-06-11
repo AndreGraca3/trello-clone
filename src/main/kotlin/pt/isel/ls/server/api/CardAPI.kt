@@ -5,12 +5,12 @@ import kotlinx.serialization.json.Json
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import pt.isel.ls.server.annotations.Auth
-import pt.isel.ls.server.services.CardServices
 import pt.isel.ls.server.Card
 import pt.isel.ls.server.CardIn
 import pt.isel.ls.server.Changes
 import pt.isel.ls.server.NewList
+import pt.isel.ls.server.annotations.Auth
+import pt.isel.ls.server.services.CardServices
 
 class CardAPI(private val services: CardServices) {
 
