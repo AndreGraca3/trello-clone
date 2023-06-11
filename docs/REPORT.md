@@ -72,11 +72,22 @@ The relevant classes/functions used internally in a request are:
 The request parameters are validated in the endpoint handler functions, using the HTTP4K library's validation functions.
 
 ### Connection Management
-Connections to the database are created, used, and disposed of by the PGSimpleDataSource class. <br>
 
-The connection management is integrated with transaction scopes. <br>
-Each service method executes its logic in only one connection to the database, meaning if something
-during the transaction fails, the SQL rollbacks the database.
+In this last phase of the project we implemented an executor to handle all transactions.
+
+The executor plays a crucial role in maintaining a single connection to perform all operations in the database, ensuring consistency and efficiency. By encapsulating the transaction management logic, it simplifies the process of handling database operations and ensures that they are executed within a transaction context.
+
+One of the main advantages of using the executor is that it abstracts away the complexity of managing transactions and connections, making the code cleaner and easier to maintain. It uses a unified interface for executing database operations, regardless of whether they are executed in a SQL transaction or a memory transaction.
+
+The DataExecutor class is utilized to execute database operations within a transaction context defined by the TransactionCtx interface. This allows us to use it with a given implementation (Memory or SQL) and utilizes a connection to perform transactions. The SQLTransaction class uses connection from a PGSimpleDataSource to perform SQL transactions. On the other hand, the MemTransaction class represents a memory transaction and does not require a connection.
+
+<img src="images/Transactions_Diagram.jpg" alt="TransactionCtx Diagram" style="width:450px;height:450px;">
+
+By using the executor, the Services modules can focus on implementing the business logic for data-related operations without worrying about managing transactions explicitly. It can delegate the responsibility of executing the database operations to the executor, which takes care of initializing, committing, and rolling back the transactions as needed.
+
+<img src="images/Executor_Diagram.jpg" alt="Executor Diagram" style="width:350px;height:600px;">
+
+It's worth noting that the executor is not used in the case of memory transactions (MemTransaction). Since memory transactions do not require a connection, the con property is not accessed, and the custom getter never throws the UnsupportedOperationException. This design decision is appropriate because memory transactions operate solely in memory and do not involve database interactions, it only serves the interface signature.
 
 ### Data Access
 The dataSQL class is responsible for data access. It provides helper functions for executing SQL statements and mapping the results to domain objects.
@@ -86,7 +97,7 @@ SQL statements that are used for querying the data related to a board, list, or 
 ### Module's division
 The module's division, was made so each module is independent, reused and have easier maintenance throughout whole the project. 
 
-<img src="images/ModulesDivision.jpg" alt="Modules Division" style="width:450px;height:450px;">
+<img src="images/ModulesDivision.jpg" alt="Modules Division" style="width:500px;height:600px;">
 
 The division was made in a way where each entity in your conceptual module has its own routes in server, Api, services logic and storage.
 This makes bugs in your app easier to find and fix, as well not mix the services logic behind each entity.
@@ -210,6 +221,8 @@ when displaying the board cards. <br>
 
 The App Move Card Feature is a feature that allows users to move cards between lists in board. <br>
 The Card can be moved to a different list by clicking on the card and dragging it to the desired list. <br>
+We used dragover, dragend and drop event listeners events to achieve this
+as well as the dataset attribute on each card element to keep track of its index.
 
 ##### Pagination Buttons Feature
 
@@ -229,6 +242,22 @@ The __sessionStorage__ is a web storage object that stores data in the browser's
 In our case, the token is stored in the sessionStorage and is used in the requests to the API when using the auxiliar function __fetchReq__. <br>
 
 The Logout operation is simply implemented by removing the token from the sessionStorage. <br>
+
+### Frontend Organization
+
+We have made efforts to improve the organization of our frontend code by following the package convention in Java. This approach aims to bring structure and order to the project, making it easier to navigate and maintain.
+
+By adhering to the package convention, we have grouped related files and components into logical units, represented by packages. This organization allows for better separation of concerns and helps us locate specific files more efficiently.
+
+We have also tried to implement a parallel structure to our backend division for better reading. In this structure, our index.js serves as the entry point for each request (same as WebAPI). Similar to our backend routes module, the router.js file facilitates routing of the requests. 
+
+The handlers in our system act as the Services module, responsible for retrieving information from the data layer, which connects to our backend. 
+
+Finally, the retrieved data is passed to a view module, which generates the requested page.
+
+By adopting this organized approach, we have optimized the flow of data and improved the overall structure of our system.
+
+<img src="./images/Frontend_Packages.jpg" alt="Frontend Division">
 
 ### Security of Passwords
 
