@@ -218,6 +218,26 @@ The buttons are displayed at the top of the page and can be used to go to the pr
 There are also indexes of the pages displayed in the middle of the previous and next buttons. <br>
 When clicking a certain index card it shows the content of that page. <br>
 
+### Login, Logout and SignIn
+
+Before the implementation of the Login and SignIn operations, in the database, the user's password column was added to the table. In addition, the avatar image url was also added to the same table. <br>
+The Login operation is implemented using a new endpoint that receives the user's email and password and returns a token if the credentials are valid. <br>
+The SignIn operation is implemented using an already existing endpoint that receives the user's email, name, password and avatar, returning a token if the credentials are valid. <br>
+
+In the login and signin operations, in order to save and utilize the value of a given token, the usage of the  __sessionStorage__ seems the best approach. <br>
+The __sessionStorage__ is a web storage object that stores data in the browser's session, which means that the data is stored until the browser or tab is closed. <br>
+In our case, the token is stored in the sessionStorage and is used in the requests to the API when using the auxiliar function __fetchReq__. <br>
+
+The Logout operation is simply implemented by removing the token from the sessionStorage. <br>
+
+### Security of Passwords
+
+The security of passwords is a very important aspect of any application. <br>
+In our case, before inserting the user's password directly to the database, it is used the __algorithm SHA-256__ to hash the given password. <br>
+This algorithm is a cryptographic hash function that takes an input of any length and produces a fixed-length output. <br>
+In this way, the password is not stored in the database in plain text, but rather in a hashed form. <br>
+
+
 ## Critical Evaluation
 Functionality that is not yet concluded:
 
