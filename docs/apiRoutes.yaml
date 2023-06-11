@@ -14,8 +14,8 @@ info:
 paths:
   /user:
     post:
-      summary: user account creation
-      operationId: signIn
+      summary: user account creation.
+      operationId: createUser
       description:
         creates a user and returns a user's identifier and a token.
       tags:
@@ -26,28 +26,28 @@ paths:
         - application/json
       parameters:
         - in: body
-          name: name and email
-          description: user's name and email.
+          name: name, email, password and avatar.
+          description: user's name, email, password and avatar.
           required: true
           schema:
-            $ref: '#/definitions/newUser'
+            $ref: '#/definitions/createUser'
       responses:
         201:
-          description: user created.
+          description: user created successfully.
           schema:
             $ref: '#/definitions/userReturn'
         400:
-          description: invalid email or missing parameters.
+          description: invalid email or missing parameters in body.
         409:
-          description: user already exists. # emails has been taken.
+          description: user already exists (e.g emails has been taken).
         500:
           description: internal server error.
 
     get:
-      summary: get details of a user
-      operationId: getDetails
+      summary: get details of a user.
+      operationId: getUser
       description:
-        gets the details of a given user # que parametros devo receber para saber qual utilizador devo ir busca.
+        gets the details of a given user.
       tags:
         - User
       produces:
@@ -56,22 +56,86 @@ paths:
         - in: header
           name: token
           type: string
-          description: authorization token.
+          description: token of the corresponding user.
           required: true
       responses:
         200:
-          description: search results matching criteria
+          description: search results matching criteria.
           schema:
             $ref: '#/definitions/newUser'
-        404:
-          description: user not found # user not logged.
+        401:
+          description: invalid token.
+        500:
+          description: internal server error.
+
+    put:
+      summary: change avatar of a user.
+      operationId: changeAvatar
+      description:
+        changes a user's avatar.
+      tags:
+        - User
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: token
+          type: string
+          description: token of the corresponding user.
+          required: true
+        - in: body
+          name: new avatar
+          description: new image for a avatar.
+          required: true
+          schema:
+            $ref: '#/definitions/changeAvatar'
+      responses:
+        200:
+          description: changed the avatar successfully.
+        400:
+          description: missing avatar in body.
+        401:
+          description: invalid token.
+        500:
+          description: internal server error.
+
+  /user/login:
+    post:
+      summary: user login.
+      operationId: login
+      description:
+        given a user email and password logs a user in our app.
+      tags:
+        - User
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: email and password
+          description: user's email and password.
+          required: true
+          schema:
+            $ref: '#/definitions/login'
+      responses:
+        200:
+          description: logged successfully.
+          schema:
+            $ref: '#/definitions/loginSuccess'
+        400:
+          description: missing email or password in body.
+        401:
+          description: invalid token.
         500:
           description: internal server error.
 
   /board:
     post:
-      summary: board creation
-      operationId: board
+      summary: board creation.
+      operationId: createBoard
       description:
         creates a new board and returns a identifier for that board.
       tags:
@@ -84,7 +148,7 @@ paths:
         - in: header
           name: token
           type: string
-          description: token of the correspoding user.
+          description: token of the corresponding user.
           required: true
         - in: body
           name: name and description
@@ -94,21 +158,21 @@ paths:
             $ref: '#/definitions/newBoard'
       responses:
         201:
-          description: board created.
+          description: board created successfully.
           schema:
             $ref: '#/definitions/boardReturn'
         400:
-          description: invalid name or description.
+          description: missing name or description.
         401:
           description: invalid token.
         409:
-          description: board already exists.
+          description: board with given name already exists.
         500:
           description: internal server error.
 
     get:
       summary: get all boards from a user.
-      operationId: getBoards
+      operationId: getBoardsFromUser
       description:
         Get the list with all user available boards.
       tags:
@@ -119,18 +183,13 @@ paths:
         - in: header
           name: token
           type: string
-          description: token of the correspoding user.
+          description: token of the corresponding user.
           required: true
-        - in: body
-          name: idUser
-          required: true
-          schema:
-            $ref: '#/definitions/idUser'
       responses:
         200:
           description: search results matching criteria.
-        400:
-          description: invalid user.
+          schema:
+            $ref: '#/definitions/AllBoards'
         401:
           description: invalid token.
         500:
@@ -140,7 +199,7 @@ paths:
   /board/{idBoard}:
     put:
       summary: add a user to a board.
-      operationId: AddUserBoard
+      operationId: AddUserToBoard
       description:
         add a user to an existing board.
       tags:
@@ -153,7 +212,7 @@ paths:
         - in: header
           name: token
           type: string
-          description: token of the correspoding user.
+          description: token of the corresponding user.
           required: true
         - in: path
           name: idBoard
@@ -165,20 +224,20 @@ paths:
           schema:
             $ref: '#/definitions/idUser'
       responses:
-        201:
-          description: user added.
+        200:
+          description: user added successfully.
         400:
-          description: invalid user or board identifier.
+          description: missing user or board identifier.
         401:
           description: invalid token.
         404:
-          description: board not found. # or user not found.
+          description: board or user not found.
         500:
           description: internal server error.
 
     get:
       summary: get details from a board.
-      operationId: getDetailsBoard
+      operationId: getBoard
       description:
         Get the detailed information of a board.
       tags:
@@ -189,7 +248,7 @@ paths:
         - in: header
           name: token
           type: string
-          description: token of the correspoding user.
+          description: token of the corresponding user.
           required: true
         - in: path
           name: idBoard
@@ -201,7 +260,7 @@ paths:
           schema:
             $ref: '#/definitions/newBoard'
         400:
-          description: invalid board identifier.
+          description: missing board identifier.
         401:
           description: invalid token.
         404:
@@ -223,7 +282,7 @@ paths:
         - in: header
           name: token
           type: string
-          description: token of the correspoding user.
+          description: token of the corresponding user.
           required: true
         - in: path
           name: idBoard
@@ -235,7 +294,7 @@ paths:
           schema:
             $ref: '#/definitions/listUser'
         400:
-          description: invalid board identifier.
+          description: missing board identifier.
         401:
           description: invalid token.
         404:
@@ -259,10 +318,10 @@ paths:
         - in: header
           name: token
           type: string
-          description: token of the correspoding user.
+          description: token of the corresponding user.
           required: true
         - in: body
-          name: name # name of list
+          name: name
           required: true
           schema:
             $ref : '#/definitions/list'
@@ -272,11 +331,11 @@ paths:
           required: true
       responses:
         201:
-          description: list created.
+          description: list created successfully.
           schema:
             $ref: '#/definitions/listReturn'
         400:
-          description: invalid board identifier or name.
+          description: missing board or list identifier or name.
         401:
           description: invalid token.
         404:
@@ -286,7 +345,7 @@ paths:
 
     get:
       summary: gets all list of a board.
-      operationId: getLists
+      operationId: getListsFromBoard
       description:
         Get the lists of a board.
       tags:
@@ -297,7 +356,7 @@ paths:
         - in: header
           name: token
           type: string
-          description: token of the correspoding user.
+          description: token of the corresponding user.
           required: true
         - in: path
           name: idBoard
@@ -309,7 +368,7 @@ paths:
           schema:
             $ref: '#/definitions/lists'
         400:
-          description: invalid board identifier.
+          description: missing board identifier.
         401:
           description: invalid token.
         404:
@@ -321,7 +380,7 @@ paths:
   /board/{idBoard}/list/{idList}:
     get:
       summary: get details of a list.
-      operationId: getDetalisList
+      operationId: getList
       description:
         Get detailed information of a list.
       tags:
@@ -332,7 +391,7 @@ paths:
         - in: header
           name: token
           type: string
-          description: token of the correspoding user.
+          description: token of the corresponding user.
           required: true
         - in: path
           name: idBoard
@@ -348,7 +407,7 @@ paths:
           schema:
             $ref: '#/definitions/list'
         400:
-          description: invalid board or list identifier.
+          description: missing board or list identifier.
         401:
           description: invalid token.
         404:
@@ -364,10 +423,15 @@ paths:
       tags:
         - List
       parameters:
+        - in: query
+          name: action
+          type: string
+          description: action applied to cards of this list.
+          required: false
         - in: header
           name: token
           type: string
-          description: token of the correspoding user.
+          description: token of the corresponding user.
           required: true
         - in: path
           name: idBoard
@@ -379,11 +443,11 @@ paths:
           required: true
       responses:
         200:
-          description: list deleted sucessfully.
+          description: list deleted successfully.
         204:
           description: list doesn't exist.
         400:
-          description: invalid board or list identifier.
+          description: missing board or list identifier.
         401:
           description: invalid token.
         404:
@@ -391,7 +455,45 @@ paths:
         500:
           description: internal server error.
 
-  /board/{idBoard}/list/{idList}/card:
+  /board/{idBoard}/list/{idList}/cards:
+    get:
+      summary: get all cards in a list.
+      operationId: getCardsFromList
+      description:
+        Get the set of cards in a list.
+      tags:
+        - List
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: token
+          type: string
+          description: token of the corresponding user.
+          required: true
+        - in: path
+          name: idList
+          type: integer
+          required: true
+        - in: path
+          name: idBoard
+          type: integer
+          required: true
+      responses:
+        200:
+          description: search results matching criteria.
+          schema:
+            $ref: '#/definitions/cards'
+        400:
+          description: missing list or board identifier.
+        401:
+          description: invalid token.
+        404:
+          description: board or list not found.
+        500:
+          description: internal server error.
+
+  /board/{idBoard}/card:
     post:
       summary: create a card in a list.
       operationId: createCard
@@ -407,14 +509,10 @@ paths:
         - in: header
           name: token
           type: string
-          description: token of the correspoding user.
+          description: token of the corresponding user.
           required: true
         - in: path
           name: idBoard
-          type: integer
-          required: true
-        - in: path
-          name: idList
           type: integer
           required: true
         - in: body
@@ -424,11 +522,11 @@ paths:
             $ref: '#/definitions/card'
       responses:
         201:
-          description: card created.
+          description: card created successfully.
           schema:
             $ref: '#/definitions/cardReturn'
         400:
-          description: invalid name, description or listId.
+          description: missing name, description, list identifier or end date.
         401:
           description: invalid token.
         404:
@@ -436,43 +534,9 @@ paths:
         500:
           description: internal server error.
 
+  /board/{idBoard}/card/{idCard}:
     get:
-      summary: get all cards in a list.
-      operationId: getAllCards
-      description:
-        Get the set of cards in a list.
-      tags:
-        - Card
-      produces:
-        - application/json
-      parameters:
-        - in: header
-          name: token
-          type: string
-          description: token of the correspoding user.
-          required: true
-        - in: path
-          name: idList
-          type: integer
-          required: true
-        - in: path
-          name: idBoard
-          type: integer
-          required: true
-      responses:
-        200:
-          description: search results matching criteria.
-        400:
-          description: invalid list or board identifier.
-        401:
-          description: invalid token.
-        500:
-          description: internal server error.
-
-
-  /board/{idBoard}/list/{idList}/card/{idCard}:
-    get:
-      summary: get a card in a list.
+      summary: get a card.
       operationId: getCard
       description:
         Get the detailed information of a card.
@@ -484,14 +548,10 @@ paths:
         - in: header
           name: token
           type: string
-          description: token of the correspoding user.
+          description: token of the corresponding user.
           required: true
         - in: path
           name: idBoard
-          type: integer
-          required: true
-        - in: path
-          name: idList
           type: integer
           required: true
         - in: path
@@ -501,8 +561,52 @@ paths:
       responses:
         200:
           description: search results matching criteria.
+          schema:
+            $ref: '#/definitions/getCard'
         400:
-          description: invalid list or card identifier.
+          description: missing board or card identifier.
+        401:
+          description: invalid token.
+        404:
+          description: board or card not found.
+        500:
+          description: internal server error.
+
+    put:
+      summary: move a card.
+      operationId: moveCard
+      description:
+        Moves a card from a list to another list.
+      tags:
+        - Card
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: token
+          type: string
+          description: token of the corresponding user
+          required: true
+        - in: path
+          name: idBoard
+          type: integer
+          required: true
+        - in: body
+          name: lid
+          required: true
+          schema:
+            $ref: '#/definitions/moveCard'
+        - in: path
+          name: idCard
+          type: integer
+          required: true
+      responses:
+        200:
+          description: move successfully.
+        400:
+          description: missing source, destination list identifier or index.
         401:
           description: invalid token.
         404:
@@ -510,11 +614,11 @@ paths:
         500:
           description: internal server error.
 
-    put:
-      summary: move a card.
-      operationId: updateCard
+    delete:
+      summary: delete a card.
+      operationId: deleteCard
       description:
-        Moves a card.
+        deletes a card.
       tags:
         - Card
       consumes:
@@ -532,14 +636,50 @@ paths:
           type: integer
           required: true
         - in: path
-          name: idList
+          name: idCard
+          type: integer
+          required: true
+      responses:
+        200:
+          description: card deleted successfully.
+        204:
+          description: card doesn't exist.
+        400:
+          description: missing board or card identifier.
+        401:
+          description: invalid token.
+        404:
+          description: board not found.
+        500:
+          description: internal server error.
+
+  /board/{idBoard}/card/{idCard}/update:
+    put:
+      summary: update a card.
+      operationId: updateCard
+      description:
+        updates description and/or end date of a card.
+      tags:
+        - Card
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: token
+          type: string
+          description: token of the corresponding user
+          required: true
+        - in: path
+          name: idBoard
           type: integer
           required: true
         - in: body
-          name: lid
+          name: updateCard
           required: true
           schema:
-            $ref: '#/definitions/lid'
+            $ref: '#/definitions/updateCard'
         - in: path
           name: idCard
           type: integer
@@ -548,7 +688,7 @@ paths:
         200:
           description: updated successfully.
         400:
-          description: invalid source or destination list identifier.
+          description: missing body parameters, board or card identifier.
         401:
           description: invalid token.
         404:
@@ -560,15 +700,31 @@ definitions:
   newUser:
     type: object
     required:
-      - name
+      - idUser
       - email
+      - name
+      - token
+      - hashedPassword
+      - avatar
     properties:
+      idUser:
+        type: integer
+        example: 1
+      email:
+        type: string
+        example : "Diogo@email.com"
       name:
         type: string
         example: "Diogo"
-      email:
+      token:
         type: string
-        example : "users123@email.com"
+        example: "36b8f84d-df4e-4d49-b662-bcde71a8764f"
+      hashedPassword:
+        type: string
+        example: "5e884898da28047151d0e56f8dc6292773603d0d6"
+      avatar:
+        type: string
+        example: "profilePic.jpg"
 
   userReturn:
     type: object
@@ -586,15 +742,65 @@ definitions:
   newBoard:
     type: object
     required:
+      - idBoard
       - name
       - description
+      - primaryColor
+      - secondaryColor
+      - lists
+      - archivedCards
     properties:
+      idBoard:
+        type: integer
+        example: 1
       name:
         type: string
         example: "Project Name"
       description:
         type: string
         example: "This project consists of doing..."
+      primaryColor:
+        type: string
+        example: "GRAY"
+      secondaryColor:
+        type: string
+        example: "NAVY"
+      lists:
+        type: array
+        items:
+          type: object
+          example: [{
+            "idList": 24,
+            "idBoard": 1,
+            "name": "List1",
+            "cards": [
+              {
+                "idCard": 41,
+                "idList": 24,
+                "idBoard": 1,
+                "name": "Card8",
+                "description": "Isto é uma descrição",
+                "startDate": "2023-06-09 20:34:50",
+                "endDate": null,
+                "archived": false,
+                "idx": 1
+              }]
+          }]
+      archivedCards:
+        type: array
+        items:
+          type: object
+          example: [{
+            "idCard": 39,
+            "idList": null,
+            "idBoard": 1,
+            "name": "Card6",
+            "description": "",
+            "startDate": "2023-06-09 20:19:36",
+            "endDate": null,
+            "archived": true,
+            "idx": 3
+          }]
 
   boardReturn:
     type: object
@@ -617,49 +823,78 @@ definitions:
   list:
     type: object
     required:
-      - list name
+      - idList
+      - idBoard
+      - name
     properties:
-      list name:
+      idList:
+        type: integer
+        example: 1
+      idBoard:
+        type: integer
+        example: 1
+      name:
         type: string
         example : "to do"
+
 
   lists:
     type: array
     items:
       type: object
-      example: ["name" : "to do","name" : "doing", "name" : "done"]
+      example: [
+        {
+          "idList" : 1,
+          "name" : "to do"
+        },
+        {
+          "idList" : 2,
+          "name" : "doing"
+        },
+        {
+          "idList" : 3,
+          "name" : "done"
+        }]
 
   card:
     type: object
     required:
       - name
       - description
+      - endDate
+      - idList
     properties:
       name:
         type: string
-        example: "bug correction."
+        example: "card1"
       description:
         type: string
-        example: "There is a bug in one of our models."
-      dueDate:
+        example: "There is a card1."
+      endDate:
         type: string
         example: "11-03-2022"
-
-  cardReturn:
-    type: object
-    required:
-      - idCard
-    properties:
-      idCard:
+      idList:
         type: integer
         example: 1
 
-  lid:
+  cardReturn:
+    type: integer
+    example: 1
+
+  moveCard:
     type: object
     required:
-      - lid
+      - idListNow
+      - idListDst
+      - cix
     properties:
-      lid:
+      idListNow:
+        type: integer
+        example: 1
+      idListDst:
+        type: integer
+        example: 2
+      cix:
         type: integer
         example: 1
 
@@ -676,12 +911,177 @@ definitions:
     type: array
     items:
       type: object
-      example: [{ "name" : "Diogo",
-                  "email" : "Diogo@gmail.com",
-                  "idUser" : 1,
-                  "token" : "diogotoken"
+      example: [{
+        "idUser" : 1,
+        "email" : "Diogo@gmail.com",
+        "name" : "Diogo",
+        "token" : "DiogoToken",
+        "hashedPassword" : "5e884898da28047151d0e56f8dc62927736",
+        "avatar" : "profilePic1.jpg"
       },
-        { "name" : "André",
-          "email" : "graça@gmail.com",
+        {
           "idUser" : 2,
-          "token" : "andretoken"}]
+          "email" : "graça@gmail.com",
+          "name" : "André",
+          "token" : "AndreToken",
+          "hashedPassword" : "5ba9866b3db219ddad4bd8b75d1ef82",
+          "avatar" : "profilePic2.jpg"
+        }]
+
+  changeAvatar:
+    type: object
+    required:
+      - avatar
+    properties:
+      avatar:
+        type: string
+        example: "imageLink"
+
+  login:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+        example: "Daniel@gmail.com"
+      password:
+        type: string
+        example: "Caseiro123"
+
+  loginSuccess:
+    type: string
+    example: "36b8f84d-df4e-4d49-b662-bcde71a8764f"
+
+  AllBoards:
+    type: object
+    required:
+      - totalBoards
+      - boards
+    properties:
+      totalBoards:
+        type: integer
+        example: 1
+      boards:
+        type: array
+        items:
+          type: object
+          example: [{
+            "idBoard": 1,
+            "name": "Board1",
+            "description": "This is a board1.",
+            "primaryColor": "GRAY",
+            "secondaryColor": "NAVY",
+            "numLists": 7
+          }]
+
+  cards:
+    type: array
+    items:
+      type: object
+      example: [{
+        "idCard": 1,
+        "idList": 1,
+        "idBoard": 1,
+        "name": "Card1",
+        "description": "",
+        "startDate": "2023-06-10 11:16:17",
+        "endDate": null,
+        "archived": false,
+        "idx": 1
+      },
+        {
+          "idCard": 2,
+          "idList": 1,
+          "idBoard": 1,
+          "name": "Card2",
+          "description": null,
+          "startDate": "2023-06-10 11:48:06",
+          "endDate": null,
+          "archived": false,
+          "idx": 2
+        }]
+
+  getCard:
+    type: object
+    required:
+      - idCard
+      - idList
+      - idBoard
+      - name
+      - description
+      - startDate
+      - endDate
+      - archived
+      - idx
+    properties:
+      idCard:
+        type: integer
+        example: 1
+      idList:
+        type: integer
+        example: 1
+      idBoard:
+        type: integer
+        example: 1
+      name:
+        type: string
+        example: "card1"
+      description:
+        type: string
+        example: "This is a card1."
+      startDate:
+        type: string
+        example: "2023-06-11 12:54:56"
+      endDate:
+        type: string
+        example: "2023-08-24 17:19:03"
+      archived:
+        type: boolean
+        example: false
+      idx:
+        type: integer
+        example: 3
+
+  updateCard:
+    type: object
+    required:
+      - archived
+      - description
+      - endDate
+      - idList
+    properties:
+      archived:
+        type: boolean
+        example: false
+      description:
+        type: string
+        example: "Isto é uma descrição."
+      endDate:
+        type: string
+        example: "2023-10-20 22:25"
+      idList:
+        type: string
+        example: 1
+
+  createUser:
+    type: object
+    required:
+      - name
+      - email
+      - password
+      - avatar
+    properties:
+      name:
+        type: string
+        example: "Diogo"
+      email:
+        type: string
+        example: "Diogo@email.com"
+      password:
+        type: string
+        example: "Diogo123"
+      avatar:
+        type: string
+        example: "profilePic.jpg"
