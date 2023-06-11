@@ -80,7 +80,7 @@ class BoardServices(
         }
     }
 
-    fun addUserToBoard(token: String, newUserEmail: String, idBoard: Int) : UserProfile {
+    fun addUserToBoard(token: String, newUserEmail: String, idBoard: Int) : UserProfile? {
         return dataExecutor.execute {
             validateString(newUserEmail, "email")
             verifyEmail(newUserEmail)
@@ -91,7 +91,8 @@ class BoardServices(
             try {
                 userBoardData.addUserToBoard(userToAdd.idUser, idBoard, it)
             } catch (_: Exception) {
-                UserProfile(userToAdd.avatar, userToAdd.name)
+                //UserProfile(userToAdd.avatar, userToAdd.name)
+                null
             }
         }
     }

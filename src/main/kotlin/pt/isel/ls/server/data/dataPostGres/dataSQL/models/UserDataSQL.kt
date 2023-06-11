@@ -4,6 +4,7 @@ import pt.isel.ls.server.User
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
 import pt.isel.ls.server.data.dataPostGres.statements.UserStatements
 import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
+import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 import java.util.*
 
@@ -31,7 +32,7 @@ class UserDataSQL : UserData {
         val res = ctx.con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
-        if (res.row == 0) throw TrelloException.NotAuthorized() // NotFound("$NOT_FOUND User")
+        if (res.row == 0) throw TrelloException.NotAuthorized()
 
         return User(
             res.getInt("idUser"),
@@ -54,7 +55,7 @@ class UserDataSQL : UserData {
         val res = ctx.con.prepareStatement(selectStmt).executeQuery()
         res.next()
 
-        if (res.row == 0) throw TrelloException.NotFound("User")
+        if (res.row == 0) throw TrelloException.NotFound("User $NOT_FOUND")
 
         idUser = res.getInt("idUser")
         name = res.getString("name")

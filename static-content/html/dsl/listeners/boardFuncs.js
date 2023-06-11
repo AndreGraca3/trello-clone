@@ -68,7 +68,10 @@ async function addUserToBoardOperation(boardBtnContainer, input, addUserToBoardB
     const res = await boardData.addUserToBoard(board.idBoard, input.value)
 
     // Add User to Dropdown User
-    const userDropdown = boardBtnContainer.querySelector('#dropdownMenu-users')
-    const liHtml = createItemDropdownUser(res)
-    userDropdown.appendChild(liHtml)
+    if(res){
+        const userDropdown = boardBtnContainer.querySelector('#dropdownMenu-users')
+        const liHtml = createItemDropdownUser(res)
+        userDropdown.appendChild(liHtml)
+    }
+
 }
