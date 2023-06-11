@@ -1,15 +1,12 @@
 package pt.isel.ls.server.services
 
+import pt.isel.ls.server.*
 import pt.isel.ls.server.data.transactionManager.executor.DataExecutor
 import pt.isel.ls.server.data.dataInterfaces.models.BoardData
 import pt.isel.ls.server.data.dataInterfaces.models.CardData
 import pt.isel.ls.server.data.dataInterfaces.models.ListData
 import pt.isel.ls.server.data.dataInterfaces.models.UserBoardData
 import pt.isel.ls.server.data.dataInterfaces.models.UserData
-import pt.isel.ls.server.BoardDetailed
-import pt.isel.ls.server.ListDetailed
-import pt.isel.ls.server.TotalBoards
-import pt.isel.ls.server.User
 import pt.isel.ls.server.exceptions.INVAL_PARAM
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.validateString
@@ -83,14 +80,19 @@ class BoardServices(
         }
     }
 
-    fun addUserToBoard(token: String, newUserEmail: String, idBoard: Int) {
+    fun addUserToBoard(token: String, newUserEmail: String, idBoard: Int) : UserProfile {
         return dataExecutor.execute {
             validateString(newUserEmail, "email")
             verifyEmail(newUserEmail)
             val idUserOwner = userData.getUser(token, it).idUser
-            val idUserToAdd = userData.getUserByEmail(newUserEmail, it).idUser // check if user to add exists
+            val userToAdd = userData.getUserByEmail(newUserEmail, it) // check if user to add exists
             userBoardData.checkUserInBoard(idUserOwner, idBoard, it)
-            kotlin.runCatching { userBoardData.addUserToBoard(idUserToAdd, idBoard, it) }
+            //kotlin.runCatching { userBoardData.addUserToBoard(idUserToAdd, idBoard, it) }
+            try {
+                userBoardData.addUserToBoard(userToAdd.idUser, idBoard, it)
+            } catch (_: Exception) {
+                UserProfile(userToAdd.avatar, userToAdd.name)
+            }
         }
     }
 

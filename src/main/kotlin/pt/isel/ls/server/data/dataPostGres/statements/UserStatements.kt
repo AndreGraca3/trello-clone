@@ -36,4 +36,8 @@ object UserStatements {
         return "SELECT * FROM dbo.user WHERE email = '$email';"
     }
 
+    fun getUserProfile(idUser: Int): String {
+        return "SELECT name, avatar FROM dbo.user WHERE idUser = $idUser;"
+    }
+
 }

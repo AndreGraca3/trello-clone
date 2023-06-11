@@ -1,16 +1,22 @@
 package pt.isel.ls.server.data.dataPostGres.dataSQL.models
 
+import pt.isel.ls.server.UserProfile
 import pt.isel.ls.server.data.dataInterfaces.models.UserBoardData
 import pt.isel.ls.server.data.dataPostGres.statements.UserBoardStatements
+import pt.isel.ls.server.data.dataPostGres.statements.UserStatements
 import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 
 class UserBoardDataSQL : UserBoardData {
 
-    override fun addUserToBoard(idUser: Int, idBoard: Int, ctx: TransactionCtx) {
+    override fun addUserToBoard(idUser: Int, idBoard: Int, ctx: TransactionCtx) : UserProfile{
         val insertStmt = UserBoardStatements.addUserToBoard(idUser, idBoard)
+        val selectStmt = UserStatements.getUserProfile(idUser)
         ctx.con.prepareStatement(insertStmt).executeUpdate()
+        val res = ctx.con.prepareStatement(selectStmt).executeQuery()
+        res.next()
+        return UserProfile(res.getString("avatar"), res.getString("name"))
     }
 
     override fun searchUserBoards(idUser: Int, ctx: TransactionCtx): List<Int> {

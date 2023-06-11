@@ -61,6 +61,9 @@ data class UserOut(val idUser: Int, val token: String)
 data class UserLogin(val email: String, val password: String)
 
 @Serializable
+data class UserProfile(val avatar: String?, val name: String)
+
+@Serializable
 data class BoardIn(val name: String, val description: String)
 
 @Serializable

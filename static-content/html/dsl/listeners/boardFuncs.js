@@ -2,7 +2,8 @@ import boardData from "../../../data/boardData.js";
 import {input} from "../../common/components/elements.js";
 import listData from "../../../data/listData.js";
 import listContainer from "../components/lists/listContainer.js";
-import userData from "../../../data/userData";
+import userData from "../../../data/userData.js";
+import {createItemDropdownUser} from "../dropdowns/modelDropdowns.js";
 
 export const boardFunc = (board) => {
     document.location = `#board/${board.idBoard}`
@@ -63,6 +64,11 @@ export async function addUserToBoard(boardBtnContainer, board) {
 }
 
 async function addUserToBoardOperation(boardBtnContainer, input, addUserToBoardBtn, board) {
-    await boardData.addUserToBoard(board.idBoard, input.value)
     input.remove()
+    const res = await boardData.addUserToBoard(board.idBoard, input.value)
+
+    // Add User to Dropdown User
+    const userDropdown = boardBtnContainer.querySelector('#dropdownMenu-users')
+    const liHtml = createItemDropdownUser(res)
+    userDropdown.appendChild(liHtml)
 }

@@ -8,13 +8,17 @@ import pt.isel.ls.server.data.dataMem.usersBoards
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.UserBoard
+import pt.isel.ls.server.UserProfile
+import pt.isel.ls.server.data.dataMem.users
 import java.sql.SQLException
 
 class UserBoardDataMem : UserBoardData {
 
-    override fun addUserToBoard(idUser: Int, idBoard: Int, ctx: TransactionCtx) {
+    override fun addUserToBoard(idUser: Int, idBoard: Int, ctx: TransactionCtx): UserProfile {
         if(usersBoards.contains(UserBoard(idUser, idBoard))) throw SQLException("already added.","23505")
         usersBoards.add(UserBoard(idUser, idBoard))
+        val user = users.find { it.idUser == idUser}
+        return UserProfile(user!!.avatar, user.name)
     }
 
     override fun searchUserBoards(idUser: Int, ctx: TransactionCtx): List<Int> {
@@ -24,7 +28,7 @@ class UserBoardDataMem : UserBoardData {
     override fun checkUserInBoard(idUser: Int, idBoard: Int, ctx: TransactionCtx) {
         usersBoards.find { it.idUser == idUser && it.idBoard == idBoard }
             ?: throw TrelloException.NotFound("Board $NOT_FOUND")
-        /** If the board doesn't exist it makes sence returning not found,
+        /** If the board doesn't exist it makes sense returning not found,
          *  but if the board exists and the user doesn't belong to it, this should return Unauthorized.
          * **/
     }

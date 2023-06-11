@@ -7,20 +7,24 @@ export function usersDropdown(users) {
     const buttonHtml = button("👥 Users", ["dropdown-users", "btn", "btn-secondary", "dropdown-toggle"], "DropdownBtn")
     buttonHtml.setAttribute("data-bs-toggle", "dropdown")
 
-    const ulHtml = ul(null, ["dropdown-menu-dark", "dropdown-menu", "dropdown-menu-scrollable"])
+    const ulHtml = ul(null, ["dropdown-menu-dark", "dropdown-menu", "dropdown-menu-scrollable"], "dropdownMenu-users")
 
     users.forEach(user => {
-            const imgHtml = img(null, ["dropdown-item-avatar"])
-            imgHtml.src = user.avatar
-
-            const liHtml = li(null, ["dropdown-item-user"], null, imgHtml,
-                span(user.name)
-            )
+            const liHtml = createItemDropdownUser(user)
             ulHtml.appendChild(liHtml)
         }
     )
 
     return div(null, ["dropdown"], null, buttonHtml, ulHtml)
+}
+
+export function createItemDropdownUser(user)  {
+    const imgHtml = img(null, ["dropdown-item-avatar"])
+    imgHtml.src = user.avatar
+
+    return li(null, ["dropdown-item-user"], null, imgHtml,
+        span(user.name)
+    )
 }
 
 export function archivedDropdown(cards) { // html board
