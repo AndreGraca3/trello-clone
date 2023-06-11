@@ -185,6 +185,16 @@ paths:
           type: string
           description: token of the corresponding user.
           required: true
+        - in: query
+          name: limit
+          type: integer
+          description: number of boards returned.
+          required: false
+        - in: query
+          name: skip
+          type: integer
+          description: number of boards to jump.
+          required: false
       responses:
         200:
           description: search results matching criteria.
