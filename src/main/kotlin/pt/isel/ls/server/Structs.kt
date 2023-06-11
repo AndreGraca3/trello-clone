@@ -43,7 +43,7 @@ data class Card(
 
 // Aux Structs
 @Serializable
-data class IDUser(val idUser: Int)
+data class EmailUser(val userEmail: String)
 
 @Serializable
 data class Avatar(val imgUrl: String)

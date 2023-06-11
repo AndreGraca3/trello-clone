@@ -31,4 +31,9 @@ object UserStatements {
     fun changeAvatarCMD(token: String, avatar: String): String {
         return "UPDATE dbo.user SET avatar = '$avatar' WHERE token = '$token';"
     }
+
+    fun getUserEmailCMD(email: String): String {
+        return "SELECT * FROM dbo.user WHERE email = '$email';"
+    }
+
 }

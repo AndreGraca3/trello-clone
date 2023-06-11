@@ -15,6 +15,7 @@ import java.util.*
 
 class UserDataMem : UserData {
 
+
     override fun createUser(name: String, email: String, hashedPassword: String, urlAvatar: String?, ctx: TransactionCtx): Pair<Int, String> {
         if (name.length > 20) throw SQLException("$INVAL_PARAM name is too long.", "22001")
         if (users.any { it.email == email }) throw SQLException("email $email $ALREADY_EXISTS", "23505")
@@ -47,6 +48,10 @@ class UserDataMem : UserData {
     override fun login(email: String, hashedPassword: String, ctx: TransactionCtx) : String {
         val user = users.find { it.email == email && it.hashedPassword == hashedPassword } ?: throw TrelloException.NotAuthorized()
         return user.token
+    }
+
+    override fun getUserByEmail(email: String, ctx: TransactionCtx): User {
+        return users.find { it.email == email } ?: throw TrelloException.NotFound("User $NOT_FOUND")
     }
 
     private fun getNextId(): Int {

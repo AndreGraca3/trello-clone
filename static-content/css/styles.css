@@ -183,8 +183,8 @@
 }
 
 
-.board-buttons {
-    display: grid;
+.board-buttons-archived {
+    display: flex;
     justify-content: right;
     margin-right: 30px;
 }
@@ -253,6 +253,7 @@
     position: relative;
     display: inline-block;
     margin-top: 5px;
+    width: 145px;
 }
 
 .list-container {
@@ -378,6 +379,26 @@
 
 .create-list-button:hover {
     opacity: 70%;
+}
+
+.add-user-to-board-button {
+    transition: opacity 0.3s ease-in-out;
+    opacity: 40%;
+    border: transparent;
+    border-radius: 5px;
+    width: 38px;
+    height: 38px;
+    margin-right: 3px;
+}
+
+.add-user-to-board-button:hover {
+    opacity: 70%;
+}
+
+.board-buttons-users {
+    display: flex;
+    justify-content: right;
+    margin-right: 30px;
 }
 
 .newCard {

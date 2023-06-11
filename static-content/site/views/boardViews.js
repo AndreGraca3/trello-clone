@@ -1,7 +1,7 @@
 import {button, div, h1} from "../../html/common/components/elements.js";
 import {mainContent, MAX_BOARDS_DISPLAY} from "../../config.js";
 import {coloredContainer, createRows} from "../../html/common/components/containers.js";
-import {boardFunc, updateBoardsPath} from "../../html/dsl/listeners/boardFuncs.js";
+import {addUserToBoard, boardFunc, updateBoardsPath} from "../../html/dsl/listeners/boardFuncs.js";
 import Pagination from "../../html/dsl/components/boards/pagination.js";
 import createSearchBar from "../../html/dsl/components/boards/searchBar.js";
 import {archivedDropdown, usersDropdown} from "../../html/dsl/dropdowns/modelDropdowns.js";
@@ -49,10 +49,19 @@ export function renderBoards(boards, name, numLists, renderedContainer) {
 function boardPageView(board, boardUsers) {
     mainContent.style.background = `linear-gradient(135deg, ${board.primaryColor}, ${board.secondaryColor})`
 
+    const addUserToBoardButton = button("+", ["add-user-to-board-button"])
+
+    const boardBtnContainer = div(null, ["board-buttons-users"], null,
+        addUserToBoardButton,
+        usersDropdown(boardUsers),
+    );
+
+    addUserToBoardButton.addEventListener("click", () => addUserToBoard(boardBtnContainer, board))
+
     div(null, ["board-header"], null,
         h1(board.description, ["board-desc"]),
-        div(null, ["board-buttons"], null,
-            usersDropdown(boardUsers),
+        boardBtnContainer,
+        div(null, ["board-buttons-archived"], null,
             archivedDropdown(board.archivedCards)
         )
     )

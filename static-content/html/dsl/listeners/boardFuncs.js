@@ -1,4 +1,8 @@
 import boardData from "../../../data/boardData.js";
+import {input} from "../../common/components/elements.js";
+import listData from "../../../data/listData.js";
+import listContainer from "../components/lists/listContainer.js";
+import userData from "../../../data/userData";
 
 export const boardFunc = (board) => {
     document.location = `#board/${board.idBoard}`
@@ -35,4 +39,30 @@ export function updateBoardsPath(skip, limit, nameSearch, numLists, totalBoards)
     const newPath = `#boards?skip=${skip}&limit=${limit}${nameSearch != null && nameSearch !== "" ? `&name=${nameSearch}` : ''}${numLists != null && numLists !== "" ? `&numLists=${numLists}` : ''}`
     window.history.pushState(null, "", newPath)
     return {skip, limit} // newPath,
+}
+
+export async function addUserToBoard(boardBtnContainer, board) {
+
+    const inputHtml = input("", ["add-user-to-board-input"], "inputEmail", "Enter email to add user")
+    const addUserToBoardBtn = boardBtnContainer.querySelector('.add-user-to-board-button')
+    boardBtnContainer.insertBefore(inputHtml, addUserToBoardBtn)
+    inputHtml.focus()
+    const handleAddUserToBoard = async () => {
+        if(inputHtml.value.trim() === ""){
+            boardBtnContainer.removeChild(inputHtml)
+            return
+        }
+        await addUserToBoardOperation(boardBtnContainer, inputHtml, addUserToBoardBtn, board)
+    }
+    inputHtml.addEventListener("focusout", handleAddUserToBoard)
+    inputHtml.addEventListener("keydown", (event) => {
+        if(event.key !== "Enter" || event.repeat) return
+        inputHtml.removeEventListener("focusout", handleAddUserToBoard)
+        handleAddUserToBoard()
+    })
+}
+
+async function addUserToBoardOperation(boardBtnContainer, input, addUserToBoardBtn, board) {
+    await boardData.addUserToBoard(board.idBoard, input.value)
+    input.remove()
 }

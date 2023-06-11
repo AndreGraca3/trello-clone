@@ -190,7 +190,7 @@ class BoardAPITests {
         val dummyName2 = "Diogo"
         val dummyEmail2 = "Diogo@gmail.com"
         val user2 = createUser(dummyName2, dummyEmail2)
-        val userId2 = Json.encodeToString(IDUser(user2.first))
+        val userId2 = Json.encodeToString(EmailUser(user2.first))
 
         val response = app(
             Request(
@@ -213,7 +213,7 @@ class BoardAPITests {
         val dummyName2 = "Diogo"
         val dummyEmail2 = "Diogo@gmail.com"
         val user2 = createUser(dummyName2, dummyEmail2)
-        val userId2 = Json.encodeToString(IDUser(user2.first))
+        val userId2 = Json.encodeToString(EmailUser(user2.first))
 
         val response = app(
             Request(Method.PUT, "$baseUrl/board/$boardId")

@@ -10,7 +10,7 @@ import pt.isel.ls.server.annotations.Auth
 import pt.isel.ls.server.services.BoardServices
 import pt.isel.ls.server.BoardIn
 import pt.isel.ls.server.BoardOut
-import pt.isel.ls.server.IDUser
+import pt.isel.ls.server.EmailUser
 
 class BoardAPI(private val services: BoardServices) {
 
@@ -29,8 +29,8 @@ class BoardAPI(private val services: BoardServices) {
     @Auth
     fun addUserToBoard(request: Request, token: String): Response {
         val idBoard = getPathParam(request, "idBoard")
-        val objIdUser = Json.decodeFromString<IDUser>(request.bodyString())
-        return createRsp(OK, services.addUserToBoard(token, objIdUser.idUser, idBoard))
+        val objEmailUser = Json.decodeFromString<EmailUser>(request.bodyString())
+        return createRsp(OK, services.addUserToBoard(token, objEmailUser.userEmail, idBoard))
     }
 
     @Auth

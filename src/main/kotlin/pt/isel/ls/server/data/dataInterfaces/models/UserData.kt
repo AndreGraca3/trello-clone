@@ -9,6 +9,8 @@ interface UserData {
 
     fun getUser(token: String, ctx: TransactionCtx): User
 
+    fun getUserByEmail(email: String, ctx: TransactionCtx): User
+
     fun getUser(idUser: Int, ctx: TransactionCtx): User
 
     fun getUsers(idBoard: Int, ctx: TransactionCtx): List<User>

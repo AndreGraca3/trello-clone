@@ -15,6 +15,10 @@ async function getBoards(skip, limit, name, numLists) {
         "GET")
 }
 
+async function addUserToBoard(idBoard, userEmail) {
+    return await fetchReq(`board/${idBoard}`, "PUT", {userEmail: userEmail})
+}
+
 export let RECENT_BOARDS = []
 
 function clearRecentBoards() {
@@ -33,5 +37,6 @@ export default {
     visitBoard,
     createBoard,
     getBoard,
-    getBoards
+    getBoards,
+    addUserToBoard
 }

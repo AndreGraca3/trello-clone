@@ -10,6 +10,8 @@ import pt.isel.ls.server.BoardDetailed
 import pt.isel.ls.server.ListDetailed
 import pt.isel.ls.server.TotalBoards
 import pt.isel.ls.server.User
+import pt.isel.ls.server.exceptions.INVAL_PARAM
+import pt.isel.ls.server.exceptions.TrelloException
 import pt.isel.ls.server.utils.validateString
 
 class BoardServices(
@@ -81,12 +83,14 @@ class BoardServices(
         }
     }
 
-    fun addUserToBoard(token: String, idNewUser: Int, idBoard: Int) {
+    fun addUserToBoard(token: String, newUserEmail: String, idBoard: Int) {
         return dataExecutor.execute {
-            val idUser = userData.getUser(token, it).idUser
-            userData.getUser(idNewUser, it) // check if user to add exists
-            userBoardData.checkUserInBoard(idUser, idBoard, it)
-            kotlin.runCatching { userBoardData.addUserToBoard(idNewUser, idBoard, it) }
+            validateString(newUserEmail, "email")
+            verifyEmail(newUserEmail)
+            val idUserOwner = userData.getUser(token, it).idUser
+            val idUserToAdd = userData.getUserByEmail(newUserEmail, it).idUser // check if user to add exists
+            userBoardData.checkUserInBoard(idUserOwner, idBoard, it)
+            kotlin.runCatching { userBoardData.addUserToBoard(idUserToAdd, idBoard, it) }
         }
     }
 
@@ -99,5 +103,9 @@ class BoardServices(
                 it
             )
         }
+    }
+
+    private fun verifyEmail(email: String) {
+        if (!Regex("@").containsMatchIn(email)) throw TrelloException.IllegalArgument("$INVAL_PARAM $email")
     }
 }

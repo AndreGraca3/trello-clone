@@ -34,7 +34,7 @@ async function login(email, password) {
 }
 
 async function changeAvatar(imgUrl) {
-    return await fetchReq("user/avatar", "PUT", {imgUrl}, sessionStorage.getItem("token"))
+    return await fetchReq("user", "PUT", {imgUrl}, sessionStorage.getItem("token"))
 }
 
 async function getUserAvatar(token) {
