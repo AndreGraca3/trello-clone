@@ -36,7 +36,7 @@ tasks.register<Copy>("copyRuntimeDependencies") {
 tasks.named<Jar>("jar") {
     dependsOn("copyRuntimeDependencies")
     manifest {
-        attributes["Main-Class"] = "pt.isel.ls.http.HTTPServerKt"
+        attributes["Main-Class"] = "pt.isel.ls.server.TasksServerKt"
         attributes["Class-Path"] = configurations.runtimeClasspath.get().joinToString(" ") { it.name }
     }
 }
