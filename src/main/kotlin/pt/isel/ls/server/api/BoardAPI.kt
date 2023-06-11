@@ -6,11 +6,11 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.OK
-import pt.isel.ls.server.annotations.Auth
-import pt.isel.ls.server.services.BoardServices
 import pt.isel.ls.server.BoardIn
 import pt.isel.ls.server.BoardOut
 import pt.isel.ls.server.EmailUser
+import pt.isel.ls.server.annotations.Auth
+import pt.isel.ls.server.services.BoardServices
 
 class BoardAPI(private val services: BoardServices) {
 

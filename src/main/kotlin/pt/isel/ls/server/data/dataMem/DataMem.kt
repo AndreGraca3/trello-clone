@@ -1,16 +1,16 @@
 package pt.isel.ls.server.data.dataMem
 
+import pt.isel.ls.server.Board
+import pt.isel.ls.server.BoardList
+import pt.isel.ls.server.Card
+import pt.isel.ls.server.User
+import pt.isel.ls.server.UserBoard
 import pt.isel.ls.server.data.dataInterfaces.Data
 import pt.isel.ls.server.data.dataMem.models.BoardDataMem
 import pt.isel.ls.server.data.dataMem.models.CardDataMem
 import pt.isel.ls.server.data.dataMem.models.ListDataMem
 import pt.isel.ls.server.data.dataMem.models.UserBoardDataMem
 import pt.isel.ls.server.data.dataMem.models.UserDataMem
-import pt.isel.ls.server.Board
-import pt.isel.ls.server.BoardList
-import pt.isel.ls.server.Card
-import pt.isel.ls.server.User
-import pt.isel.ls.server.UserBoard
 
 class DataMem : Data {
     override val userData = UserDataMem()

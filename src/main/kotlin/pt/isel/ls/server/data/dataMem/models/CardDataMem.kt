@@ -1,12 +1,12 @@
 package pt.isel.ls.server.data.dataMem.models
 
-import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
+import pt.isel.ls.server.Card
 import pt.isel.ls.server.data.dataInterfaces.models.CardData
 import pt.isel.ls.server.data.dataMem.cards
+import pt.isel.ls.server.data.transactionManager.transactions.TransactionCtx
 import pt.isel.ls.server.exceptions.INVAL_PARAM
 import pt.isel.ls.server.exceptions.NOT_FOUND
 import pt.isel.ls.server.exceptions.TrelloException
-import pt.isel.ls.server.Card
 import java.sql.SQLException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
